@@ -141,6 +141,9 @@
     <ClInclude Include="..\..\..\Desktop\Liberies\Visual Studio 2022\includes\GLFW\glfw3native.h" />
     <ClInclude Include="..\..\..\Desktop\Liberies\Visual Studio 2022\includes\KHR\khrplatform.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Desktop\Liberies\Visual Studio 2022\lib\glfw3.lib" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

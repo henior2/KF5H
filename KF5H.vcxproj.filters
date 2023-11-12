@@ -36,4 +36,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Desktop\Liberies\Visual Studio 2022\lib\glfw3.lib" />
+  </ItemGroup>
 </Project>
