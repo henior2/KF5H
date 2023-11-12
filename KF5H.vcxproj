@@ -135,6 +135,12 @@
     <ClCompile Include="..\..\..\Desktop\Liberies\glad\glad.c" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Desktop\Liberies\Visual Studio 2022\includes\glad\glad.h" />
+    <ClInclude Include="..\..\..\Desktop\Liberies\Visual Studio 2022\includes\GLFW\glfw3.h" />
+    <ClInclude Include="..\..\..\Desktop\Liberies\Visual Studio 2022\includes\GLFW\glfw3native.h" />
+    <ClInclude Include="..\..\..\Desktop\Liberies\Visual Studio 2022\includes\KHR\khrplatform.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
