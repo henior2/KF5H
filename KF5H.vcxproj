@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
