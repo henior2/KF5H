@@ -143,7 +143,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         3, 0
     };
 
-    //TODO(juz jest poznio): VAO, VBO, EBO, draw elements in render loop.
+    //TODO(juz jest poznio): VAO, VBO, draw elements in render loop.
 
 
     //PETLA
