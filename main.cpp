@@ -22,6 +22,27 @@ const GLFWvidmode* monitorMode;
 int windowPrevW, windowPrevH;
 int windowPrevX, windowPrevY;
 
+//vertexShaderCode
+const char* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+
+//fragmentShaderCode
+const char* fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"}\n\0";
+
+//
+//
+// NIE WLANCZAC NA RAZIE PROGRAMU
+//
+//
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -56,6 +77,77 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+
+    //SHADERY
+
+
+    //budowa i kompilacja vertexShadera
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    //sprawdzanie errorow zwiazanych z kompilacja shadera
+    int succes;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &succes);
+    if (!succes) 
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    //budowa i kompilacja fragmentShadera
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    //sprawdzanie errorow zwiazanych z kompilacja shadera
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &succes);
+    if (!succes)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    //linkowanie shaderow
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    //sprawdzanie bledow linkowania
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &succes);
+    if (!succes)
+    {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+
+
+    //WERTEX
+
+
+    //wertexy
+    float vertices[] = {
+        0.5f,  0.5f, 0.0f,  // top right
+         0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
+    };
+
+    //buffer
+    unsigned int indices[] = {
+        0, 1,
+        1, 2,
+        2, 3,
+        3, 0
+    };
+
+    //TODO(juz jest poznio): VAO, VBO, EBO, draw elements in render loop.
+
+
+    //PETLA
+
 
     while (!glfwWindowShouldClose(window))  // petla renderowania
     {
