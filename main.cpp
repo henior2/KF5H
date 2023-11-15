@@ -35,7 +35,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);\n"
 "}\n\0";
 
 //
@@ -180,7 +180,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         processInput(window);  // wywolanie funkcji input
 
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);  // tworzenie bufferru
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // tworzenie bufferru
         glClear(GL_COLOR_BUFFER_BIT);
 
         //rysowanieS
