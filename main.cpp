@@ -143,7 +143,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         3, 0
     };
 
-    //TODO(juz jest poznio): VAO, VBO, draw elements in render loop.
+    //VBO, VAO, EBO
+    unsigned int VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    //bindowanie VAO
+    glBindVertexArray(VAO);
+
+    //bindowanie VBO
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //bindowanie EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    //informacja o verteksach dla VAO
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    //rysowanie w wireframe mode.
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    // ustawienie szerokosci lini
+    glLineWidth(9.0f);
 
 
     //PETLA
@@ -157,9 +182,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);  // tworzenie bufferru
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //rysowanieS
+        glUseProgram(shaderProgram);
+        glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
+
         glfwSwapBuffers(window);  // zmiana bufferu
         glfwPollEvents();  // zaciagniecie eventow(np. nacisniecie klawiszy/ myszki)
     }
+
+    //dealokowanie urzywanych rzeczy
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteProgram(shaderProgram);
 
     // usuniecie zaalokowanych odwolan glfw
     glfwTerminate();
