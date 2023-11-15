@@ -149,7 +149,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
-    //bindowanie VAO
+    //bindowanie   
     glBindVertexArray(VAO);
 
     //bindowanie VBO
@@ -168,7 +168,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // ustawienie szerokosci lini
-    glLineWidth(9.0f);
+    glLineWidth(10.0f);
+    glPointSize(10.0f);
 
 
     //PETLA
@@ -185,6 +186,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         //rysowanieS
         glUseProgram(shaderProgram);
         glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_POINTS, 0, 4);
 
         glfwSwapBuffers(window);  // zmiana bufferu
         glfwPollEvents();  // zaciagniecie eventow(np. nacisniecie klawiszy/ myszki)
