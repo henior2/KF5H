@@ -6,6 +6,10 @@
 
 #include <iostream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 //Deklaracje
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);                          
 void processInput(GLFWwindow* window);
@@ -53,6 +57,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return -1;
     }
 
+    //wlaczenie depth testingu
+    glEnable(GL_DEPTH_TEST);
+
 
     //SHADERY
 
@@ -66,18 +73,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //wertexy
     float vertices[] = {
     // --pozycja         -- kolor          --
-        0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // top right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // top left 
+        0.5f,  0.5f, 0.5f,  0.0f, 1.0f, 0.0f,  // top right front
+         0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom right front
+        -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom left front
+        -0.5f,  0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // top left front
+        0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top right back
+         0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right back
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom left back
+        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top left back
     };
 
     //buffer
     unsigned int indices[] = {
-        0, 1,
+        0, 1, //front
         1, 2,
         2, 3,
-        3, 0
+        3, 0,
+
+        4, 5, //back
+        5, 6,
+        6, 7,
+        7, 4,
+
+        0, 4, //front to back
+        1, 5,
+        2, 6,
+        3, 7
+    };
+
+    //pozycje szescianow w swiecie
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
     //VBO, VAO, EBO
@@ -122,12 +157,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // tworzenie bufferru
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //rysowanieS
+        //aktywacja programu
         ourProgram.use();
-        glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_POINTS, 0, 4);
+
+        //tworzenie transformow
+        glm::mat4 viev = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        viev = glm::translate(viev, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        //przekazanie transformow do shaderow
+        ourProgram.setMat4("projection", projection);
+        ourProgram.setMat4("viev", viev);
+        
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            //obliczenie pozycji i obrotu kazdego szescianu
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            ourProgram.setMat4("model", model);
+
+            glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
+            glDrawArrays(GL_POINTS, 0, 8);
+        }
+
+
+        //rysowanie
 
         glfwSwapBuffers(window);  // zmiana bufferu
         glfwPollEvents();  // zaciagniecie eventow(np. nacisniecie klawiszy/ myszki)

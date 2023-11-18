@@ -2,11 +2,12 @@
 #define SHADER_H
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <Windows.h>
 
 class Shader
 {
@@ -93,8 +94,9 @@ public:
 	}
 
 	//funkcja do zmiany uniformu
-	void SetFloat3(const std::string& name, float f1, float f2, float f3) {
-		glUniform3f(glGetUniformLocation(ID, name.c_str()), f1, f2, f3);
+	void setMat4(const std::string& name, const glm::mat4& mat) const
+	{
+		glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
 private:
 
