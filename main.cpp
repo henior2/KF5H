@@ -11,6 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+#include <time.h>
 
 //Deklaracje
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);                          
@@ -32,6 +33,7 @@ int windowPrevX, windowPrevY;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    srand(time(NULL));
     // inicjalizacja glfw
     //      | konfiguracja wersji 3.3 core
     glfwInit();
@@ -106,14 +108,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //pozycje szescianow w swiecie
     std::vector<glm::vec3> cubePositions;
 
-    for (int i = 0; i < 349; i++) {
+    for (int i = 0; i < 346; i++) {
         float x = ((float)(rand() % 50) - 25.0f);
         float y = ((float)(rand() % 50) - 25.0f);
         float z = ((float)(rand() % 100) - 100.0f);
         cubePositions.push_back(glm::vec3(x, y, z));
     }
 
-    cubePositions.push_back(glm::vec3(0.0f, 0.0f, -50.0f));
+
+    for (int i = 0; i < 4; i++) {
+        float z = ((float)(rand() % 100) - 100.0f);
+        cubePositions.push_back(glm::vec3(0.0f, 0.0f, z));
+    }
 
     //VBO, VAO, EBO
     unsigned int VBO, VAO, EBO;
@@ -184,8 +190,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             ourProgram.setMat4("model", model);
 
-            glLineWidth((cubePositions[i].z / 10.0f) + 10.0f);
-            glPointSize((cubePositions[i].z / 10.0f) + 10.0f);
+            glLineWidth((cubePositions[i].z / 11.0f) + 10.0f);
+            glPointSize((cubePositions[i].z / 11.0f) + 10.0f);
 
             glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
             glDrawArrays(GL_POINTS, 0, 8);
