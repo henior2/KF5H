@@ -10,6 +10,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <vector>
+
 //Deklaracje
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);                          
 void processInput(GLFWwindow* window);
@@ -77,10 +79,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
          0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom right front
         -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom left front
         -0.5f,  0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // top left front
-        0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top right back
-         0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right back
-        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom left back
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top left back
+        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top right back
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right back
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom left back
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top left back
     };
 
     //buffer
@@ -102,18 +104,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     };
 
     //pozycje szescianow w swiecie
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  0.0f),
-        glm::vec3(2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f,  2.0f, -2.5f),
-        glm::vec3(1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
+    std::vector<glm::vec3> cubePositions;
+
+    for (int i = 0; i < 349; i++) {
+        float x = ((float)(rand() % 50) - 25.0f);
+        float y = ((float)(rand() % 50) - 25.0f);
+        float z = ((float)(rand() % 100) - 100.0f);
+        cubePositions.push_back(glm::vec3(x, y, z));
+    }
+
+    cubePositions.push_back(glm::vec3(0.0f, 0.0f, -50.0f));
 
     //VBO, VAO, EBO
     unsigned int VBO, VAO, EBO;
@@ -171,15 +171,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         //przekazanie transformow do shaderow
         ourProgram.setMat4("projection", projection);
         ourProgram.setMat4("viev", viev);
-        
-        for (unsigned int i = 0; i < 10; i++)
+
+        for (unsigned int i = 0; i < 350; i++)
         {
             //obliczenie pozycji i obrotu kazdego szescianu
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
+            model = glm::translate(model, cubePositions[i] + (glm::vec3(0.0f, 0.0f, 3.0f) * (float)glfwGetTime()));
+            if ((float)glfwGetTime() + cubePositions[i].z > 0.0f){
+                cubePositions[i].z = (float)( - (((rand() % 100) + 101) + glfwGetTime()));
+            }
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             ourProgram.setMat4("model", model);
+
+            glLineWidth((cubePositions[i].z / 10.0f) + 10.0f);
+            glPointSize((cubePositions[i].z / 10.0f) + 10.0f);
 
             glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
             glDrawArrays(GL_POINTS, 0, 8);
