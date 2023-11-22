@@ -68,60 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //SHADERY
 
-
-    Shader ourProgram("VertexShader.txt", "FragmentShader.txt");
-
-    Game Gry(window, &ourProgram);
-
-    //WERTEX
-
-
-    //wertexy
-    float vertices[] = {
-    // --pozycja         -- kolor          --
-        0.5f,  0.5f, 0.5f,  0.0f, 1.0f, 0.0f,  // top right front
-         0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom right front
-        -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom left front
-        -0.5f,  0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // top left front
-        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top right back
-        0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right back
-        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom left back
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f  // top left back
-    };
-
-    //buffer
-    unsigned int indices[] = {
-        0, 1, //front
-        1, 2,
-        2, 3,
-        3, 0,
-
-        4, 5, //back
-        5, 6,
-        6, 7,
-        7, 4,
-
-        0, 4, //front to back
-        1, 5,
-        2, 6,
-        3, 7
-    };
-
-    //pozycje szescianow w swiecie
-    std::vector<glm::vec3> cubePositions;
-
-    for (int i = 0; i < 346; i++) {
-        float x = ((float)(rand() % 50) - 25.0f);
-        float y = ((float)(rand() % 50) - 25.0f);
-        float z = ((float)(rand() % 100) - 100.0f);
-        cubePositions.push_back(glm::vec3(x, y, z));
-    }
-
-
-    for (int i = 0; i < 4; i++) {
-        float z = ((float)(rand() % 100) - 100.0f);
-        cubePositions.push_back(glm::vec3(0.0f, 0.0f, z));
-    }
+    Game Gry(window, SCR_WIDTH, SCR_HEIGHT);
     
 
     //rysowanie w wireframe mode.
@@ -147,23 +94,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         glfwPollEvents();  // zaciagniecie eventow(np. nacisniecie klawiszy/ myszki)
 
         processInput(window);  // wywolanie funkcji input
-
-        //aktywacja programu
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // tworzenie bufferru
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        ourProgram.use();
-
-        //tworzenie transformow
-        glm::mat4 viev = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        viev = glm::translate(viev, glm::vec3(0.0f, 0.0f, 0.0f));
-
-        //przekazanie transformow do shaderow
-        ourProgram.setMat4("projection", projection);
-        ourProgram.setMat4("viev", viev);
 
         Gry.Update(deltaTime);
 

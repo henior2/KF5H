@@ -1,8 +1,10 @@
 #include "Game.h"
 
-Game::Game(GLFWwindow* win, Shader* prog)
-    : State(Game_Menu), Keys(), window(win), program(*prog)
+Game::Game(GLFWwindow* win, unsigned int width, unsigned int height)
+    : State(Game_Menu), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height)
 {
+
+    program = new Shader("VertexShader.txt", "FragmentShader.txt");
     this->ChangeState();
 }
 
@@ -47,6 +49,18 @@ void Game::Render(float dt){
     glClearColor(Buffer.Red, Buffer.Green, Buffer.Blue, Buffer.Alpha);  // tworzenie bufferru
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    program->use();
+
+    //tworzenie transformow
+    glm::mat4 viev = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    viev = glm::translate(viev, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    //przekazanie transformow do shaderow
+    program->setMat4("projection", projection);
+    program->setMat4("viev", viev);
+
     for (int i = 0; i < Objects.size(); i++) {
 
         if (Objects[i] == NULL) {
@@ -60,7 +74,7 @@ void Game::Render(float dt){
         model = glm::rotate(model, glm::radians(this->Objects[i]->Transform.orientation.z), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, this->Objects[i]->Transform.scale);
 
-        program.setMat4("model", model);
+        program->setMat4("model", model);
 
         glLineWidth(this->Objects[i]->View.lineWidth);
         glPointSize(this->Objects[i]->View.lineWidth);

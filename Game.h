@@ -34,9 +34,11 @@ public:
 
 	Color Buffer;
 
-	Shader program;
+	unsigned int SCR_WIDTH, SCR_HEIGHT;
+
+	Shader* program;
 	
-	Game(GLFWwindow* win, Shader* prog);
+	Game(GLFWwindow* win, unsigned int width, unsigned int height);
 	~Game();
 
 	void ProcessInput(float dt);
