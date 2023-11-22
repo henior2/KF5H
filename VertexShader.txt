@@ -11,5 +11,5 @@ uniform mat4 projection;
 void main()
 {
 	gl_Position = projection * viev * model * vec4(aPos, 1.0);
-	ourColor = aColor / (gl_Position.z / 3);
+	ourColor = aColor / (gl_Position.z / 10) - 0.1f;
 }

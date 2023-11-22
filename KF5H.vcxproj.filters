@@ -27,6 +27,21 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Battlezone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tempest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -35,12 +50,21 @@
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentShader.txt">
       <Filter>TextFiles</Filter>
     </Text>
     <Text Include="VertexShader.txt">
+      <Filter>TextFiles</Filter>
+    </Text>
+    <Text Include="MenuCube.vx.txt">
+      <Filter>TextFiles</Filter>
+    </Text>
+    <Text Include="MenuCube.ind.txt">
       <Filter>TextFiles</Filter>
     </Text>
   </ItemGroup>

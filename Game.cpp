@@ -1,1 +1,96 @@
 #include "Game.h"
+
+Game::Game(GLFWwindow* win, Shader* prog)
+    : State(Game_Menu), Keys(), window(win), program(*prog)
+{
+    this->ChangeState();
+}
+
+Game::~Game()
+{
+
+}
+
+void Game::ChangeState() {
+    if (this->State == Game_Menu) {
+        this->MenuInit();
+    }
+    else if (this->State == Game_Battlezone) {
+        this->BattlezoneInit();
+    }
+    else if (this->State == Game_Asteroids) {
+        this->AsteroidsInit();
+    }
+    else if (this->State == Game_Tempest) {
+        this->TempestInit();
+    }
+}
+
+void Game::Update(float dt)
+{
+    if (this->State == Game_Menu){
+        this->Menu(dt);
+    }else if (this->State == Game_Battlezone) {
+        this->Battlezone(dt);
+    }
+    else if (this->State == Game_Asteroids) {
+        this->Asteroids(dt);
+    }
+    else if (this->State == Game_Tempest) {
+        this->Tempest(dt);
+    }
+
+    this->Render(dt);
+}
+
+void Game::Render(float dt){
+    glClearColor(Buffer.Red, Buffer.Green, Buffer.Blue, Buffer.Alpha);  // tworzenie bufferru
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for (int i = 0; i < Objects.size(); i++) {
+
+        if (Objects[i] == NULL) {
+            continue;
+        }
+        glBindVertexArray(this->Objects[i]->VAO);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, this->Objects[i]->Transform.position);
+        model = glm::rotate(model, glm::radians(this->Objects[i]->Transform.orientation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(this->Objects[i]->Transform.orientation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(this->Objects[i]->Transform.orientation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, this->Objects[i]->Transform.scale);
+
+        program.setMat4("model", model);
+
+        glLineWidth(this->Objects[i]->View.lineWidth);
+        glPointSize(this->Objects[i]->View.lineWidth);
+
+        glDrawElements(GL_LINES, this->Objects[i]->View.lines, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_POINTS, 0, this->Objects[i]->View.pointsNum);
+    }
+}
+
+GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::string Object) {
+    int i;
+    if (nulls.size() > 0) {
+        i = nulls[nulls.size() - 1];
+        nulls.pop_back();
+    }
+    else {
+        i = Objects.size();
+    }
+    GameObject* obj = new GameObject(pos, rot, scale, Object, i);
+    Objects.push_back(obj);
+    return obj;
+}
+
+void Game::Destroy(GameObject* obj) {
+    Objects[obj->index] == NULL;
+    nulls.push_back(obj->index);
+    delete obj;
+}
+
+void Game::ProcessInput(float dt)
+{
+
+}
