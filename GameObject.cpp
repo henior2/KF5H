@@ -169,8 +169,8 @@ void GameObject::Rotate(glm::vec3 rot, float degries) {
 	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
 }
 
-void GameObject::Rotate(glm::vec3 rot, glm::vec3 degries) {
-	this->Transform.orientation = glm::vec3(rot.x * degries.x, rot.y * degries.y, rot.z * degries.z);
+void GameObject::Rotate(glm::vec3 degries) {
+	this->Transform.orientation += degries;
 	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
 }
 
@@ -179,7 +179,7 @@ void GameObject::RotateTo(glm::vec3 rot) {
 }
 
 void GameObject::Scale(glm::vec3 scale) {
-	this->Transform.scale += scale;
+	this->Transform.scale = glm::vec3(this->Transform.scale.x * scale.x, this->Transform.scale.y * scale.y, this->Transform.scale.z * scale.z);
 }
 
 void GameObject::ScaleTo(glm::vec3 scale) {

@@ -34,7 +34,6 @@ int windowPrevX, windowPrevY;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    srand(time(NULL));
     // inicjalizacja glfw
     //      | konfiguracja wersji 3.3 core
     glfwInit();

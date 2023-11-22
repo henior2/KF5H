@@ -5,7 +5,7 @@ Game::Game(GLFWwindow* win, unsigned int width, unsigned int height)
 {
 
     program = new Shader("VertexShader.txt", "FragmentShader.txt");
-    this->ChangeState();
+    this->ChangeState(State);
 }
 
 Game::~Game()
@@ -13,17 +13,17 @@ Game::~Game()
 
 }
 
-void Game::ChangeState() {
-    if (this->State == Game_Menu) {
+void Game::ChangeState(GameState state) {
+    if (state == Game_Menu) {
         this->MenuInit();
     }
-    else if (this->State == Game_Battlezone) {
+    else if (state == Game_Battlezone) {
         this->BattlezoneInit();
     }
-    else if (this->State == Game_Asteroids) {
+    else if (state == Game_Asteroids) {
         this->AsteroidsInit();
     }
-    else if (this->State == Game_Tempest) {
+    else if (state == Game_Tempest) {
         this->TempestInit();
     }
 }

@@ -7,6 +7,8 @@
 #include "GameObject.h"
 #include "Shader.h"
 
+//#include <irrKlang/irrKlang.h>
+
 //stan gry
 enum GameState {
 	Game_Menu,
@@ -59,7 +61,7 @@ public:
 	void Asteroids(float dt);
 	void AsteroidsInit();
 
-	void ChangeState();
+	void ChangeState(GameState state);
 	void Render(float dt);
 };
 

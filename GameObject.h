@@ -45,7 +45,7 @@ public:
 	void MoveTo(glm::vec3 pos);
 
 	void Rotate(glm::vec3 rot, float degries);
-	void Rotate(glm::vec3 rot, glm::vec3 degries);
+	void Rotate(glm::vec3 degries);
 	void RotateTo(glm::vec3 rot);
 
 	void Scale(glm::vec3 scale);
