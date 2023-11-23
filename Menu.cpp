@@ -23,6 +23,8 @@ void Game::MenuInit() {
         vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
         obiekty.push_back(Create(vec3(0.0f, 0.0f, z), rot, vec3(1.0f), "MenuCube"));
     }
+
+    engine->play2D("BeepBox-Song.mp3", true);
 }
 
 void Game::Menu(float dt) {

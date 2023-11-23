@@ -1,7 +1,7 @@
 #include "Game.h"
 
-Game::Game(GLFWwindow* win, unsigned int width, unsigned int height)
-    : State(Game_Menu), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height)
+Game::Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::ISoundEngine* SoundEngine)
+    : State(Game_Menu), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height), engine(SoundEngine)
 {
 
     program = new Shader("VertexShader.txt", "FragmentShader.txt");
@@ -10,7 +10,7 @@ Game::Game(GLFWwindow* win, unsigned int width, unsigned int height)
 
 Game::~Game()
 {
-
+    //engine->drop();
 }
 
 void Game::ChangeState(GameState state) {
@@ -107,4 +107,8 @@ void Game::Destroy(GameObject* obj) {
 void Game::ProcessInput(float dt)
 {
 
+}
+
+void Game::PlaySound2d(char file[], bool loop) {
+   engine->play2D(file, loop);
 }

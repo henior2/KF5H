@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "Shader.h"
 
-//#include <irrKlang/irrKlang.h>
+#include<irrKlang/irrKlang.h>
 
 //stan gry
 enum GameState {
@@ -27,6 +27,9 @@ struct Color {
 class Game
 {
 public:
+
+	irrklang::ISoundEngine* engine;
+
 	std::vector<GameObject*> Objects;
 	std::vector<int> nulls;
 
@@ -40,7 +43,7 @@ public:
 
 	Shader* program;
 	
-	Game(GLFWwindow* win, unsigned int width, unsigned int height);
+	Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::ISoundEngine* SoundEngine);
 	~Game();
 
 	void ProcessInput(float dt);
@@ -63,6 +66,8 @@ public:
 
 	void ChangeState(GameState state);
 	void Render(float dt);
+
+	void PlaySound2d(char file[], bool loop);
 };
 
 #endif

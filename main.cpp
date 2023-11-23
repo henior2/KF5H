@@ -34,6 +34,7 @@ int windowPrevX, windowPrevY;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
     // inicjalizacja glfw
     //      | konfiguracja wersji 3.3 core
     glfwInit();
@@ -64,10 +65,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //wlaczenie depth testingu
     glEnable(GL_DEPTH_TEST);
 
-
     //SHADERY
 
-    Game Gry(window, SCR_WIDTH, SCR_HEIGHT);
+    Game Gry(window, SCR_WIDTH, SCR_HEIGHT, SoundEngine);
     
 
     //rysowanie w wireframe mode.
@@ -100,6 +100,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     // usuniecie zaalokowanych odwolan glfw
+    SoundEngine->drop();
     glfwTerminate();
     return 0;
 }
