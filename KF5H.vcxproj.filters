@@ -28,6 +28,9 @@
     <Filter Include="Source Files\GameEngine">
       <UniqueIdentifier>{82730073-5768-488e-95e9-af526721b956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dll">
+      <UniqueIdentifier>{2d6ff736-f827-4531-8543-e879b508507b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Menu.cpp">
@@ -84,5 +87,13 @@
     <Media Include="beepbox-song.mp3">
       <Filter>audio</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\irrKlang.dll">
+      <Filter>dll</Filter>
+    </None>
+    <None Include="x64\Debug\ikpMP3.dll">
+      <Filter>dll</Filter>
+    </None>
   </ItemGroup>
 </Project>
