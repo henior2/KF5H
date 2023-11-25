@@ -109,6 +109,6 @@ void Game::ProcessInput(float dt)
 
 }
 
-void Game::PlaySound2d(char file[], bool loop) {
+void Game::PlaySound2d(const char file[], bool loop) {
    engine->play2D(file, loop);
 }

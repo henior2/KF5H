@@ -24,7 +24,7 @@ void Game::MenuInit() {
         obiekty.push_back(Create(vec3(0.0f, 0.0f, z), rot, vec3(1.0f), "MenuCube"));
     }
 
-    engine->play2D("BeepBox-Song.mp3", true);
+    PlaySound2d("BeepBox-Song.mp3", true);
 }
 
 void Game::Menu(float dt) {

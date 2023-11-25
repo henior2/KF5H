@@ -67,7 +67,7 @@ public:
 	void ChangeState(GameState state);
 	void Render(float dt);
 
-	void PlaySound2d(char file[], bool loop);
+	void PlaySound2d(const char file[], bool loop);
 };
 
 #endif
