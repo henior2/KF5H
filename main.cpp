@@ -17,6 +17,7 @@
 //Deklaracje
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);                          
 void processInput(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
 const unsigned int SCR_WIDTH = 800;  // Ustawienie szerokosci
 const unsigned int SCR_HEIGHT = 600;  // Ustawienie wysokosci
@@ -31,6 +32,8 @@ const GLFWvidmode* monitorMode;
 // width, height i pozycja dla trybu okienkowego
 int windowPrevW, windowPrevH;
 int windowPrevX, windowPrevY;
+
+Game* Gry;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -62,12 +65,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return -1;
     }
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     //wlaczenie depth testingu
     glEnable(GL_DEPTH_TEST);
 
     //SHADERY
 
-    Game Gry(window, SCR_WIDTH, SCR_HEIGHT, SoundEngine);
+    Gry = new Game(window, SCR_WIDTH, SCR_HEIGHT, SoundEngine);
+
+    glfwSetCursorPosCallback(window, mouse_callback);
     
 
     //rysowanie w wireframe mode.
@@ -94,7 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         processInput(window);  // wywolanie funkcji input
 
-        Gry.Update(deltaTime);
+        Gry->Update(deltaTime);
 
         glfwSwapBuffers(window);  // zmiana bufferu
     }
@@ -135,6 +142,11 @@ void processInput(GLFWwindow* window) {
         fullscreenCtx = true;
     }
         
+}
+
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    Gry->mouse_callback(window, xposIn, yposIn);
 }
 
 // glfw: funkcja wywolywana za kazdym razem przy zmianie wielkosci okna

@@ -24,6 +24,12 @@ struct Color {
 	float Alpha = 0.0f;
 };
 
+struct ScreenPosition
+{
+	double x;
+	double y;
+};
+
 class Game
 {
 public:
@@ -42,6 +48,8 @@ public:
 	unsigned int SCR_WIDTH, SCR_HEIGHT;
 
 	Shader* program;
+
+	ScreenPosition MousePosition;
 	
 	Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::ISoundEngine* SoundEngine);
 	~Game();
@@ -68,6 +76,8 @@ public:
 	void Render(float dt);
 
 	void PlaySound2d(const char file[], bool loop);
+
+	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 };
 
 #endif

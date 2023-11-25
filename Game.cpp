@@ -116,3 +116,8 @@ void Game::ProcessInput(float dt)
 void Game::PlaySound2d(const char file[], bool loop) {
    engine->play2D(file, loop);
 }
+
+void Game::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    MousePosition.x = xpos;
+    MousePosition.y = ypos;
+}
