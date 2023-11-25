@@ -37,5 +37,8 @@ void Game::Menu(float dt) {
         }
     }
 
-    ChangeState(Game_Asteroids);
+    //todo: add UI
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) ChangeState(Game_Asteroids);
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
 }
