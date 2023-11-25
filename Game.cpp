@@ -14,6 +14,9 @@ Game::~Game()
 }
 
 void Game::ChangeState(GameState state) {
+    engine->stopAllSounds();
+    Objects.clear();
+    nulls.clear();
     if (state == Game_Menu) {
         this->MenuInit();
     }
@@ -109,6 +112,6 @@ void Game::ProcessInput(float dt)
 
 }
 
-void Game::PlaySound2d(char file[], bool loop) {
+void Game::PlaySound2d(const char file[], bool loop) {
    engine->play2D(file, loop);
 }
