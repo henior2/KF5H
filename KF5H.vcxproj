@@ -161,8 +161,8 @@
     <Media Include="beepbox-song.mp3" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="x64\Debug\ikpMP3.dll" />
-    <None Include="x64\Debug\irrKlang.dll" />
+    <None Include="ikpMP3.dll" />
+    <None Include="irrKlang.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

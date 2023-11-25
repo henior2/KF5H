@@ -101,10 +101,10 @@
     </Media>
   </ItemGroup>
   <ItemGroup>
-    <None Include="x64\Debug\irrKlang.dll">
+    <None Include="ikpMP3.dll">
       <Filter>dll</Filter>
     </None>
-    <None Include="x64\Debug\ikpMP3.dll">
+    <None Include="irrKlang.dll">
       <Filter>dll</Filter>
     </None>
   </ItemGroup>
