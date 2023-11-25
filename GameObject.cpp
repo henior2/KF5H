@@ -55,7 +55,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 			if (minus == true) {
 				vertex = -vertex;
 			}
-			vertecies.push_back(vertex / (float)(10 * przecinek));
+			vertecies.push_back(vertex / (float)(pow(10, przecinek)));
 			minus = false;
 			vertex = 0.0f;
 			czyPrzecinek = false;
@@ -79,7 +79,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 	if (minus == true) {
 		vertex = -vertex;
 	}
-	vertecies.push_back(vertex / (float)(10 * przecinek));
+	vertecies.push_back(vertex / (float)(pow(10, przecinek)));
 	minus = false;
 	vertex = 0.0f;
 	czyPrzecinek = false;

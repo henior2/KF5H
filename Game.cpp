@@ -14,6 +14,7 @@ Game::~Game()
 }
 
 void Game::ChangeState(GameState state) {
+    this->State = state;
     engine->stopAllSounds();
     Objects.clear();
     nulls.clear();
