@@ -38,5 +38,5 @@ void Game::Menu(float dt) {
         }
     }
 
-    //ChangeState(Game_Asteroids);
+    ChangeState(Game_Asteroids);
 }
