@@ -37,4 +37,6 @@ void Game::Menu(float dt) {
             obiekty[i]->MoveTo(vec3(pos.x, pos.y, -z));
         }
     }
+
+    //ChangeState(Game_Asteroids);
 }

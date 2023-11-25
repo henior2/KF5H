@@ -148,6 +148,10 @@
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="AsteroidsShip.ind.txt" />
+    <Text Include="AsteroidsShip.vx.txt" />
+    <Text Include="AsteroidsShipFire.ind.txt" />
+    <Text Include="AsteroidsShipFire.vx.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="MenuCube.ind.txt" />
     <Text Include="MenuCube.vx.txt" />
