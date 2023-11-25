@@ -10,7 +10,7 @@ Game::Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::I
 
 Game::~Game()
 {
-    //engine->drop();
+    engine->drop();
 }
 
 void Game::ChangeState(GameState state) {

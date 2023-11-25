@@ -157,25 +157,32 @@ GameObject::~GameObject() {
 }
 
 void GameObject::Move(glm::vec3 pos) {
-	this->Transform.position += pos;
+	this->Transform.position += glm::vec3(pos.x * Right);
+	this->Transform.position += glm::vec3(pos.y * Up);
+	this->Transform.position += glm::vec3(pos.z * Front);
 }
 
 void GameObject::MoveTo(glm::vec3 pos) {
-	this->Transform.position = pos;
+	this->Transform.position = glm::vec3(pos.x * Right);
+	this->Transform.position = glm::vec3(pos.y * Up);
+	this->Transform.position = glm::vec3(pos.z * Front);
 }
 
 void GameObject::Rotate(glm::vec3 rot, float degries) {
 	this->Transform.orientation += rot * degries;
 	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
+	UpdateVectors();
 }
 
 void GameObject::Rotate(glm::vec3 degries) {
 	this->Transform.orientation += degries;
 	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
+	UpdateVectors();
 }
 
 void GameObject::RotateTo(glm::vec3 rot) {
 	this->Transform.orientation = glm::vec3(std::fmod(rot.x, 360.0f), std::fmod(rot.y, 360.0f), std::fmod(rot.z, 360.0f));
+	UpdateVectors();
 }
 
 void GameObject::Scale(glm::vec3 scale) {
@@ -184,4 +191,20 @@ void GameObject::Scale(glm::vec3 scale) {
 
 void GameObject::ScaleTo(glm::vec3 scale) {
 	this->Transform.scale = scale;
+}
+
+void GameObject::UpdateVectors() {
+	glm::vec3 front;
+	float x, y, z;
+	front.x = cos(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
+	front.y = sin(glm::radians(this->Transform.orientation.x));
+	front.z = sin(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
+	Front = glm::normalize(front);
+	
+	Right.x = cos(glm::radians(this->Transform.orientation.z));
+	Right.y = sin(glm::radians(this->Transform.orientation.z));
+	Right.z = 0.0f;
+	Right = glm::normalize(Right);
+
+	Up = -glm::normalize(glm::cross(Front, Right));
 }

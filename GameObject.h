@@ -39,6 +39,10 @@ public:
 
 	int index = 0;
 
+	glm::vec3 Front;
+	glm::vec3 Up;
+	glm::vec3 Right;
+
 	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string object, int i);
 	~GameObject();
 
@@ -51,6 +55,8 @@ public:
 
 	void Scale(glm::vec3 scale);
 	void ScaleTo(glm::vec3 scale);
+private:
+	void UpdateVectors();
 };
 
 #endif // MY_HEADER_H

@@ -5,7 +5,7 @@ using namespace glm;
 GameObject* ship;
 
 const float rotationMultiplier = 100.0;
-const float moveSpeedMultiplier = 1.0;
+const float moveSpeedMultiplier = 1;
 
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(1.0f), "AsteroidsShip");
