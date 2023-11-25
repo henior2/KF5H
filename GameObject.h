@@ -22,6 +22,7 @@ struct Rendering
 {
 	float lineWidth = 1.0f;
 	bool onTop = false;
+	bool visible = true;
 	int pointsNum = 0;
 	int lines = 0;
 

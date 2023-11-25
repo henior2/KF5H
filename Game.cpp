@@ -14,6 +14,9 @@ Game::~Game()
 }
 
 void Game::ChangeState(GameState state) {
+    engine->stopAllSounds();
+    Objects.clear();
+    nulls.clear();
     if (state == Game_Menu) {
         this->MenuInit();
     }
