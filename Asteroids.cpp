@@ -17,6 +17,10 @@ void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(0.25f), "AsteroidsShip");
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
+	camera->perspective = false;
+	camera->cameraHeight = 800;
+	camera->cameraWidth = 600;
+
 	PlaySound2d("mus01.mp3", true);
 }
 
@@ -36,6 +40,11 @@ void Game::Asteroids(float dt) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
+	}
+
+	//todo: add valid condition later
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+		enemies.push_back(Create(vec3(rand() % 600 - 300, rand() % 800 - 400, 0), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
