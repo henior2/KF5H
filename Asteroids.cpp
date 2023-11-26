@@ -45,7 +45,7 @@ void Game::Asteroids(float dt) {
 
 	//todo: add valid condition later
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-		enemies.push_back(Create(vec3(rand() % 100 - 50, rand() % 35 - 10, -10), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
+		enemies.push_back(Create(vec3(rand() % 100 - 50, rand() % 35 - 10, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
