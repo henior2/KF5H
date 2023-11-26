@@ -161,7 +161,8 @@
     <Text Include="VertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="beepbox-song.mp3" />
+    <Media Include="mus01.mp3" />
+    <Media Include="mus02.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ikpMP3.dll" />
