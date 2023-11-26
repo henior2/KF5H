@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return -1;
     }
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //wlaczenie depth testingu
     glEnable(GL_DEPTH_TEST);
@@ -152,5 +152,18 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 // glfw: funkcja wywolywana za kazdym razem przy zmianie wielkosci okna
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)                           
 {
-    glViewport(0, 0, width, height); // zmiana wielkosci viewporta
+    float w = width / 16.0f;
+    float h = height / 9.0f;
+    if (w > h) {
+        w = h * 16.0f;
+        h *= 9.0f;
+    }
+    else {
+        h = w * 9.0f;
+        w *= 16.0f;
+    }
+
+    float x = (width - w) / 2;
+    float y = (height - h) / 2;
+    glViewport(x, y, w, h); // zmiana wielkosci viewporta
 }

@@ -58,7 +58,7 @@ void Game::Render(float dt){
     //tworzenie transformow
     glm::mat4 viev = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f); //(float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     viev = glm::translate(viev, glm::vec3(0.0f, 0.0f, 0.0f));
 
     //przekazanie transformow do shaderow
