@@ -3,6 +3,7 @@
 using namespace glm;
 
 GameObject* ship;
+std::vector<GameObject*> enemies;
 
 const float rotationMultiplier = 100.0;
 
@@ -14,6 +15,7 @@ float velocity = 0;
 
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsShip");
+	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
 }
 
 void Game::Asteroids(float dt) {
