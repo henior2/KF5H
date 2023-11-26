@@ -5,7 +5,10 @@ using namespace glm;
 std::vector<GameObject*> obiekty;
 std::vector<GameObject*> tekst;
 
+bool esc = false;
+
 void Game::MenuInit() {
+    esc = false;
     srand(time(NULL));
 
     for (int i = 0; i < 696; i++) {
@@ -41,4 +44,11 @@ void Game::Menu(float dt) {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) ChangeState(Game_Asteroids);
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
+
+    // gdy klikniety esc to wywolaj zamkniecie okna
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && esc)
+        glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_RELEASE)
+        esc = true;
 }

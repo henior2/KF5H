@@ -35,4 +35,7 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
 	}
+
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		Game::ChangeState(Game_Menu);
 }
