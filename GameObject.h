@@ -47,6 +47,7 @@ public:
 	~GameObject();
 
 	void Move(glm::vec3 pos);
+	void MoveGlobal(glm::vec3 pos);
 	void MoveTo(glm::vec3 pos);
 
 	void Rotate(glm::vec3 rot, float degries);

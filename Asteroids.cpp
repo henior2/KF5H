@@ -14,7 +14,10 @@ const float deacceleration = .4;
 float velocity = 0;
 
 void Game::AsteroidsInit() {
-	ship = Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsShip");
+	ship = Create(vec3(0.0f, 400.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsShip");
+	/*camera->perspective = false;
+	camera->cameraWidth = 800;
+	camera->cameraHeight = 600;*/
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
 }
 

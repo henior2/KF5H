@@ -162,10 +162,12 @@ void GameObject::Move(glm::vec3 pos) {
 	this->Transform.position += glm::vec3(pos.z * Front);
 }
 
+void GameObject::MoveGlobal(glm::vec3 pos) {
+	this->Transform.position += pos;
+}
+
 void GameObject::MoveTo(glm::vec3 pos) {
-	this->Transform.position = glm::vec3(pos.x * Right);
-	this->Transform.position = glm::vec3(pos.y * Up);
-	this->Transform.position = glm::vec3(pos.z * Front);
+	this->Transform.position = pos;
 }
 
 void GameObject::Rotate(glm::vec3 rot, float degries) {

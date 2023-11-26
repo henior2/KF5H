@@ -28,7 +28,7 @@ void Game::MenuInit() {
 
 void Game::Menu(float dt) {
     for (int i = 0; i < obiekty.size(); i++) {
-        obiekty[i]->Move(vec3(0.0f, 0.0f, 3 * dt));
+        obiekty[i]->MoveGlobal(vec3(0.0f, 0.0f, 3 * dt));
         vec3 pos = obiekty[i]->Transform.position;
         obiekty[i]->View.lineWidth = ((obiekty[i]->Transform.position.z / 10.0f) + 10.0f) / 1.5f;
         if (pos.z > 10) {
@@ -38,7 +38,7 @@ void Game::Menu(float dt) {
     }
 
     //todo: add UI
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) ChangeState(Game_Asteroids);
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
 }
