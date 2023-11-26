@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "cmath"
 
 using namespace glm;
 
@@ -13,8 +14,11 @@ const float deacceleration = .4;
 
 float velocity = 0;
 
+std::vector<vec3> forces;
+vec3 netForce;
+
 void Game::AsteroidsInit() {
-	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(.25f), "AsteroidsShip");
+	ship = Create(vec3(0.0f, 0.0f, -50.1f), vec3(0.0f), vec3(.25f), "AsteroidsShip");
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
 	camera->perspective = false;
@@ -25,16 +29,32 @@ void Game::AsteroidsInit() {
 }
 
 void Game::Asteroids(float dt) {
+	netForce = vec3(0.0f, 0.0f, 0.0f);
+
+	for (auto i = forces.rbegin(); i != forces.rend(); ++i) {
+		i->x -= deacceleration * dt;
+		i->y -= deacceleration * dt;
+
+		i->x = std::max(i->x, 0.0f);
+		i->y = std::max(i->y, 0.0f);
+
+		if (i->x == 0.0f && i->y == 0.0f) {
+			forces.erase(i.base() - 1);
+			continue;
+		}
+
+		netForce += i;
+	}
+
+	if (netForce.x > maxVelocity) netForce.x = maxVelocity;
+	if (netForce.y > maxVelocity) netForce.y = maxVelocity;
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		velocity += acceleration * dt;
-		if (velocity > maxVelocity) velocity = maxVelocity;
-		ship->Move(vec3(0, velocity * dt, 0));
+		vec3 orientation = ship->Transform.orientation;
+		forces.push_back(vec3(acceleration * cos(orientation.x), acceleration * sin(orientation.y), 0.0f));
 	}
-	else {
-		velocity -= deacceleration * dt;
-		if (velocity < 0) velocity = 0;
-		ship->Move(vec3(0, velocity * dt, 0));
-	}
+	ship->MoveGlobal(netForce * dt);
+	
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
 	}
@@ -44,7 +64,7 @@ void Game::Asteroids(float dt) {
 
 	//todo: add valid condition later
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-		enemies.push_back(Create(vec3(rand() % 600 - 300, rand() % 800 - 400, 0), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
+		enemies.push_back(Create(vec3(rand() % 1200 - 600, rand() % 1600 - 800, -50.1f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
