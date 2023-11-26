@@ -14,8 +14,8 @@ const float deacceleration = .4;
 float velocity = 0;
 
 void Game::AsteroidsInit() {
-	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(25.0f), "AsteroidsShip");
-	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
+	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(0.25f), "AsteroidsShip");
+	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
 	PlaySound2d("mus01.mp3", true);
 }
@@ -40,5 +40,10 @@ void Game::Asteroids(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
+
+	if (ship->Transform.position.y > 400) ship->Move(vec3(0, -800, 0));
+	if (ship->Transform.position.y < -400) ship->Move(vec3(0, 800, 0));
+	if (ship->Transform.position.x > 300) ship->Move(vec3(-600, 0, 0));
+	if (ship->Transform.position.x < -300) ship->Move(vec3(600, 0, 0));
 
 }
