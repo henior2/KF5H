@@ -6,6 +6,7 @@
 #include <vector>
 #include "GameObject.h"
 #include "Shader.h"
+#include "Camera.h"
 
 #include<irrKlang/irrKlang.h>
 
@@ -48,6 +49,8 @@ public:
 	unsigned int SCR_WIDTH, SCR_HEIGHT;
 
 	Shader* program;
+
+	Camera* camera;
 
 	ScreenPosition MousePosition;
 	
