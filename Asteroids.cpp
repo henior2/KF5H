@@ -14,7 +14,7 @@ const float deacceleration = .4;
 float velocity = 0;
 
 void Game::AsteroidsInit() {
-	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(0.25f), "AsteroidsShip");
+	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(.25f), "AsteroidsShip");
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
 	camera->perspective = false;
@@ -50,9 +50,9 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	if (ship->Transform.position.y > 400) ship->Move(vec3(0, -800, 0));
-	if (ship->Transform.position.y < -400) ship->Move(vec3(0, 800, 0));
-	if (ship->Transform.position.x > 300) ship->Move(vec3(-600, 0, 0));
-	if (ship->Transform.position.x < -300) ship->Move(vec3(600, 0, 0));
+	if (ship->Transform.position.y > 400) ship->MoveTo(vec3(0, -400, 0));
+	if (ship->Transform.position.y < -400) ship->MoveTo(vec3(0, -400, 0));
+	if (ship->Transform.position.x > 300) ship->MoveTo(vec3(-300, 0, 0));
+	if (ship->Transform.position.x < -300) ship->MoveTo(vec3(300, 0, 0));
 
 }
