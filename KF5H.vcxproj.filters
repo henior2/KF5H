@@ -16,26 +16,102 @@
     <Filter Include="TextFiles">
       <UniqueIdentifier>{c22a242d-dea4-433a-88ce-556bb347cb8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="audio">
+      <UniqueIdentifier>{6eb1f2b5-d69e-4797-a4dd-a1f2b1644068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextFiles\Shaders">
+      <UniqueIdentifier>{3f6a49a1-a66c-4a1c-bcdb-66d34932f0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextFiles\Models">
+      <UniqueIdentifier>{c613c344-6561-4fc6-a764-b42cc67fe705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameEngine">
+      <UniqueIdentifier>{82730073-5768-488e-95e9-af526721b956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dll">
+      <UniqueIdentifier>{2d6ff736-f827-4531-8543-e879b508507b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
+    <ClCompile Include="Battlezone.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tempest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Source Files\GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\GameEngine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentShader.txt">
-      <Filter>TextFiles</Filter>
+      <Filter>TextFiles\Shaders</Filter>
     </Text>
     <Text Include="VertexShader.txt">
-      <Filter>TextFiles</Filter>
+      <Filter>TextFiles\Shaders</Filter>
     </Text>
+    <Text Include="MenuCube.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="MenuCube.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsShip.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsShip.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsShipFire.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsShipFire.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsEnemy.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsEnemy.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="beepbox-song.mp3">
+      <Filter>audio</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ikpMP3.dll">
+      <Filter>dll</Filter>
+    </None>
+    <None Include="irrKlang.dll">
+      <Filter>dll</Filter>
+    </None>
   </ItemGroup>
 </Project>

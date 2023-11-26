@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Shader.h"
+#include "Game.h"
 
 #include <iostream>
 
@@ -11,10 +12,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+#include <time.h>
 
 //Deklaracje
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);                          
 void processInput(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
 const unsigned int SCR_WIDTH = 800;  // Ustawienie szerokosci
 const unsigned int SCR_HEIGHT = 600;  // Ustawienie wysokosci
@@ -30,8 +33,11 @@ const GLFWvidmode* monitorMode;
 int windowPrevW, windowPrevH;
 int windowPrevX, windowPrevY;
 
+Game* Gry;
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
     // inicjalizacja glfw
     //      | konfiguracja wersji 3.3 core
     glfwInit();
@@ -41,6 +47,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     monitor = glfwGetPrimaryMonitor();
     monitorMode = glfwGetVideoMode(monitor);
+    
 
     // Tworzenie okna
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "KF5H - Gry wektorowe", NULL, NULL);
@@ -59,86 +66,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return -1;
     }
 
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     //wlaczenie depth testingu
     glEnable(GL_DEPTH_TEST);
 
-
     //SHADERY
 
+    Gry = new Game(window, SCR_WIDTH, SCR_HEIGHT, SoundEngine);
 
-    Shader ourProgram("VertexShader.txt", "FragmentShader.txt");
-
-
-    //WERTEX
-
-
-    //wertexy
-    float vertices[] = {
-    // --pozycja         -- kolor          --
-        0.5f,  0.5f, 0.5f,  0.0f, 1.0f, 0.0f,  // top right front
-         0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom right front
-        -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // bottom left front
-        -0.5f,  0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  // top left front
-        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top right back
-            0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right back
-            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom left back
-            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // top left back
-    };
-
-    //buffer
-    unsigned int indices[] = {
-        0, 1, //front
-        1, 2,
-        2, 3,
-        3, 0,
-
-        4, 5, //back
-        5, 6,
-        6, 7,
-        7, 4,
-
-        0, 4, //front to back
-        1, 5,
-        2, 6,
-        3, 7
-    };
-
-    //pozycje szescianow w swiecie
-    std::vector<glm::vec3> cubePositions;
-
-    for (int i = 0; i < 349; i++) {
-        float x = ((float)(rand() % 50) - 25.0f);
-        float y = ((float)(rand() % 50) - 25.0f);
-        float z = ((float)(rand() % 100) - 100.0f);
-        cubePositions.push_back(glm::vec3(x, y, z));
-    }
-
-    cubePositions.push_back(glm::vec3(0.0f, 0.0f, -50.0f));
-
-    //VBO, VAO, EBO
-    unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    //bindowanie   
-    glBindVertexArray(VAO);
-
-    //bindowanie VBO
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    //bindowanie EBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    //informacja o verteksach dla VAO
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    //informacja o kolorach dla VAO
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    
 
     //rysowanie w wireframe mode.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -147,73 +85,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     glLineWidth(10.0f);
     glPointSize(10.0f);
 
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
 
     //PETLA
 
 
     while (!glfwWindowShouldClose(window))  // petla renderowania
     {
+        //creating deltatime
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        glfwPollEvents();  // zaciagniecie eventow(np. nacisniecie klawiszy/ myszki)
+
         processInput(window);  // wywolanie funkcji input
 
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // tworzenie bufferru
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        //aktywacja programu
-        ourProgram.use();
-
-        //tworzenie transformow
-        glm::mat4 viev = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        viev = glm::translate(viev, glm::vec3(0.0f, 0.0f, -3.0f));
-
-        //przekazanie transformow do shaderow
-        ourProgram.setMat4("projection", projection);
-        ourProgram.setMat4("viev", viev);
-
-        for (unsigned int i = 0; i < 350; i++)
-        {
-            //obliczenie pozycji i obrotu kazdego szescianu
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i] + (glm::vec3(0.0f, 0.0f, 3.0f) * (float)glfwGetTime()));
-            if ((float)glfwGetTime() + cubePositions[i].z > 0.0f){
-                cubePositions[i].z = (float)( - (((rand() % 100) + 101) + glfwGetTime()));
-            }
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            ourProgram.setMat4("model", model);
-
-            glLineWidth((cubePositions[i].z / 10.0f) + 10.0f);
-            glPointSize((cubePositions[i].z / 10.0f) + 10.0f);
-
-            glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
-            glDrawArrays(GL_POINTS, 0, 8);
-        }
-
-
-        //rysowanie
+        Gry->Update(deltaTime);
 
         glfwSwapBuffers(window);  // zmiana bufferu
-        glfwPollEvents();  // zaciagniecie eventow(np. nacisniecie klawiszy/ myszki)
     }
 
-    //dealokowanie urzywanych rzeczy
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-
     // usuniecie zaalokowanych odwolan glfw
+    SoundEngine->drop();
     glfwTerminate();
     return 0;
 }
 
 // funkcja input
-void processInput(GLFWwindow* window) 
-{
-    // gdy klikniety esc to wywolaj zamkniecie okna
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+void processInput(GLFWwindow* window) {
+    
     // gdy klikniety f11 lub f4 to przelacz fullscreen
     if ((glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_F4) == GLFW_PRESS) && fullscreenCtx)
     {
@@ -241,8 +143,26 @@ void processInput(GLFWwindow* window)
         
 }
 
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    Gry->mouse_callback(window, xposIn, yposIn);
+}
+
 // glfw: funkcja wywolywana za kazdym razem przy zmianie wielkosci okna
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)                           
 {
-    glViewport(0, 0, width, height); // zmiana wielkosci viewporta
+    float w = width / 16.0f;
+    float h = height / 9.0f;
+    if (w > h) {
+        w = h * 16.0f;
+        h *= 9.0f;
+    }
+    else {
+        h = w * 9.0f;
+        w *= 16.0f;
+    }
+
+    float x = (width - w) / 2;
+    float y = (height - h) / 2;
+    glViewport(x, y, w, h); // zmiana wielkosci viewporta
 }

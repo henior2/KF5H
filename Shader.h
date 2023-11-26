@@ -49,7 +49,6 @@ public:
 		}
 		//w razie blendu z plikiem, wypisanie blendu
 		catch (std::ifstream::failure& e) {
-			std::string a = e.what();
 			std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
 		}
 		const char* vShaderCode = vertexCode.c_str();

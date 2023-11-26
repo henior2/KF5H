@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);glfw3.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);glfw3.lib;opengl32.lib;irrKlang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,15 +132,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroids.cpp" />
+    <ClCompile Include="Battlezone.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Tempest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="AsteroidsEnemy.ind.txt" />
+    <Text Include="AsteroidsEnemy.vx.txt" />
+    <Text Include="AsteroidsShip.ind.txt" />
+    <Text Include="AsteroidsShip.vx.txt" />
+    <Text Include="AsteroidsShipFire.ind.txt" />
+    <Text Include="AsteroidsShipFire.vx.txt" />
     <Text Include="FragmentShader.txt" />
+    <Text Include="MenuCube.ind.txt" />
+    <Text Include="MenuCube.vx.txt" />
     <Text Include="VertexShader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="mus01.mp3" />
+    <Media Include="mus02.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ikpMP3.dll" />
+    <None Include="irrKlang.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
