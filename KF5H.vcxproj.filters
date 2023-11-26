@@ -94,6 +94,12 @@
     <Text Include="AsteroidsShipFire.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="AsteroidsEnemy.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsEnemy.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="beepbox-song.mp3">
