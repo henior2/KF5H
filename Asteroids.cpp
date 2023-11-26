@@ -7,19 +7,20 @@ std::vector<GameObject*> enemies;
 
 const float rotationMultiplier = 100.0;
 
-const float maxVelocity = 1.5;
-const float acceleration = .8;
-const float deacceleration = .4;
+const float maxVelocity = 15;
+const float acceleration = 8;
+const float deacceleration = 4;
 
 float velocity = 0;
 
 void Game::AsteroidsInit() {
-	ship = Create(vec3(0.0f, 0.0f, -1.0f), vec3(0.0f), vec3(0.25f), "AsteroidsShip");
+	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
+	velocity = 0;
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
 	camera->perspective = false;
-	camera->cameraHeight = 800;
-	camera->cameraWidth = 600;
+	camera->cameraHeight = 90;
+	camera->cameraWidth = 160;
 
 	PlaySound2d("mus01.mp3", true);
 }
@@ -44,15 +45,16 @@ void Game::Asteroids(float dt) {
 
 	//todo: add valid condition later
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-		enemies.push_back(Create(vec3(rand() % 600 - 300, rand() % 800 - 400, 0), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"));
+		enemies.push_back(Create(vec3(rand() % 100 - 50, rand() % 35 - 10, -10), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	if (ship->Transform.position.y > 400) ship->Move(vec3(0, -800, 0));
-	if (ship->Transform.position.y < -400) ship->Move(vec3(0, 800, 0));
-	if (ship->Transform.position.x > 300) ship->Move(vec3(-600, 0, 0));
-	if (ship->Transform.position.x < -300) ship->Move(vec3(600, 0, 0));
+	// Nie dzia³a
+	if (ship->Transform.position.y > 110) ship->MoveTo(vec3(0, -100, 0));
+	if (ship->Transform.position.y < -110) ship->MoveTo(vec3(0, 100, 0));
+	if (ship->Transform.position.x > 180) ship->MoveTo(vec3(-170, 0, 0));
+	if (ship->Transform.position.x < -180) ship->MoveTo(vec3(170, 0, 0));
 
 }

@@ -5,8 +5,8 @@ Game::Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::I
 {
 
     program = new Shader("VertexShader.txt", "FragmentShader.txt");
-    this->ChangeState(State);
     camera = new Camera();
+    this->ChangeState(State);
 }
 
 Game::~Game()
@@ -16,6 +16,7 @@ Game::~Game()
 
 void Game::ChangeState(GameState state) {
     this->State = state;
+    camera->perspective = true;
     engine->stopAllSounds();
     Objects.clear();
     nulls.clear();
