@@ -104,6 +104,20 @@ GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::str
     return obj;
 }
 
+GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, float vertecies[], unsigned int indecies[]) {
+    int i;
+    if (nulls.size() > 0) {
+        i = nulls[nulls.size() - 1];
+        nulls.pop_back();
+    }
+    else {
+        i = Objects.size();
+    }
+    GameObject* obj = new GameObject(pos, rot, scale, vertecies, indecies, i);
+    Objects.push_back(obj);
+    return obj;
+}
+
 void Game::Destroy(GameObject* obj) {
     Objects[obj->index] == NULL;
     nulls.push_back(obj->index);
