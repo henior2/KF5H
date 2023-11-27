@@ -246,8 +246,12 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="mus01.mp3" />
-    <Media Include="mus02.mp3" />
+    <Media Include="mus01.mp3">
+      <Filter>audio</Filter>
+    </Media>
+    <Media Include="mus02.mp3">
+      <Filter>audio</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <None Include="ikpMP3.dll">

@@ -10,18 +10,23 @@ const float rotationMultiplier = 100.0;
 
 const float maxVelocity = 25;
 const float acceleration = 15;
-const float deacceleration = 7.5;
+const float deacceleration = 0.99;
 
-float velocity = 0;
+vec2 velocity;
+float speed;
 
 const int jumpMargin = 20;
 float jumpCooldown;
 
+float velocityd;
+
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
-	velocity = 0;
+	velocity = vec2(0.0f);
+	speed = 0;
+	velocityd = maxVelocity * maxVelocity;
 
-	jumpCooldown = .5f;
+	jumpCooldown = 0.5f;
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
 	camera->perspective = false;
@@ -35,14 +40,15 @@ void Game::Asteroids(float dt) {
 	jumpCooldown -= dt;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		velocity += acceleration * dt;
-		if (velocity > maxVelocity) velocity = maxVelocity;
-		ship->Move(vec3(0, velocity * dt, 0));
+		velocity += acceleration * dt * vec2(ship->Up.x, ship->Up.y);
+		speed = velocity.x * velocity.x + velocity.y * velocity.y;
+		if (speed > velocityd) velocity *= velocityd / speed;
+		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
 	}
 	else {
-		velocity -= deacceleration * dt;
-		if (velocity < 0) velocity = 0;
-		ship->Move(vec3(0, velocity * dt, 0));
+		velocity -= velocity * deacceleration * dt;
+		speed = velocity.x * velocity.x + velocity.y * velocity.y;
+		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
@@ -57,7 +63,7 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		jumpCooldown = .5f;
+		jumpCooldown = 0.5f;
 
 		int random = rand() % 32 - 1;
 		if (random >= 24 && random <= 31) {
@@ -84,8 +90,10 @@ void Game::Asteroids(float dt) {
 		Game::ChangeState(Game_Menu);
 
 	// Nie dzia³a
-	if (ship->Transform.position.y > 90) ship->MoveTo(vec3(0, -90, 0));
-	if (ship->Transform.position.y < -90) ship->MoveTo(vec3(0, 90, 0));
-	if (ship->Transform.position.x > 160) ship->MoveTo(vec3(-160, 0, 0));
-	if (ship->Transform.position.x < -160) ship->MoveTo(vec3(160, 0, 0));
+	float posx = ship->Transform.position.x;
+	float posy = ship->Transform.position.y;
+	if (ship->Transform.position.y > 100) ship->MoveGlobal(vec3(0, -190, 0));
+	if (ship->Transform.position.y < -100) ship->MoveGlobal(vec3(0, 190, 0));
+	if (ship->Transform.position.x > 170) ship->MoveGlobal(vec3(-330, 0, 0));
+	if (ship->Transform.position.x < -170) ship->MoveGlobal(vec3(330, 0, 0));
 }

@@ -152,6 +152,51 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 	this->EBO = ebo;
 }
 
+GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i)
+	:index(i)
+{
+	this->Transform.position = pos;
+	this->Transform.orientation = rot;
+	this->Transform.scale = sc;
+
+	UpdateVectors();
+
+	int vNum = sizeof(vertecies) / sizeof(float);
+	int iNum = sizeof(indecies) / sizeof(unsigned int);
+
+	this->View.pointsNum = vNum / 6;
+	this->View.lines = iNum;
+
+	unsigned int vao, vbo, ebo;
+
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
+
+	//bindowanie   
+	glBindVertexArray(vao);
+
+	//bindowanie VBO
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertecies), vertecies, GL_STATIC_DRAW);
+
+	//bindowanie EBO
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indecies), indecies, GL_STATIC_DRAW);
+
+	//informacja o verteksach dla VAO
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//informacja o kolorach dla VAO
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	this->VAO = vao;
+	this->VBO = vbo;
+	this->EBO = ebo;
+}
+
 GameObject::~GameObject() {
 	glDeleteVertexArrays(1, &this->VAO);
 	glDeleteBuffers(1, &this->VBO);
