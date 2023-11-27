@@ -154,11 +154,13 @@
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
-    <Text Include="Czolg.ind.txt" />
-    <Text Include="Czolg.vx.txt" />
+    <Text Include="Tank.ind.txt" />
+    <Text Include="Tank.vx.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="MenuCube.ind.txt" />
     <Text Include="MenuCube.vx.txt" />
+    <Text Include="FastTank.ind.txt" />
+    <Text Include="FastTank.vx.txt" />
     <Text Include="UpperA.ind.txt" />
     <Text Include="UpperA.vx.txt" />
     <Text Include="UpperB.ind.txt" />

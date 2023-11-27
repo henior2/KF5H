@@ -6,7 +6,7 @@ GameObject* model;
 float rotationMultiplier = -50.0f;
 
 void Game::BattlezoneInit() {
-	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(20.0f, 0.0f, 0.0f), vec3(0.2f), "Czolg");
+	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(20.0f, 0.0f, 0.0f), vec3(0.4f), "PowolnyCzolg");
 }
 
 void Game::Battlezone(float dt) {

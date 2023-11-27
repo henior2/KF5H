@@ -238,20 +238,22 @@
     <Text Include="UpperZ.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="Czolg.ind.txt">
+    <Text Include="Tank.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="Czolg.vx.txt">
+    <Text Include="Tank.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="FastTank.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="FastTank.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="mus01.mp3">
-      <Filter>audio</Filter>
-    </Media>
-    <Media Include="mus02.mp3">
-      <Filter>audio</Filter>
-    </Media>
+    <Media Include="mus01.mp3" />
+    <Media Include="mus02.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ikpMP3.dll">
