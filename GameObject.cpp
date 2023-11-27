@@ -1,8 +1,8 @@
 #include "GameObject.h"
 #include <math.h>
 
-GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string file, int i) 
-	:index(i)
+GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string file, int i)
+	:index(i), DifferentColor(false)
 {
 	this->Transform.position = pos;
 	this->Transform.orientation = rot;
@@ -153,7 +153,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 }
 
 GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i)
-	:index(i)
+	:index(i), DifferentColor(false)
 {
 	this->Transform.position = pos;
 	this->Transform.orientation = rot;
@@ -256,4 +256,13 @@ void GameObject::UpdateVectors() {
 	Right = glm::normalize(Right);
 
 	Up = -glm::normalize(glm::cross(Front, Right));
+}
+
+void GameObject::SetColor(glm::vec3(color)) {
+	DifferentColor = true;
+	this->color = color;
+}
+
+void GameObject::UnColor() {
+	this->DifferentColor = false;
 }
