@@ -39,11 +39,15 @@ public:
 
 	int index = 0;
 
+	bool DifferentColor;
+	glm::vec3 color;
+
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
 
 	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string object, int i);
+	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i);
 	~GameObject();
 
 	void Move(glm::vec3 pos);
@@ -56,6 +60,9 @@ public:
 
 	void Scale(glm::vec3 scale);
 	void ScaleTo(glm::vec3 scale);
+
+	void SetColor(glm::vec3 color);
+	void UnColor();
 private:
 	void UpdateVectors();
 };

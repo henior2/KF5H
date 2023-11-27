@@ -80,6 +80,13 @@ void Game::Render(float dt){
         model = glm::rotate(model, glm::radians(this->Objects[i]->Transform.orientation.z), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, this->Objects[i]->Transform.scale);
 
+        if (Objects[i]->DifferentColor == false)
+            program->SetBool("DifferColor", false);
+        else {
+            program->SetBool("DifferColor", true);
+            program->SetVec3("color", Objects[i]->color);
+        }
+
         program->setMat4("model", model);
 
         glLineWidth(this->Objects[i]->View.lineWidth);
@@ -100,6 +107,20 @@ GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::str
         i = Objects.size();
     }
     GameObject* obj = new GameObject(pos, rot, scale, Object, i);
+    Objects.push_back(obj);
+    return obj;
+}
+
+GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, float vertecies[], unsigned int indecies[]) {
+    int i;
+    if (nulls.size() > 0) {
+        i = nulls[nulls.size() - 1];
+        nulls.pop_back();
+    }
+    else {
+        i = Objects.size();
+    }
+    GameObject* obj = new GameObject(pos, rot, scale, vertecies, indecies, i);
     Objects.push_back(obj);
     return obj;
 }

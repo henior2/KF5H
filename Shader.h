@@ -97,6 +97,17 @@ public:
 	{
 		glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
+
+	void SetVec3(const std::string& name, const glm::vec3& vec) const
+	{
+		float f[]{ vec.x, vec.y, vec.z};
+		glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, f);
+	}
+
+	void SetBool(const std::string& name, const bool& value) const
+	{
+		glUniform1i(glGetUniformLocation(ID, name.c_str()), static_cast<int>(value));
+	}
 private:
 
 	//funkcja spawdzajaca bledy
