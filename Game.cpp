@@ -32,6 +32,9 @@ void Game::ChangeState(GameState state) {
     else if (state == Game_Tempest) {
         this->TempestInit();
     }
+    else if (state == Game_TEST) {
+		this->TESTInit();
+    }
 }
 
 void Game::Update(float dt)
@@ -46,6 +49,9 @@ void Game::Update(float dt)
     }
     else if (this->State == Game_Tempest) {
         this->Tempest(dt);
+    }
+    else if (this->State == Game_TEST) {
+        this->TEST(dt);
     }
 
     this->Render(dt);

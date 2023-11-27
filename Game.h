@@ -15,7 +15,8 @@ enum GameState {
 	Game_Menu,
 	Game_Battlezone,
 	Game_Tempest,
-	Game_Asteroids
+	Game_Asteroids,
+	Game_TEST
 };
 
 struct Color {
@@ -75,6 +76,9 @@ public:
 
 	void Asteroids(float dt);
 	void AsteroidsInit();
+
+	void TEST(float dt);
+	void TESTInit();
 
 	void ChangeState(GameState state);
 	void Render(float dt);

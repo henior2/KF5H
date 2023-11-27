@@ -44,6 +44,7 @@ void Game::Menu(float dt) {
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
+    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) ChangeState(Game_TEST);
 
     // gdy klikniety esc to wywolaj zamkniecie okna
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && esc)
