@@ -8,6 +8,8 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 	this->Transform.orientation = rot;
 	this->Transform.scale = sc;
 
+	UpdateVectors();
+
 	std::string vPath = file + ".vx.txt";
 	std::string iPath = file + ".ind.txt";
 	std::string vCode;

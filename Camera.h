@@ -16,7 +16,7 @@ enum Camera_Movement {
 // wartoœci kamery
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
-const float SPEED = 2.5f;
+const float SPEED = 25.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
@@ -61,7 +61,7 @@ public:
     glm::mat4 GetPerspectiveMatrix()
     {
         if (perspective == true)    return glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
-        return glm::ortho(0.0f, cameraWidth, 0.0f, cameraHeight, 0.1f, 100.0f);
+        return glm::ortho(-cameraWidth, cameraWidth, -cameraHeight, cameraHeight, 0.1f, 100.0f);
     }
 
     // funkcja zmieniaj¹ca po³o¿enie kamery

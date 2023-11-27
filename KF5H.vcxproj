@@ -71,9 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,9 +154,55 @@
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
+    <Text Include="Czolg.ind.txt" />
+    <Text Include="Czolg.vx.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="MenuCube.ind.txt" />
     <Text Include="MenuCube.vx.txt" />
+    <Text Include="UpperA.ind.txt" />
+    <Text Include="UpperA.vx.txt" />
+    <Text Include="UpperB.ind.txt" />
+    <Text Include="UpperB.vx.txt" />
+    <Text Include="UpperC.ind.txt" />
+    <Text Include="UpperC.vx.txt" />
+    <Text Include="UpperD.ind.txt" />
+    <Text Include="UpperD.vx.txt" />
+    <Text Include="UpperE.ind.txt" />
+    <Text Include="UpperE.vx.txt" />
+    <Text Include="UpperF.ind.txt" />
+    <Text Include="UpperF.vx.txt" />
+    <Text Include="UpperG.ind.txt" />
+    <Text Include="UpperG.vx.txt" />
+    <Text Include="UpperH.ind.txt" />
+    <Text Include="UpperH.vx.txt" />
+    <Text Include="UpperI.ind.txt" />
+    <Text Include="UpperI.vx.txt" />
+    <Text Include="UpperJ.ind.txt" />
+    <Text Include="UpperJ.vx.txt" />
+    <Text Include="UpperK.ind.txt" />
+    <Text Include="UpperK.vx.txt" />
+    <Text Include="UpperM.ind.txt" />
+    <Text Include="UpperM.vx.txt" />
+    <Text Include="UpperN.ind.txt" />
+    <Text Include="UpperN.vx.txt" />
+    <Text Include="UpperO.ind.txt" />
+    <Text Include="UpperO.vx.txt" />
+    <Text Include="UpperP.ind.txt" />
+    <Text Include="UpperP.vx.txt" />
+    <Text Include="UpperR.ind.txt" />
+    <Text Include="UpperR.vx.txt" />
+    <Text Include="UpperS.ind.txt" />
+    <Text Include="UpperS.vx.txt" />
+    <Text Include="UpperT.ind.txt" />
+    <Text Include="UpperT.vx.txt" />
+    <Text Include="UpperU.ind.txt" />
+    <Text Include="UpperU.vx.txt" />
+    <Text Include="UpperW.ind.txt" />
+    <Text Include="UpperW.vx.txt" />
+    <Text Include="UpperY.ind.txt" />
+    <Text Include="UpperY.vx.txt" />
+    <Text Include="UpperZ.ind.txt" />
+    <Text Include="UpperZ.vx.txt" />
     <Text Include="VertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
