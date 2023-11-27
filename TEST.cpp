@@ -14,7 +14,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 }
 void Game::TESTInit() {
 
-	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(20.0f, 0.0f, 0.0f), vec3(1.0f), "MenuCube");
+	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(20.0f, 0.0f, 0.0f), vec3(1.0f), "Ufo");
 	glfwSetScrollCallback(window, scroll_callback);
 }
 

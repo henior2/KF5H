@@ -162,6 +162,8 @@
     <Text Include="MenuCube.vx.txt" />
     <Text Include="FastTank.ind.txt" />
     <Text Include="FastTank.vx.txt" />
+    <Text Include="Ufo.ind.txt" />
+    <Text Include="Ufo.vx.txt" />
     <Text Include="UpperA.ind.txt" />
     <Text Include="UpperA.vx.txt" />
     <Text Include="UpperB.ind.txt" />
