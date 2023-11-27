@@ -4,18 +4,24 @@ using namespace glm;
 
 GameObject* ship;
 std::vector<GameObject*> enemies;
+std::vector<GameObject*> asteroids;
 
 const float rotationMultiplier = 100.0;
 
-const float maxVelocity = 15;
-const float acceleration = 8;
-const float deacceleration = 4;
+const float maxVelocity = 25;
+const float acceleration = 15;
+const float deacceleration = 7.5;
 
 float velocity = 0;
+
+const int jumpMargin = 20;
+float jumpCooldown;
 
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
 	velocity = 0;
+
+	jumpCooldown = .5f;
 	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
 
 	camera->perspective = false;
@@ -26,6 +32,8 @@ void Game::AsteroidsInit() {
 }
 
 void Game::Asteroids(float dt) {
+	jumpCooldown -= dt;
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		velocity += acceleration * dt;
 		if (velocity > maxVelocity) velocity = maxVelocity;
@@ -45,16 +53,39 @@ void Game::Asteroids(float dt) {
 
 	//todo: add valid condition later
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-		enemies.push_back(Create(vec3(rand() % 100 - 50, rand() % 35 - 10, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
+		enemies.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		jumpCooldown = .5f;
+
+		int random = rand() % 32 - 1;
+		if (random >= 24 && random <= 31) {
+			//niepowodzenie - smierc
+			Game::ChangeState(Game_Menu);
+		}
+		else {
+			random = rand() % 8 - 1;
+			random = (random*2)+4;
+
+			if (random < asteroids.size()) {
+				//niepowodzenie - smierc
+				Game::ChangeState(Game_Menu);
+			}
+			else {
+				//todo: dodac sprawdzenie, czy nie ma tam asteroidy
+				//czasem wywala poza ekran, nwm czemu
+				ship->MoveTo(vec3(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80));
+			}
+		}
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
 	// Nie dzia³a
-	if (ship->Transform.position.y > 110) ship->MoveTo(vec3(0, -100, 0));
-	if (ship->Transform.position.y < -110) ship->MoveTo(vec3(0, 100, 0));
-	if (ship->Transform.position.x > 180) ship->MoveTo(vec3(-170, 0, 0));
-	if (ship->Transform.position.x < -180) ship->MoveTo(vec3(170, 0, 0));
-
+	if (ship->Transform.position.y > 90) ship->MoveTo(vec3(0, -90, 0));
+	if (ship->Transform.position.y < -90) ship->MoveTo(vec3(0, 90, 0));
+	if (ship->Transform.position.x > 160) ship->MoveTo(vec3(-160, 0, 0));
+	if (ship->Transform.position.x < -160) ship->MoveTo(vec3(160, 0, 0));
 }
