@@ -8,6 +8,8 @@ std::vector<GameObject*> tekst;
 bool esc = false;
 
 void Game::MenuInit() {
+    obiekty.clear();
+    tekst.clear();
     esc = false;
     srand(time(NULL));
 
@@ -32,7 +34,7 @@ void Game::Menu(float dt) {
     for (int i = 0; i < obiekty.size(); i++) {
         obiekty[i]->MoveGlobal(vec3(0.0f, 0.0f, 3 * dt));
         vec3 pos = obiekty[i]->Transform.position;
-        obiekty[i]->View.lineWidth = ((obiekty[i]->Transform.position.z / 10.0f) + 10.0f) / 3.0f;
+        obiekty[i]->Stage[Objects[i]->activeStage].lineWidth = ((obiekty[i]->Transform.position.z / 10.0f) + 10.0f) / 3.0f;
         if (pos.z > 10) {
             float z = ((float)(rand() % 100) + 101.0f);
             obiekty[i]->MoveTo(vec3(pos.x, pos.y, -z));

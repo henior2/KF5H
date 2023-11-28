@@ -18,6 +18,10 @@ void Game::ChangeState(GameState state) {
     this->State = state;
     camera->perspective = true;
     engine->stopAllSounds();
+    for (int i = 0; i < Objects.size(); i++) {
+        //todo: dodac usuwanie obiektow przy zmianie gry.
+        //todo: Naprawic vector out of range przy wychodzeniu z asteroids
+    }
     Objects.clear();
     nulls.clear();
     if (state == Game_Menu) {
@@ -72,7 +76,7 @@ void Game::Render(float dt){
         if (Objects[i] == NULL) {
             continue;
         }
-        glBindVertexArray(this->Objects[i]->VAO);
+        glBindVertexArray(this->Objects[i]->Stage[Objects[i]->activeStage].VAO);
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, this->Objects[i]->Transform.position);
         model = glm::rotate(model, glm::radians(this->Objects[i]->Transform.orientation.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -89,11 +93,11 @@ void Game::Render(float dt){
 
         program->setMat4("model", model);
 
-        glLineWidth(this->Objects[i]->View.lineWidth);
-        glPointSize(this->Objects[i]->View.lineWidth);
+        glLineWidth(this->Objects[i]->Stage[Objects[i]->activeStage].lineWidth);
+        glPointSize(this->Objects[i]->Stage[Objects[i]->activeStage].lineWidth);
 
-        glDrawElements(GL_LINES, this->Objects[i]->View.lines, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_POINTS, 0, this->Objects[i]->View.pointsNum);
+        glDrawElements(GL_LINES, this->Objects[i]->Stage[Objects[i]->activeStage].lines, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_POINTS, 0, this->Objects[i]->Stage[Objects[i]->activeStage].pointsNum);
     }
 }
 

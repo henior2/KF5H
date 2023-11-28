@@ -20,6 +20,7 @@ struct Transformations {
 
 struct Rendering
 {
+	unsigned int VAO;
 	float lineWidth = 1.0f;
 	bool onTop = false;
 	bool visible = true;
@@ -28,14 +29,18 @@ struct Rendering
 
 };
 
+struct VertexData {
+	float *vertecies;
+	unsigned int *indecies;
+	int vNum;
+	int iNum;
+};
+
 class GameObject
 {
 public:
 	Transformations Transform;
-	Rendering View;
-
-	//VBO, VAO, EBO
-	unsigned int VBO, VAO, EBO;
+	//Rendering View;
 
 	int index = 0;
 
@@ -45,6 +50,9 @@ public:
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
+
+	int activeStage;
+	std::vector<Rendering> Stage;
 
 	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string object, int i);
 	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i);
@@ -63,8 +71,15 @@ public:
 
 	void SetColor(glm::vec3 color);
 	void UnColor();
+
+	int AddStage(std::string file);
+	int AddStage(float vertecies[], unsigned int indecies[]);
 private:
 	void UpdateVectors();
+
+	void AddVao(int& vNum, int& iNum, float vertecies[], unsigned int indecies[]);
+
+	VertexData ReadVertexFile(std::string file);
 };
 
 #endif // MY_HEADER_H
