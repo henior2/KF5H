@@ -27,14 +27,36 @@ void wave(int asteroidsNum, Game* game) {
 
 	for (int i = 0; i < asteroidsNum; i++) {
 		int vertexesNo = rand() % 5 + 5;
+		
 		std::vector<vec2> vertexes;
 
 		for (int j = 0; j < vertexesNo; j++) {
 			vertexes.push_back(vec2((float)(rand()) / (float)(RAND_MAX), (float)(rand()) / (float)(RAND_MAX)));
-		}
 
-		//change later
-		asteroids.push_back(game->Create(vec3(10.0f, 10.0f, -99.0f),vec3(0.0f),vec3(1.0f),"AsteroidsShipFire"));
+			float* v = new float[vertexesNo * 6];
+			unsigned int* id = new unsigned int[vertexesNo * 2];
+
+			for (int k = 0; k < vertexesNo; k++)
+			{
+				v[k * 6] = vertexes[k].x;
+				v[k * 6 + 1] = vertexes[k].y;
+				v[k * 6 + 2] = 0;
+				v[k * 6 + 3] = 1;
+				v[k * 6 + 4] = 1;
+				v[k * 6 + 5] = 1;
+			}
+
+			for (int k = 0; k < vertexesNo; k++) {
+				id[k * 2] = k;
+				if (k * 2 + 1 == vertexesNo) {
+					id[0] = vertexesNo;
+					break;
+				}
+				id[k * 2 + 1] = k;
+			}
+			
+			asteroids.push_back(game->Create(vec3(10.0f, 10.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id));
+		}
 	}
 }
 
