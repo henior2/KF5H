@@ -253,8 +253,12 @@
     <Text Include="FastTank.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="Ufo.ind.txt" />
-    <Text Include="Ufo.vx.txt" />
+    <Text Include="Ufo.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Ufo.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
