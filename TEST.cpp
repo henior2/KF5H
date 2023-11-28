@@ -49,10 +49,12 @@ void Game::TEST(float dt) {
 		camera->Position = vec3(0.0f, 0.0f, 0.0f);
 		camera->Yaw = -90.0f;
 		camera->Pitch = 0.0f;
+		camera->MoveCamera(FORWARD, 0.0f);
+		camera->RotateCamera(0.0f, 0.0f);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-
+	// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 }
