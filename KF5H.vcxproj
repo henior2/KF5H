@@ -159,6 +159,16 @@
     <Text Include="3.vx.txt" />
     <Text Include="4.ind.txt" />
     <Text Include="4.vx.txt" />
+    <Text Include="5.ind.txt" />
+    <Text Include="5.vx.txt" />
+    <Text Include="6.ind.txt" />
+    <Text Include="6.vx.txt" />
+    <Text Include="7.ind.txt" />
+    <Text Include="7.vx.txt" />
+    <Text Include="8.ind.txt" />
+    <Text Include="8.vx.txt" />
+    <Text Include="9.ind.txt" />
+    <Text Include="9.vx.txt" />
     <Text Include="AsteroidsEnemy.ind.txt" />
     <Text Include="AsteroidsEnemy.vx.txt" />
     <Text Include="AsteroidsShip.ind.txt" />
