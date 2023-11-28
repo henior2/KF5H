@@ -20,6 +20,24 @@ float jumpCooldown;
 
 float velocityd;
 
+int8_t score;
+
+void wave(int asteroidsNum, Game* game) {
+	srand(time(NULL));
+
+	for (int i = 0; i < asteroidsNum; i++) {
+		int vertexesNo = rand() % 5 + 5;
+		std::vector<vec2> vertexes;
+
+		for (int j = 0; j < vertexesNo; j++) {
+			vertexes.push_back(vec2((float)(rand()) / (float)(RAND_MAX), (float)(rand()) / (float)(RAND_MAX)));
+		}
+
+		//change later
+		asteroids.push_back(game->Create(vec3(10.0f, 10.0f, -99.0f),vec3(0.0f),vec3(1.0f),"AsteroidsShipFire"));
+	}
+}
+
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
 	velocity = vec2(0.0f);
@@ -32,6 +50,11 @@ void Game::AsteroidsInit() {
 	camera->perspective = false;
 	camera->cameraHeight = 90;
 	camera->cameraWidth = 160;
+
+	score = 0;
+
+	asteroids.clear();
+	enemies.clear();
 
 	PlaySound2d("mus01.mp3", true);
 }
@@ -58,8 +81,10 @@ void Game::Asteroids(float dt) {
 	}
 
 	//todo: add valid condition later
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-		enemies.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		jumpCooldown = 0.5f;
+		//enemies.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
+		wave(2, this);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
@@ -82,6 +107,7 @@ void Game::Asteroids(float dt) {
 				//todo: dodac sprawdzenie, czy nie ma tam asteroidy
 				//czasem wywala poza ekran, nwm czemu
 				ship->MoveTo(vec3(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80));
+				velocity = vec2(0.0f, 0.0f);
 			}
 		}
 	}
@@ -89,7 +115,6 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	// Nie dzia³a
 	float posx = ship->Transform.position.x;
 	float posy = ship->Transform.position.y;
 	if (ship->Transform.position.y > 100) ship->MoveGlobal(vec3(0, -190, 0));

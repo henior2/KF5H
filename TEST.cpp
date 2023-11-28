@@ -3,13 +3,13 @@
 using namespace glm;
 
 GameObject* model;
+GameObject* model2;
 float rotationMultiplier = -500.0f;
 
 void Game::TESTInit() {
-	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(90.0f, 0.0f, 0.0f), vec3(1.0f), "Ufo");
+	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), "Tank");
+	model2 = Create(vec3(10.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(2.0f), "FastTank");
 }
-
-int x = 0;
 
 void Game::TEST(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
@@ -56,5 +56,5 @@ void Game::TEST(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
+	// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 }

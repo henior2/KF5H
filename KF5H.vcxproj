@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -149,6 +149,16 @@
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="0.ind.txt" />
+    <Text Include="0.vx.txt" />
+    <Text Include="1.ind.txt" />
+    <Text Include="1.vx.txt" />
+    <Text Include="2.ind.txt" />
+    <Text Include="2.vx.txt" />
+    <Text Include="3.ind.txt" />
+    <Text Include="3.vx.txt" />
+    <Text Include="4.ind.txt" />
+    <Text Include="4.vx.txt" />
     <Text Include="AsteroidsEnemy.ind.txt" />
     <Text Include="AsteroidsEnemy.vx.txt" />
     <Text Include="AsteroidsShip.ind.txt" />
