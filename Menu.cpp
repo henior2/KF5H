@@ -13,7 +13,7 @@ void Game::MenuInit() {
     esc = false;
     srand(time(NULL));
 
-    for (int i = 0; i < 696; i++) {
+    for (int i = 0; i < 1500; i++) {
         float x = ((float)(rand() % 100) - 50.0f);
         float y = ((float)(rand() % 100) - 50.0f);
         float z = ((float)(rand() % 150) - 100.0f);
@@ -26,6 +26,8 @@ void Game::MenuInit() {
         vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
         obiekty.push_back(Create(vec3(0.0f, 0.0f, z), rot, vec3(1.0f), "MenuCube"));
     }
+
+    camera->RotateCamera(0.0f, 90.0f);
 
     PlaySound2d("mus02.mp3", true);
 }
@@ -46,6 +48,7 @@ void Game::Menu(float dt) {
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
+    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) ChangeState(Game_TEST);
 
     // gdy klikniety esc to wywolaj zamkniecie okna
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && esc)

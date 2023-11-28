@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,6 +140,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Tempest.cpp" />
+    <ClCompile Include="TEST.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -148,17 +149,41 @@
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="0.ind.txt" />
+    <Text Include="0.vx.txt" />
+    <Text Include="1.ind.txt" />
+    <Text Include="1.vx.txt" />
+    <Text Include="2.ind.txt" />
+    <Text Include="2.vx.txt" />
+    <Text Include="3.ind.txt" />
+    <Text Include="3.vx.txt" />
+    <Text Include="4.ind.txt" />
+    <Text Include="4.vx.txt" />
+    <Text Include="5.ind.txt" />
+    <Text Include="5.vx.txt" />
+    <Text Include="6.ind.txt" />
+    <Text Include="6.vx.txt" />
+    <Text Include="7.ind.txt" />
+    <Text Include="7.vx.txt" />
+    <Text Include="8.ind.txt" />
+    <Text Include="8.vx.txt" />
+    <Text Include="9.ind.txt" />
+    <Text Include="9.vx.txt" />
     <Text Include="AsteroidsEnemy.ind.txt" />
     <Text Include="AsteroidsEnemy.vx.txt" />
     <Text Include="AsteroidsShip.ind.txt" />
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
-    <Text Include="Czolg.ind.txt" />
-    <Text Include="Czolg.vx.txt" />
+    <Text Include="Tank.ind.txt" />
+    <Text Include="Tank.vx.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="MenuCube.ind.txt" />
     <Text Include="MenuCube.vx.txt" />
+    <Text Include="FastTank.ind.txt" />
+    <Text Include="FastTank.vx.txt" />
+    <Text Include="Ufo.ind.txt" />
+    <Text Include="Ufo.vx.txt" />
     <Text Include="UpperA.ind.txt" />
     <Text Include="UpperA.vx.txt" />
     <Text Include="UpperB.ind.txt" />

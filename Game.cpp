@@ -24,6 +24,11 @@ void Game::ChangeState(GameState state) {
     }
     Objects.clear();
     nulls.clear();
+    camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
+    camera->Yaw = -90.0f;
+    camera->Pitch = 0.0f;
+    camera->MoveCamera(FORWARD, 0.0f);
+    camera->RotateCamera(0.0f, 0.0f);
     if (state == Game_Menu) {
         this->MenuInit();
     }
@@ -35,6 +40,9 @@ void Game::ChangeState(GameState state) {
     }
     else if (state == Game_Tempest) {
         this->TempestInit();
+    }
+    else if (state == Game_TEST) {
+		this->TESTInit();
     }
 }
 
@@ -50,6 +58,9 @@ void Game::Update(float dt)
     }
     else if (this->State == Game_Tempest) {
         this->Tempest(dt);
+    }
+    else if (this->State == Game_TEST) {
+        this->TEST(dt);
     }
 
     this->Render(dt);
