@@ -20,6 +20,11 @@ void Game::ChangeState(GameState state) {
     engine->stopAllSounds();
     Objects.clear();
     nulls.clear();
+    camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
+    camera->Yaw = -90.0f;
+    camera->Pitch = 0.0f;
+    camera->MoveCamera(FORWARD, 0.0f);
+    camera->RotateCamera(0.0f, 0.0f);
     if (state == Game_Menu) {
         this->MenuInit();
     }

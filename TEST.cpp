@@ -6,8 +6,10 @@ GameObject* model;
 float rotationMultiplier = -500.0f;
 
 void Game::TESTInit() {
-	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), "MenuCube");
+	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(90.0f, 0.0f, 0.0f), vec3(1.0f), "Ufo");
 }
+
+int x = 0;
 
 void Game::TEST(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
@@ -47,10 +49,12 @@ void Game::TEST(float dt) {
 		camera->Position = vec3(0.0f, 0.0f, 0.0f);
 		camera->Yaw = -90.0f;
 		camera->Pitch = 0.0f;
+		camera->MoveCamera(FORWARD, 0.0f);
+		camera->RotateCamera(0.0f, 0.0f);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-
+	model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 }
