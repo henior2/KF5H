@@ -3,10 +3,12 @@
 using namespace glm;
 
 GameObject* model;
+GameObject* model2;
 float rotationMultiplier = -500.0f;
 
 void Game::TESTInit() {
-	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), "MenuCube");
+	model = Create(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), "Tank");
+	model2 = Create(vec3(10.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(2.0f), "FastTank");
 }
 
 void Game::TEST(float dt) {
