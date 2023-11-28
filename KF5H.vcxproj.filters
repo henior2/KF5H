@@ -60,6 +60,9 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files\GameEngine</Filter>
     </ClCompile>
+    <ClCompile Include="TEST.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -250,10 +253,20 @@
     <Text Include="FastTank.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="Ufo.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Ufo.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="mus01.mp3" />
-    <Media Include="mus02.mp3" />
+    <Media Include="mus01.mp3">
+      <Filter>audio</Filter>
+    </Media>
+    <Media Include="mus02.mp3">
+      <Filter>audio</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <None Include="ikpMP3.dll">
