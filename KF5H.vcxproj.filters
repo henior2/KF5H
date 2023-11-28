@@ -34,6 +34,9 @@
     <Filter Include="TextFiles\Alphabet">
       <UniqueIdentifier>{00da2453-4d46-40ee-ae71-a8c32308fcfa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TextFiles\Numbers">
+      <UniqueIdentifier>{fb5bbf69-0ca7-481b-a03f-468287e8a6e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Menu.cpp">
@@ -258,6 +261,66 @@
     </Text>
     <Text Include="Ufo.vx.txt">
       <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="9.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="0.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="0.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="1.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="1.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="2.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="2.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="3.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="3.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="4.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="4.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="5.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="5.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="6.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="6.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="7.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="7.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="8.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="8.vx.txt">
+      <Filter>TextFiles\Numbers</Filter>
+    </Text>
+    <Text Include="9.ind.txt">
+      <Filter>TextFiles\Numbers</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
