@@ -169,12 +169,16 @@
     <Text Include="8.vx.txt" />
     <Text Include="9.ind.txt" />
     <Text Include="9.vx.txt" />
+    <Text Include="AsteroidsBullet.ind.txt" />
+    <Text Include="AsteroidsBullet.vx.txt" />
     <Text Include="AsteroidsEnemy.ind.txt" />
     <Text Include="AsteroidsEnemy.vx.txt" />
     <Text Include="AsteroidsShip.ind.txt" />
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
+    <Text Include="LeonardoTank.ind.txt" />
+    <Text Include="LeonardoTank.vx.txt" />
     <Text Include="Rocket.vx.txt" />
     <Text Include="Tank.ind.txt" />
     <Text Include="Tank.vx.txt" />

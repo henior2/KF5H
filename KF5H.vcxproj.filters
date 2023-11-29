@@ -325,6 +325,16 @@
     <Text Include="Rocket.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="LeonardoTank.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="LeonardoTank.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsBullet.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsBullet.ind.txt" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
