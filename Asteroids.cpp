@@ -43,7 +43,7 @@ void wave(int asteroidsNum, Game* game) {
 			id[j * 2 + 1] = (j + vertexesNo) % vertexesNo;
 		}
 
-		game->Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id);
+		//game->Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id);
 
 		delete[] v;
 		delete[] id;
