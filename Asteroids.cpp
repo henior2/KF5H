@@ -30,23 +30,22 @@ void wave(int asteroidsNum, Game* game) {
 	for (int i = 0; i < asteroidsNum; i++) {
 		vertexesNo = rand() % 5 + 5;
 
-		float* v = new float[vertexesNo * 6];
-		unsigned int* id = new unsigned int[vertexesNo * 2];
+		std::vector<float> v;
+		std::vector<unsigned int> id;
 
 		for (int j = 0; j < vertexesNo; j++) {
-			v[j * 6] = (float)(rand()) / (float)(RAND_MAX/2)-1;
-			v[j * 6 + 1] = (float)(rand()) / (float)(RAND_MAX/2)-1;
-			v[j * 6 + 2] = 0;
-			v[j * 6 + 3] = v[j * 6 + 4] = v[j * 6 + 5] = 1;
+			v.push_back((float)(rand()) / (float)(RAND_MAX / 2) - 1);
+			v.push_back((float)(rand()) / (float)(RAND_MAX / 2) - 1);
+			v.push_back(0);
+			v.push_back(1);
+			v.push_back(1);
+			v.push_back(1);
 
-			id[j * 2] = (j + vertexesNo - 1) % vertexesNo;
-			id[j * 2 + 1] = (j + vertexesNo) % vertexesNo;
+			id.push_back((j + vertexesNo - 1) % vertexesNo);
+			id.push_back((j + vertexesNo) % vertexesNo);
 		}
 
-		game->Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id);
-
-		delete[] v;
-		delete[] id;
+		game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(25.0f), v, id);
 	}
 }
 
