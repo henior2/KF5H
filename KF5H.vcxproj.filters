@@ -322,6 +322,9 @@
     <Text Include="9.ind.txt">
       <Filter>TextFiles\Numbers</Filter>
     </Text>
+    <Text Include="Rocket.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
@@ -337,6 +340,9 @@
     </None>
     <None Include="irrKlang.dll">
       <Filter>dll</Filter>
+    </None>
+    <None Include="Rocket.ind.txt">
+      <Filter>TextFiles\Models</Filter>
     </None>
   </ItemGroup>
 </Project>

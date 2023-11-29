@@ -175,6 +175,7 @@
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
+    <Text Include="Rocket.vx.txt" />
     <Text Include="Tank.ind.txt" />
     <Text Include="Tank.vx.txt" />
     <Text Include="FragmentShader.txt" />
@@ -237,6 +238,7 @@
   <ItemGroup>
     <None Include="ikpMP3.dll" />
     <None Include="irrKlang.dll" />
+    <None Include="Rocket.ind.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
