@@ -6,6 +6,8 @@ GameObject* ship;
 std::vector<GameObject*> enemies;
 std::vector<GameObject*> asteroids;
 
+int modelShipFire;
+
 const float rotationMultiplier = 100.0;
 
 const float maxVelocity = 25;
@@ -49,10 +51,9 @@ void wave(int asteroidsNum, Game* game) {
 }
 
 void Game::AsteroidsInit() {
-	float v[] = { 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f };
-	unsigned int id[] = { 0,1 };
+	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
+	modelShipFire = ship->AddStage("AsteroidsShipFire");
 
-	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), v, id);
 	velocity = vec2(0.0f);
 	speed = 0;
 	velocityd = maxVelocity * maxVelocity;
@@ -80,11 +81,15 @@ void Game::Asteroids(float dt) {
 		speed = velocity.x * velocity.x + velocity.y * velocity.y;
 		if (speed > velocityd) velocity *= velocityd / speed;
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
+
+		ship->activeStage = modelShipFire;
 	}
 	else {
 		velocity -= velocity * deacceleration * dt;
 		speed = velocity.x * velocity.x + velocity.y * velocity.y;
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
+
+		ship->activeStage = 0;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
