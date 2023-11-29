@@ -58,7 +58,7 @@ void wave(int asteroidsNum, Game* game) {
 			id.push_back((j + vertexesNo) % vertexesNo);
 		}
 
-		game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(25.0f), v, id);
+		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(25.0f), v, id));
 	}
 }
 
@@ -90,6 +90,7 @@ void Game::AsteroidsInit() {
 
 	asteroids.clear();
 	enemies.clear();
+	bullets.clear();
 
 	bulletTimeRemain.clear();
 
@@ -170,12 +171,11 @@ void Game::Asteroids(float dt) {
 	for (int i = 0; i < bullets.size(); i++) {
 		bulletTimeRemain[i] -= dt;
 		if (bulletTimeRemain[i] <= 0) {
-			bullets.erase(bullets.begin() + i);
-			bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+			bullets.erase(bullets.begin() + i-1);
+			bulletTimeRemain.erase(bulletTimeRemain.begin() + i-1);
 			continue;
 		}
-		GameObject* current = bullets[i];
-		current->Move(vec3(current->Up.x, current->Up.y, 0.0f) * dt);
+		bullets[i]->Move(vec3(bullets[i]->Up.x, bullets[i]->Up.y, 0.0f) * dt);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
