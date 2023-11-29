@@ -20,6 +20,9 @@ float speed;
 const int jumpMargin = 20;
 float jumpCooldown;
 
+float shipAnimationCooldown;
+float shipAnimationCooldown2;
+
 float velocityd;
 
 int8_t score;
@@ -58,7 +61,8 @@ void Game::AsteroidsInit() {
 	velocityd = maxVelocity * maxVelocity;
 
 	jumpCooldown = 0.5f;
-	//enemies.push_back(Create(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f), vec3(.25f), "AsteroidsEnemy"))
+	shipAnimationCooldown = (rand() % 4)/2 + 1;
+	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 
 	camera->perspective = false;
 	camera->cameraHeight = 90;
@@ -82,6 +86,17 @@ void Game::Asteroids(float dt) {
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
 
 		ship->activeStage = modelShipFire;
+		
+		shipAnimationCooldown -= dt;
+		if (shipAnimationCooldown <= 0) {
+			ship->activeStage = 0;
+
+			shipAnimationCooldown2 -= dt;
+			if (shipAnimationCooldown2 <= 0) {
+				shipAnimationCooldown = (rand() % 4) / 2 + 1;
+				shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
+			}
+		}
 	}
 	else {
 		velocity -= velocity * deacceleration * dt;
