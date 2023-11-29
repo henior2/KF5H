@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;C:\Users\1p1\Desktop\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;C:\Users\1p1\Desktop\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -175,6 +175,7 @@
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
+    <Text Include="Rocket.vx.txt" />
     <Text Include="Tank.ind.txt" />
     <Text Include="Tank.vx.txt" />
     <Text Include="FragmentShader.txt" />
@@ -237,6 +238,7 @@
   <ItemGroup>
     <None Include="ikpMP3.dll" />
     <None Include="irrKlang.dll" />
+    <None Include="Rocket.ind.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
