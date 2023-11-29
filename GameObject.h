@@ -55,7 +55,7 @@ public:
 	std::vector<Rendering> Stage;
 
 	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string object, int i);
-	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i);
+	GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i);
 	~GameObject();
 
 	void Move(glm::vec3 pos);
@@ -73,7 +73,7 @@ public:
 	void UnColor();
 
 	int AddStage(std::string file);
-	int AddStage(float vertecies[], unsigned int indecies[]);
+	int AddStage(std::vector<float> vertecies, std::vector<unsigned int> indecies);
 private:
 	void UpdateVectors();
 

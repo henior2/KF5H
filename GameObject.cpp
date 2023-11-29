@@ -13,7 +13,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 	activeStage = AddStage(file);
 }
 
-GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i)
+GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i)
 	:index(i), DifferentColor(false)
 {
 	this->Transform.position = pos;
@@ -91,11 +91,21 @@ int GameObject::AddStage(std::string file) {
 	return Stage.size() - 1;
 }
 
-int GameObject::AddStage(float verticies[], unsigned int indecies[]) {
-	int vNum = sizeof(verticies) / sizeof(float);
-	int iNum = sizeof(indecies) / sizeof(unsigned int);
+int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> indecies) {
+	int vNum = verticies.size();
+	int iNum = indecies.size();
 
-	AddVao(vNum, iNum, verticies, indecies);
+	float* vertexy = new float[vNum];
+	unsigned int* indexy = new unsigned int[iNum];
+
+	for (int i = 0; i < vNum; i++) {
+		vertexy[i] = verticies[i];
+	}
+	for (int i = 0; i < iNum; i++) {
+		indexy[i] = indecies[i];
+	}
+
+	AddVao(vNum, iNum, vertexy, indexy);
 
 	Stage[Stage.size() - 1].pointsNum = vNum / 6;
 	Stage[Stage.size() - 1].lines = iNum;

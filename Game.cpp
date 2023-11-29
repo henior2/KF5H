@@ -126,7 +126,7 @@ GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::str
     return obj;
 }
 
-GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, float vertecies[], unsigned int indecies[]) {
+GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::vector<float> vertecies, std::vector<unsigned int> indecies) {
     int i;
     if (nulls.size() > 0) {
         i = nulls[nulls.size() - 1];
