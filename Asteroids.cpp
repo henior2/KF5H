@@ -23,45 +23,36 @@ float velocityd;
 int8_t score;
 
 void wave(int asteroidsNum, Game* game) {
-	srand(time(NULL));
+	int vertexesNo;
 
 	for (int i = 0; i < asteroidsNum; i++) {
-		int vertexesNo = rand() % 5 + 5;
-		
-		std::vector<vec2> vertexes;
+		vertexesNo = rand() % 5 + 5;
+
+		float* v = new float[vertexesNo * 6];
+		unsigned int* id = new unsigned int[vertexesNo * 2];
 
 		for (int j = 0; j < vertexesNo; j++) {
-			vertexes.push_back(vec2((float)(rand()) / (float)(RAND_MAX), (float)(rand()) / (float)(RAND_MAX)));
+			v[j * 6] = (float)(rand()) / (float)(RAND_MAX/2)-1;
+			v[j * 6 + 1] = (float)(rand()) / (float)(RAND_MAX/2)-1;
+			v[j * 6 + 2] = 0;
+			v[j * 6 + 3] = v[j * 6 + 4] = v[j * 6 + 5] = 1;
 
-			float* v = new float[vertexesNo * 6];
-			unsigned int* id = new unsigned int[vertexesNo * 2];
-
-			for (int k = 0; k < vertexesNo; k++)
-			{
-				v[k * 6] = vertexes[k].x;
-				v[k * 6 + 1] = vertexes[k].y;
-				v[k * 6 + 2] = 0;
-				v[k * 6 + 3] = 1;
-				v[k * 6 + 4] = 1;
-				v[k * 6 + 5] = 1;
-			}
-
-			for (int k = 0; k < vertexesNo; k++) {
-				id[k * 2] = k;
-				if (k * 2 + 1 == vertexesNo) {
-					id[0] = vertexesNo;
-					break;
-				}
-				id[k * 2 + 1] = k;
-			}
-			
-			asteroids.push_back(game->Create(vec3(10.0f, 10.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id));
+			id[j * 2] = (j + vertexesNo - 1) % vertexesNo;
+			id[j * 2 + 1] = (j + vertexesNo) % vertexesNo;
 		}
+
+		game->Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id);
+
+		delete[] v;
+		delete[] id;
 	}
 }
 
 void Game::AsteroidsInit() {
-	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
+	float v[] = { 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f };
+	unsigned int id[] = { 0,1 };
+
+	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), v, id);
 	velocity = vec2(0.0f);
 	speed = 0;
 	velocityd = maxVelocity * maxVelocity;
@@ -106,7 +97,7 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
 		//enemies.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
-		wave(2, this);
+		wave(1, this);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
