@@ -10,6 +10,169 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 
 	UpdateVectors();
 
+	activeStage = AddStage(file);
+}
+
+GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i)
+	:index(i), DifferentColor(false)
+{
+	this->Transform.position = pos;
+	this->Transform.orientation = rot;
+	this->Transform.scale = sc;
+
+	UpdateVectors();
+
+	activeStage = AddStage(vertecies, indecies);
+}
+
+GameObject::~GameObject() {
+	for (int i = 0; i < Stage.size(); i++) {
+		glDeleteVertexArrays(1, &Stage[i].VAO);
+	}
+}
+
+void GameObject::Move(glm::vec3 pos) {
+	this->Transform.position += glm::vec3(pos.x * Right);
+	this->Transform.position += glm::vec3(pos.y * Up);
+	this->Transform.position += glm::vec3(pos.z * Front);
+}
+
+void GameObject::MoveGlobal(glm::vec3 pos) {
+	this->Transform.position += pos;
+}
+
+void GameObject::MoveTo(glm::vec3 pos) {
+	this->Transform.position = pos;
+}
+
+void GameObject::Rotate(glm::vec3 rot, float degries) {
+	this->Transform.orientation += rot * degries;
+	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
+	UpdateVectors();
+}
+
+void GameObject::Rotate(glm::vec3 degries) {
+	this->Transform.orientation += degries;
+	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
+	UpdateVectors();
+}
+
+void GameObject::RotateTo(glm::vec3 rot) {
+	this->Transform.orientation = glm::vec3(std::fmod(rot.x, 360.0f), std::fmod(rot.y, 360.0f), std::fmod(rot.z, 360.0f));
+	UpdateVectors();
+}
+
+void GameObject::Scale(glm::vec3 scale) {
+	this->Transform.scale = glm::vec3(this->Transform.scale.x * scale.x, this->Transform.scale.y * scale.y, this->Transform.scale.z * scale.z);
+}
+
+void GameObject::ScaleTo(glm::vec3 scale) {
+	this->Transform.scale = scale;
+}
+
+
+void GameObject::SetColor(glm::vec3(color)) {
+	DifferentColor = true;
+	this->color = color;
+}
+
+void GameObject::UnColor() {
+	this->DifferentColor = false;
+}
+
+int GameObject::AddStage(std::string file) {
+	VertexData data = ReadVertexFile(file);
+
+	AddVao(data.vNum, data.iNum, data.vertecies, data.indecies);
+
+	Stage[Stage.size() - 1].pointsNum = data.vNum / 6;
+	Stage[Stage.size() - 1].lines = data.iNum;
+
+	return Stage.size() - 1;
+}
+
+int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> indecies) {
+	int vNum = verticies.size();
+	int iNum = indecies.size();
+
+	float* vertexy = new float[vNum];
+	unsigned int* indexy = new unsigned int[iNum];
+
+	for (int i = 0; i < vNum; i++) {
+		vertexy[i] = verticies[i];
+	}
+	for (int i = 0; i < iNum; i++) {
+		indexy[i] = indecies[i];
+	}
+
+	AddVao(vNum, iNum, vertexy, indexy);
+
+	Stage[Stage.size() - 1].pointsNum = vNum / 6;
+	Stage[Stage.size() - 1].lines = iNum;
+
+	return Stage.size() - 1;
+}
+
+
+
+
+
+
+
+
+
+void GameObject::UpdateVectors() {
+	glm::vec3 front;
+	float x, y, z;
+	front.x = cos(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
+	front.y = sin(glm::radians(this->Transform.orientation.x));
+	front.z = sin(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
+	Front = glm::normalize(front);
+
+	Right.x = cos(glm::radians(this->Transform.orientation.z));
+	Right.y = sin(glm::radians(this->Transform.orientation.z));
+	Right.z = 0.0f;
+	Right = glm::normalize(Right);
+
+	Up = -glm::normalize(glm::cross(Front, Right));
+}
+
+void GameObject::AddVao(int &vNum, int &iNum, float vertecies[], unsigned int indecies[]) {
+	unsigned int vao, vbo, ebo;
+
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
+
+	//bindowanie   
+	glBindVertexArray(vao);
+
+	//bindowanie VBO
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, vNum * sizeof(float), vertecies, GL_STATIC_DRAW);
+
+	//bindowanie EBO
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, iNum * sizeof(unsigned int), indecies, GL_STATIC_DRAW);
+
+	//informacja o verteksach dla VAO
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//informacja o kolorach dla VAO
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	Rendering NEW;
+	NEW.VAO = vao;
+	Stage.push_back(NEW);
+
+	glBindVertexArray(0);
+	glDeleteBuffers(1, &ebo);
+	glDeleteBuffers(1, &vbo);
+}
+
+VertexData GameObject::ReadVertexFile(std::string file) {
 	std::string vPath = file + ".vx.txt";
 	std::string iPath = file + ".ind.txt";
 	std::string vCode;
@@ -119,150 +282,11 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, std::string f
 		iNum++;
 	}
 
-	this->View.pointsNum = vNum / 6;
-	this->View.lines = iNum;
+	VertexData r;
+	r.indecies = indicies2;
+	r.vertecies = verecies2;
+	r.iNum = iNum;
+	r.vNum = vNum;
 
-	unsigned int vao, vbo, ebo;
-
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ebo);
-
-	//bindowanie   
-	glBindVertexArray(vao);
-
-	//bindowanie VBO
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vNum * sizeof(float), verecies2, GL_STATIC_DRAW);
-
-	//bindowanie EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, iNum * sizeof(unsigned int), indicies2, GL_STATIC_DRAW);
-
-	//informacja o verteksach dla VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	//informacja o kolorach dla VAO
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	this->VAO = vao;
-	this->VBO = vbo;
-	this->EBO = ebo;
-}
-
-GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, float vertecies[], unsigned int indecies[], int i)
-	:index(i), DifferentColor(false)
-{
-	this->Transform.position = pos;
-	this->Transform.orientation = rot;
-	this->Transform.scale = sc;
-
-	UpdateVectors();
-
-	int vNum = sizeof(vertecies) / sizeof(float);
-	int iNum = sizeof(indecies) / sizeof(unsigned int);
-
-	this->View.pointsNum = vNum / 6;
-	this->View.lines = iNum;
-
-	unsigned int vao, vbo, ebo;
-
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ebo);
-
-	//bindowanie   
-	glBindVertexArray(vao);
-
-	//bindowanie VBO
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertecies), vertecies, GL_STATIC_DRAW);
-
-	//bindowanie EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indecies), indecies, GL_STATIC_DRAW);
-
-	//informacja o verteksach dla VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	//informacja o kolorach dla VAO
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	this->VAO = vao;
-	this->VBO = vbo;
-	this->EBO = ebo;
-}
-
-GameObject::~GameObject() {
-	glDeleteVertexArrays(1, &this->VAO);
-	glDeleteBuffers(1, &this->VBO);
-	glDeleteBuffers(1, &this->EBO);
-}
-
-void GameObject::Move(glm::vec3 pos) {
-	this->Transform.position += glm::vec3(pos.x * Right);
-	this->Transform.position += glm::vec3(pos.y * Up);
-	this->Transform.position += glm::vec3(pos.z * Front);
-}
-
-void GameObject::MoveGlobal(glm::vec3 pos) {
-	this->Transform.position += pos;
-}
-
-void GameObject::MoveTo(glm::vec3 pos) {
-	this->Transform.position = pos;
-}
-
-void GameObject::Rotate(glm::vec3 rot, float degries) {
-	this->Transform.orientation += rot * degries;
-	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
-	UpdateVectors();
-}
-
-void GameObject::Rotate(glm::vec3 degries) {
-	this->Transform.orientation += degries;
-	this->Transform.orientation = glm::vec3(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
-	UpdateVectors();
-}
-
-void GameObject::RotateTo(glm::vec3 rot) {
-	this->Transform.orientation = glm::vec3(std::fmod(rot.x, 360.0f), std::fmod(rot.y, 360.0f), std::fmod(rot.z, 360.0f));
-	UpdateVectors();
-}
-
-void GameObject::Scale(glm::vec3 scale) {
-	this->Transform.scale = glm::vec3(this->Transform.scale.x * scale.x, this->Transform.scale.y * scale.y, this->Transform.scale.z * scale.z);
-}
-
-void GameObject::ScaleTo(glm::vec3 scale) {
-	this->Transform.scale = scale;
-}
-
-void GameObject::UpdateVectors() {
-	glm::vec3 front;
-	float x, y, z;
-	front.x = cos(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
-	front.y = sin(glm::radians(this->Transform.orientation.x));
-	front.z = sin(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
-	Front = glm::normalize(front);
-	
-	Right.x = cos(glm::radians(this->Transform.orientation.z));
-	Right.y = sin(glm::radians(this->Transform.orientation.z));
-	Right.z = 0.0f;
-	Right = glm::normalize(Right);
-
-	Up = -glm::normalize(glm::cross(Front, Right));
-}
-
-void GameObject::SetColor(glm::vec3(color)) {
-	DifferentColor = true;
-	this->color = color;
-}
-
-void GameObject::UnColor() {
-	this->DifferentColor = false;
+	return r;
 }

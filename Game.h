@@ -62,7 +62,7 @@ public:
 	void Update(float dt);
 
 	GameObject* Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::string Object);
-	GameObject* Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, float vertecies[], unsigned int indecies[]);
+	GameObject* Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::vector<float> vertecies, std::vector<unsigned int> indecies);
 	void Destroy(GameObject* Object);
 
 	void Menu(float dt);

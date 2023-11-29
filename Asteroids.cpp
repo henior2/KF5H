@@ -6,6 +6,8 @@ GameObject* ship;
 std::vector<GameObject*> enemies;
 std::vector<GameObject*> asteroids;
 
+int modelShipFire;
+
 const float rotationMultiplier = 100.0;
 
 const float maxVelocity = 25;
@@ -23,23 +25,35 @@ float velocityd;
 int8_t score;
 
 void wave(int asteroidsNum, Game* game) {
-	srand(time(NULL));
+	int vertexesNo;
 
 	for (int i = 0; i < asteroidsNum; i++) {
-		int vertexesNo = rand() % 5 + 5;
-		std::vector<vec2> vertexes;
+		vertexesNo = rand() % 5 + 5;
+
+		float* v = new float[vertexesNo * 6];
+		unsigned int* id = new unsigned int[vertexesNo * 2];
 
 		for (int j = 0; j < vertexesNo; j++) {
-			vertexes.push_back(vec2((float)(rand()) / (float)(RAND_MAX), (float)(rand()) / (float)(RAND_MAX)));
+			v[j * 6] = (float)(rand()) / (float)(RAND_MAX/2)-1;
+			v[j * 6 + 1] = (float)(rand()) / (float)(RAND_MAX/2)-1;
+			v[j * 6 + 2] = 0;
+			v[j * 6 + 3] = v[j * 6 + 4] = v[j * 6 + 5] = 1;
+
+			id[j * 2] = (j + vertexesNo - 1) % vertexesNo;
+			id[j * 2 + 1] = (j + vertexesNo) % vertexesNo;
 		}
 
-		//change later
-		asteroids.push_back(game->Create(vec3(10.0f, 10.0f, -99.0f),vec3(0.0f),vec3(1.0f),"AsteroidsShipFire"));
+		//game->Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(1.0f), v, id);
+
+		delete[] v;
+		delete[] id;
 	}
 }
 
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
+	modelShipFire = ship->AddStage("AsteroidsShipFire");
+
 	velocity = vec2(0.0f);
 	speed = 0;
 	velocityd = maxVelocity * maxVelocity;
@@ -67,11 +81,15 @@ void Game::Asteroids(float dt) {
 		speed = velocity.x * velocity.x + velocity.y * velocity.y;
 		if (speed > velocityd) velocity *= velocityd / speed;
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
+
+		ship->activeStage = modelShipFire;
 	}
 	else {
 		velocity -= velocity * deacceleration * dt;
 		speed = velocity.x * velocity.x + velocity.y * velocity.y;
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
+
+		ship->activeStage = 0;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
@@ -84,7 +102,7 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
 		//enemies.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -80), vec3(0.0f), vec3(5.0f), "AsteroidsEnemy"));
-		wave(2, this);
+		wave(1, this);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
