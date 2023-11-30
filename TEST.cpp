@@ -9,34 +9,60 @@ int camSpeed = 1;
 int velocity = 1;
 float const rotationMultiplier1 = 35;
 
-std::string objects[] = {
-	"LeonardoTank",
-	"MenuCube",
-	"FastTank",
-	"AsteroidsEnemy",
+std::string asteroids[]{
 	"AsteroidsShip",
 	"AsteroidsShipFire",
-	"Ufo",
+	"AsteroidsEnemy",
 	"AsteroidsBullet",
 	"AsteroidsBullet2",
+	""
+};
+
+std::string tempest[] = {
+	""
+};
+
+std::string battlezone[] = {
+	"Tank",
+	"FastTank",
+	"Rocket",
+	"Ufo",
+	"LeonardoTank",
+	""
+};
+
+std::string other[] = {
+	"MenuCube",
+	""
+};
+
+std::string test[] = {
 	""
 };
 
 std::vector<GameObject*> objectsVector;
 
 void Game::TESTInit() {
-	for(int i = 0; objects[i] != ""; i++)
-		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), objects[i]));
+	for(int i = 0; test[i] != ""; i++)
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), test[i]));
+	for (int i = 0; asteroids[i] != ""; i++) 
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -15.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), asteroids[i]));
+	for (int i = 0; tempest[i] != ""; i++) 
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -25.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), tempest[i]));
+	for (int i = 0; battlezone[i] != ""; i++)
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -35.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), battlezone[i]));
 	for (char i = 'A'; i <= 'Z'; i++)
 	{
 		std::string letter = "Upper";
 		letter += i;
-		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, -15.0f), vec3(0.0f), vec3(1.0f), letter));
+		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, -45.0f), vec3(0.0f), vec3(1.0f), letter));
 	}
 	for (int i=0; i<=9; i++)
 	{
-		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -25.0f), vec3(0.0f), vec3(1.0f), std::to_string(i)));
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -55.0f), vec3(0.0f), vec3(1.0f), std::to_string(i)));
 	}
+	for (int i = 0; other[i] != ""; i++)
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -65.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), other[i]));
 }
 
 void Game::TEST(float dt) {
