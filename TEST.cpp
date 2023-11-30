@@ -11,12 +11,14 @@ float const rotationMultiplier1 = 35;
 
 std::string objects[] = {
 	"LeonardoTank",
+	"MenuCube",
 	"FastTank",
 	"AsteroidsEnemy",
 	"AsteroidsShip",
 	"AsteroidsShipFire",
 	"Ufo",
 	"AsteroidsBullet",
+	"AsteroidsBullet2",
 	"LeonardoTank",
 	""
 };
@@ -26,6 +28,12 @@ std::vector<GameObject*> objectsVector;
 void Game::TESTInit() {
 	for(int i = 0; objects[i] != ""; i++)
 		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), objects[i]));
+	for (char i = 'A'; i <= 'Z'; i++)
+	{
+		std::string letter = "Upper";
+		letter += i;
+		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, -15.0f), vec3(0.0f), vec3(1.0f), letter));
+	}
 }
 
 void Game::TEST(float dt) {
