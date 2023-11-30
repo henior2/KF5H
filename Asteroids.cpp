@@ -30,6 +30,9 @@ float velocityd;
 float posx;
 float posy;
 
+float bposx;
+float bposy;
+
 std::vector<float> bulletTimeRemain;
 
 const float bulletMaxTime = 3.0f;
@@ -64,7 +67,7 @@ void wave(int asteroidsNum, Game* game) {
 
 void shoot(vec3 _pos, vec3 _rot, Game* game) {
 	bulletTimeRemain.push_back(bulletMaxTime);
-	bullets.push_back(game->Create(_pos, _rot, vec3(1.0f), "AsteroidsBullet"));
+	bullets.push_back(game->Create(_pos, _rot, vec3(5.0f), "AsteroidsBullet"));
 }
 
 void Game::AsteroidsInit() {
@@ -76,6 +79,7 @@ void Game::AsteroidsInit() {
 	velocityd = maxVelocity * maxVelocity;
 
 	posx = posy = 0.0f;
+	bposx = bposy = 0.0f;
 
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4)/2 + 1;
@@ -99,6 +103,7 @@ void Game::AsteroidsInit() {
 
 void Game::Asteroids(float dt) {
 	jumpCooldown -= dt;
+	shootCooldown -= dt;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		velocity += acceleration * dt * vec2(ship->Up.x, ship->Up.y);
@@ -168,14 +173,26 @@ void Game::Asteroids(float dt) {
 		shoot(ship->Transform.position, ship->Transform.orientation, this);
 	}
 
+	//crashes the game - don't do it :D
 	for (int i = 0; i < bullets.size(); i++) {
+		GameObject* current = bullets[i];
+
 		bulletTimeRemain[i] -= dt;
 		if (bulletTimeRemain[i] <= 0) {
-			bullets.erase(bullets.begin() + i-1);
-			bulletTimeRemain.erase(bulletTimeRemain.begin() + i-1);
+			Destroy(current);
+			bullets.erase(bullets.begin() + i);
+			bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+			i--;
 			continue;
 		}
-		bullets[i]->Move(vec3(bullets[i]->Up.x, bullets[i]->Up.y, 0.0f) * dt);
+		current->Move(vec3(current->Up.x, current->Up.y, 0.0f) * bulletSpeed * dt);
+
+		bposx = current->Transform.position.x;
+		bposy = current->Transform.position.y;
+		if (current->Transform.position.y > 100) current->MoveGlobal(vec3(0, -190, 0));
+		if (current->Transform.position.y < -100) current->MoveGlobal(vec3(0, 190, 0));
+		if (current->Transform.position.x > 170) current->MoveGlobal(vec3(-330, 0, 0));
+		if (current->Transform.position.x < -170) current->MoveGlobal(vec3(330, 0, 0));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
