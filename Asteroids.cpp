@@ -24,7 +24,7 @@ float jumpCooldown;
 float shipAnimationCooldown;
 float shipAnimationCooldown2;
 
-float shootCooldown = .1f;
+float shootCooldown = .25f;
 
 float velocityd;
 float posx;
@@ -36,9 +36,9 @@ float bposy;
 std::vector<float> bulletTimeRemain;
 
 const float bulletMaxTime = 3.0f;
-const float bulletSpeed = 20.0f;
+const float bulletSpeed = 50.0f;
 
-int8_t score;
+int score;
 
 void wave(int asteroidsNum, Game* game) {
 	int vertexesNo;
@@ -67,7 +67,9 @@ void wave(int asteroidsNum, Game* game) {
 
 void shoot(vec3 _pos, vec3 _rot, Game* game) {
 	bulletTimeRemain.push_back(bulletMaxTime);
-	bullets.push_back(game->Create(_pos, _rot, vec3(5.0f), "AsteroidsBullet"));
+	GameObject* bullet = game->Create(_pos, _rot, vec3(2.5f), "AsteroidsBullet");
+	bullets.push_back(bullet);
+	bullet->Move(vec3(0.0f, 6.25f, 0.0f));
 }
 
 void Game::AsteroidsInit() {
@@ -169,11 +171,10 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown<=0) {
-		shootCooldown = .1f;
+		shootCooldown = .25f;
 		shoot(ship->Transform.position, ship->Transform.orientation, this);
 	}
 
-	//crashes the game - don't do it :D
 	for (int i = 0; i < bullets.size(); i++) {
 		GameObject* current = bullets[i];
 
@@ -185,7 +186,7 @@ void Game::Asteroids(float dt) {
 			i--;
 			continue;
 		}
-		current->Move(vec3(current->Up.x, current->Up.y, 0.0f) * bulletSpeed * dt);
+		current->Move(vec3(0.0f,1.0f,0.0f) * bulletSpeed * dt);
 
 		bposx = current->Transform.position.x;
 		bposy = current->Transform.position.y;
