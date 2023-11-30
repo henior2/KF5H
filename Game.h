@@ -39,7 +39,6 @@ public:
 	irrklang::ISoundEngine* engine;
 
 	std::vector<GameObject*> Objects;
-	std::vector<int> nulls;
 
 	GameState State;
 	bool Keys[1024];

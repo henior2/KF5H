@@ -19,11 +19,9 @@ void Game::ChangeState(GameState state) {
     camera->perspective = true;
     engine->stopAllSounds();
     for (int i = 0; i < Objects.size(); i++) {
-        //todo: dodac usuwanie obiektow przy zmianie gry.
-        //todo: Naprawic vector out of range przy wychodzeniu z asteroids
+        delete Objects[i];
     }
     Objects.clear();
-    nulls.clear();
     camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
     camera->Yaw = -90.0f;
     camera->Pitch = 0.0f;
@@ -84,9 +82,6 @@ void Game::Render(float dt){
 
     for (int i = 0; i < Objects.size(); i++) {
 
-        if (Objects[i] == NULL) {
-            continue;
-        }
         glBindVertexArray(this->Objects[i]->Stage[Objects[i]->activeStage].VAO);
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, this->Objects[i]->Transform.position);
@@ -114,13 +109,7 @@ void Game::Render(float dt){
 
 GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::string Object) {
     int i;
-    if (nulls.size() > 0) {
-        i = nulls[nulls.size() - 1];
-        nulls.pop_back();
-    }
-    else {
-        i = Objects.size();
-    }
+    i = Objects.size();
     GameObject* obj = new GameObject(pos, rot, scale, Object, i);
     Objects.push_back(obj);
     return obj;
@@ -128,21 +117,17 @@ GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::str
 
 GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::vector<float> vertecies, std::vector<unsigned int> indecies) {
     int i;
-    if (nulls.size() > 0) {
-        i = nulls[nulls.size() - 1];
-        nulls.pop_back();
-    }
-    else {
-        i = Objects.size();
-    }
+    i = Objects.size();
     GameObject* obj = new GameObject(pos, rot, scale, vertecies, indecies, i);
     Objects.push_back(obj);
     return obj;
 }
 
 void Game::Destroy(GameObject* obj) {
-    Objects[obj->index] == NULL;
-    nulls.push_back(obj->index);
+    for (int i = obj->index + 1; i < Objects.size(); i++) {
+        Objects[i]->index--;
+    }
+    Objects.erase(Objects.begin() + obj->index);
     delete obj;
 }
 
