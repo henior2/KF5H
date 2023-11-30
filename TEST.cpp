@@ -6,9 +6,10 @@ GameObject* model;
 GameObject* model2;
 float rotationMultiplier = -500.0f;
 int camSpeed = 1;
+int velocity = 1;
 
 std::string objects[] = {
-	"Tank",
+	"LeonardoTank",
 	"FastTank",
 	"AsteroidsEnemy",
 	"AsteroidsShip",
@@ -75,6 +76,14 @@ void Game::TEST(float dt) {
 		camSpeed = 2;
 	else
 		camSpeed = 1;
+	if (glfwGetKey(window,GLFW_KEY_T) == GLFW_PRESS)
+		objectsVector[0]->Move(vec3(0, 0, -velocity * dt));
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+		objectsVector[0]->Move(vec3(0,0, velocity * dt));
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+		objectsVector[0]->Move(vec3(velocity * dt, 0, 0));
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+		objectsVector[0]->Move(vec3(-velocity * dt, 0, 0));
 
 	// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 }
