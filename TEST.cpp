@@ -17,6 +17,7 @@ std::string objects[] = {
 	"AsteroidsShipFire",
 	"Ufo",
 	"AsteroidsBullet",
+	"AsteroidsBullet2",
 	"LeonardoTank",
 	""
 };
