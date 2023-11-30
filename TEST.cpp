@@ -19,7 +19,6 @@ std::string objects[] = {
 	"Ufo",
 	"AsteroidsBullet",
 	"AsteroidsBullet2",
-	"LeonardoTank",
 	""
 };
 
@@ -33,6 +32,10 @@ void Game::TESTInit() {
 		std::string letter = "Upper";
 		letter += i;
 		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, -15.0f), vec3(0.0f), vec3(1.0f), letter));
+	}
+	for (int i=0; i<=9; i++)
+	{
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -25.0f), vec3(0.0f), vec3(1.0f), std::to_string(i)));
 	}
 }
 
