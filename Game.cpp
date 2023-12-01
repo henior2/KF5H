@@ -81,6 +81,8 @@ void Game::Render(float dt){
     program->setMat4("viev", viev);
 
     for (int i = 0; i < Objects.size(); i++) {
+        
+        program->SetBool("onTop", Objects[i]->Stage[Objects[i]->activeStage].onTop);
 
         glBindVertexArray(this->Objects[i]->Stage[Objects[i]->activeStage].VAO);
         glm::mat4 model = glm::mat4(1.0f);
@@ -96,6 +98,8 @@ void Game::Render(float dt){
             program->SetBool("DifferColor", true);
             program->SetVec3("color", Objects[i]->color);
         }
+
+        program->SetFloat("alpha", Objects[i]->Stage[Objects[i]->activeStage].opacity);
 
         program->setMat4("model", model);
 
