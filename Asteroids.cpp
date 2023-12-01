@@ -40,7 +40,7 @@ const float bulletSpeed = 50.0f;
 
 int score;
 
-void wave(int asteroidsNum, Game* game) {
+void spawnAsteroids(int asteroidsNum, Game* game) {
 	int vertexesNo;
 
 	for (int i = 0; i < asteroidsNum; i++) {
@@ -143,7 +143,7 @@ void Game::Asteroids(float dt) {
 	//todo: add valid condition later
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
-		wave(1, this);
+		spawnAsteroids(1, this);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {

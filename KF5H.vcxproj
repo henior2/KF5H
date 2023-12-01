@@ -171,8 +171,6 @@
     <Text Include="9.vx.txt" />
     <Text Include="AsteroidsBullet.ind.txt" />
     <Text Include="AsteroidsBullet.vx.txt" />
-    <Text Include="AsteroidsBullet2.ind.txt" />
-    <Text Include="AsteroidsBullet2.vx.txt" />
     <Text Include="AsteroidsEnemy.ind.txt" />
     <Text Include="AsteroidsEnemy.vx.txt" />
     <Text Include="AsteroidsShip.ind.txt" />
