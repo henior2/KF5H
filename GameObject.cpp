@@ -232,6 +232,13 @@ VertexData GameObject::ReadVertexFile(std::string file) {
 		else if (vCode[i] == '.') {
 			czyPrzecinek = true;
 		}
+		else if(vCode[i] == '/')
+		{
+			i++;
+			while (vCode[i] != '/')
+				i++;
+			i++;
+		}
 		else
 		{
 			vertex *= 10.0f;
@@ -255,6 +262,12 @@ VertexData GameObject::ReadVertexFile(std::string file) {
 			indicies.push_back(index);
 			minus = false;
 			index = 0;
+		}
+		else if (iCode[i] == '/') {
+			i++;
+			while (iCode[i] != '/')
+				i++;
+			i++;
 		}
 		else
 		{
