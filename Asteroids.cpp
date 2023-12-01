@@ -38,7 +38,12 @@ std::vector<float> bulletTimeRemain;
 const float bulletMaxTime = 3.0f;
 const float bulletSpeed = 50.0f;
 
+int _asteroidsNo;
 int score;
+
+const float maxAsteroidPointShift = .5f;
+
+bool hasWaveFinished;
 
 void spawnAsteroids(int asteroidsNum, Game* game) {
 	int vertexesNo;
@@ -50,15 +55,7 @@ void spawnAsteroids(int asteroidsNum, Game* game) {
 		std::vector<unsigned int> id;
 
 		for (int j = 0; j < vertexesNo; j++) {
-			v.push_back((float)(rand()) / (float)(RAND_MAX / 2) - 1);
-			v.push_back((float)(rand()) / (float)(RAND_MAX / 2) - 1);
-			v.push_back(0);
-			v.push_back(1);
-			v.push_back(1);
-			v.push_back(1);
-
-			id.push_back((j + vertexesNo - 1) % vertexesNo);
-			id.push_back((j + vertexesNo) % vertexesNo);
+			
 		}
 
 		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(25.0f), v, id));
@@ -70,6 +67,10 @@ void shoot(vec3 _pos, vec3 _rot, Game* game) {
 	GameObject* bullet = game->Create(_pos, _rot, vec3(2.5f), "AsteroidsBullet");
 	bullets.push_back(bullet);
 	bullet->Move(vec3(0.0f, 6.25f, 0.0f));
+}
+
+void wave(int asteroidsNum, Game* game) {
+	spawnAsteroids(asteroidsNum, game);
 }
 
 void Game::AsteroidsInit() {
@@ -92,7 +93,10 @@ void Game::AsteroidsInit() {
 	camera->cameraHeight = 90;
 	camera->cameraWidth = 160;
 
+	_asteroidsNo = 4;
 	score = 0;
+
+	hasWaveFinished = false;
 
 	asteroids.clear();
 	enemies.clear();
@@ -143,7 +147,7 @@ void Game::Asteroids(float dt) {
 	//todo: add valid condition later
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
-		spawnAsteroids(1, this);
+		hasWaveFinished = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
@@ -205,4 +209,13 @@ void Game::Asteroids(float dt) {
 	if (ship->Transform.position.y < -100) ship->MoveGlobal(vec3(0, 190, 0));
 	if (ship->Transform.position.x > 170) ship->MoveGlobal(vec3(-330, 0, 0));
 	if (ship->Transform.position.x < -170) ship->MoveGlobal(vec3(330, 0, 0));
+
+	if (asteroids.size() == 0) hasWaveFinished = true;
+
+	if (hasWaveFinished) {
+		hasWaveFinished = false;
+		wave(_asteroidsNo, this);
+		if (_asteroidsNo <= 9) _asteroidsNo += 2;
+		else _asteroidsNo = 11;
+	}
 }

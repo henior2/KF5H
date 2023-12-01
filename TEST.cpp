@@ -14,7 +14,6 @@ std::string asteroids[]{
 	"AsteroidsShipFire",
 	"AsteroidsEnemy",
 	"AsteroidsBullet",
-	"AsteroidsBullet2",
 	""
 };
 
