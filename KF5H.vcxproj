@@ -139,6 +139,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Tekst.cpp" />
     <ClCompile Include="Tempest.cpp" />
     <ClCompile Include="TEST.cpp" />
   </ItemGroup>
@@ -147,6 +148,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Tekst.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.ind.txt" />

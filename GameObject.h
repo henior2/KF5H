@@ -23,7 +23,7 @@ struct Rendering
 	unsigned int VAO;
 	float lineWidth = 1.0f;
 	bool onTop = false;
-	bool visible = true;
+	float opacity = 1;
 	int pointsNum = 0;
 	int lines = 0;
 
