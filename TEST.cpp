@@ -6,7 +6,7 @@ GameObject* model;
 GameObject* model2;
 float rotationMultiplier = -500.0f;
 int camSpeed = 1;
-int velocity = 1;
+float const velocity = 1;
 float const rotationMultiplier1 = 35;
 
 std::string asteroids[]{
@@ -113,14 +113,21 @@ void Game::TEST(float dt) {
 		camSpeed = 2;
 	else
 		camSpeed = 1;
-	if (glfwGetKey(window,GLFW_KEY_T) == GLFW_PRESS)
-		objectsVector[0]->Move(vec3(0, 0, -velocity * dt));
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+		if(objectsVector[8]->Transform.orientation.y>90 || objectsVector[8]->Transform.orientation.y<-90)
+			objectsVector[8]->Move(vec3(1, 0, 1) * objectsVector[8]->Front * dt);
+		else
+			objectsVector[8]->Move(vec3(  1, 0, 1  )*objectsVector[8]->Front * dt);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		objectsVector[0]->Move(vec3(0,0, velocity * dt));
+		//if (objectsVector[8]->Transform.orientation.y > 90 || objectsVector[8]->Transform.orientation.y < -90)
+			//objectsVector[8]->Move(vec3(1, 0, 1) * objectsVector[8]-> Front * dt);
+		//else
+			objectsVector[8]->Move(vec3( 1 , 0,  1 ) * objectsVector[8]->Front * -dt);
+
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		objectsVector[0]->Rotate(vec3(0, 1, 0)  * dt * rotationMultiplier1);
+		objectsVector[8]->Rotate(vec3(0, 1, 0)  * dt * rotationMultiplier1);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		objectsVector[0]->Rotate(vec3(0,-1,0)  * dt * rotationMultiplier1);
+		objectsVector[8]->Rotate(vec3(0,-1,0)  * dt * rotationMultiplier1);
 
 	// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 }
