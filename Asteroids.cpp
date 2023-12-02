@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <algorithm>
 
 using namespace glm;
 
@@ -41,10 +42,28 @@ const float bulletSpeed = 50.0f;
 int _asteroidsNo;
 int score;
 
-const float maxAsteroidPointShift = .5f;
+const int maxAsteroidPointShift = 1;
 const float minAsteroidPointShift = .25f;
 
 bool hasWaveFinished;
+
+void bubble(int tab[], int n)
+{
+	for (int j = n - 1; j > 1; j--)
+	{
+		for (int i = 0; i < j; i++)
+		{
+			if (tab[i] > tab[i + 1])
+			{
+				int x = tab[i];
+				tab[i] = tab[i + 1];
+				tab[i + 1] = x;
+			}
+		}
+	}
+
+
+}
 
 void spawnAsteroids(int asteroidsNum, Game* game) {
 	int vertexesNo;
@@ -54,13 +73,47 @@ void spawnAsteroids(int asteroidsNum, Game* game) {
 
 		std::vector<float> v;
 		std::vector<unsigned int> id;
+		std::vector<vec2> xbigger;
+		std::vector<vec2> xsmaller;
 
 		for (int j = 0; j < vertexesNo; j++) {
-			/* losujesz wspolrzedne w przedziale maxAsteroidPointShift + minAsteroidPointShift
-			* segrekujesz punkty w zale¿noœci od po³o¿enia xy
-			* (dodawanie do vectora -> vector.push_back(wartoœæ); -> vector v -> wspó³rzêdne (vec2(x,y))
-			* n 0 0 1 1 2 2 3 3 ... n -> id -> unsigned int
-			*/
+			vec2 points = (vec2(rand() % maxAsteroidPointShift + minAsteroidPointShift, rand() % maxAsteroidPointShift + minAsteroidPointShift));
+			if (points.x > 0) {xbigger.push_back(points); }
+			else xsmaller.push_back(points);
+				 
+			
+		}
+
+		//bubble(xsmaller, xsmaller.size());
+		//bubble(xbigger, xbigger.size());
+
+		int listnumberhelp=0; 
+		for(int i=0; i<(xbigger.size()*6); i++){
+			v[i*6] = xbigger[i].x;
+			v[i*6+1] = xbigger[i].y;
+			v[i*6+2] = 0;
+			v[i*6+3] = 1;
+			v[i*6+4] = 1;
+			v[i*6+5] = 1;
+			listnumberhelp++;
+		}
+		int j = 0;
+		for (int i = listnumberhelp; i < (xsmaller.size() + listnumberhelp - 1) * 6; i++ ) {
+		v[i * 6] = xsmaller[j].x;
+		v[i * 6 + 1] = xsmaller[j].y;
+		v[i * 6 + 2] = 0;
+		v[i * 6 + 3] = 1;
+		v[i * 6 + 4] = 1;
+		v[i * 6 + 5] = 1;
+		listnumberhelp++;
+		j++;
+		}
+
+		id[0] = vertexesNo;
+		id[1] = 0;
+		for (int i = 1; i <= vertexesNo*2; i++) {
+			id[i * 2] = i - 1;
+			id[i * 2 + 1] = i;
 		}
 
 		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(25.0f), v, id));
