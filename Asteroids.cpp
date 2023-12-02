@@ -42,6 +42,7 @@ int _asteroidsNo;
 int score;
 
 const float maxAsteroidPointShift = .5f;
+const float minAsteroidPointShift = .25f;
 
 bool hasWaveFinished;
 
@@ -49,13 +50,17 @@ void spawnAsteroids(int asteroidsNum, Game* game) {
 	int vertexesNo;
 
 	for (int i = 0; i < asteroidsNum; i++) {
-		vertexesNo = rand() % 5 + 5;
+		vertexesNo = rand() % 5 + 8;
 
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 
 		for (int j = 0; j < vertexesNo; j++) {
-			
+			/* losujesz wspolrzedne w przedziale maxAsteroidPointShift + minAsteroidPointShift
+			* segrekujesz punkty w zale¿noœci od po³o¿enia xy
+			* (dodawanie do vectora -> vector.push_back(wartoœæ); -> vector v -> wspó³rzêdne (vec2(x,y))
+			* n 0 0 1 1 2 2 3 3 ... n -> id -> unsigned int
+			*/
 		}
 
 		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(25.0f), v, id));
