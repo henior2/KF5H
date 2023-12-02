@@ -9,6 +9,7 @@ int camSpeed = 1;
 float const velocity = 1;
 float const rotationMultiplier1 = 35;
 
+
 std::string asteroids[]{
 	"AsteroidsShip",
 	"AsteroidsShipFire",
@@ -115,13 +116,13 @@ void Game::TEST(float dt) {
 		camSpeed = 1;
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 		if(objectsVector[8]->Transform.orientation.y>90 || objectsVector[8]->Transform.orientation.y<-90)
-			objectsVector[8]->Move(vec3(1, 0, 1) * objectsVector[8]->Front * dt);
+			objectsVector[8]->Move(vec3(-1, 0, -1) * objectsVector[8]->Front * dt);
 		else
-			objectsVector[8]->Move(vec3(  1, 0, 1  )*objectsVector[8]->Front * dt);
+			objectsVector[8]->Move(vec3(  1, 0, 1 )*objectsVector[8]->Front * dt);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		//if (objectsVector[8]->Transform.orientation.y > 90 || objectsVector[8]->Transform.orientation.y < -90)
-			//objectsVector[8]->Move(vec3(1, 0, 1) * objectsVector[8]-> Front * dt);
-		//else
+		if (objectsVector[8]->Transform.orientation.y > 90 || objectsVector[8]->Transform.orientation.y < -90)
+			objectsVector[8]->Move(vec3(-1, 0, -1) * objectsVector[8]-> Front * -dt);
+		else
 			objectsVector[8]->Move(vec3( 1 , 0,  1 ) * objectsVector[8]->Front * -dt);
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
