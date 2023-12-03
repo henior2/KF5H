@@ -51,11 +51,7 @@ const int asteroidSidesNo = 8;
 bool hasWaveFinished;
 
 void spawnAsteroids(int asteroidsNum, Game* game) {
-	int vertexesNo;
-
 	for (int i = 0; i < asteroidsNum; i++) {
-		vertexesNo = 8;
-
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -77,11 +73,11 @@ void spawnAsteroids(int asteroidsNum, Game* game) {
 			v.push_back(1);
 		}
 
-		for (int i = 1; i < vertexesNo; i++) {
+		for (int i = 1; i < asteroidSidesNo; i++) {
 			id.push_back(i - 1);
 			id.push_back(i);
 		}
-		id.push_back(vertexesNo-1);
+		id.push_back(asteroidSidesNo -1);
 		id.push_back(0);
 
 		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(5.0f), v, id));
