@@ -45,22 +45,33 @@ int _asteroidsNo;
 int score;
 
 const int asteroidRadius = 10;
-const int asteroidSide = 4;
-const int asteroidSidesNo = 8;
+const int maxAsteroidsSidesNo = 11;
+const int minAsteroidsSidesno = 5;
+
+const float asteroidSizeRange = .2f;
+
+const float bigAsteroidSize = 1.5f;
+const float mediumAsteroidSize = 1.0f;
+const float smallAsteroidSize = .5f;
+
+int asteroidSidesNo;
 
 bool hasWaveFinished;
 
-void spawnAsteroids(int asteroidsNum, Game* game) {
+void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
+	float minAsteroidsSize;
+	float maxAsteroidsSize;
+
 	for (int i = 0; i < asteroidsNum; i++) {
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
 
-		double R = asteroidSide / (2 * sin(pi / asteroidSidesNo));
+		asteroidSidesNo = rand() % (maxAsteroidsSidesNo - minAsteroidsSidesno) + minAsteroidsSidesno;
 
 		for (int i = 0; i < asteroidSidesNo; ++i) {
 			double angle = 2 * pi * i / asteroidSidesNo;
-			vec2 vertex = { R * cos(angle), R * sin(angle) };
+			vec2 vertex = { asteroidRadius * cos(angle), asteroidRadius * sin(angle) };
 			points.push_back(vertex);
 		}
 
@@ -80,7 +91,26 @@ void spawnAsteroids(int asteroidsNum, Game* game) {
 		id.push_back(asteroidSidesNo -1);
 		id.push_back(0);
 
-		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(5.0f), v, id));
+		switch (type)
+		{
+		case 0:
+			minAsteroidsSize = bigAsteroidSize - bigAsteroidSize * asteroidSizeRange;
+			maxAsteroidsSize = bigAsteroidSize + bigAsteroidSize * asteroidSizeRange;
+			break;
+		case 1:
+			minAsteroidsSize = mediumAsteroidSize - mediumAsteroidSize * asteroidSizeRange;
+			maxAsteroidsSize = mediumAsteroidSize + mediumAsteroidSize * asteroidSizeRange;
+			break;
+		case 2:
+			minAsteroidsSize = smallAsteroidSize - smallAsteroidSize * asteroidSizeRange;
+			maxAsteroidsSize = smallAsteroidSize + smallAsteroidSize * asteroidSizeRange;
+			break;
+		default:
+			throw std::invalid_argument("nuh uh");
+			break;
+		}
+
+		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 	}
 }
 
@@ -92,7 +122,7 @@ void shoot(vec3 _pos, vec3 _rot, Game* game) {
 }
 
 void wave(int asteroidsNum, Game* game) {
-	spawnAsteroids(asteroidsNum, game);
+	spawnAsteroids(asteroidsNum, 0, game);
 }
 
 void Game::AsteroidsInit() {
@@ -166,10 +196,18 @@ void Game::Asteroids(float dt) {
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
 	}
 
-	//todo: add valid condition later
+	//debug - dont touch please :)
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
 		hasWaveFinished = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		jumpCooldown = 0.5f;
+		spawnAsteroids(5, 2, this);
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		jumpCooldown = 0.5f;
+		spawnAsteroids(5, 1, this);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
