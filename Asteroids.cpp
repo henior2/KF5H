@@ -45,14 +45,16 @@ int _asteroidsNo;
 int score;
 
 const int asteroidRadius = 10;
-const int maxAsteroidsSidesNo = 11;
-const int minAsteroidsSidesno = 5;
+const int maxAsteroidsSidesNo = 14;
+const int minAsteroidsSidesno = 7;
+
+const float asteroidsVertexOffset = .5f;
+
+const float bigAsteroidSize = 1.25f;
+const float mediumAsteroidSize = .8f;
+const float smallAsteroidSize = .45f;
 
 const float asteroidSizeRange = .2f;
-
-const float bigAsteroidSize = 1.5f;
-const float mediumAsteroidSize = 1.0f;
-const float smallAsteroidSize = .5f;
 
 int asteroidSidesNo;
 
@@ -71,7 +73,10 @@ void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 
 		for (int i = 0; i < asteroidSidesNo; ++i) {
 			double angle = 2 * pi * i / asteroidSidesNo;
-			vec2 vertex = { asteroidRadius * cos(angle), asteroidRadius * sin(angle) };
+			double radiusModifier = (rand() / (double)RAND_MAX) * 2 * asteroidRadius * asteroidsVertexOffset - asteroidRadius * asteroidsVertexOffset;
+			double modifiedRadius = asteroidRadius + radiusModifier;
+
+			vec2 vertex = { modifiedRadius * cos(angle), modifiedRadius * sin(angle) };
 			points.push_back(vertex);
 		}
 
