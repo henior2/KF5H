@@ -33,9 +33,6 @@ float velocityd;
 float posx;
 float posy;
 
-float bposx;
-float bposy;
-
 std::vector<float> bulletTimeRemain;
 
 const float bulletMaxTime = 3.0f;
@@ -58,7 +55,21 @@ const float asteroidSizeRange = .2f;
 
 int asteroidSidesNo;
 
+const float bigAsteroidVelocity = 7.5f;
+const float mediumAsteroidVelocity = 12.5f;
+const float smallAsteroidVelocity = 17.5f;
+
+std::vector<unsigned int> asteroidSize;
+
 bool hasWaveFinished;
+float waveAsteroidsCooldown = 5.0f;
+
+void checkBounds(GameObject* current, vec2 bounds = vec2(160,95)) {
+	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
+	if (current->Transform.position.y < -bounds.y) current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));
+	if (current->Transform.position.x > bounds.x) current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));
+	if (current->Transform.position.x < -bounds.x) current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));
+}
 
 void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 	float minAsteroidsSize;
@@ -115,7 +126,8 @@ void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 			break;
 		}
 
-		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f,0.0f,rand()%360), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+		asteroidSize.push_back(type);
 	}
 }
 
@@ -139,7 +151,6 @@ void Game::AsteroidsInit() {
 	velocityd = maxVelocity * maxVelocity;
 
 	posx = posy = 0.0f;
-	bposx = bposy = 0.0f;
 
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4)/2 + 1;
@@ -154,12 +165,14 @@ void Game::AsteroidsInit() {
 	score = 0;
 
 	hasWaveFinished = false;
+	waveAsteroidsCooldown = 5.0f;
 
 	asteroids.clear();
 	enemies.clear();
 	bullets.clear();
 
 	bulletTimeRemain.clear();
+	asteroidSize.clear();
 
 	PlaySound2d("mus01.mp3", true);
 }
@@ -257,12 +270,31 @@ void Game::Asteroids(float dt) {
 		}
 		current->Move(vec3(0.0f,1.0f,0.0f) * bulletSpeed * dt);
 
-		bposx = current->Transform.position.x;
-		bposy = current->Transform.position.y;
-		if (current->Transform.position.y > 100) current->MoveGlobal(vec3(0, -190, 0));
-		if (current->Transform.position.y < -100) current->MoveGlobal(vec3(0, 190, 0));
-		if (current->Transform.position.x > 170) current->MoveGlobal(vec3(-330, 0, 0));
-		if (current->Transform.position.x < -170) current->MoveGlobal(vec3(330, 0, 0));
+		checkBounds(current);
+	}
+
+	for (int i = 0; i < asteroids.size(); i++) {
+		GameObject* current = asteroids[i];
+
+		float _velocity;
+		switch (asteroidSize[i]) {
+		case 0:
+			_velocity = bigAsteroidVelocity;
+			break;
+		case 1:
+			_velocity = mediumAsteroidVelocity;
+			break;
+		case 2:
+			_velocity = smallAsteroidVelocity;
+			break;
+		default:
+			throw std::invalid_argument("how did you manage to mess up this bad lmao?");
+			break;
+		}
+		
+		current->Move(vec3(0.0f, 1.0f, 0.0f) * _velocity * dt);
+
+		checkBounds(current,vec2(175,110));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -270,17 +302,19 @@ void Game::Asteroids(float dt) {
 
 	posx = ship->Transform.position.x;
 	posy = ship->Transform.position.y;
-	if (ship->Transform.position.y > 100) ship->MoveGlobal(vec3(0, -190, 0));
-	if (ship->Transform.position.y < -100) ship->MoveGlobal(vec3(0, 190, 0));
-	if (ship->Transform.position.x > 170) ship->MoveGlobal(vec3(-330, 0, 0));
-	if (ship->Transform.position.x < -170) ship->MoveGlobal(vec3(330, 0, 0));
+	checkBounds(ship);
 
 	if (asteroids.size() == 0) hasWaveFinished = true;
 
 	if (hasWaveFinished) {
-		hasWaveFinished = false;
-		wave(_asteroidsNo, this);
-		if (_asteroidsNo <= 9) _asteroidsNo += 2;
-		else _asteroidsNo = 11;
+		waveAsteroidsCooldown -= dt;
+
+		if (waveAsteroidsCooldown <= 0) {
+			waveAsteroidsCooldown = 5.0f;
+			hasWaveFinished = false;
+			wave(_asteroidsNo, this);
+			if (_asteroidsNo <= 9) _asteroidsNo += 2;
+			else _asteroidsNo = 11;
+		}
 	}
 }
