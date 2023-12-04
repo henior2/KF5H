@@ -15,7 +15,7 @@ float shot_cool = 2;
 std::vector<float> fastBulletTimeRemain;
 
 const float bulletMaxTime = 3.0f;
-const float bulletSpeed = 30.0f;
+const float bulletSpeed = 28.0f;
 
 void shot(vec3 pos,vec3 rot, Game* game) {
 	fastBulletTimeRemain.push_back(bulletMaxTime);
@@ -42,6 +42,7 @@ std::string battlezone[] = {
 	"Rocket",
 	"Ufo",
 	"LeonardoTank",
+	"FastBullet",
 	""
 };
 
