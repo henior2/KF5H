@@ -343,6 +343,12 @@
     <Text Include="AsteroidsBullet.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="FastBullet.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="FastBullet.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
