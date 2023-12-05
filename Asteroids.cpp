@@ -68,7 +68,7 @@ float maxAsteroidRotationMultiplier = 50.0f;
 bool hasWaveFinished;
 float waveAsteroidsCooldown = 5.0f;
 
-void checkBounds(GameObject* current, vec2 bounds = vec2(160,95)) {
+void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
 	if (current->Transform.position.y < -bounds.y) current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));
 	if (current->Transform.position.x > bounds.x) current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));
