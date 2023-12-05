@@ -38,7 +38,7 @@ std::string objects[]{
 	"FastBullet",
 	"",
 	"MenuCube",
-	"\0"
+	"/end"
 };
 
 std::vector<GameObject*> objectsVector;
@@ -47,23 +47,26 @@ void Game::TESTInit() {
 	float shot_cool = 2;
 	float zOffset = 0.0f;
 	int xOffset = 0;
-	for (int i = 0; objects[i] != "\0"; i++)
+	for (int i = 0; objects[i] != "/end"; i++)
 	{
 		if (objects[i] == "")
-			zOffset += 10.0f;
+		{
+			zOffset -= 10.0f;
+			xOffset = 0;
+		}
 		else
-			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, -zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), objects[i]));
+			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), objects[i]));
 
 	}
 	for (char i = 'A'; i <= 'Z'; i++)
 	{
 		std::string letter = "Upper";
 		letter += i;
-		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, -45.0f), vec3(0.0f), vec3(1.0f), letter));
+		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, 10.0f), vec3(0.0f), vec3(1.0f), letter));
 	}
 	for (int i = 0; i <= 9; i++)
 	{
-		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, -55.0f), vec3(0.0f), vec3(1.0f), std::to_string(i)));
+		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, 20.0f), vec3(0.0f), vec3(1.0f), std::to_string(i)));
 	}
 }
 
