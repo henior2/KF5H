@@ -60,6 +60,10 @@ const float mediumAsteroidVelocity = 12.5f;
 const float smallAsteroidVelocity = 17.5f;
 
 std::vector<unsigned int> asteroidSize;
+std::vector<float> asteroidRotation;
+std::vector<float> asteroidRotationMultiplier;
+
+float maxAsteroidRotationMultiplier = 50.0f;
 
 bool hasWaveFinished;
 float waveAsteroidsCooldown = 5.0f;
@@ -126,7 +130,13 @@ void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 			break;
 		}
 
-		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f,0.0f,rand()%360), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+		float rot = (float) (rand()) / ((float) (RAND_MAX / 360.0f));
+		asteroidRotation.push_back(rot * pi / 180.0f);
+
+		float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
+		asteroidRotationMultiplier.push_back(rotM);
+
+		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f,0.0f,rot), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 		asteroidSize.push_back(type);
 	}
 }
@@ -173,6 +183,8 @@ void Game::AsteroidsInit() {
 
 	bulletTimeRemain.clear();
 	asteroidSize.clear();
+	asteroidRotation.clear();
+	asteroidRotationMultiplier.clear();
 
 	PlaySound2d("mus01.mp3", true);
 }
@@ -291,8 +303,11 @@ void Game::Asteroids(float dt) {
 			throw std::invalid_argument("how did you manage to mess up this bad lmao?");
 			break;
 		}
+
+		float deg = asteroidRotation[i];
 		
-		current->Move(vec3(0.0f, 1.0f, 0.0f) * _velocity * dt);
+		current->Rotate(vec3(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
+		current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity* dt);
 
 		checkBounds(current,vec2(175,110));
 	}
