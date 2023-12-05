@@ -183,6 +183,8 @@
     <Text Include="FastBullet.vx.txt" />
     <Text Include="LeonardoTank.ind.txt" />
     <Text Include="LeonardoTank.vx.txt" />
+    <Text Include="MenuSquare.ind.txt" />
+    <Text Include="MenuSquare.vx.txt" />
     <Text Include="Rocket.vx.txt" />
     <Text Include="Tank.ind.txt" />
     <Text Include="Tank.vx.txt" />

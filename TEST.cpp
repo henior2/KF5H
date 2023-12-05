@@ -38,6 +38,7 @@ std::string objects[]{
 	"FastBullet",
 	"",
 	"MenuCube",
+	"MenuSquare",
 	"/end"
 };
 
