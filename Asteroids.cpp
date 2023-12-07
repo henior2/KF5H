@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <algorithm>
 
 #define pi 3.14159265359
 
@@ -40,6 +39,7 @@ const float bulletSpeed = 50.0f;
 
 int _asteroidsNo;
 int score;
+int lives;
 
 const int asteroidRadius = 10;
 const int maxAsteroidsSidesNo = 14;
@@ -173,6 +173,7 @@ void Game::AsteroidsInit() {
 
 	_asteroidsNo = 4;
 	score = 0;
+	lives = 3;
 
 	hasWaveFinished = false;
 	waveAsteroidsCooldown = 5.0f;
