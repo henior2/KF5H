@@ -6,6 +6,7 @@ std::vector<GameObject*> obiekty;
 std::vector<GameObject*> tekst;
 
 std::string modele[] = {"MenuCube","MenuSquare"};
+std::string rareModels[] = {"AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet"};
 
 bool esc = false;
 
@@ -20,7 +21,17 @@ void Game::MenuInit() {
         float y = ((float)(rand() % 100) - 50.0f);
         float z = ((float)(rand() % 150) - 100.0f);
         vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
-        obiekty.push_back(Create(vec3(x, y, z), rot, vec3(1.0f), modele[rand()%2]));
+
+        std::string model;
+        if (rand() % 10 == 0) {
+            int temp = rand() % 3;
+            if (temp == 0) model = rareModels[rand() % (sizeof(rareModels) / sizeof(std::string))];
+            else if (temp == 1) model = "Upper" + (char)(rand() % 26 + 65);
+            else model = std::to_string(rand() % 10);
+        }
+        else model = modele[rand() % 2];
+
+        obiekty.push_back(Create(vec3(x, y, z), rot, vec3(1.0f), model));
         obiekty[i]->SetColor(vec3((float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f))));
     }
 
