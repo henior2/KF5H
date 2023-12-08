@@ -65,8 +65,10 @@ std::vector<float> asteroidRotationMultiplier;
 
 float maxAsteroidRotationMultiplier = 50.0f;
 
+int asteroidsBounds = 15;
+
 bool hasWaveFinished;
-float waveAsteroidsCooldown = 5.0f;
+float waveAsteroidsCooldown = 2.5f;
 
 void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
@@ -78,6 +80,9 @@ void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 	float minAsteroidsSize;
 	float maxAsteroidsSize;
+
+	int camW = game->camera->cameraWidth;
+	int camH = game->camera->cameraHeight;
 
 	for (int i = 0; i < asteroidsNum; i++) {
 		std::vector<float> v;
@@ -136,7 +141,18 @@ void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 		float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
 		asteroidRotationMultiplier.push_back(rotM);
 
-		asteroids.push_back(game->Create(vec3(rand()%320-160, rand()%180-90, -99.0f), vec3(0.0f,0.0f,rot), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+		vec2 pos;
+		int temp;
+
+		do {
+			temp = rand() % (2 * (camW + asteroidsBounds)) - (camW + asteroidsBounds);
+			pos.x = temp;
+
+			temp = rand() % (2 * (camH + asteroidsBounds)) - (camH + asteroidsBounds);
+			pos.y = temp;
+		} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+
+		asteroids.push_back(game->Create(vec3(pos, -90.0f), vec3(0.0f,0.0f,rot), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 		asteroidSize.push_back(type);
 	}
 }
@@ -176,7 +192,7 @@ void Game::AsteroidsInit() {
 	lives = 3;
 
 	hasWaveFinished = false;
-	waveAsteroidsCooldown = 5.0f;
+	waveAsteroidsCooldown = 2.5f;
 
 	asteroids.clear();
 	enemies.clear();
@@ -258,7 +274,6 @@ void Game::Asteroids(float dt) {
 				Game::ChangeState(Game_Menu);
 			}
 			else {
-				//todo: dodac sprawdzenie, czy nie ma tam asteroidy
 				ship->MoveTo(vec3(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80));
 				velocity = vec2(0.0f, 0.0f);
 			}
@@ -310,7 +325,7 @@ void Game::Asteroids(float dt) {
 		current->Rotate(vec3(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
 		current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity* dt);
 
-		checkBounds(current,vec2(175,110));
+		checkBounds(current,vec2(camera->cameraWidth+asteroidsBounds,camera->cameraHeight+asteroidsBounds));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -326,7 +341,7 @@ void Game::Asteroids(float dt) {
 		waveAsteroidsCooldown -= dt;
 
 		if (waveAsteroidsCooldown <= 0) {
-			waveAsteroidsCooldown = 5.0f;
+			waveAsteroidsCooldown = 2.5f;
 			hasWaveFinished = false;
 			wave(_asteroidsNo, this);
 			if (_asteroidsNo <= 9) _asteroidsNo += 2;

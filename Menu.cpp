@@ -59,7 +59,6 @@ void Game::Menu(float dt) {
         }
     }
 
-
     //todo: add UI
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
