@@ -219,6 +219,8 @@
     <Text Include="UpperJ.vx.txt" />
     <Text Include="UpperK.ind.txt" />
     <Text Include="UpperK.vx.txt" />
+    <Text Include="UpperL.ind.txt" />
+    <Text Include="UpperL.vx.txt" />
     <Text Include="UpperM.ind.txt" />
     <Text Include="UpperM.vx.txt" />
     <Text Include="UpperN.ind.txt" />
@@ -227,6 +229,8 @@
     <Text Include="UpperO.vx.txt" />
     <Text Include="UpperP.ind.txt" />
     <Text Include="UpperP.vx.txt" />
+    <Text Include="UpperQ.ind.txt" />
+    <Text Include="UpperQ.vx.txt" />
     <Text Include="UpperR.ind.txt" />
     <Text Include="UpperR.vx.txt" />
     <Text Include="UpperS.ind.txt" />
@@ -235,8 +239,12 @@
     <Text Include="UpperT.vx.txt" />
     <Text Include="UpperU.ind.txt" />
     <Text Include="UpperU.vx.txt" />
+    <Text Include="UpperV.ind.txt" />
+    <Text Include="UpperV.vx.txt" />
     <Text Include="UpperW.ind.txt" />
     <Text Include="UpperW.vx.txt" />
+    <Text Include="UpperX.ind.txt" />
+    <Text Include="UpperX.vx.txt" />
     <Text Include="UpperY.ind.txt" />
     <Text Include="UpperY.vx.txt" />
     <Text Include="UpperZ.ind.txt" />
