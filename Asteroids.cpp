@@ -10,6 +10,9 @@ std::vector<GameObject*> asteroids;
 std::vector<GameObject*> bullets;
 std::vector<GameObject*> stars;
 
+const int camW = 120;
+const int camH = 90;
+
 int modelShipFire;
 
 const float rotationMultiplier = 100.0;
@@ -42,6 +45,8 @@ int _asteroidsNo;
 int score;
 int lives;
 
+bool _return;
+
 const int asteroidRadius = 10;
 const int maxAsteroidsSidesNo = 14;
 const int minAsteroidsSidesno = 7;
@@ -66,13 +71,24 @@ std::vector<float> asteroidRotationMultiplier;
 
 float maxAsteroidRotationMultiplier = 50.0f;
 
-int asteroidsBounds = 15;
+int bounds = 15;
 
 bool hasWaveFinished;
 float waveAsteroidsCooldown = 2.5f;
 
 const int starsAmount = 100;
 const float starsSpeedMultiplier = 2.5f;
+
+float enemyProb;
+const float enemyDeltaProb = .15f;
+const float enemyMinDelay = 2.5f;
+const float enemyMaxDelay = 5.0f;
+float enemyDelay;
+
+float enemySizes[] = { 5.0f, 7.5f };
+std::vector<bool> enemyType;
+
+const float maxEnemyVelocity = 10.0f;
 
 void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
@@ -84,9 +100,6 @@ void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 	float minAsteroidsSize;
 	float maxAsteroidsSize;
-
-	int camW = game->camera->cameraWidth;
-	int camH = game->camera->cameraHeight;
 
 	for (int i = 0; i < asteroidsNum; i++) {
 		std::vector<float> v;
@@ -149,16 +162,32 @@ void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
 		int temp;
 
 		do {
-			temp = rand() % (2 * (camW + asteroidsBounds)) - (camW + asteroidsBounds);
+			temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
 			pos.x = temp;
 
-			temp = rand() % (2 * (camH + asteroidsBounds)) - (camH + asteroidsBounds);
+			temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
 			pos.y = temp;
 		} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
 
 		asteroids.push_back(game->Create(vec3(pos, -90.0f), vec3(0.0f,0.0f,rot), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 		asteroidSize.push_back(type);
 	}
+}
+
+void spawnEnemy(bool type, Game* game) {
+	vec2 pos;
+	int temp;
+
+	do {
+		temp = rand() % (2 * (camW + bounds) - (camW + bounds));
+		pos.x = temp;
+
+		temp = rand() % (2 * (camW + bounds) - (camW + bounds));
+		pos.y = temp;
+	} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+
+	enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
+	enemyType.push_back(type);
 }
 
 void shoot(vec3 _pos, vec3 _rot, Game* game) {
@@ -168,8 +197,13 @@ void shoot(vec3 _pos, vec3 _rot, Game* game) {
 	bullet->Move(vec3(0.0f, 6.25f, 0.0f));
 }
 
-void wave(int asteroidsNum, Game* game) {
+bool wave(int asteroidsNum, Game* game) {
 	spawnAsteroids(asteroidsNum, 0, game);
+
+	int temp = 0;
+	while (rand() % 100 <= enemyProb)
+		temp += 1;
+	return temp;
 }
 
 void Game::AsteroidsInit() {
@@ -188,15 +222,20 @@ void Game::AsteroidsInit() {
 	shootCooldown = .1f;
 
 	camera->perspective = false;
-	camera->cameraHeight = 90;
-	camera->cameraWidth = 160;
+	camera->cameraHeight = camH;
+	camera->cameraWidth = camW;
 
 	_asteroidsNo = 4;
 	score = 0;
 	lives = 3;
 
+	_return = 0;
+
 	hasWaveFinished = false;
 	waveAsteroidsCooldown = 2.5f;
+
+	enemyProb = 15.0f;
+	enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 
 	asteroids.clear();
 	enemies.clear();
@@ -207,6 +246,7 @@ void Game::AsteroidsInit() {
 	asteroidSize.clear();
 	asteroidRotation.clear();
 	asteroidRotationMultiplier.clear();
+	enemyType.clear();
 
 	for (int i = 0; i < starsAmount; i++) {
 		stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.0001f), "AsteroidsStar"));
@@ -301,6 +341,23 @@ void Game::Asteroids(float dt) {
 		shoot(ship->Transform.position, ship->Transform.orientation, this);
 	}
 
+	for (int i = 0; i < enemies.size(); i++) {
+		GameObject* current = enemies[i];
+
+		vec2 pos = vec2(current->Transform.position.x, current->Transform.position.y);
+		vec2 sPos = vec2(ship->Transform.position.x, ship->Transform.position.y);
+
+		vec2 dMov = vec2(sPos.x - pos.x, sPos.y - pos.y);
+		
+		if (dMov.x > 0) dMov.x = maxEnemyVelocity;
+		else if (dMov.x < 0) dMov.x = -maxEnemyVelocity;
+
+		if (dMov.y > 0) dMov.y = maxEnemyVelocity;
+		else if (dMov.y < 0) dMov.y = -maxEnemyVelocity;
+
+		current->MoveGlobal(vec3(dMov, 0.0f)*dt);
+	}
+
 	for (int i = 0; i < bullets.size(); i++) {
 		GameObject* current = bullets[i];
 
@@ -341,7 +398,7 @@ void Game::Asteroids(float dt) {
 		current->Rotate(vec3(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
 		current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity* dt);
 
-		checkBounds(current,vec2(camera->cameraWidth+asteroidsBounds,camera->cameraHeight+asteroidsBounds));
+		checkBounds(current,vec2(camera->cameraWidth+ bounds,camera->cameraHeight+ bounds));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -359,9 +416,21 @@ void Game::Asteroids(float dt) {
 		if (waveAsteroidsCooldown <= 0) {
 			waveAsteroidsCooldown = 2.5f;
 			hasWaveFinished = false;
-			wave(_asteroidsNo, this);
+			_return = wave(_asteroidsNo, this);
 			if (_asteroidsNo <= 9) _asteroidsNo += 2;
 			else _asteroidsNo = 11;
+		}
+	}
+
+	if (_return != 0) {
+		enemyDelay -= dt;
+		if (enemyDelay <= 0) {
+			for (int i = 0; i < _return; i++) 
+				spawnEnemy(0,this);
+
+			enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay;
+			enemyProb += enemyProb * enemyDeltaProb;
+			_return = 0;
 		}
 	}
 }
