@@ -29,6 +29,7 @@ std::string objects[]{
 	"AsteroidsShipFire",
 	"AsteroidsEnemy",
 	"AsteroidsBullet",
+	"AsteroidsStar",
 	"",
 	"Tank",
 	"FastTank",
@@ -105,6 +106,9 @@ void Game::TEST(float dt) {
 		//camera->Position.x += 5 * dt;
 		camera->MoveCamera(RIGHT, dt / 2 * camSpeed);
 	}
+
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera->Position.y += 2 * camSpeed * dt;
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) camera->Position.y -= 2 * camSpeed * dt;
 
 	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
 		camera->Position = vec3(0.0f, 0.0f, 0.0f);

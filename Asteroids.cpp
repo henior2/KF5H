@@ -8,6 +8,7 @@ GameObject* ship;
 std::vector<GameObject*> enemies;
 std::vector<GameObject*> asteroids;
 std::vector<GameObject*> bullets;
+std::vector<GameObject*> stars;
 
 int modelShipFire;
 
@@ -69,6 +70,9 @@ int asteroidsBounds = 15;
 
 bool hasWaveFinished;
 float waveAsteroidsCooldown = 2.5f;
+
+const int starsAmount = 100;
+const float starsSpeedMultiplier = 2.5f;
 
 void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
@@ -197,11 +201,16 @@ void Game::AsteroidsInit() {
 	asteroids.clear();
 	enemies.clear();
 	bullets.clear();
+	stars.clear();
 
 	bulletTimeRemain.clear();
 	asteroidSize.clear();
 	asteroidRotation.clear();
 	asteroidRotationMultiplier.clear();
+
+	for (int i = 0; i < starsAmount; i++) {
+		stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.0001f), "AsteroidsStar"));
+	}
 
 	PlaySound2d("mus01.mp3", true);
 }
@@ -211,7 +220,9 @@ void Game::Asteroids(float dt) {
 	shootCooldown -= dt;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		velocity += acceleration * dt * vec2(ship->Up.x, ship->Up.y);
+		vec2 shipUp = ship->Up;
+
+		velocity += acceleration * dt * vec2(shipUp.x, shipUp.y);
 		speed = velocity.x * velocity.x + velocity.y * velocity.y;
 		if (speed > velocityd) velocity *= velocityd / speed;
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
@@ -227,6 +238,11 @@ void Game::Asteroids(float dt) {
 				shipAnimationCooldown = (rand() % 4) / 2 + 1;
 				shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 			}
+		}
+		
+		for (int i = 0; i < starsAmount; i++) {
+			stars[i]->MoveGlobal(vec3(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
+			checkBounds(stars[i], vec2(160, 90));
 		}
 	}
 	else {

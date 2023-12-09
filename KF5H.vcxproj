@@ -179,6 +179,8 @@
     <Text Include="AsteroidsShip.vx.txt" />
     <Text Include="AsteroidsShipFire.ind.txt" />
     <Text Include="AsteroidsShipFire.vx.txt" />
+    <Text Include="AsteroidsStar.ind.txt" />
+    <Text Include="AsteroidsStar.vx.txt" />
     <Text Include="FastBullet.ind.txt" />
     <Text Include="FastBullet.vx.txt" />
     <Text Include="LeonardoTank.ind.txt" />
