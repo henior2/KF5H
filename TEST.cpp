@@ -24,7 +24,7 @@ void shot(vec3 pos,vec3 rot, Game* game) {
 	bullet->Move(vec3(0, 0, -1));
 }
 
-std::string objects[]{
+std::vector<std::string> objects = {
 	"AsteroidsShip",
 	"AsteroidsShipFire",
 	"AsteroidsEnemy",
@@ -39,8 +39,7 @@ std::string objects[]{
 	"FastBullet",
 	"",
 	"MenuCube",
-	"MenuSquare",
-	"/end"
+	"MenuSquare"
 };
 
 std::vector<GameObject*> objectsVector;
@@ -49,15 +48,15 @@ void Game::TESTInit() {
 	float shot_cool = 2;
 	float zOffset = 0.0f;
 	int xOffset = 0;
-	for (int i = 0; objects[i] != "/end"; i++)
+	for (const std::string& object : objects)
 	{
-		if (objects[i] == "")
+		if (object.empty())
 		{
 			zOffset -= 10.0f;
 			xOffset = 0;
 		}
 		else
-			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), objects[i]));
+			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), object));
 
 	}
 	for (char i = 'A'; i <= 'Z'; i++)
