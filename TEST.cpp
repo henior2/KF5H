@@ -45,6 +45,19 @@ std::vector<std::string> objects = {
 std::vector<GameObject*> objectsVector;
 
 void Game::TESTInit() {
+	objects.push_back("");
+	for (char i = 'A'; i <= 'Z'; i++)
+	{
+		std::string letter = "Upper";
+		letter += i;
+		objects.push_back(letter);
+	}
+	objects.push_back("");
+	for (int i = 0; i <= 9; i++)
+	{
+		objects.push_back(std::to_string(i));
+	}
+
 	float shot_cool = 2;
 	float zOffset = 0.0f;
 	int xOffset = 0;
@@ -58,16 +71,6 @@ void Game::TESTInit() {
 		else
 			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), object));
 
-	}
-	for (char i = 'A'; i <= 'Z'; i++)
-	{
-		std::string letter = "Upper";
-		letter += i;
-		objectsVector.push_back(Create(vec3(10.0f * (i - 'A'), 0.0f, 10.0f), vec3(0.0f), vec3(1.0f), letter));
-	}
-	for (int i = 0; i <= 9; i++)
-	{
-		objectsVector.push_back(Create(vec3(10.0f * i, 0.0f, 20.0f), vec3(0.0f), vec3(1.0f), std::to_string(i)));
 	}
 }
 
