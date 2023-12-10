@@ -30,6 +30,7 @@ std::vector<std::string> objects = {
 	"AsteroidsEnemy",
 	"AsteroidsBullet",
 	"AsteroidsStar",
+	"AsteroidsEnemyBullet",
 	"",
 	"Tank",
 	"FastTank",

@@ -10,7 +10,7 @@ std::vector<GameObject*> asteroids;
 std::vector<GameObject*> bullets;
 std::vector<GameObject*> stars;
 
-const int camW = 120;
+const int camW = 160;
 const int camH = 90;
 
 int modelShipFire;
@@ -86,9 +86,15 @@ const float enemyMaxDelay = 5.0f;
 float enemyDelay;
 
 float enemySizes[] = { 5.0f, 7.5f };
+float enemyAccuracy[] = { 50.0f, 75.0f };
 std::vector<bool> enemyType;
 
 const float maxEnemyVelocity = 10.0f;
+
+const float maxEnemyBulletTime = 2.0f;
+std::vector<float> enemyShootCooldown;
+float _enemyShootCooldown[] = { 3.0f, 5.0f };
+const float enemyShootCooldownRange = .2f;
 
 void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
@@ -188,13 +194,32 @@ void spawnEnemy(bool type, Game* game) {
 
 	enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
 	enemyType.push_back(type);
+	enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100))/100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
 }
 
-void shoot(vec3 _pos, vec3 _rot, Game* game) {
-	bulletTimeRemain.push_back(bulletMaxTime);
-	GameObject* bullet = game->Create(_pos, _rot, vec3(2.5f), "AsteroidsBullet");
+void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
+	float _time;
+	float _scale;
+	std::string _model;
+	float _offset;
+
+	if (!type) {
+		_time = bulletMaxTime;
+		_scale = 2.5f;
+		_model = "AsteroidsBullet";
+		_offset = 6.25f;
+	}
+	else {
+		_time = maxEnemyBulletTime;
+		_scale = 1.75f;
+		_model = "AsteroidsEnemyBullet";
+		_offset = enemySizes[(int)eType] / 2;
+	}
+
+	bulletTimeRemain.push_back(_time);
+	GameObject* bullet = game->Create(_pos, _rot, vec3(_scale), _model);
 	bullets.push_back(bullet);
-	bullet->Move(vec3(0.0f, 6.25f, 0.0f));
+	bullet->Move(vec3(0.0f, _offset, 0.0f));
 }
 
 bool wave(int asteroidsNum, Game* game) {
@@ -247,6 +272,7 @@ void Game::AsteroidsInit() {
 	asteroidRotation.clear();
 	asteroidRotationMultiplier.clear();
 	enemyType.clear();
+	enemyShootCooldown.clear();
 
 	for (int i = 0; i < starsAmount; i++) {
 		stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.0001f), "AsteroidsStar"));
@@ -312,6 +338,15 @@ void Game::Asteroids(float dt) {
 		jumpCooldown = 0.5f;
 		spawnAsteroids(5, 1, this);
 	}
+	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		jumpCooldown = .5f;
+		spawnEnemy(0, this);
+	}
+	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		jumpCooldown = .5f;
+		spawnEnemy(1, this);
+	}
+	//end of debug :)
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
@@ -338,7 +373,7 @@ void Game::Asteroids(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown<=0) {
 		shootCooldown = .25f;
-		shoot(ship->Transform.position, ship->Transform.orientation, this);
+		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
 	}
 
 	for (int i = 0; i < enemies.size(); i++) {
@@ -349,13 +384,23 @@ void Game::Asteroids(float dt) {
 
 		vec2 dMov = vec2(sPos.x - pos.x, sPos.y - pos.y);
 		
-		if (dMov.x > 0) dMov.x = maxEnemyVelocity;
-		else if (dMov.x < 0) dMov.x = -maxEnemyVelocity;
+		if (dMov.x > maxEnemyVelocity) dMov.x = maxEnemyVelocity;
+		else if (dMov.x < -maxEnemyVelocity) dMov.x = -maxEnemyVelocity;
 
-		if (dMov.y > 0) dMov.y = maxEnemyVelocity;
-		else if (dMov.y < 0) dMov.y = -maxEnemyVelocity;
+		if (dMov.y > maxEnemyVelocity) dMov.y = maxEnemyVelocity;
+		else if (dMov.y < -maxEnemyVelocity) dMov.y = -maxEnemyVelocity;
 
 		current->MoveGlobal(vec3(dMov, 0.0f)*dt);
+
+		enemyShootCooldown[i] -= dt;
+		if (enemyShootCooldown[i] <= 0) {
+			enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)enemyType[i]]);
+
+			float _angle = atan2(sPos.y-pos.y, sPos.x-pos.x);
+			_angle = _angle * 180.0f / pi - 90.0f;
+
+			shoot(current->Transform.position, vec3(0.0f,0.0f,_angle), 1, this, enemyType[i]);
+		}
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
@@ -404,8 +449,8 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	posx = ship->Transform.position.x;
-	posy = ship->Transform.position.y;
+	//posx = ship->Transform.position.x;
+	//posy = ship->Transform.position.y;
 	checkBounds(ship);
 
 	if (asteroids.size() == 0) hasWaveFinished = true;
