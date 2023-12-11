@@ -5,6 +5,9 @@ using namespace glm;
 std::vector<GameObject*> obiekty;
 std::vector<GameObject*> tekst;
 
+std::string modele[] = {"MenuCube","MenuSquare"};
+std::string rareModels[] = {"AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet"};
+
 bool esc = false;
 
 void Game::MenuInit() {
@@ -12,20 +15,32 @@ void Game::MenuInit() {
     tekst.clear();
     esc = false;
     srand(time(NULL));
-
+    
     for (int i = 0; i < 1500; i++) {
         float x = ((float)(rand() % 100) - 50.0f);
         float y = ((float)(rand() % 100) - 50.0f);
         float z = ((float)(rand() % 150) - 100.0f);
         vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
-        obiekty.push_back(Create(vec3(x, y, z), rot, vec3(1.0f), "MenuCube"));
+
+        std::string model;
+        if (rand() % 10 == 0) {
+            int temp = rand() % 3;
+            if (temp == 0) model = rareModels[rand() % (sizeof(rareModels) / sizeof(std::string))];
+            else if (temp == 1) model = "Upper" + (char)(rand() % 26 + 65);
+            else model = std::to_string(rand() % 10);
+        }
+        else model = modele[rand() % 2];
+
+        obiekty.push_back(Create(vec3(x, y, z), rot, vec3(1.0f), model));
+        obiekty[i]->SetColor(vec3((float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f))));
     }
 
-    for (int i = 0; i < 4; i++) {
-        float z = ((float)(rand() % 200) - 100.0f);
-        vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
-        obiekty.push_back(Create(vec3(0.0f, 0.0f, z), rot, vec3(1.0f), "MenuCube"));
-    }
+    //po to to wsm xd
+    //for (int i = 0; i < 4; i++) {
+    //    float z = ((float)(rand() % 200) - 100.0f);
+    //    vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
+    //    obiekty.push_back(Create(vec3(0.0f, 0.0f, z), rot, vec3(1.0f), "MenuCube"));
+    //}
 
     camera->RotateCamera(0.0f, 90.0f);
 
@@ -39,10 +54,10 @@ void Game::Menu(float dt) {
         obiekty[i]->Stage[Objects[i]->activeStage].lineWidth = ((obiekty[i]->Transform.position.z / 10.0f) + 10.0f) / 3.0f;
         if (pos.z > 10) {
             float z = ((float)(rand() % 100) + 101.0f);
+            obiekty[i]->SetColor(vec3((float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f))));
             obiekty[i]->MoveTo(vec3(pos.x, pos.y, -z));
         }
     }
-
 
     //todo: add UI
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);

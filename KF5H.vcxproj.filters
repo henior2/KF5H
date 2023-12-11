@@ -346,10 +346,10 @@
     <Text Include="AsteroidsBullet.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsBullet2.ind.txt">
+    <Text Include="FastBullet.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsBullet2.vx.txt">
+    <Text Include="FastBullet.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
   </ItemGroup>
