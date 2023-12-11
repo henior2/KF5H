@@ -86,7 +86,6 @@ const float enemyMaxDelay = 5.0f;
 float enemyDelay;
 
 float enemySizes[] = { 5.0f, 7.5f };
-float enemyAccuracy[] = { 50.0f, 75.0f };
 std::vector<bool> enemyType;
 
 const float maxEnemyVelocity = 10.0f;
@@ -95,6 +94,11 @@ const float maxEnemyBulletTime = 2.0f;
 std::vector<float> enemyShootCooldown;
 float _enemyShootCooldown[] = { 3.0f, 5.0f };
 const float enemyShootCooldownRange = .2f;
+
+const int maxBigEnemyMoves = 5;
+std::vector<vec3> eBDPos;
+
+int bigEnemyIterator;
 
 void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
 	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
@@ -195,6 +199,7 @@ void spawnEnemy(bool type, Game* game) {
 	enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
 	enemyType.push_back(type);
 	enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100))/100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
+	if (type) eBDPos.push_back(vec3(rand() * (2 * camW) - camW, rand() % (2 * camH) - camH, rand() % maxBigEnemyMoves + 1));
 }
 
 void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
@@ -262,6 +267,8 @@ void Game::AsteroidsInit() {
 	enemyProb = 15.0f;
 	enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 
+	bigEnemyIterator = 0;
+
 	asteroids.clear();
 	enemies.clear();
 	bullets.clear();
@@ -273,6 +280,7 @@ void Game::AsteroidsInit() {
 	asteroidRotationMultiplier.clear();
 	enemyType.clear();
 	enemyShootCooldown.clear();
+	eBDPos.clear();
 
 	for (int i = 0; i < starsAmount; i++) {
 		stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.0001f), "AsteroidsStar"));
@@ -284,6 +292,8 @@ void Game::AsteroidsInit() {
 void Game::Asteroids(float dt) {
 	jumpCooldown -= dt;
 	shootCooldown -= dt;
+
+	bigEnemyIterator = 0;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		vec2 shipUp = ship->Up;
@@ -378,9 +388,36 @@ void Game::Asteroids(float dt) {
 
 	for (int i = 0; i < enemies.size(); i++) {
 		GameObject* current = enemies[i];
+		bool type = enemyType[i];
+
+		vec2 sPos;
 
 		vec2 pos = vec2(current->Transform.position.x, current->Transform.position.y);
-		vec2 sPos = vec2(ship->Transform.position.x, ship->Transform.position.y);
+
+		if (!type) sPos = vec2(ship->Transform.position.x, ship->Transform.position.y);
+		else {
+			sPos = vec2(eBDPos[bigEnemyIterator].x, eBDPos[bigEnemyIterator].y);
+			eBDPos[bigEnemyIterator].x--;
+			bigEnemyIterator++;
+		}
+
+		if (sPos.x + 5 > pos.x && sPos.x - 5 < pos.x && sPos.y + 5 > pos.y && sPos.y - 5 < pos.y) {
+			if (eBDPos[bigEnemyIterator].z > 0) {
+				eBDPos[bigEnemyIterator] = vec3(rand() * (2 * camW) - camW, rand() % (2 * camH) - camH, eBDPos[bigEnemyIterator].z);
+			}
+			else {
+				eBDPos[bigEnemyIterator] = vec3(rand() % (2 * camW) - camW, rand() % camH - 3 * camH, eBDPos[bigEnemyIterator].z);
+			}
+		}
+
+		if (pos.y <= -camH - bounds) {
+			enemies.erase(enemies.begin() + i);
+			enemyType.erase(enemyType.begin() + i);
+			eBDPos.erase(eBDPos.begin() + bigEnemyIterator);
+			enemyShootCooldown.erase(enemyShootCooldown.begin() + i);
+			
+			bigEnemyIterator--;
+		}
 
 		vec2 dMov = vec2(sPos.x - pos.x, sPos.y - pos.y);
 		
@@ -392,15 +429,23 @@ void Game::Asteroids(float dt) {
 
 		current->MoveGlobal(vec3(dMov, 0.0f)*dt);
 
+		float _angle;
+
 		enemyShootCooldown[i] -= dt;
 		if (enemyShootCooldown[i] <= 0) {
-			enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)enemyType[i]]);
+			if (!type) {
+				enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]);
 
-			float _angle = atan2(sPos.y-pos.y, sPos.x-pos.x);
-			_angle = _angle * 180.0f / pi - 90.0f;
+				_angle = atan2(sPos.y - pos.y, sPos.x - pos.x);
+				_angle = _angle * 180.0f / pi - 90.0f;
+			}
+			else _angle = rand() % 360;
 
-			shoot(current->Transform.position, vec3(0.0f,0.0f,_angle), 1, this, enemyType[i]);
+			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, this, type);
+			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
 		}
+
+		checkBounds(current);
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
