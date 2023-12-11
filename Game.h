@@ -7,11 +7,13 @@
 #include "GameObject.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Tekst2d.h"
 
 #include<irrKlang/irrKlang.h>
 
 //stan gry
 enum GameState {
+	Game_Init,
 	Game_Menu,
 	Game_Battlezone,
 	Game_Tempest,
@@ -39,6 +41,7 @@ public:
 	irrklang::ISoundEngine* engine;
 
 	std::vector<GameObject*> Objects;
+	std::vector<Tekst2d*> Teksts;
 
 	GameState State;
 	bool Keys[1024];
@@ -63,6 +66,12 @@ public:
 	GameObject* Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::string Object);
 	GameObject* Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::vector<float> vertecies, std::vector<unsigned int> indecies);
 	void Destroy(GameObject* Object);
+
+	Tekst2d* CreateTekst(glm::vec2 pos, float rot, glm::vec2 scale, float height, float spacing, std::string tekst);
+	void DestroyTekst(Tekst2d* tekst);
+
+	void GameInit();
+	void Init(float dt);
 
 	void Menu(float dt);
 	void MenuInit();

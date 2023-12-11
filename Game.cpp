@@ -1,7 +1,7 @@
 #include "Game.h"
 
 Game::Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::ISoundEngine* SoundEngine)
-    : State(Game_Menu), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height), engine(SoundEngine)
+    : State(Game_Init), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height), engine(SoundEngine)
 {
 
     program = new Shader("VertexShader.txt", "FragmentShader.txt");
@@ -42,6 +42,9 @@ void Game::ChangeState(GameState state) {
     else if (state == Game_TEST) {
 		this->TESTInit();
     }
+    else if (state == Game_Init) {
+        this->GameInit();
+    }
 }
 
 void Game::Update(float dt)
@@ -59,6 +62,9 @@ void Game::Update(float dt)
     }
     else if (this->State == Game_TEST) {
         this->TEST(dt);
+    }
+    else if (this->State == Game_Init) {
+        this->Init(dt);
     }
 
     this->Render(dt);
@@ -109,6 +115,29 @@ void Game::Render(float dt){
         glDrawElements(GL_LINES, this->Objects[i]->Stage[Objects[i]->activeStage].lines, GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_POINTS, 0, this->Objects[i]->Stage[Objects[i]->activeStage].pointsNum);
     }
+    
+    for (int i = 0; i < Teksts.size(); i++) {
+        program->SetBool("onTop", true);
+
+        glBindVertexArray(this->Teksts[i]->Letters.VAO);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(this->Teksts[i]->Transform.position, 0.0f));
+        model = glm::rotate(model, glm::radians(this->Teksts[i]->Transform.orientation), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(this->Teksts[i]->Transform.scale, 0.0f));
+
+        program->SetBool("DifferColor", true);
+        program->SetVec3("color", Teksts[i]->color);
+
+        program->SetFloat("alpha", this->Teksts[i]->properties.opacity);
+
+        program->setMat4("model", model);
+
+        glLineWidth(this->Teksts[i]->properties.lineWidth);
+        glPointSize(this->Teksts[i]->properties.lineWidth);
+
+        glDrawElements(GL_LINES, this->Teksts[i]->Letters.lines, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_POINTS, 0, this->Teksts[i]->Letters.pointsNum);
+    }
 }
 
 GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::string Object) {
@@ -128,12 +157,29 @@ GameObject* Game::Create(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, std::vec
 }
 
 void Game::Destroy(GameObject* obj) {
-    for (int i = obj->index + 1; i < Objects.size(); i++) {
+    for (int i = obj->index + 1; i < Objects.size(); i++)
         Objects[i]->index--;
-    }
     Objects.erase(Objects.begin() + obj->index);
     delete obj;
 }
+
+
+
+Tekst2d* Game::CreateTekst(glm::vec2 pos, float rot, glm::vec2 scale, float height, float spacing, std::string tekst) {
+    Tekst2d* txt = new Tekst2d(pos, rot, scale, tekst, height, spacing, Teksts.size());
+    Teksts.push_back(txt);
+    return txt;
+}
+
+void Game::DestroyTekst(Tekst2d* tekst) {
+    for (int i = tekst->index + 1; i < Teksts.size(); i++)
+        Teksts[i]->index--;
+    Teksts.erase(Teksts.begin() + tekst->index);
+    delete tekst;
+}
+
+
+
 
 void Game::ProcessInput(float dt)
 {

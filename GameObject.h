@@ -21,9 +21,9 @@ struct Transformations {
 struct Rendering
 {
 	unsigned int VAO;
-	float lineWidth = 1.0f;
+	float lineWidth = 1.0;
 	bool onTop = false;
-	float opacity = 1;
+	float opacity = 1.0;
 	int pointsNum = 0;
 	int lines = 0;
 

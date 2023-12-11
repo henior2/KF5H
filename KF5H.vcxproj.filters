@@ -66,7 +66,10 @@
     <ClCompile Include="TEST.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tekst.cpp">
+    <ClCompile Include="Tekst2d.cpp">
+      <Filter>Source Files\GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Init.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,7 +86,7 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tekst.h">
+    <ClInclude Include="Tekst2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -118,136 +121,136 @@
     <Text Include="AsteroidsEnemy.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="UpperA.ind.txt">
+    <Text Include="A.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperA.vx.txt">
+    <Text Include="A.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperB.ind.txt">
+    <Text Include="B.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperB.vx.txt">
+    <Text Include="B.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperC.ind.txt">
+    <Text Include="C.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperC.vx.txt">
+    <Text Include="C.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperD.ind.txt">
+    <Text Include="D.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperD.vx.txt">
+    <Text Include="D.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperE.ind.txt">
+    <Text Include="E.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperE.vx.txt">
+    <Text Include="E.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperF.ind.txt">
+    <Text Include="F.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperF.vx.txt">
+    <Text Include="F.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperG.ind.txt">
+    <Text Include="G.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperG.vx.txt">
+    <Text Include="G.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperH.ind.txt">
+    <Text Include="H.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperH.vx.txt">
+    <Text Include="H.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperI.ind.txt">
+    <Text Include="I.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperI.vx.txt">
+    <Text Include="I.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperJ.ind.txt">
+    <Text Include="J.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperJ.vx.txt">
+    <Text Include="J.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperK.ind.txt">
+    <Text Include="K.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperK.vx.txt">
+    <Text Include="K.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperM.ind.txt">
+    <Text Include="M.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperM.vx.txt">
+    <Text Include="M.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperN.ind.txt">
+    <Text Include="N.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperN.vx.txt">
+    <Text Include="N.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperO.ind.txt">
+    <Text Include="O.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperO.vx.txt">
+    <Text Include="O.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperP.ind.txt">
+    <Text Include="P.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperP.vx.txt">
+    <Text Include="P.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperR.ind.txt">
+    <Text Include="R.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperR.vx.txt">
+    <Text Include="R.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperS.ind.txt">
+    <Text Include="S.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperS.vx.txt">
+    <Text Include="S.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperT.ind.txt">
+    <Text Include="T.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperT.vx.txt">
+    <Text Include="T.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperU.ind.txt">
+    <Text Include="U.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperU.vx.txt">
+    <Text Include="U.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperW.ind.txt">
+    <Text Include="W.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperW.vx.txt">
+    <Text Include="W.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperY.ind.txt">
+    <Text Include="Y.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperY.vx.txt">
+    <Text Include="Y.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperZ.ind.txt">
+    <Text Include="Z.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="UpperZ.vx.txt">
+    <Text Include="Z.vx.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
     <Text Include="Tank.ind.txt">
