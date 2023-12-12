@@ -21,6 +21,10 @@ void Game::ChangeState(GameState state) {
     for (int i = 0; i < Objects.size(); i++) {
         delete Objects[i];
     }
+    for (int i = 0; i < Teksts.size(); i++) {
+		delete Teksts[i];
+	}
+    Teksts.clear();
     Objects.clear();
     camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
     camera->Yaw = -90.0f;
