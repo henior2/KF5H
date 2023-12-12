@@ -4,6 +4,8 @@ Tekst2d* KF5H[4];
 
 float Time = 0;
 
+bool _esc = false;
+
 using namespace glm;
 
 float f(float x) {
@@ -56,7 +58,13 @@ void Game::Init(float dt) {
 		}
 	}
 
-	if (Time > 12 || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+	if(_esc)
 		ChangeState(Game_Menu);
+
+	if (Time > 12 || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+		for (Tekst2d* tekst : KF5H) {
+			tekst->properties.opacity = 0;
+		}
+		_esc = true;
 	}
 }
