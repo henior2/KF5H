@@ -35,13 +35,6 @@ void Game::MenuInit() {
         obiekty[i]->SetColor(vec3((float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f))));
     }
 
-    //po to to wsm xd
-    //for (int i = 0; i < 4; i++) {
-    //    float z = ((float)(rand() % 200) - 100.0f);
-    //    vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
-    //    obiekty.push_back(Create(vec3(0.0f, 0.0f, z), rot, vec3(1.0f), "MenuCube"));
-    //}
-
     camera->RotateCamera(0.0f, 90.0f);
 
     PlaySound2d("mus02.mp3", true);

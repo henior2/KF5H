@@ -199,7 +199,7 @@ void spawnEnemy(bool type, Game* game) {
 	enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
 	enemyType.push_back(type);
 	enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100))/100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
-	if (type) eBDPos.push_back(vec3(rand() * (2 * camW) - camW, rand() % (2 * camH) - camH, rand() % maxBigEnemyMoves + 1));
+	if (type) eBDPos.push_back(vec3(rand() % (2 * camW) - camW, rand() % (2 * camH) - camH, rand() % maxBigEnemyMoves + 1));
 }
 
 void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
@@ -411,6 +411,7 @@ void Game::Asteroids(float dt) {
 		}
 
 		if (pos.y <= -camH - bounds) {
+			Destroy(current);
 			enemies.erase(enemies.begin() + i);
 			enemyType.erase(enemyType.begin() + i);
 			eBDPos.erase(eBDPos.begin() + bigEnemyIterator);
@@ -494,8 +495,6 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	//posx = ship->Transform.position.x;
-	//posy = ship->Transform.position.y;
 	checkBounds(ship);
 
 	if (asteroids.size() == 0) hasWaveFinished = true;

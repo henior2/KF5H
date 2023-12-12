@@ -56,7 +56,8 @@ void Game::Init(float dt) {
 		}
 	}
 
-	if (Time > 12) {
+	//chwilowo (nie chce mi sie czekac lol)
+	if (Time > 12 || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		ChangeState(Game_Menu);
 	}
 }
