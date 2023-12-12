@@ -49,8 +49,7 @@ void Game::TESTInit() {
 	objects.push_back("");
 	for (char i = 'A'; i <= 'Z'; i++)
 	{
-		std::string letter = "Upper";
-		letter += i;
+		std::string letter = { i };
 		objects.push_back(letter);
 	}
 	objects.push_back("");
