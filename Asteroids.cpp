@@ -194,12 +194,12 @@ void spawnEnemy(bool type, Game* game) {
 
 		temp = rand() % (2 * (camW + bounds) - (camW + bounds));
 		pos.y = temp;
-	} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+	} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 
 	enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
 	enemyType.push_back(type);
 	enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100))/100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
-	if (type) eBDPos.push_back(vec3(rand() % (2 * camW) - camW, rand() % (2 * camH) - camH, rand() % maxBigEnemyMoves + 1));
+	if (type) eBDPos.push_back(vec3(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
 }
 
 void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
@@ -396,17 +396,17 @@ void Game::Asteroids(float dt) {
 
 		if (!type) sPos = vec2(ship->Transform.position.x, ship->Transform.position.y);
 		else {
-			sPos = vec2(eBDPos[bigEnemyIterator].x, eBDPos[bigEnemyIterator].y);
-			eBDPos[bigEnemyIterator].x--;
 			bigEnemyIterator++;
+			sPos = vec2(eBDPos[bigEnemyIterator].x, eBDPos[bigEnemyIterator].y);
+			eBDPos[bigEnemyIterator].z--;
 		}
 
 		if (sPos.x + 5 > pos.x && sPos.x - 5 < pos.x && sPos.y + 5 > pos.y && sPos.y - 5 < pos.y) {
 			if (eBDPos[bigEnemyIterator].z > 0) {
-				eBDPos[bigEnemyIterator] = vec3(rand() * (2 * camW) - camW, rand() % (2 * camH) - camH, eBDPos[bigEnemyIterator].z);
+				eBDPos[bigEnemyIterator] = vec3(rand() * (2 * (camW + bounds)) - (camW + bounds), rand() % (2 * (camH + bounds)) - (camH + bounds), eBDPos[bigEnemyIterator].z);
 			}
 			else {
-				eBDPos[bigEnemyIterator] = vec3(rand() % (2 * camW) - camW, rand() % camH - 3 * camH, eBDPos[bigEnemyIterator].z);
+				eBDPos[bigEnemyIterator] = vec3(rand() % (2 * camW) - camW, -2 * camH - bounds, eBDPos[bigEnemyIterator].z);
 			}
 		}
 
@@ -445,8 +445,6 @@ void Game::Asteroids(float dt) {
 			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, this, type);
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
 		}
-
-		checkBounds(current);
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
