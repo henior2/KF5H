@@ -352,6 +352,48 @@
     <Text Include="FastBullet.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="AsteroidsEnemyBullet.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsEnemyBullet.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsStar.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsStar.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="MenuSquare.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="MenuSquare.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="V.ind.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="V.vx.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="X.ind.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="X.vx.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="Q.ind.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="Q.vx.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="L.vx.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="L.ind.txt">
+      <Filter>TextFiles\Alphabet</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
