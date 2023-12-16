@@ -283,7 +283,7 @@ void Game::AsteroidsInit() {
 	eBDPos.clear();
 
 	for (int i = 0; i < starsAmount; i++) {
-		stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.0001f), "AsteroidsStar"));
+		stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.01f), "AsteroidsStar"));
 	}
 
 	PlaySound2d("mus01.mp3", true);
@@ -396,7 +396,6 @@ void Game::Asteroids(float dt) {
 
 		if (!type) sPos = vec2(ship->Transform.position.x, ship->Transform.position.y);
 		else {
-			bigEnemyIterator++;
 			sPos = vec2(eBDPos[bigEnemyIterator].x, eBDPos[bigEnemyIterator].y);
 			eBDPos[bigEnemyIterator].z--;
 		}
@@ -408,16 +407,6 @@ void Game::Asteroids(float dt) {
 			else {
 				eBDPos[bigEnemyIterator] = vec3(rand() % (2 * camW) - camW, -2 * camH - bounds, eBDPos[bigEnemyIterator].z);
 			}
-		}
-
-		if (pos.y <= -camH - bounds) {
-			Destroy(current);
-			enemies.erase(enemies.begin() + i);
-			enemyType.erase(enemyType.begin() + i);
-			eBDPos.erase(eBDPos.begin() + bigEnemyIterator);
-			enemyShootCooldown.erase(enemyShootCooldown.begin() + i);
-			
-			bigEnemyIterator--;
 		}
 
 		vec2 dMov = vec2(sPos.x - pos.x, sPos.y - pos.y);
@@ -445,6 +434,17 @@ void Game::Asteroids(float dt) {
 			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, this, type);
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
 		}
+
+		if (pos.y <= -camH - bounds && eBDPos[bigEnemyIterator].z <= 0) {
+			Destroy(current);
+			enemies.erase(enemies.begin() + i);
+			enemyType.erase(enemyType.begin() + i);
+			eBDPos.erase(eBDPos.begin() + bigEnemyIterator);
+			enemyShootCooldown.erase(enemyShootCooldown.begin() + i);
+			
+			bigEnemyIterator--; i--;
+		}
+		bigEnemyIterator++;
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
