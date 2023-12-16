@@ -124,7 +124,7 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 void GameObject::UpdateVectors() {
 	glm::vec3 front;
 	float x, y, z;
-	front.x = cos(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
+	front.x = -cos(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
 	front.y = sin(glm::radians(this->Transform.orientation.x));
 	front.z = sin(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
 	Front = glm::normalize(front);

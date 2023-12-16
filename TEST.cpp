@@ -128,15 +128,9 @@ void Game::TEST(float dt) {
 	else
 		camSpeed = 1;
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-		if (objectsVector[8]->Transform.orientation.y > 90 || objectsVector[8]->Transform.orientation.y < -90)
-			objectsVector[8]->Move(vec3(-1, 0, -1) * objectsVector[8]->Front * dt);
-		else
-			objectsVector[8]->Move(vec3(1, 0, 1) * objectsVector[8]->Front * dt);
+		objectsVector[8]->Move(vec3(0, 0, -1) * dt);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		if (objectsVector[8]->Transform.orientation.y > 90 || objectsVector[8]->Transform.orientation.y < -90)
-			objectsVector[8]->Move(vec3(-1, 0, -1) * objectsVector[8]->Front * -dt);
-		else
-			objectsVector[8]->Move(vec3(1, 0, 1) * objectsVector[8]->Front * -dt);
+		objectsVector[8]->Move(vec3(0, 0, 1) * dt);
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
 		objectsVector[8]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
