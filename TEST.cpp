@@ -19,7 +19,7 @@ const float bulletSpeed = 28.0f;
 
 void shot(vec3 pos,vec3 rot, Game* game) {
 	fastBulletTimeRemain.push_back(bulletMaxTime);
-	GameObject* bullet = game->Create(pos, rot, vec3(2.5f), "FastBullet");
+	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
 	pociski.push_back(bullet);
 	bullet->Move(vec3(0, 0, -1));
 }
@@ -128,18 +128,20 @@ void Game::TEST(float dt) {
 	else
 		camSpeed = 1;
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-		objectsVector[8]->Move(vec3(0, 0, -1) * dt);
+		objectsVector[7]->Move(vec3(0, 0, -1) * dt);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		objectsVector[8]->Move(vec3(0, 0, 1) * dt);
+		objectsVector[7]->Move(vec3(0, 0, 1) * dt);
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		objectsVector[8]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		objectsVector[7]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		objectsVector[8]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+		objectsVector[7]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool<=0) {
-		shot_cool = 2;
-		shot(vec3(objectsVector[5]->Transform.position.x, objectsVector[5]->Transform.position.y + 1.06, objectsVector[5]->Transform.position.z + 1), vec3(objectsVector[5]->Transform.orientation.y), this);
-		
+		shot_cool = 1.8f;
+		if(objectsVector[7]->Transform.orientation.y>0)
+			shot(objectsVector[7]->Transform.position + vec3(0, 1.06, 0), objectsVector[7]->Transform.orientation, this);
+		else
+			shot(objectsVector[7]->Transform.position + vec3(0,1.06,1), objectsVector[7]->Transform.orientation, this);
 	}
 	for (int i = 0; i < pociski.size(); i++) {
 		GameObject* current = pociski[i];
