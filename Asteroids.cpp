@@ -400,12 +400,14 @@ void Game::Asteroids(float dt) {
 			eBDPos[bigEnemyIterator].z--;
 		}
 
-		if (sPos.x + 5 > pos.x && sPos.x - 5 < pos.x && sPos.y + 5 > pos.y && sPos.y - 5 < pos.y) {
-			if (eBDPos[bigEnemyIterator].z > 0) {
-				eBDPos[bigEnemyIterator] = vec3(rand() * (2 * (camW + bounds)) - (camW + bounds), rand() % (2 * (camH + bounds)) - (camH + bounds), eBDPos[bigEnemyIterator].z);
-			}
-			else {
-				eBDPos[bigEnemyIterator] = vec3(rand() % (2 * camW) - camW, -2 * camH - bounds, eBDPos[bigEnemyIterator].z);
+		if (type) {
+			if (sPos.x + 5 > pos.x && sPos.x - 5 < pos.x && sPos.y + 5 > pos.y && sPos.y - 5 < pos.y) {
+				if (eBDPos[bigEnemyIterator].z > 0) {
+					eBDPos[bigEnemyIterator] = vec3(rand() * (2 * (camW + bounds)) - (camW + bounds), rand() % (2 * (camH + bounds)) - (camH + bounds), eBDPos[bigEnemyIterator].z);
+				}
+				else {
+					eBDPos[bigEnemyIterator] = vec3(rand() % (2 * camW) - camW, -2 * camH - bounds, eBDPos[bigEnemyIterator].z);
+				}
 			}
 		}
 
@@ -435,16 +437,18 @@ void Game::Asteroids(float dt) {
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
 		}
 
-		if (pos.y <= -camH - bounds && eBDPos[bigEnemyIterator].z <= 0) {
-			Destroy(current);
-			enemies.erase(enemies.begin() + i);
-			enemyType.erase(enemyType.begin() + i);
-			eBDPos.erase(eBDPos.begin() + bigEnemyIterator);
-			enemyShootCooldown.erase(enemyShootCooldown.begin() + i);
-			
-			bigEnemyIterator--; i--;
+		if (type) {
+			if (pos.y <= -camH - bounds && eBDPos[bigEnemyIterator].z <= 0) {
+				Destroy(current);
+				enemies.erase(enemies.begin() + i);
+				enemyType.erase(enemyType.begin() + i);
+				eBDPos.erase(eBDPos.begin() + bigEnemyIterator);
+				enemyShootCooldown.erase(enemyShootCooldown.begin() + i);
+
+				bigEnemyIterator--; i--;
+			}
+			bigEnemyIterator++;
 		}
-		bigEnemyIterator++;
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
