@@ -1,5 +1,8 @@
 #include "Game.h"
 #include <time.h>
+
+#define pi 3.14159265359
+
 using namespace glm;
 
 GameObject* model;
@@ -14,6 +17,7 @@ std::vector<GameObject*> przeciwnicy;
 float shot_cool = 2;
 float resp_cool = 2;
 float fast_tank_speed = 4;
+float tank_speed = 2;
 
 std::vector<float> fastBulletTimeRemain;
 
@@ -165,7 +169,12 @@ void Game::Battlezone(float dt) {
 	//Poruszanie przeciwników
 	for (int i = 0; i < przeciwnicy.size(); i++) {
 		GameObject* current = przeciwnicy[i];
-		vec3 playerPos;
-		vec3 enemyPos = vec3(current->Transform.position.x,0,current->Transform.position.z);
+		vec3 enemyPos = current->Transform.position;
+		vec3 playerPos = gracz->Transform.position;
+
+		vec3 direction = normalize(playerPos - enemyPos);
+
+		current->MoveGlobal(direction * dt * tank_speed);
 	}
+
 }
