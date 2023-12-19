@@ -153,8 +153,9 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
 		srand(time(NULL));
 		float temp_x = rand() % 51 -25;
-		float temp_y = rand() % 51 -25;
-		spawn_tank(objectsVector[0]->Transform.position + vec3(temp_x, 0, temp_y), vec3(0, 0, 0), this);
+		float temp_z = rand() % 51 -25;
+		float temp_y = rand() % 361;
+		spawn_tank(objectsVector[0]->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
 		resp_cool = 2;
 	}
 }
