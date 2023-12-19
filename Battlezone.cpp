@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include <time.h>
 using namespace glm;
 
 GameObject* model;
@@ -9,8 +9,9 @@ int camSpeed = 1;
 float const velocity = 1;
 float const rotationMultiplier1 = 35;
 std::vector<GameObject*> pociski;
+std::vector<GameObject*> przeciwnicy;
 float shot_cool = 2;
-
+float resp_cool = 2;
 
 std::vector<float> fastBulletTimeRemain;
 
@@ -22,6 +23,12 @@ void shot(vec3 pos, vec3 rot, Game* game) {
 	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
 	pociski.push_back(bullet);
 	bullet->Move(vec3(0, 0, -1));
+	shot_cool = 2;
+}
+
+void spawn_tank(vec3 pos, vec3 rot, Game* game){
+		GameObject* enemy = game->Create(pos, rot, vec3(.5f), "Tank");
+		przeciwnicy.push_back(enemy);
 }
 
 std::vector<std::string> objects = {
@@ -29,11 +36,14 @@ std::vector<std::string> objects = {
 	""
 };
 
+std::vector<GameObject*> enemiesVector;
+
 std::vector<GameObject*> objectsVector;
 
 void Game::BattlezoneInit() {
 
 	float shot_cool = 2;
+	float resp_cool = 2;
 	float zOffset = 0.0f;
 	int xOffset = 0;
 	for (const std::string& object : objects)
@@ -51,6 +61,9 @@ void Game::BattlezoneInit() {
 
 void Game::Battlezone(float dt) {
 	shot_cool -= dt;
+	resp_cool -= dt;
+
+	//Poruszanie kamer¹
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
 	}
@@ -102,6 +115,8 @@ void Game::Battlezone(float dt) {
 		camSpeed = 2;
 	else
 		camSpeed = 1;
+
+	// Poruszanie modelem
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 		objectsVector[0]->Move(vec3(0, 0, -1) * dt);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
@@ -111,8 +126,9 @@ void Game::Battlezone(float dt) {
 		objectsVector[0]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
 		objectsVector[0]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+
+	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
-		shot_cool = 1.8f;
 		if (objectsVector[0]->Transform.orientation.y != 0 && objectsVector[0]->Transform.orientation.y != 180)
 			shot(objectsVector[0]->Transform.position + vec3(0, 1.06, 0), objectsVector[0]->Transform.orientation, this);
 		else
@@ -132,5 +148,13 @@ void Game::Battlezone(float dt) {
 		current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
 
 		// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
+	}
+	//Spawnowanie przeciwników
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
+		srand(time(NULL));
+		float temp_x = rand() % 51 -25;
+		float temp_y = rand() % 51 -25;
+		spawn_tank(objectsVector[0]->Transform.position + vec3(temp_x, 0, temp_y), vec3(0, 0, 0), this);
+		resp_cool = 2;
 	}
 }
