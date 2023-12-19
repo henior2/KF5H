@@ -4,6 +4,7 @@ using namespace glm;
 
 GameObject* model;
 GameObject* model2;
+
 float rotationMultiplier = -500.0f;
 int camSpeed = 1;
 float const velocity = 1;
@@ -12,6 +13,7 @@ std::vector<GameObject*> pociski;
 std::vector<GameObject*> przeciwnicy;
 float shot_cool = 2;
 float resp_cool = 2;
+float fast_tank_speed = 4;
 
 std::vector<float> fastBulletTimeRemain;
 
@@ -59,10 +61,11 @@ void Game::BattlezoneInit() {
 	}
 }
 
+
 void Game::Battlezone(float dt) {
 	shot_cool -= dt;
 	resp_cool -= dt;
-
+	GameObject* gracz = objectsVector[0];
 	//Poruszanie kamer¹
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
@@ -118,21 +121,21 @@ void Game::Battlezone(float dt) {
 
 	// Poruszanie modelem
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-		objectsVector[0]->Move(vec3(0, 0, -1) * dt);
+		gracz->Move(vec3(0, 0, -1) * dt * velocity);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		objectsVector[0]->Move(vec3(0, 0, 1) * dt);
+		gracz->Move(vec3(0, 0, 1) * dt * velocity);
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		objectsVector[0]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		gracz->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		objectsVector[0]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+		gracz->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
-		if (objectsVector[0]->Transform.orientation.y != 0 && objectsVector[0]->Transform.orientation.y != 180)
-			shot(objectsVector[0]->Transform.position + vec3(0, 1.06, 0), objectsVector[0]->Transform.orientation, this);
+		if (gracz->Transform.orientation.y != 0 && gracz->Transform.orientation.y != 180)
+			shot(gracz->Transform.position + vec3(0, 1.06, 0), gracz->Transform.orientation, this);
 		else
-			shot(objectsVector[0]->Transform.position + vec3(0, 1.06, 1), objectsVector[0]->Transform.orientation, this);
+			shot(gracz->Transform.position + vec3(0, 1.06, 1), gracz->Transform.orientation, this);
 	}
 	for (int i = 0; i < pociski.size(); i++) {
 		GameObject* current = pociski[i];
@@ -155,7 +158,14 @@ void Game::Battlezone(float dt) {
 		float temp_x = rand() % 51 -25;
 		float temp_z = rand() % 51 -25;
 		float temp_y = rand() % 361;
-		spawn_tank(objectsVector[0]->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
+		spawn_tank(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
 		resp_cool = 2;
+	}
+
+	//Poruszanie przeciwników
+	for (int i = 0; i < przeciwnicy.size(); i++) {
+		GameObject* current = przeciwnicy[i];
+		vec3 playerPos;
+		vec3 enemyPos = vec3(current->Transform.position.x,0,current->Transform.position.z);
 	}
 }
