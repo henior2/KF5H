@@ -421,6 +421,18 @@
     <Text Include=",.vx.txt">
       <Filter>TextFiles\Special characters</Filter>
     </Text>
+    <Text Include="td.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="td.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="%27.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="%27.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
