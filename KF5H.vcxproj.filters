@@ -409,6 +409,12 @@
     <Text Include="!.vx.txt">
       <Filter>TextFiles\Special characters</Filter>
     </Text>
+    <Text Include="TankBullet.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="TankBullet.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">

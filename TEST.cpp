@@ -38,12 +38,14 @@ std::vector<std::string> objects1 = {
 	"Ufo",
 	"LeonardoTank",
 	"FastBullet",
+	"TankBUllet",
 	"",
 	"MenuCube",
 	"MenuSquare",
 	"",
 	";",
 	"!",
+	""
 };
 
 std::vector<GameObject*> objectsVector1;

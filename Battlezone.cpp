@@ -10,23 +10,31 @@ GameObject* model2;
 
 float rotationMultiplier = -500.0f;
 int camSpeed = 1;
-float const velocity = 1;
+float const velocity = 1.5f;
 float const rotationMultiplier1 = 35;
 std::vector<GameObject*> pociski;
 std::vector<GameObject*> przeciwnicy;
 float shot_cool = 2;
 float resp_cool = 2;
 float fast_tank_speed = 4;
-float tank_speed = 2;
+float tank_speed = 1;
 
 std::vector<float> fastBulletTimeRemain;
 
 const float bulletMaxTime = 3.0f;
 const float bulletSpeed = 28.0f;
 
-void shot(vec3 pos, vec3 rot, Game* game) {
+void shot_fast(vec3 pos, vec3 rot, Game* game) {
 	fastBulletTimeRemain.push_back(bulletMaxTime);
 	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
+	pociski.push_back(bullet);
+	bullet->Move(vec3(0, 0, -1));
+	shot_cool = 2;
+}
+
+void shot(vec3 pos, vec3 rot, Game* game) {
+	fastBulletTimeRemain.push_back(bulletMaxTime);
+	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "TankBullet");
 	pociski.push_back(bullet);
 	bullet->Move(vec3(0, 0, -1));
 	shot_cool = 2;
@@ -38,7 +46,7 @@ void spawn_tank(vec3 pos, vec3 rot, Game* game){
 }
 
 std::vector<std::string> objects = {
-	"FastTank",
+	"Tank",
 	""
 };
 
@@ -137,9 +145,9 @@ void Game::Battlezone(float dt) {
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
 		if (gracz->Transform.orientation.y != 0 && gracz->Transform.orientation.y != 180)
-			shot(gracz->Transform.position + vec3(0, 1.06, 0), gracz->Transform.orientation, this);
+			shot(gracz->Transform.position + vec3(0, 2.43, 0), gracz->Transform.orientation, this);
 		else
-			shot(gracz->Transform.position + vec3(0, 1.06, 1), gracz->Transform.orientation, this);
+			shot(gracz->Transform.position + vec3(0, 2.43, 1), gracz->Transform.orientation, this);
 	}
 	for (int i = 0; i < pociski.size(); i++) {
 		GameObject* current = pociski[i];
