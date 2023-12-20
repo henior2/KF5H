@@ -51,6 +51,7 @@ void Game::TESTInit() {
 	{
 		std::string letter = { i };
 		objects1.push_back(letter);
+		objects1.push_back(std::to_string((char)std::tolower(letter[0])));
 	}
 	objects1.push_back("");
 	for (int i = 0; i <= 9; i++)
@@ -158,4 +159,6 @@ void Game::TEST(float dt) {
 
 		// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 	}
+
+
 }

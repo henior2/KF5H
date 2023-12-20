@@ -1,7 +1,41 @@
 #include "Tekst2d.h"
+#include <map>
+#include <cctype>
+#include <cwctype>
+#include <algorithm>
+
+const wchar_t polish[] = { L'•', L'∆', L' ', L'£', L'—', L'”', L'å', L'è', L'Ø', L'\0' };
+const float smallLetterMultiplier = .8f;
+
+// prawdopodobnie nie trzeba az tyle, dodalem na wszelki wypadek - niepotrzebne usunac
+std::map<char, std::string> models{
+	{'.', "dot"},
+	{',', "comma"},
+	{';', "semi-colon"},
+	{':', "colon"},
+	{'!', "exlamation-mark"},
+	{'?', "question-mark"},
+	{'/', "slash"},
+	{'#', "hash"},
+	{'-', "dash"},
+	{'%', "percent"},
+	{'*', "asterisk"},
+	{'+', "plus"},
+	{'=', "equals"},
+	{'_', "underscore"},
+	{'<', "less-than"},
+	{'>', "more-than"},
+	{'(', "left-bracket"},
+	{')', "right-bracket"},
+	{'[', "left-bracket-square"},
+	{']', "right-bracket-square"},
+	{'{', "left-bracekt-brace"},
+	{'}', "right-bracket-brace"},
+	{'\'', "apostrophe"}
+};
 
 Tekst2d::Tekst2d(glm::vec2 pos, float rot, glm::vec2 sc, std::string object, float height, float spacing, int i)
-	:index(i)
+	: index(i)
 {
 	this->properties.height = height;
 	this->properties.spacing = spacing;
@@ -11,8 +45,20 @@ Tekst2d::Tekst2d(glm::vec2 pos, float rot, glm::vec2 sc, std::string object, flo
 
 	for (int i = 0; i < object.size(); i++)
 	{
-		std::string lett = "";
-		lett += object[i];
+		bool upper = true;
+		std::string lett;
+		wchar_t check = object[i]; 
+
+		if (std::iswalpha(check) || std::iswalnum(check) || std::find(std::begin(polish), std::end(polish), std::towupper(check)) != std::end(polish)) {
+			if (std::iswlower(check)) upper = false;
+			lett = check;
+		}
+		else {
+			lett = models[check];
+		}
+
+		if(!upper) this->Transform.scale = sc * smallLetterMultiplier;
+
 		AddLetter(lett, i);
 	}
 
@@ -57,14 +103,6 @@ void Tekst2d::SetColor(glm::vec3(color)) {
 	this->color = color;
 }
 
-
-
-
-
-
-
-
-
 void Tekst2d::AddLetter(std::string file, int letter) {
 	VertexData data = ReadVertexFile(file);
 
@@ -72,7 +110,6 @@ void Tekst2d::AddLetter(std::string file, int letter) {
 		vertecies.push_back(data.vertecies[i] + (1 + properties.spacing) * letter);
 		for(int j = 1; j < 6; j++)
 			vertecies.push_back(data.vertecies[i + j]);
-
 	}
 	for (int i = 0; i < data.iNum; i++) {
 		indecies.push_back(data.indecies[i]);
