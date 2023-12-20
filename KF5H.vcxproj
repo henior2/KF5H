@@ -155,8 +155,14 @@
   <ItemGroup>
     <Text Include="!.ind.txt" />
     <Text Include="!.vx.txt" />
+    <Text Include="%27.ind.txt" />
+    <Text Include="%27.vx.txt" />
     <Text Include="%3b.ind.txt" />
     <Text Include="%3b.vx.txt" />
+    <Text Include="..ind.txt" />
+    <Text Include="..vx.txt" />
+    <Text Include=",.ind.txt" />
+    <Text Include=",.vx.txt" />
     <Text Include="0.ind.txt" />
     <Text Include="0.vx.txt" />
     <Text Include="1.ind.txt" />
@@ -189,6 +195,18 @@
     <Text Include="AsteroidsShipFire.vx.txt" />
     <Text Include="AsteroidsStar.ind.txt" />
     <Text Include="AsteroidsStar.vx.txt" />
+    <Text Include="lbr.ind.txt" />
+    <Text Include="lbr.vx.txt" />
+    <Text Include="question.idn.txt" />
+    <Text Include="question.vx.txt" />
+    <Text Include="precent.ind.txt" />
+    <Text Include="precent.vx.txt" />
+    <Text Include="myslnik.ind.txt" />
+    <Text Include="myslnik.vx.txt" />
+    <Text Include="rbr.ind.txt" />
+    <Text Include="rbr.vx.txt" />
+    <Text Include="td.ind.txt" />
+    <Text Include="td.vx.txt" />
     <Text Include="FastBullet.ind.txt" />
     <Text Include="FastBullet.vx.txt" />
     <Text Include="LeonardoTank.ind.txt" />
