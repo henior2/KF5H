@@ -38,9 +38,13 @@ std::vector<std::string> objects1 = {
 	"Ufo",
 	"LeonardoTank",
 	"FastBullet",
+	"TankBUllet",
 	"",
 	"MenuCube",
-	"MenuSquare"
+	"MenuSquare",
+	"",
+	";",
+	"!",
 };
 
 std::vector<GameObject*> objectsVector1;
@@ -134,9 +138,9 @@ void Game::TEST(float dt) {
 		objectsVector1[7]->Move(vec3(0, 0, 1) * dt);
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		objectsVector1[7]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		objectsVector1[7]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier2);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		objectsVector1[7]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+		objectsVector1[7]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier2);
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool1<=0) {
 		shot_cool1 = 1.8f;
 		if(objectsVector1[7]->Transform.orientation.y!=0 && objectsVector1[7]->Transform.orientation.y != 180)

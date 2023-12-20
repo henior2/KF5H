@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;C:\Users\1p1\Desktop\Visual Studio 2022\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;C:\Users\1p1\Desktop\Visual Studio 2022\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\1p1\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;C:\Users\Michalik Krzysztof\Desktop\lib\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;C:\Users\1p1\Desktop\Visual Studio 2022\lib;C:\Users\Michalik Krzysztof\Desktop\lib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -153,6 +153,16 @@
     <ClInclude Include="Tekst2d.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="!.ind.txt" />
+    <Text Include="!.vx.txt" />
+    <Text Include="%27.ind.txt" />
+    <Text Include="%27.vx.txt" />
+    <Text Include="%3b.ind.txt" />
+    <Text Include="%3b.vx.txt" />
+    <Text Include="..ind.txt" />
+    <Text Include="..vx.txt" />
+    <Text Include=",.ind.txt" />
+    <Text Include=",.vx.txt" />
     <Text Include="0.ind.txt" />
     <Text Include="0.vx.txt" />
     <Text Include="1.ind.txt" />
@@ -185,6 +195,18 @@
     <Text Include="AsteroidsShipFire.vx.txt" />
     <Text Include="AsteroidsStar.ind.txt" />
     <Text Include="AsteroidsStar.vx.txt" />
+    <Text Include="lbr.ind.txt" />
+    <Text Include="lbr.vx.txt" />
+    <Text Include="question.idn.txt" />
+    <Text Include="question.vx.txt" />
+    <Text Include="precent.ind.txt" />
+    <Text Include="precent.vx.txt" />
+    <Text Include="myslnik.ind.txt" />
+    <Text Include="myslnik.vx.txt" />
+    <Text Include="rbr.ind.txt" />
+    <Text Include="rbr.vx.txt" />
+    <Text Include="td.ind.txt" />
+    <Text Include="td.vx.txt" />
     <Text Include="FastBullet.ind.txt" />
     <Text Include="FastBullet.vx.txt" />
     <Text Include="LeonardoTank.ind.txt" />
@@ -199,6 +221,8 @@
     <Text Include="MenuCube.vx.txt" />
     <Text Include="FastTank.ind.txt" />
     <Text Include="FastTank.vx.txt" />
+    <Text Include="TankBullet.ind.txt" />
+    <Text Include="TankBullet.vx.txt" />
     <Text Include="Ufo.ind.txt" />
     <Text Include="Ufo.vx.txt" />
     <Text Include="A.ind.txt" />
