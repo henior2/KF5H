@@ -433,6 +433,36 @@
     <Text Include="%27.ind.txt">
       <Filter>TextFiles\Special characters</Filter>
     </Text>
+    <Text Include="lbr.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="lbr.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="question.idn.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="question.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="precent.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="precent.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="myslnik.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="myslnik.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="rbr.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="rbr.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">

@@ -195,6 +195,16 @@
     <Text Include="AsteroidsShipFire.vx.txt" />
     <Text Include="AsteroidsStar.ind.txt" />
     <Text Include="AsteroidsStar.vx.txt" />
+    <Text Include="lbr.ind.txt" />
+    <Text Include="lbr.vx.txt" />
+    <Text Include="question.idn.txt" />
+    <Text Include="question.vx.txt" />
+    <Text Include="precent.ind.txt" />
+    <Text Include="precent.vx.txt" />
+    <Text Include="myslnik.ind.txt" />
+    <Text Include="myslnik.vx.txt" />
+    <Text Include="rbr.ind.txt" />
+    <Text Include="rbr.vx.txt" />
     <Text Include="td.ind.txt" />
     <Text Include="td.vx.txt" />
     <Text Include="FastBullet.ind.txt" />

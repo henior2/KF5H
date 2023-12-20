@@ -48,6 +48,9 @@ std::vector<std::string> objects1 = {
 	",",
 	"td",
 	"'",
+	"lbr",
+	"rbr",
+	"myslnik",
 };
 
 std::vector<GameObject*> objectsVector1;
