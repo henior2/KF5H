@@ -43,8 +43,17 @@ std::vector<std::string> objects1 = {
 	"MenuCube",
 	"MenuSquare",
 	"",
-	";",
-	"!",
+	"apostrophe",
+	"colon",
+	"comma",
+	"dash",
+	"dot",
+	"exclamation-mark",
+	"left-bracket",
+	"percent",
+	"right-bracket",
+	"semi-colon",
+	"question-mark"
 };
 
 std::vector<GameObject*> objectsVector1;
