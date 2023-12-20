@@ -153,6 +153,10 @@
     <ClInclude Include="Tekst2d.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="!.ind.txt" />
+    <Text Include="!.vx.txt" />
+    <Text Include="%3b.ind.txt" />
+    <Text Include="%3b.vx.txt" />
     <Text Include="0.ind.txt" />
     <Text Include="0.vx.txt" />
     <Text Include="1.ind.txt" />

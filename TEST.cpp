@@ -40,7 +40,10 @@ std::vector<std::string> objects1 = {
 	"FastBullet",
 	"",
 	"MenuCube",
-	"MenuSquare"
+	"MenuSquare",
+	"",
+	";",
+	"!",
 };
 
 std::vector<GameObject*> objectsVector1;

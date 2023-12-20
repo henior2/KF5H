@@ -37,6 +37,9 @@
     <Filter Include="TextFiles\Numbers">
       <UniqueIdentifier>{fb5bbf69-0ca7-481b-a03f-468287e8a6e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TextFiles\Special characters">
+      <UniqueIdentifier>{c8117744-02a3-44f1-870d-5cd2136e1046}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Menu.cpp">
@@ -393,6 +396,18 @@
     </Text>
     <Text Include="L.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
+    </Text>
+    <Text Include="%3b.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="%3b.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="!.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="!.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
