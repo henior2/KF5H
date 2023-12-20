@@ -2,80 +2,84 @@
 
 using namespace glm;
 
-GameObject* model3;
-GameObject* model4;
-float rotationMultiplier1 = -500.0f;
-int camSpeed1 = 1;
-float const velocity1 = 1;
-float const rotationMultiplier2 = 35;
-std::vector<GameObject*> pociski1;
-float shot_cool1 = 2;
+namespace Test {
+	GameObject* model3;
+	GameObject* model4;
+	float rotationMultiplier1 = -500.0f;
+	int camSpeed1 = 1;
+	float const velocity1 = 1;
+	float const rotationMultiplier2 = 35;
+	std::vector<GameObject*> pociski1;
+	float shot_cool1 = 2;
 
 
-std::vector<float> fastBulletTimeRemain1;
+	std::vector<float> fastBulletTimeRemain1;
 
-const float bulletMaxTime1 = 3.0f;
-const float bulletSpeed1 = 28.0f;
+	const float bulletMaxTime1 = 3.0f;
+	const float bulletSpeed1 = 28.0f;
 
-void shot1(vec3 pos,vec3 rot, Game* game) {
-	fastBulletTimeRemain1.push_back(bulletMaxTime1);
-	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
-	pociski1.push_back(bullet);
-	bullet->Move(vec3(0, 0, -1));
+	void shot(vec3 pos, vec3 rot, Game* game) {
+		fastBulletTimeRemain1.push_back(bulletMaxTime1);
+		GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
+		pociski1.push_back(bullet);
+		bullet->Move(vec3(0, 0, -1));
+	}
+
+	std::vector<std::string> objects = {
+		"AsteroidsShip",
+		"AsteroidsShipFire",
+		"AsteroidsEnemy",
+		"AsteroidsBullet",
+		"AsteroidsStar",
+		"AsteroidsEnemyBullet",
+		"",
+		"Tank",
+		"FastTank",
+		"Rocket",
+		"Ufo",
+		"LeonardoTank",
+		"FastBullet",
+		"TankBUllet",
+		"",
+		"MenuCube",
+		"MenuSquare",
+		"",
+		"apostrophe",
+		"colon",
+		"comma",
+		"dash",
+		"dot",
+		"exclamation-mark",
+		"left-bracket",
+		"percent",
+		"right-bracket",
+		"semi-colon",
+		"question-mark"
+	};
+
+	std::vector<GameObject*> objectsVector;
 }
 
-std::vector<std::string> objects1 = {
-	"AsteroidsShip",
-	"AsteroidsShipFire",
-	"AsteroidsEnemy",
-	"AsteroidsBullet",
-	"AsteroidsStar",
-	"AsteroidsEnemyBullet",
-	"",
-	"Tank",
-	"FastTank",
-	"Rocket",
-	"Ufo",
-	"LeonardoTank",
-	"FastBullet",
-	"TankBUllet",
-	"",
-	"MenuCube",
-	"MenuSquare",
-	"",
-	"apostrophe",
-	"colon",
-	"comma",
-	"dash",
-	"dot",
-	"exclamation-mark",
-	"left-bracket",
-	"percent",
-	"right-bracket",
-	"semi-colon",
-	"question-mark"
-};
-
-std::vector<GameObject*> objectsVector1;
+using namespace Test;
 
 void Game::TESTInit() {
-	objects1.push_back("");
+	objects.push_back("");
 	for (char i = 'A'; i <= 'Z'; i++)
 	{
 		std::string letter = { i };
-		objects1.push_back(letter);
-		objects1.push_back(std::to_string((char)std::tolower(letter[0])));
+		objects.push_back(letter);
+		objects.push_back(std::to_string((char)std::tolower(letter[0])));
 	}
-	objects1.push_back("");
+	objects.push_back("");
 	for (int i = 0; i <= 9; i++)
 	{
-		objects1.push_back(std::to_string(i));
+		objects.push_back(std::to_string(i));
 	}
 
 	float shot_cool1 = 2;
 	float zOffset1 = 0.0f;
 	int xOffset1 = 0;
-	for (const std::string& object : objects1)
+	for (const std::string& object : objects)
 	{
 		if (object.empty())
 		{
@@ -83,7 +87,7 @@ void Game::TESTInit() {
 			xOffset1 = 0;
 		}
 		else
-			objectsVector1.push_back(Create(vec3(10.0f * xOffset1++, 0.0f, zOffset1), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), object));
+			objectsVector.push_back(Create(vec3(10.0f * xOffset1++, 0.0f, zOffset1), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), object));
 
 	}
 }
@@ -123,8 +127,13 @@ void Game::TEST(float dt) {
 		camera->MoveCamera(RIGHT, dt / 2 * camSpeed1);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera->Position.y += 2 * camSpeed1 * dt;
-	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) camera->Position.y -= 2 * camSpeed1 * dt;
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		camera->Position.y += 20 * camSpeed1 * dt / 2;
+	}\
+
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+		camera->Position.y -= 20 * camSpeed1 * dt / 2;
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
 		camera->Position = vec3(0.0f, 0.0f, 0.0f);
@@ -142,20 +151,20 @@ void Game::TEST(float dt) {
 	else
 		camSpeed1 = 1;
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-		objectsVector1[7]->Move(vec3(0, 0, -1) * dt);
+		objectsVector[7]->Move(vec3(0, 0, -1) * dt);
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		objectsVector1[7]->Move(vec3(0, 0, 1) * dt);
+		objectsVector[7]->Move(vec3(0, 0, 1) * dt);
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		objectsVector1[7]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier2);
+		objectsVector[7]->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier2);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		objectsVector1[7]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier2);
+		objectsVector[7]->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier2);
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool1<=0) {
 		shot_cool1 = 1.8f;
-		if(objectsVector1[7]->Transform.orientation.y!=0 && objectsVector1[7]->Transform.orientation.y != 180)
-			shot1(objectsVector1[7]->Transform.position + vec3(0, 1.06, 0), objectsVector1[7]->Transform.orientation, this);
+		if(objectsVector[7]->Transform.orientation.y!=0 && objectsVector[7]->Transform.orientation.y != 180)
+			shot(objectsVector[7]->Transform.position + vec3(0, 1.06, 0), objectsVector[7]->Transform.orientation, this);
 		else
-			shot1(objectsVector1[7]->Transform.position + vec3(0,1.06,1), objectsVector1[7]->Transform.orientation, this);
+			shot(objectsVector[7]->Transform.position + vec3(0,1.06,1), objectsVector[7]->Transform.orientation, this);
 	}
 	for (int i = 0; i < pociski1.size(); i++) {
 		GameObject* current = pociski1[i];

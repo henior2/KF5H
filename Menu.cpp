@@ -2,13 +2,16 @@
 
 using namespace glm;
 
-std::vector<GameObject*> obiekty;
-std::vector<GameObject*> tekst;
+namespace Menu {
+    std::vector<GameObject*> obiekty;
+    std::vector<GameObject*> tekst;
 
-std::string modele[] = {"MenuCube","MenuSquare"};
-std::string rareModels[] = {"AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet"};
+    std::string modele[] = { "MenuCube","MenuSquare" };
+    std::string rareModels[] = { "AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet" };
 
-bool esc = false;
+    bool esc = false;
+}
+using namespace Menu;
 
 void Game::MenuInit() {
     obiekty.clear();

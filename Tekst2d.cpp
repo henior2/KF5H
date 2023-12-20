@@ -4,35 +4,39 @@
 #include <cwctype>
 #include <algorithm>
 
-const wchar_t polish[] = { L'•', L'∆', L' ', L'£', L'—', L'”', L'å', L'è', L'Ø', L'\0' };
-const float smallLetterMultiplier = .8f;
+namespace Tekst2d_ {
+	const wchar_t polish[] = { L'•', L'∆', L' ', L'£', L'—', L'”', L'å', L'è', L'Ø', L'\0' };
+	const float smallLetterMultiplier = .8f;
 
-// prawdopodobnie nie trzeba az tyle, dodalem na wszelki wypadek - niepotrzebne usunac
-std::map<char, std::string> models{
-	{'.', "dot"},
-	{',', "comma"},
-	{';', "semi-colon"},
-	{':', "colon"},
-	{'!', "exlamation-mark"},
-	{'?', "question-mark"},
-	{'/', "slash"},
-	{'#', "hash"},
-	{'-', "dash"},
-	{'%', "percent"},
-	{'*', "asterisk"},
-	{'+', "plus"},
-	{'=', "equals"},
-	{'_', "underscore"},
-	{'<', "less-than"},
-	{'>', "more-than"},
-	{'(', "left-bracket"},
-	{')', "right-bracket"},
-	{'[', "left-bracket-square"},
-	{']', "right-bracket-square"},
-	{'{', "left-bracekt-brace"},
-	{'}', "right-bracket-brace"},
-	{'\'', "apostrophe"}
-};
+	// prawdopodobnie nie trzeba az tyle, dodalem na wszelki wypadek - niepotrzebne usunac
+	std::map<char, std::string> models{
+		{'.', "dot"},
+		{',', "comma"},
+		{';', "semi-colon"},
+		{':', "colon"},
+		{'!', "exlamation-mark"},
+		{'?', "question-mark"},
+		{'/', "slash"},
+		{'#', "hash"},
+		{'-', "dash"},
+		{'%', "percent"},
+		{'*', "asterisk"},
+		{'+', "plus"},
+		{'=', "equals"},
+		{'_', "underscore"},
+		{'<', "less-than"},
+		{'>', "more-than"},
+		{'(', "left-bracket"},
+		{')', "right-bracket"},
+		{'[', "left-bracket-square"},
+		{']', "right-bracket-square"},
+		{'{', "left-bracekt-brace"},
+		{'}', "right-bracket-brace"},
+		{'\'', "apostrophe"}
+	};
+}
+using namespace Tekst2d_;
+
 
 Tekst2d::Tekst2d(glm::vec2 pos, float rot, glm::vec2 sc, std::string object, float height, float spacing, int i)
 	: index(i)

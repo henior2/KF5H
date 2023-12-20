@@ -1,16 +1,21 @@
 #include "Game.h"
 
-Tekst2d* KF5H[4];
+namespace Init {
+	Tekst2d* KF5H[4];
 
-float Time = 0;
+	float Time = 0;
 
-bool _esc = false;
+	bool _esc = false;
 
-using namespace glm;
+	using namespace glm;
 
-float f(float x) {
-	return 10.0f - (powf(x, 4.0f) * 1.125f) / 2.0f;
+	float f(float x) {
+		return 10.0f - (powf(x, 4.0f) * 1.125f) / 2.0f;
+	}
+
 }
+
+using namespace Init;
 
 void Game::GameInit() {
 	Time = 0;

@@ -1,240 +1,246 @@
+
 #include "Game.h"
 
 #define pi 3.14159265359
 
 using namespace glm;
 
-GameObject* ship;
-std::vector<GameObject*> enemies;
-std::vector<GameObject*> asteroids;
-std::vector<GameObject*> bullets;
-std::vector<GameObject*> stars;
+namespace Asteroids {
+	GameObject* ship;
+	std::vector<GameObject*> enemies;
+	std::vector<GameObject*> asteroids;
+	std::vector<GameObject*> bullets;
+	std::vector<GameObject*> stars;
 
-const int camW = 160;
-const int camH = 90;
+	const int camW = 160;
+	const int camH = 90;
 
-int modelShipFire;
+	int modelShipFire;
 
-const float rotationMultiplier = 100.0;
+	const float rotationMultiplier = 100.0;
 
-const float maxVelocity = 25;
-const float acceleration = 15;
-const float deacceleration = 0.99;
+	const float maxVelocity = 25;
+	const float acceleration = 15;
+	const float deacceleration = 0.99;
+	
+	vec2 velocity;
+	float speed;
 
-vec2 velocity;
-float speed;
+	const int jumpMargin = 20;
+	float jumpCooldown;
 
-const int jumpMargin = 20;
-float jumpCooldown;
+	float shipAnimationCooldown;
+	float shipAnimationCooldown2;
 
-float shipAnimationCooldown;
-float shipAnimationCooldown2;
+	float shootCooldown = .25f;
 
-float shootCooldown = .25f;
+	float velocityd;
+	float posx;
+	float posy;
 
-float velocityd;
-float posx;
-float posy;
+	std::vector<float> bulletTimeRemain;
 
-std::vector<float> bulletTimeRemain;
+	const float bulletMaxTime = 3.0f;
+	const float bulletSpeed = 50.0f;
 
-const float bulletMaxTime = 3.0f;
-const float bulletSpeed = 50.0f;
+	int _asteroidsNo;
+	int score;
+	int lives;
 
-int _asteroidsNo;
-int score;
-int lives;
+	bool _return;
 
-bool _return;
+	const int asteroidRadius = 10;
+	const int maxAsteroidsSidesNo = 14;
+	const int minAsteroidsSidesno = 7;
 
-const int asteroidRadius = 10;
-const int maxAsteroidsSidesNo = 14;
-const int minAsteroidsSidesno = 7;
+	const float asteroidsVertexOffset = .5f;
 
-const float asteroidsVertexOffset = .5f;
+	const float bigAsteroidSize = 1.25f;
+	const float mediumAsteroidSize = .8f;
+	const float smallAsteroidSize = .45f;
 
-const float bigAsteroidSize = 1.25f;
-const float mediumAsteroidSize = .8f;
-const float smallAsteroidSize = .45f;
+	const float asteroidSizeRange = .2f;
 
-const float asteroidSizeRange = .2f;
+	int asteroidSidesNo;
 
-int asteroidSidesNo;
+	const float bigAsteroidVelocity = 7.5f;
+	const float mediumAsteroidVelocity = 12.5f;
+	const float smallAsteroidVelocity = 17.5f;
 
-const float bigAsteroidVelocity = 7.5f;
-const float mediumAsteroidVelocity = 12.5f;
-const float smallAsteroidVelocity = 17.5f;
+	std::vector<unsigned int> asteroidSize;
+	std::vector<float> asteroidRotation;
+	std::vector<float> asteroidRotationMultiplier;
 
-std::vector<unsigned int> asteroidSize;
-std::vector<float> asteroidRotation;
-std::vector<float> asteroidRotationMultiplier;
+	float maxAsteroidRotationMultiplier = 50.0f;
 
-float maxAsteroidRotationMultiplier = 50.0f;
+	int bounds = 15;
 
-int bounds = 15;
+	bool hasWaveFinished;
+	float waveAsteroidsCooldown = 2.5f;
 
-bool hasWaveFinished;
-float waveAsteroidsCooldown = 2.5f;
+	const int starsAmount = 100;
+	const float starsSpeedMultiplier = 2.5f;
 
-const int starsAmount = 100;
-const float starsSpeedMultiplier = 2.5f;
+	float enemyProb;
+	const float enemyDeltaProb = .15f;
+	const float enemyMinDelay = 2.5f;
+	const float enemyMaxDelay = 5.0f;
+	float enemyDelay;
 
-float enemyProb;
-const float enemyDeltaProb = .15f;
-const float enemyMinDelay = 2.5f;
-const float enemyMaxDelay = 5.0f;
-float enemyDelay;
+	float enemySizes[] = { 5.0f, 7.5f };
+	std::vector<bool> enemyType;
 
-float enemySizes[] = { 5.0f, 7.5f };
-std::vector<bool> enemyType;
+	const float maxEnemyVelocity = 10.0f;
 
-const float maxEnemyVelocity = 10.0f;
+	const float maxEnemyBulletTime = 2.0f;
+	std::vector<float> enemyShootCooldown;
+	float _enemyShootCooldown[2] = { 3.0f, 5.0f };
+	const float enemyShootCooldownRange = .2f;
 
-const float maxEnemyBulletTime = 2.0f;
-std::vector<float> enemyShootCooldown;
-float _enemyShootCooldown[] = { 3.0f, 5.0f };
-const float enemyShootCooldownRange = .2f;
+	const int maxBigEnemyMoves = 5;
+	std::vector<vec3> eBDPos;
 
-const int maxBigEnemyMoves = 5;
-std::vector<vec3> eBDPos;
+	int bigEnemyIterator;
 
-int bigEnemyIterator;
+	void checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
+		if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0));
+		if (current->Transform.position.y < -bounds.y) current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));
+		if (current->Transform.position.x > bounds.x) current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));
+		if (current->Transform.position.x < -bounds.x) current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));
+	}
 
-void checkBounds(GameObject* current, vec2 bounds = vec2(170,95)) {
-	if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f , 0));
-	if (current->Transform.position.y < -bounds.y) current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));
-	if (current->Transform.position.x > bounds.x) current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));
-	if (current->Transform.position.x < -bounds.x) current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));
-}
+	void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
+		float minAsteroidsSize;
+		float maxAsteroidsSize;
 
-void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
-	float minAsteroidsSize;
-	float maxAsteroidsSize;
+		for (int i = 0; i < asteroidsNum; i++) {
+			std::vector<float> v;
+			std::vector<unsigned int> id;
+			std::vector<vec2> points;
 
-	for (int i = 0; i < asteroidsNum; i++) {
-		std::vector<float> v;
-		std::vector<unsigned int> id;
-		std::vector<vec2> points;
+			asteroidSidesNo = rand() % (maxAsteroidsSidesNo - minAsteroidsSidesno) + minAsteroidsSidesno;
 
-		asteroidSidesNo = rand() % (maxAsteroidsSidesNo - minAsteroidsSidesno) + minAsteroidsSidesno;
+			for (int i = 0; i < asteroidSidesNo; ++i) {
+				double angle = 2 * pi * i / asteroidSidesNo;
+				double radiusModifier = (rand() / (double)RAND_MAX) * 2 * asteroidRadius * asteroidsVertexOffset - asteroidRadius * asteroidsVertexOffset;
+				double modifiedRadius = asteroidRadius + radiusModifier;
 
-		for (int i = 0; i < asteroidSidesNo; ++i) {
-			double angle = 2 * pi * i / asteroidSidesNo;
-			double radiusModifier = (rand() / (double)RAND_MAX) * 2 * asteroidRadius * asteroidsVertexOffset - asteroidRadius * asteroidsVertexOffset;
-			double modifiedRadius = asteroidRadius + radiusModifier;
+				vec2 vertex = { modifiedRadius * cos(angle), modifiedRadius * sin(angle) };
+				points.push_back(vertex);
+			}
 
-			vec2 vertex = { modifiedRadius * cos(angle), modifiedRadius * sin(angle) };
-			points.push_back(vertex);
+			for (int i = 0; i < points.size(); i++) {
+				v.push_back(points[i].x);
+				v.push_back(points[i].y);
+				v.push_back(0);
+				v.push_back(1);
+				v.push_back(1);
+				v.push_back(1);
+			}
+
+			for (int i = 1; i < asteroidSidesNo; i++) {
+				id.push_back(i - 1);
+				id.push_back(i);
+			}
+			id.push_back(asteroidSidesNo - 1);
+			id.push_back(0);
+
+			switch (type)
+			{
+			case 0:
+				minAsteroidsSize = bigAsteroidSize - bigAsteroidSize * asteroidSizeRange;
+				maxAsteroidsSize = bigAsteroidSize + bigAsteroidSize * asteroidSizeRange;
+				break;
+			case 1:
+				minAsteroidsSize = mediumAsteroidSize - mediumAsteroidSize * asteroidSizeRange;
+				maxAsteroidsSize = mediumAsteroidSize + mediumAsteroidSize * asteroidSizeRange;
+				break;
+			case 2:
+				minAsteroidsSize = smallAsteroidSize - smallAsteroidSize * asteroidSizeRange;
+				maxAsteroidsSize = smallAsteroidSize + smallAsteroidSize * asteroidSizeRange;
+				break;
+			default:
+				throw std::invalid_argument("nuh uh");
+				break;
+			}
+
+			float rot = (float)(rand()) / ((float)(RAND_MAX / 360.0f));
+			asteroidRotation.push_back(rot * pi / 180.0f);
+
+			float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
+			asteroidRotationMultiplier.push_back(rotM);
+
+			vec2 pos;
+			int temp;
+
+			do {
+				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+				pos.x = temp;
+
+				temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
+				pos.y = temp;
+			} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+
+			asteroids.push_back(game->Create(vec3(pos, -90.0f), vec3(0.0f, 0.0f, rot), vec3(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+			asteroidSize.push_back(type);
 		}
+	}
 
-		for(int i=0; i<points.size(); i++){
-			v.push_back(points[i].x);
-			v.push_back(points[i].y);
-			v.push_back(0);
-			v.push_back(1);
-			v.push_back(1);
-			v.push_back(1);
-		}
-
-		for (int i = 1; i < asteroidSidesNo; i++) {
-			id.push_back(i - 1);
-			id.push_back(i);
-		}
-		id.push_back(asteroidSidesNo -1);
-		id.push_back(0);
-
-		switch (type)
-		{
-		case 0:
-			minAsteroidsSize = bigAsteroidSize - bigAsteroidSize * asteroidSizeRange;
-			maxAsteroidsSize = bigAsteroidSize + bigAsteroidSize * asteroidSizeRange;
-			break;
-		case 1:
-			minAsteroidsSize = mediumAsteroidSize - mediumAsteroidSize * asteroidSizeRange;
-			maxAsteroidsSize = mediumAsteroidSize + mediumAsteroidSize * asteroidSizeRange;
-			break;
-		case 2:
-			minAsteroidsSize = smallAsteroidSize - smallAsteroidSize * asteroidSizeRange;
-			maxAsteroidsSize = smallAsteroidSize + smallAsteroidSize * asteroidSizeRange;
-			break;
-		default:
-			throw std::invalid_argument("nuh uh");
-			break;
-		}
-
-		float rot = (float) (rand()) / ((float) (RAND_MAX / 360.0f));
-		asteroidRotation.push_back(rot * pi / 180.0f);
-
-		float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
-		asteroidRotationMultiplier.push_back(rotM);
-
+	void spawnEnemy(bool type, Game* game) {
 		vec2 pos;
 		int temp;
 
 		do {
-			temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+			temp = rand() % (2 * (camW + bounds) - (camW + bounds));
 			pos.x = temp;
 
-			temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
+			temp = rand() % (2 * (camW + bounds) - (camW + bounds));
 			pos.y = temp;
-		} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+		} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 
-		asteroids.push_back(game->Create(vec3(pos, -90.0f), vec3(0.0f,0.0f,rot), vec3(minAsteroidsSize + (float) (rand()) / ((float) (RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
-		asteroidSize.push_back(type);
-	}
-}
-
-void spawnEnemy(bool type, Game* game) {
-	vec2 pos;
-	int temp;
-
-	do {
-		temp = rand() % (2 * (camW + bounds) - (camW + bounds));
-		pos.x = temp;
-
-		temp = rand() % (2 * (camW + bounds) - (camW + bounds));
-		pos.y = temp;
-	} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
-
-	enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
-	enemyType.push_back(type);
-	enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100))/100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
-	if (type) eBDPos.push_back(vec3(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
-}
-
-void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
-	float _time;
-	float _scale;
-	std::string _model;
-	float _offset;
-
-	if (!type) {
-		_time = bulletMaxTime;
-		_scale = 2.5f;
-		_model = "AsteroidsBullet";
-		_offset = 6.25f;
-	}
-	else {
-		_time = maxEnemyBulletTime;
-		_scale = 1.75f;
-		_model = "AsteroidsEnemyBullet";
-		_offset = enemySizes[(int)eType] / 2;
+		enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
+		enemyType.push_back(type);
+		enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
+		if (type) eBDPos.push_back(vec3(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
 	}
 
-	bulletTimeRemain.push_back(_time);
-	GameObject* bullet = game->Create(_pos, _rot, vec3(_scale), _model);
-	bullets.push_back(bullet);
-	bullet->Move(vec3(0.0f, _offset, 0.0f));
-}
+	void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
+		float _time;
+		float _scale;
+		std::string _model;
+		float _offset;
 
-bool wave(int asteroidsNum, Game* game) {
-	spawnAsteroids(asteroidsNum, 0, game);
+		if (!type) {
+			_time = bulletMaxTime;
+			_scale = 2.5f;
+			_model = "AsteroidsBullet";
+			_offset = 6.25f;
+		}
+		else {
+			_time = maxEnemyBulletTime;
+			_scale = 1.75f;
+			_model = "AsteroidsEnemyBullet";
+			_offset = enemySizes[(int)eType] / 2;
+		}
 
-	int temp = 0;
-	while (rand() % 100 <= enemyProb)
-		temp += 1;
-	return temp;
-}
+		bulletTimeRemain.push_back(_time);
+		GameObject* bullet = game->Create(_pos, _rot, vec3(_scale), _model);
+		bullets.push_back(bullet);
+		bullet->Move(vec3(0.0f, _offset, 0.0f));
+	}
+
+	bool wave(int asteroidsNum, Game* game) {
+		spawnAsteroids(asteroidsNum, 0, game);
+
+		int temp = 0;
+		while (rand() % 100 <= enemyProb)
+			temp += 1;
+		return temp;
+	}
+};
+
+using namespace Asteroids;
+
 
 void Game::AsteroidsInit() {
 	ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");

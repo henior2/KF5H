@@ -2,8 +2,14 @@
 
 using namespace glm;
 
-void Game::TempestInit() {
+namespace Tempest {
+	
+}
 
+using namespace Tempest;
+
+void Game::TempestInit() {
+	
 }
 
 void Game::Tempest(float dt) {

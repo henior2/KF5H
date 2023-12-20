@@ -1,58 +1,59 @@
 #include "Game.h"
 #include <time.h>
 
-#define pi 3.14159265359
-
 using namespace glm;
 
-GameObject* model;
-GameObject* model2;
+namespace Battlezone {
+	GameObject* model;
+	GameObject* model2;
 
-float rotationMultiplier = -500.0f;
-int camSpeed = 1;
-float const velocity = 1.5f;
-float const rotationMultiplier1 = 35;
-std::vector<GameObject*> pociski;
-std::vector<GameObject*> przeciwnicy;
-float shot_cool = 2;
-float resp_cool = 2;
-float fast_tank_speed = 4;
-float tank_speed = 1;
+	float rotationMultiplier = -500.0f;
+	int camSpeed = 1;
+	float const velocity = 1.5f;
+	float const rotationMultiplier1 = 35;
+	std::vector<GameObject*> pociski;
+	std::vector<GameObject*> przeciwnicy;
+	float shot_cool = 2;
+	float resp_cool = 2;
+	float fast_tank_speed = 4;
+	float tank_speed = 1;
 
-std::vector<float> fastBulletTimeRemain;
+	std::vector<float> fastBulletTimeRemain;
 
-const float bulletMaxTime = 3.0f;
-const float bulletSpeed = 28.0f;
+	const float bulletMaxTime = 3.0f;
+	const float bulletSpeed = 28.0f;
 
-void shot_fast(vec3 pos, vec3 rot, Game* game) {
-	fastBulletTimeRemain.push_back(bulletMaxTime);
-	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
-	pociski.push_back(bullet);
-	bullet->Move(vec3(0, 0, -1));
-	shot_cool = 2;
-}
+	void shot_fast(vec3 pos, vec3 rot, Game* game) {
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
+		pociski.push_back(bullet);
+		bullet->Move(vec3(0, 0, -1));
+		shot_cool = 2;
+	}
 
-void shot(vec3 pos, vec3 rot, Game* game) {
-	fastBulletTimeRemain.push_back(bulletMaxTime);
-	GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "TankBullet");
-	pociski.push_back(bullet);
-	bullet->Move(vec3(0, 0, -1));
-	shot_cool = 2;
-}
+	void shot(vec3 pos, vec3 rot, Game* game) {
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet);
+		bullet->Move(vec3(0, 0, -1));
+		shot_cool = 2;
+	}
 
-void spawn_tank(vec3 pos, vec3 rot, Game* game){
+	void spawn_tank(vec3 pos, vec3 rot, Game* game) {
 		GameObject* enemy = game->Create(pos, rot, vec3(.5f), "Tank");
 		przeciwnicy.push_back(enemy);
+	}
+
+	std::vector<std::string> objects = {
+		"Tank",
+		""
+	};
+
+	std::vector<GameObject*> enemiesVector;
+
+	std::vector<GameObject*> objectsVector;
 }
-
-std::vector<std::string> objects = {
-	"Tank",
-	""
-};
-
-std::vector<GameObject*> enemiesVector;
-
-std::vector<GameObject*> objectsVector;
+using namespace Battlezone;
 
 void Game::BattlezoneInit() {
 
