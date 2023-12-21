@@ -51,10 +51,10 @@ namespace Test {
 		"dot",
 		"exclamation-mark",
 		"left-bracket",
-		"percent",
 		"right-bracket",
+		"percent",
 		"semi-colon",
-		"question-mark"
+		"question-mark",
 	};
 
 	std::vector<GameObject*> objectsVector;

@@ -197,10 +197,10 @@
     <Text Include="AsteroidsStar.vx.txt" />
     <Text Include="left-bracket.ind.txt" />
     <Text Include="left-bracket.vx.txt" />
-    <Text Include="question-mark.idn.txt" />
+    <Text Include="question-mark.ind.txt" />
     <Text Include="question-mark.vx.txt" />
-    <Text Include="precent.ind.txt" />
-    <Text Include="precent.vx.txt" />
+    <Text Include="percent.ind.txt" />
+    <Text Include="percent.vx.txt" />
     <Text Include="dash.ind.txt" />
     <Text Include="dash.vx.txt" />
     <Text Include="right-bracket.ind.txt" />
