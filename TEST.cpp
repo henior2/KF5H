@@ -68,7 +68,9 @@ void Game::TESTInit() {
 	{
 		std::string letter = { i };
 		objects.push_back(letter);
-		objects.push_back(std::to_string((char)std::tolower(letter[0])));
+
+		letter = (std::tolower(letter[0]));
+		objects.push_back(letter);
 	}
 	objects.push_back("");
 	for (int i = 0; i <= 9; i++)

@@ -61,7 +61,9 @@ Tekst2d::Tekst2d(glm::vec2 pos, float rot, glm::vec2 sc, std::string object, flo
 			lett = models[check];
 		}
 
-		if(!upper) this->Transform.scale = sc * smallLetterMultiplier;
+		if (!upper) {
+			// todo: wirte scaling letters code ig
+		}
 
 		AddLetter(lett, i);
 	}
