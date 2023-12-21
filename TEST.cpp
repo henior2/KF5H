@@ -15,7 +15,7 @@ namespace Test {
 
 	std::vector<float> fastBulletTimeRemain1;
 
-	const float bulletMaxTime1 = 3.0f;
+	const float bulletMaxTime1 = 4.0f;
 	const float bulletSpeed1 = 28.0f;
 
 	void shot(vec3 pos, vec3 rot, Game* game) {
@@ -127,7 +127,7 @@ void Game::TEST(float dt) {
 		camera->MoveCamera(RIGHT, dt / 2 * camSpeed1);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
 		camera->Position.y += 20 * camSpeed1 * dt / 2;
 	}\
 

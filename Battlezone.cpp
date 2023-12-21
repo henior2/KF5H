@@ -20,7 +20,7 @@ namespace Battlezone {
 
 	std::vector<float> fastBulletTimeRemain;
 
-	const float bulletMaxTime = 3.0f;
+	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
 
 	void shot_fast(vec3 pos, vec3 rot, Game* game) {
@@ -146,9 +146,9 @@ void Game::Battlezone(float dt) {
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
 		if (gracz->Transform.orientation.y != 0 && gracz->Transform.orientation.y != 180)
-			shot(gracz->Transform.position + vec3(0, 2.43, 0), gracz->Transform.orientation, this);
+			shot(gracz->Transform.position + vec3(0, 2.535, 0), gracz->Transform.orientation, this);
 		else
-			shot(gracz->Transform.position + vec3(0, 2.43, 1), gracz->Transform.orientation, this);
+			shot(gracz->Transform.position + vec3(0, 2.535, 1), gracz->Transform.orientation, this);
 	}
 	for (int i = 0; i < pociski.size(); i++) {
 		GameObject* current = pociski[i];
