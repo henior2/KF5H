@@ -163,7 +163,7 @@ void generateGround(int mUS, int mS, float mHV, vec2 sP, Game* gra) {
 	for (int i = 0; i < mapSize; i++) {
 		for (int k = 0; k < 2; k++) {
 			for (int j = 0; j < mapSize; j++) {
-				groundUnitsVx.push_back(sx + j * mUS + k * mUS);
+				groundUnitsVx.push_back(sx + j * mUS);
 				groundUnitsVx.push_back(0 + level[i][j] * stepHeihgt);
 				groundUnitsVx.push_back(sy + i * mUS * 2 + k * mUS);
 
@@ -324,6 +324,13 @@ void Game::Battlezone(float dt) {
 		vec3 direction = normalize(playerPos - enemyPos);
 
 		current->MoveGlobal(direction * dt * tank_speed);
+
+		//rotating the enemy
+		float _angle;
+		_angle = atan2(direction.x, direction.z);
+		_angle = _angle * 180.0f / glm::pi<float>();
+
+		current->RotateTo(vec3(0.0f, _angle, 0.0f));
 	}
 
 }
