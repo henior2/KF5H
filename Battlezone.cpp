@@ -219,8 +219,16 @@ void Game::Battlezone(float dt) {
 	shot_cool -= dt;
 	resp_cool -= dt;
 	GameObject* gracz = objectsVector[0];
+	
+	float camFrontOffset = -2.5f;
+	float camYOffset = 1.75f;
+
+	vec3 pPos = gracz->Transform.position;
+	vec3 pOri = gracz->Transform.orientation;
+	vec3 pFront = gracz->Front;
+
 	//Poruszanie kamer¹
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	/*if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
@@ -264,24 +272,37 @@ void Game::Battlezone(float dt) {
 		camera->RotateCamera(0.0f, 0.0f);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		Game::ChangeState(Game_Menu);
-
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		camSpeed = 2;
 	else
-		camSpeed = 1;
+		camSpeed = 1;*/
 
 	// Poruszanie modelem
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		gracz->Move(vec3(0, 0, -1) * dt * velocity);
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		gracz->Move(vec3(0, 0, 1) * dt * velocity);
+	}
 
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+	//no moving backwards in the orginal game
+	/*if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+		gracz->Move(vec3(0, 0, 1) * dt * velocity);*/
+
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		gracz->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+		//todo: make camera rotation script
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		gracz->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+		//todo: make camera rotation script
+	}
+
+	//adjusting the cam's pos
+
+
+	vec3 cPos = normalize(pFront) * camFrontOffset;
+	cPos.y += camYOffset;
+
+	camera->Position = pPos+cPos;
+	//todo: make camera rotation script
 
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
@@ -319,9 +340,9 @@ void Game::Battlezone(float dt) {
 	for (int i = 0; i < przeciwnicy.size(); i++) {
 		GameObject* current = przeciwnicy[i];
 		vec3 enemyPos = current->Transform.position;
-		vec3 playerPos = gracz->Transform.position;
+		//vec3 playerPos = gracz->Transform.position;
 
-		vec3 direction = normalize(playerPos - enemyPos);
+		vec3 direction = normalize(pPos - enemyPos);
 
 		current->MoveGlobal(direction * dt * tank_speed);
 
@@ -333,4 +354,6 @@ void Game::Battlezone(float dt) {
 		current->RotateTo(vec3(0.0f, _angle, 0.0f));
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		Game::ChangeState(Game_Menu);
 }
