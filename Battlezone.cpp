@@ -52,15 +52,152 @@ namespace Battlezone {
 	std::vector<GameObject*> enemiesVector;
 
 	std::vector<GameObject*> objectsVector;
+
+	std::vector<float> groundUnitsVx;
+	std::vector<unsigned int> groundUnitsInd;
+	GameObject* ground;
+
+	const int mapUnitSize = 10;
+	const int mapSize = 15; //there will be units in between orginal units, resulting in the map being 2x larger (!!!) - consider this
+	const float mapHeightChangeProb = .05f;
+	const float stepHeihgt = .5f;
+
+	const vec2 startP = vec2(0, 0);
 }
 using namespace Battlezone;
 
-void Game::BattlezoneInit() {
+void setLevel(int x, int y, int ox, int oy, int lv[mapSize][mapSize], bool collapsed[mapSize][mapSize]) {
+	int step = 0;
+	if (rand() % (int)(mapHeightChangeProb*100)) {
+		switch (rand()%2)
+		{
+		case 0:
+			step = 1;
+			break;
+		default:
+			step = -1;
+			break;
+		}
+	}
+	lv[x][y] = lv[ox][oy] + step;
+}
 
+int collapse(int x, int y, int lv[mapSize][mapSize], bool collapsed[mapSize][mapSize], int ic[mapSize], int& dc) {
+	int cnum = 0;
+
+	if (x > 0 && !collapsed[x - 1][y]) {
+		setLevel(x - 1, y, x,y, lv, collapsed);
+		ic[x-1]++;
+		dc--;
+		cnum++;
+		collapsed[x - 1][y] = true;
+	}
+	if (x < mapSize && !collapsed[x + 1][y]) {
+		setLevel(x + 1, y, x,y, lv, collapsed);
+		ic[x+1]++;
+		dc--;
+		cnum++;
+		collapsed[x + 1][y] = true;
+	}
+	if (y > 0 && !collapsed[x][y - 1]) {
+		setLevel(x, y - 1, x, y, lv, collapsed);
+		ic[x]++;
+		dc--;
+		cnum++;
+		collapsed[x][y - 1] = true;
+	}
+	if (y < mapSize && !collapsed[x][y + 1]) {
+		setLevel(x, y + 1, x, y, lv, collapsed);
+		ic[x]++;
+		dc--;
+		cnum++;
+		collapsed[x][y + 1] = true;
+	}
+	
+	return cnum;
+}
+
+void generateGround(int mUS, int mS, float mHV, vec2 sP, Game* gra) {
+	//ive just now realised, that ive been calling the 'z' axis 'y' all along, but im too lazy to rename the variables, so just dont get confused lmao 
+
+	int level[mapSize][mapSize];
+	bool collapsed[mapSize][mapSize];
+
+	int rowSums[mapSize];
+	int left = mS * mS;
+
+	//collapse middle point
+	level[mapSize / 2 - 1][mapSize / 2 - 1] = 0;
+
+	//deleting the garbage (i think?)
+	for (int i = 0; i < mapSize; i++) {
+		rowSums[i] = 0;
+		for (int j = 0; j < mapSize; j++) {
+			level[i][j] = -100;
+			collapsed[i][j] = false;
+		}
+	}
+	collapsed[mapSize / 2 - 1][mapSize / 2 - 1] = true;
+	rowSums[mapSize / 2 - 1]++;
+	level[mapSize / 2 - 1][mapSize / 2 - 1] = 0;
+	left--;
+
+	//find an un-collapsed point neighbouring a collapsed point
+	//(going b-t,l-r rn, might be changed at some point later to be more random ig)
+	while (left > 0) {
+		for (int i = 0; i < mapSize; i++) {
+			if (rowSums[i] > 0) {
+				for (int j = 0; j < mapSize; j++) {
+					if (collapsed[i][j]) {
+						left -= collapse(i, j, level, collapsed, rowSums, left);
+					}
+				}
+			}
+		}
+	}
+
+	//making vx
+	int sx = sP.x - mapSize/2 * mUS;
+	int sy = sP.y - mapSize/2 * mUS;
+
+	for (int i = 0; i < mapSize; i++) {
+		for (int k = 0; k < 2; k++) {
+			for (int j = 0; j < mapSize; j++) {
+				groundUnitsVx.push_back(sx + j * mUS + k * mUS);
+				groundUnitsVx.push_back(0 + level[i][j] * stepHeihgt);
+				groundUnitsVx.push_back(sy + i * mUS * 2 + k * mUS);
+
+				groundUnitsVx.push_back(0);
+				groundUnitsVx.push_back(1);
+				groundUnitsVx.push_back(0);
+			}
+		}
+	}
+
+	//making ind
+	for (int i = 0; i < mapSize*2; i++) {
+		for (int j = 1; j < mapSize; j++) {
+			groundUnitsInd.push_back(j - 1 + i*mapSize);
+			groundUnitsInd.push_back(j + i*mapSize);
+		}
+	}
+
+	for (int i = 0; i < mapSize*(mapSize*2-1); i++) {
+		groundUnitsInd.push_back(i);
+		groundUnitsInd.push_back(i+mapSize);
+	}
+
+	//creating the ground GameObject
+	ground = gra->Create(vec3(sx,0.0f,sy), vec3(0.0f), vec3(1.0f), groundUnitsVx, groundUnitsInd);
+}
+
+void Game::BattlezoneInit() {
 	float shot_cool = 2;
 	float resp_cool = 2;
 	float zOffset = 0.0f;
 	int xOffset = 0;
+
+	//wtf is that
 	for (const std::string& object : objects)
 	{
 		if (object.empty())
@@ -70,10 +207,13 @@ void Game::BattlezoneInit() {
 		}
 		else
 			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), object));
-
 	}
-}
 
+	groundUnitsVx.clear();
+	groundUnitsInd.clear();
+
+	generateGround(mapUnitSize,mapSize,mapHeightChangeProb,startP,this);
+}
 
 void Game::Battlezone(float dt) {
 	shot_cool -= dt;

@@ -12,7 +12,6 @@ namespace Test {
 	std::vector<GameObject*> pociski1;
 	float shot_cool1 = 2;
 
-
 	std::vector<float> fastBulletTimeRemain1;
 
 	const float bulletMaxTime1 = 4.0f;
