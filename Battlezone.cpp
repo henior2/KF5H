@@ -9,16 +9,20 @@ namespace Battlezone {
 
 	float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
-	float const velocity = 1.5f;
+	float const velocity = 3.0f;
 	float const rotationMultiplier1 = 35;
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
 	float shot_cool = 2;
 	float resp_cool = 2;
 	float fast_tank_speed = 4;
-	float tank_speed = 1;
+	float tank_speed = 2;
+
+
+
 
 	std::vector<float> fastBulletTimeRemain;
+	std::vector<int> enemyType;
 
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
@@ -39,13 +43,26 @@ namespace Battlezone {
 		shot_cool = 2;
 	}
 
-	void spawn_tank(vec3 pos, vec3 rot, Game* game) {
-		GameObject* enemy = game->Create(pos, rot, vec3(.5f), "Tank");
-		przeciwnicy.push_back(enemy);
+	void spawn_enemy(vec3 pos, vec3 rot, Game* game, int type) {
+		if (type==1) {
+			GameObject* enemy = game->Create(pos, rot, vec3(1.0f), "Tank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+		}
+		else if (type==2) {
+			GameObject* enemy = game->Create(pos, rot, vec3(2.0f), "FastTank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+		}
+		else if (type == 3) {
+			GameObject* enemy = game->Create(pos, rot, vec3(1.0f), "LeonardoTank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+		}
 	}
-	
-	float camFrontOffset = -2.5f;
-	float camYOffset = 1.75f;
+
+
+
 
 	std::vector<GameObject*> enemiesVector;
 
@@ -264,11 +281,20 @@ void Game::Battlezone(float dt) {
 		// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 	}
 	//Spawnowanie przeciwników
+	float temp_x = rand() % 51 - 25;
+	float temp_z = rand() % 51 - 25;
+	float temp_y = rand() % 361;
+
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
-		float temp_x = rand() % 51 -25;
-		float temp_z = rand() % 51 -25;
-		float temp_y = rand() % 361;
-		spawn_tank(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this,1);
+		resp_cool = 2;
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && resp_cool <= 0) {
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 2);
+		resp_cool = 2;
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && resp_cool <= 0) {
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 3);
 		resp_cool = 2;
 	}
 
@@ -276,13 +302,15 @@ void Game::Battlezone(float dt) {
 	for (int i = 0; i < przeciwnicy.size(); i++) {
 		GameObject* current = przeciwnicy[i];
 		vec3 enemyPos = current->Transform.position;
-		//vec3 playerPos = gracz->Transform.position;
-
 		vec3 direction = normalize(pPos - enemyPos);
+		if(enemyType[i]==1 || enemyType[i]==3)
+			current->MoveGlobal(pOri * dt * tank_speed);
+		else if(enemyType[i]==2)
+			current->MoveGlobal(pOri * dt * fast_tank_speed);
+		else
+			throw std::invalid_argument("co tu zawiodło xD");
 
-		current->MoveGlobal(direction * dt * tank_speed);
-
-		//rotating the enemy
+		//Obracanie przeciwników
 		float _angle;
 		_angle = atan2(direction.x, direction.z);
 		_angle = _angle * 180.0f / glm::pi<float>();
