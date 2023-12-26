@@ -18,9 +18,6 @@ namespace Battlezone {
 	float fast_tank_speed = 4;
 	float tank_speed = 2;
 
-
-
-
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
 
@@ -61,8 +58,8 @@ namespace Battlezone {
 		}
 	}
 
-
-
+	float camFrontOffset = -2.5f;
+	float camYOffset = 1.75f;
 
 	std::vector<GameObject*> enemiesVector;
 
@@ -244,19 +241,17 @@ void Game::Battlezone(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
-		//todo: make camera rotation script
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
-		//todo: make camera rotation script
 	}
 
 	//adjusting the cam's pos
-	/*/vec3 cPos = normalize(pFront) * camFrontOffset;
+	/*vec3 cPos = normalize(pFront) * camFrontOffset;
 	cPos.y += camYOffset;
 
 	camera->Position = pPos+cPos;*/
-	//todo: make camera rotation script
+	//todo: make a WORKING cam rot script
 
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
