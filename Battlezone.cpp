@@ -9,16 +9,20 @@ namespace Battlezone {
 
 	float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
-	float const velocity = 1.5f;
+	float const velocity = 3.0f;
 	float const rotationMultiplier1 = 35;
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
 	float shot_cool = 2;
 	float resp_cool = 2;
 	float fast_tank_speed = 4;
-	float tank_speed = 1;
+	float tank_speed = 2;
+
+
+
 
 	std::vector<float> fastBulletTimeRemain;
+	std::vector<int> enemyType;
 
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
@@ -39,10 +43,20 @@ namespace Battlezone {
 		shot_cool = 2;
 	}
 
-	void spawn_tank(vec3 pos, vec3 rot, Game* game) {
-		GameObject* enemy = game->Create(pos, rot, vec3(.5f), "Tank");
-		przeciwnicy.push_back(enemy);
+	void spawn_enemy(vec3 pos, vec3 rot, Game* game, int type) {
+		if (type==1) {
+			GameObject* enemy = game->Create(pos, rot, vec3(1.0f), "Tank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+		}
+		else if (type==2) {
+			GameObject* enemy = game->Create(pos, rot, vec3(2.0f), "FastTank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+		}
 	}
+
+
 
 	std::vector<std::string> objects = {
 		"Tank",
@@ -64,6 +78,7 @@ namespace Battlezone {
 
 	const vec2 startP = vec2(0, 0);
 }
+
 using namespace Battlezone;
 
 void setLevel(int x, int y, int ox, int oy, int lv[mapSize][mapSize], bool collapsed[mapSize][mapSize]) {
@@ -311,7 +326,15 @@ void Game::Battlezone(float dt) {
 		float temp_x = rand() % 51 -25;
 		float temp_z = rand() % 51 -25;
 		float temp_y = rand() % 361;
-		spawn_tank(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
+		spawn_enemy(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this,1);
+		resp_cool = 2;
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && resp_cool <= 0) {
+		srand(time(NULL));
+		float temp_x = rand() % 51 - 25;
+		float temp_z = rand() % 51 - 25;
+		float temp_y = rand() % 361;
+		spawn_enemy(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 2);
 		resp_cool = 2;
 	}
 
@@ -320,10 +343,11 @@ void Game::Battlezone(float dt) {
 		GameObject* current = przeciwnicy[i];
 		vec3 enemyPos = current->Transform.position;
 		vec3 playerPos = gracz->Transform.position;
-
 		vec3 direction = normalize(playerPos - enemyPos);
-
-		current->MoveGlobal(direction * dt * tank_speed);
+		if(enemyType[i]==1)
+			current->MoveGlobal(direction * dt * tank_speed);
+		else if(enemyType[i]==2)
+			current->MoveGlobal(direction * dt * fast_tank_speed);
 
 		//rotating the enemy
 		float _angle;
