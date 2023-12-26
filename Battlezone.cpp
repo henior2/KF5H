@@ -234,19 +234,16 @@ void Game::Battlezone(float dt) {
 		camSpeed = 1;
 
 	// Poruszanie modelem
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		player->Move(vec3(0, 0, -1) * dt * velocity);
 	}
 
-	//no moving backwards in the orginal game
-	/*if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		gracz->Move(vec3(0, 0, 1) * dt * velocity);*/
 
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 		//todo: make camera rotation script
 	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 		//todo: make camera rotation script
 	}
@@ -304,9 +301,9 @@ void Game::Battlezone(float dt) {
 		vec3 enemyPos = current->Transform.position;
 		vec3 direction = normalize(pPos - enemyPos);
 		if(enemyType[i]==1 || enemyType[i]==3)
-			current->MoveGlobal(pOri * dt * tank_speed);
+			current->MoveGlobal(direction * dt * tank_speed);
 		else if(enemyType[i]==2)
-			current->MoveGlobal(pOri * dt * fast_tank_speed);
+			current->MoveGlobal(direction * dt * fast_tank_speed);
 		else
 			throw std::invalid_argument("co tu zawiodło xD");
 
