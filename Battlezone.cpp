@@ -1,10 +1,10 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include <time.h>
 
 using namespace glm;
 
 namespace Battlezone {
-	GameObject* model;
+	GameObject* player;
 	GameObject* model2;
 
 	float rotationMultiplier = -500.0f;
@@ -43,153 +43,108 @@ namespace Battlezone {
 		GameObject* enemy = game->Create(pos, rot, vec3(.5f), "Tank");
 		przeciwnicy.push_back(enemy);
 	}
-
-	std::vector<std::string> objects = {
-		"Tank",
-		""
-	};
+	
+	float camFrontOffset = -2.5f;
+	float camYOffset = 1.75f;
 
 	std::vector<GameObject*> enemiesVector;
 
 	std::vector<GameObject*> objectsVector;
 
-	std::vector<float> groundUnitsVx;
-	std::vector<unsigned int> groundUnitsInd;
-	GameObject* ground;
+	std::vector<GameObject*> obstacles;
 
-	const int mapUnitSize = 10;
-	const int mapSize = 15; //there will be units in between orginal units, resulting in the map being 2x larger (!!!) - consider this
-	const float mapHeightChangeProb = .05f;
-	const float stepHeihgt = .5f;
+	const int minBaseVerticies = 3;
+	const int maxBaseVerticies = 7;
+	const int minLevelVerticiesNumberDecrease = 1;
+	const int maxLevelVerticiesNumberDecrease = 2;
+	const float maxVertexOffset = .15f;
+	const int minLevels = 2;
+	const int maxLevels = 4;
+	const float levelMaxYOffset = .15f;
+	const float minRadius = 5;
+	const float maxRadius = 7.5f;
+	const float minLevelRadiusDecrease = .25f;
+	const float maxLevelRadiusDecrease = .5f;
+	const float minScale = .8f;
+	const float maxScale = 1.2f;
 
-	const vec2 startP = vec2(0, 0);
+	int sumUp(int arr[], int i) {
+		int sum = 0;
+		while (i >= 0) {
+			sum += arr[i];
+			i--;
+		}
+		return sum;
+	}
+
+	void makeObstacles(float x, float z, float height, Game* game) {
+		std::vector<float> vx;
+		std::vector<unsigned int> ind;
+
+		std::vector<vec3> points;
+
+		int lv = rand() % (maxLevels - minLevels) + minLevels;
+
+		float lHeight = height / lv;
+
+		int ver = rand() % (maxBaseVerticies - minBaseVerticies) + minBaseVerticies;
+		float radius = minRadius + (float)(rand()) / ((float)(RAND_MAX / (maxRadius - minRadius)));
+
+		int* lVxs = new int[lv-1];
+
+		for (int i = 0; i < lv-1; i++) {
+			if (i != 0) ver -= rand() % (maxLevelVerticiesNumberDecrease - minLevelVerticiesNumberDecrease) + minLevelVerticiesNumberDecrease;
+			if (ver < minBaseVerticies) ver = minBaseVerticies;
+
+			lVxs[i] = ver;
+			int noVxLvBw = sumUp(lVxs, i - 1);
+
+			float yModifier = (float)(rand()) / (static_cast <float> (RAND_MAX / levelMaxYOffset));
+			if (rand() % 2) yModifier *= -1;
+
+			if (i != 0) radius -= (minLevelRadiusDecrease + (float)(rand()) / ((float)(RAND_MAX / (maxLevelRadiusDecrease - minLevelRadiusDecrease))));
+			if (radius < minRadius) radius = minRadius;
+
+			for (int j = 0; j < ver; j++) {
+				double angle = 2 * glm::pi<float>() * j / ver;
+
+				float mxvtr = maxVertexOffset * radius;
+				float radiusModifier = -mxvtr + (float)(rand()) / ((float)(RAND_MAX / (mxvtr + mxvtr))); //i must have been high when i wrote this lmao
+
+				float tempRadius = radius + radiusModifier;
+
+				vec3 point = vec3(tempRadius * cos(angle), (i * lHeight) + yModifier, tempRadius * sin(angle));
+				points.push_back(point);
+
+				if (i == lv - 2) {
+					ind.push_back(j + noVxLvBw);
+					ind.push_back(sumUp(lVxs,i));
+				}
+
+				ind.push_back(j + noVxLvBw);
+				ind.push_back(j + noVxLvBw + 1);
+			}
+			ind.pop_back();
+			ind.push_back(noVxLvBw);
+		}
+		points.push_back(vec3(0.0f, lv * lHeight, 0.0f));
+
+		for (int i = 0; i < points.size(); i++) {
+			vx.push_back(points[i].x);
+			vx.push_back(points[i].y);
+			vx.push_back(points[i].z);
+
+			vx.push_back(0);
+			vx.push_back(1);
+			vx.push_back(0);
+		}
+
+		obstacles.push_back(game->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
+	
+		delete[] lVxs;
+	}
 }
 using namespace Battlezone;
-
-void setLevel(int x, int y, int ox, int oy, int lv[mapSize][mapSize], bool collapsed[mapSize][mapSize]) {
-	int step = 0;
-	if (rand() % (int)(mapHeightChangeProb*100)) {
-		switch (rand()%2)
-		{
-		case 0:
-			step = 1;
-			break;
-		default:
-			step = -1;
-			break;
-		}
-	}
-	lv[x][y] = lv[ox][oy] + step;
-}
-
-int collapse(int x, int y, int lv[mapSize][mapSize], bool collapsed[mapSize][mapSize], int ic[mapSize], int& dc) {
-	int cnum = 0;
-
-	if (x > 0 && !collapsed[x - 1][y]) {
-		setLevel(x - 1, y, x,y, lv, collapsed);
-		ic[x-1]++;
-		dc--;
-		cnum++;
-		collapsed[x - 1][y] = true;
-	}
-	if (x < mapSize && !collapsed[x + 1][y]) {
-		setLevel(x + 1, y, x,y, lv, collapsed);
-		ic[x+1]++;
-		dc--;
-		cnum++;
-		collapsed[x + 1][y] = true;
-	}
-	if (y > 0 && !collapsed[x][y - 1]) {
-		setLevel(x, y - 1, x, y, lv, collapsed);
-		ic[x]++;
-		dc--;
-		cnum++;
-		collapsed[x][y - 1] = true;
-	}
-	if (y < mapSize && !collapsed[x][y + 1]) {
-		setLevel(x, y + 1, x, y, lv, collapsed);
-		ic[x]++;
-		dc--;
-		cnum++;
-		collapsed[x][y + 1] = true;
-	}
-	
-	return cnum;
-}
-
-void generateGround(int mUS, int mS, float mHV, vec2 sP, Game* gra) {
-	//ive just now realised, that ive been calling the 'z' axis 'y' all along, but im too lazy to rename the variables, so just dont get confused lmao 
-
-	int level[mapSize][mapSize];
-	bool collapsed[mapSize][mapSize];
-
-	int rowSums[mapSize];
-	int left = mS * mS;
-
-	//collapse middle point
-	level[mapSize / 2 - 1][mapSize / 2 - 1] = 0;
-
-	//deleting the garbage (i think?)
-	for (int i = 0; i < mapSize; i++) {
-		rowSums[i] = 0;
-		for (int j = 0; j < mapSize; j++) {
-			level[i][j] = -100;
-			collapsed[i][j] = false;
-		}
-	}
-	collapsed[mapSize / 2 - 1][mapSize / 2 - 1] = true;
-	rowSums[mapSize / 2 - 1]++;
-	level[mapSize / 2 - 1][mapSize / 2 - 1] = 0;
-	left--;
-
-	//find an un-collapsed point neighbouring a collapsed point
-	//(going b-t,l-r rn, might be changed at some point later to be more random ig)
-	while (left > 0) {
-		for (int i = 0; i < mapSize; i++) {
-			if (rowSums[i] > 0) {
-				for (int j = 0; j < mapSize; j++) {
-					if (collapsed[i][j]) {
-						left -= collapse(i, j, level, collapsed, rowSums, left);
-					}
-				}
-			}
-		}
-	}
-
-	//making vx
-	int sx = sP.x - mapSize/2 * mUS;
-	int sy = sP.y - mapSize/2 * mUS;
-
-	for (int i = 0; i < mapSize; i++) {
-		for (int k = 0; k < 2; k++) {
-			for (int j = 0; j < mapSize; j++) {
-				groundUnitsVx.push_back(sx + j * mUS);
-				groundUnitsVx.push_back(0 + level[i][j] * stepHeihgt);
-				groundUnitsVx.push_back(sy + i * mUS * 2 + k * mUS);
-
-				groundUnitsVx.push_back(0);
-				groundUnitsVx.push_back(1);
-				groundUnitsVx.push_back(0);
-			}
-		}
-	}
-
-	//making ind
-	for (int i = 0; i < mapSize*2; i++) {
-		for (int j = 1; j < mapSize; j++) {
-			groundUnitsInd.push_back(j - 1 + i*mapSize);
-			groundUnitsInd.push_back(j + i*mapSize);
-		}
-	}
-
-	for (int i = 0; i < mapSize*(mapSize*2-1); i++) {
-		groundUnitsInd.push_back(i);
-		groundUnitsInd.push_back(i+mapSize);
-	}
-
-	//creating the ground GameObject
-	ground = gra->Create(vec3(sx,0.0f,sy), vec3(0.0f), vec3(1.0f), groundUnitsVx, groundUnitsInd);
-}
 
 void Game::BattlezoneInit() {
 	float shot_cool = 2;
@@ -197,38 +152,22 @@ void Game::BattlezoneInit() {
 	float zOffset = 0.0f;
 	int xOffset = 0;
 
-	//wtf is that
-	for (const std::string& object : objects)
-	{
-		if (object.empty())
-		{
-			zOffset -= 10.0f;
-			xOffset = 0;
-		}
-		else
-			objectsVector.push_back(Create(vec3(10.0f * xOffset++, 0.0f, zOffset), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f), object));
-	}
+	player = Create(vec3(0.0f), vec3(0.0f), vec3(1.0f), "Tank");
 
-	groundUnitsVx.clear();
-	groundUnitsInd.clear();
-
-	generateGround(mapUnitSize,mapSize,mapHeightChangeProb,startP,this);
+	//bruv you have to clear the vectors here ↓ otherwise it wont work
+	obstacles.clear();
 }
 
 void Game::Battlezone(float dt) {
 	shot_cool -= dt;
 	resp_cool -= dt;
-	GameObject* gracz = objectsVector[0];
-	
-	float camFrontOffset = -2.5f;
-	float camYOffset = 1.75f;
 
-	vec3 pPos = gracz->Transform.position;
-	vec3 pOri = gracz->Transform.orientation;
-	vec3 pFront = gracz->Front;
+	vec3 pPos = player->Transform.position;
+	vec3 pOri = player->Transform.orientation;
+	vec3 pFront = player->Front;
 
-	//Poruszanie kamer�
-	/*if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	//Poruszanie kamerą
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
@@ -275,11 +214,11 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		camSpeed = 2;
 	else
-		camSpeed = 1;*/
+		camSpeed = 1;
 
 	// Poruszanie modelem
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		gracz->Move(vec3(0, 0, -1) * dt * velocity);
+		player->Move(vec3(0, 0, -1) * dt * velocity);
 	}
 
 	//no moving backwards in the orginal game
@@ -287,29 +226,27 @@ void Game::Battlezone(float dt) {
 		gracz->Move(vec3(0, 0, 1) * dt * velocity);*/
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		gracz->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 		//todo: make camera rotation script
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		gracz->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+		player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 		//todo: make camera rotation script
 	}
 
 	//adjusting the cam's pos
-
-
-	vec3 cPos = normalize(pFront) * camFrontOffset;
+	/*/vec3 cPos = normalize(pFront) * camFrontOffset;
 	cPos.y += camYOffset;
 
-	camera->Position = pPos+cPos;
+	camera->Position = pPos+cPos;*/
 	//todo: make camera rotation script
 
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
-		if (gracz->Transform.orientation.y != 0 && gracz->Transform.orientation.y != 180)
-			shot(gracz->Transform.position + vec3(0, 2.535, 0), gracz->Transform.orientation, this);
+		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
+			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, this);
 		else
-			shot(gracz->Transform.position + vec3(0, 2.535, 1), gracz->Transform.orientation, this);
+			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation, this);
 	}
 	for (int i = 0; i < pociski.size(); i++) {
 		GameObject* current = pociski[i];
@@ -326,17 +263,16 @@ void Game::Battlezone(float dt) {
 
 		// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 	}
-	//Spawnowanie przeciwnik�w
+	//Spawnowanie przeciwników
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
-		srand(time(NULL));
 		float temp_x = rand() % 51 -25;
 		float temp_z = rand() % 51 -25;
 		float temp_y = rand() % 361;
-		spawn_tank(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
+		spawn_tank(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this);
 		resp_cool = 2;
 	}
 
-	//Poruszanie przeciwnik�w
+	//Poruszanie przeciwników
 	for (int i = 0; i < przeciwnicy.size(); i++) {
 		GameObject* current = przeciwnicy[i];
 		vec3 enemyPos = current->Transform.position;
@@ -352,6 +288,12 @@ void Game::Battlezone(float dt) {
 		_angle = _angle * 180.0f / glm::pi<float>();
 
 		current->RotateTo(vec3(0.0f, _angle, 0.0f));
+	}
+
+	//debug ↓
+	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
+		resp_cool = .1f;
+		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6, this);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
