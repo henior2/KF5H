@@ -33,7 +33,7 @@ const GLFWvidmode* monitorMode;
 int windowPrevW, windowPrevH;
 int windowPrevX, windowPrevY;
 
-Game* Gry;
+Game* Gra;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     
 
     // Tworzenie okna
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "KF5H - Gry wektorowe", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "KF5H - Gra wektorowe", NULL, NULL);
     if (window == NULL)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //SHADERY
 
-    Gry = new Game(window, SCR_WIDTH, SCR_HEIGHT, SoundEngine);
+    Gra = new Game(window, SCR_WIDTH, SCR_HEIGHT, SoundEngine);
 
     glfwSetCursorPosCallback(window, mouse_callback);
     
@@ -104,7 +104,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         processInput(window);  // wywolanie funkcji input
 
-        Gry->Update(deltaTime);
+        Gra->Update(deltaTime);
 
         glfwSwapBuffers(window);  // zmiana bufferu
     }
@@ -147,7 +147,7 @@ void processInput(GLFWwindow* window) {
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
-    Gry->mouse_callback(window, xposIn, yposIn);
+    Gra->mouse_callback(window, xposIn, yposIn);
 }
 
 // glfw: funkcja wywolywana za kazdym razem przy zmianie wielkosci okna

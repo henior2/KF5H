@@ -109,7 +109,7 @@ namespace Asteroids {
 		if (current->Transform.position.x < -bounds.x) current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));
 	}
 
-	void spawnAsteroids(int asteroidsNum, unsigned int type, Game* game) {
+	void spawnAsteroids(int asteroidsNum, unsigned int type) {
 		float minAsteroidsSize;
 		float maxAsteroidsSize;
 
@@ -181,12 +181,12 @@ namespace Asteroids {
 				pos.y = temp;
 			} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
 
-			asteroids.push_back(game->Create(vec3(pos, -90.0f), vec3(0.0f, 0.0f, rot), vec3(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+			asteroids.push_back(Gra->Create(vec3(pos, -90.0f), vec3(0.0f, 0.0f, rot), vec3(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 			asteroidSize.push_back(type);
 		}
 	}
 
-	void spawnEnemy(bool type, Game* game) {
+	void spawnEnemy(bool type, Game* Gra) {
 		vec2 pos;
 		int temp;
 
@@ -198,13 +198,13 @@ namespace Asteroids {
 			pos.y = temp;
 		} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 
-		enemies.push_back(game->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
+		enemies.push_back(Gra->Create(vec3(pos, -75.0f), vec3(0.0f), vec3(enemySizes[(int)type]), "AsteroidsEnemy"));
 		enemyType.push_back(type);
 		enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
 		if (type) eBDPos.push_back(vec3(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
 	}
 
-	void shoot(vec3 _pos, vec3 _rot, bool type, Game* game, bool eType = 0) {
+	void shoot(vec3 _pos, vec3 _rot, bool type, Game* Gra, bool eType = 0) {
 		float _time;
 		float _scale;
 		std::string _model;
@@ -224,13 +224,13 @@ namespace Asteroids {
 		}
 
 		bulletTimeRemain.push_back(_time);
-		GameObject* bullet = game->Create(_pos, _rot, vec3(_scale), _model);
+		GameObject* bullet = Gra->Create(_pos, _rot, vec3(_scale), _model);
 		bullets.push_back(bullet);
 		bullet->Move(vec3(0.0f, _offset, 0.0f));
 	}
 
-	bool wave(int asteroidsNum, Game* game) {
-		spawnAsteroids(asteroidsNum, 0, game);
+	bool wave(int asteroidsNum) {
+		spawnAsteroids(asteroidsNum, 0);
 
 		int temp = 0;
 		while (rand() % 100 <= enemyProb)
@@ -348,11 +348,11 @@ void Game::Asteroids(float dt) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
-		spawnAsteroids(5, 2, this);
+		spawnAsteroids(5, 2);
 	}
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
-		spawnAsteroids(5, 1, this);
+		spawnAsteroids(5, 1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = .5f;
@@ -513,7 +513,7 @@ void Game::Asteroids(float dt) {
 		if (waveAsteroidsCooldown <= 0) {
 			waveAsteroidsCooldown = 2.5f;
 			hasWaveFinished = false;
-			_return = wave(_asteroidsNo, this);
+			_return = wave(_asteroidsNo);
 			if (_asteroidsNo <= 9) _asteroidsNo += 2;
 			else _asteroidsNo = 11;
 		}

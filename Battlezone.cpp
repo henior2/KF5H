@@ -24,35 +24,35 @@ namespace Battlezone {
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
 
-	void shot_fast(vec3 pos, vec3 rot, Game* game) {
+	void shot_fast(vec3 pos, vec3 rot, Game* Gra) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
-		GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "FastBullet");
+		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
 		shot_cool = 2;
 	}
 
-	void shot(vec3 pos, vec3 rot, Game* game) {
+	void shot(vec3 pos, vec3 rot, Game* Gra) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
-		GameObject* bullet = game->Create(pos, rot, vec3(1.0f), "TankBullet");
+		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
 		shot_cool = 2;
 	}
 
-	void spawn_enemy(vec3 pos, vec3 rot, Game* game, int type) {
+	void spawn_enemy(vec3 pos, vec3 rot, Game* Gra, int type) {
 		if (type==1) {
-			GameObject* enemy = game->Create(pos, rot, vec3(1.0f), "Tank");
+			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 		}
 		else if (type==2) {
-			GameObject* enemy = game->Create(pos, rot, vec3(2.0f), "FastTank");
+			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 		}
 		else if (type == 3) {
-			GameObject* enemy = game->Create(pos, rot, vec3(1.0f), "LeonardoTank");
+			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 		}
@@ -91,7 +91,7 @@ namespace Battlezone {
 		return sum;
 	}
 
-	void makeObstacles(float x, float z, float height, Game* game) {
+	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
 		std::vector<unsigned int> ind;
 
@@ -153,7 +153,7 @@ namespace Battlezone {
 			vx.push_back(0);
 		}
 
-		obstacles.push_back(game->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
+		obstacles.push_back(Gra->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
 	
 		delete[] lVxs;
 	}
@@ -313,7 +313,7 @@ void Game::Battlezone(float dt) {
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .1f;
-		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6, this);
+		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
