@@ -54,6 +54,11 @@ namespace Battlezone {
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 		}
+		else if (type == 3) {
+			GameObject* enemy = game->Create(pos, rot, vec3(1.0f), "LeonardoTank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+		}
 	}
 
 
@@ -234,6 +239,7 @@ void Game::Battlezone(float dt) {
 	shot_cool -= dt;
 	resp_cool -= dt;
 	GameObject* gracz = objectsVector[0];
+
 	//Poruszanie kamer¹
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
@@ -337,6 +343,14 @@ void Game::Battlezone(float dt) {
 		spawn_enemy(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 2);
 		resp_cool = 2;
 	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && resp_cool <= 0) {
+		srand(time(NULL));
+		float temp_x = rand() % 51 - 25;
+		float temp_z = rand() % 51 - 25;
+		float temp_y = rand() % 361;
+		spawn_enemy(gracz->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 3);
+		resp_cool = 2;
+	}
 
 	//Poruszanie przeciwników
 	for (int i = 0; i < przeciwnicy.size(); i++) {
@@ -344,12 +358,14 @@ void Game::Battlezone(float dt) {
 		vec3 enemyPos = current->Transform.position;
 		vec3 playerPos = gracz->Transform.position;
 		vec3 direction = normalize(playerPos - enemyPos);
-		if(enemyType[i]==1)
+		if(enemyType[i]!=2)
 			current->MoveGlobal(direction * dt * tank_speed);
 		else if(enemyType[i]==2)
 			current->MoveGlobal(direction * dt * fast_tank_speed);
+		else
+			throw std::invalid_argument("co tu zawiod³o xD");
 
-		//rotating the enemy
+		//Obracanie przeciwników
 		float _angle;
 		_angle = atan2(direction.x, direction.z);
 		_angle = _angle * 180.0f / glm::pi<float>();
