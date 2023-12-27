@@ -62,34 +62,22 @@ namespace Battlezone {
 	const float camYOffset = 1.75f;
 
 	std::vector<GameObject*> enemiesVector;
-
 	std::vector<GameObject*> objectsVector;
-
 	std::vector<GameObject*> obstacles;
 
 	const int minBaseVerticies = 3;
 	const int maxBaseVerticies = 7;
-	const int minLevelVerticiesNumberDecrease = 1;
-	const int maxLevelVerticiesNumberDecrease = 2;
 	const float maxVertexOffset = .15f;
 	const int minLevels = 2;
-	const int maxLevels = 4;
+	const int maxLevels = 6;
+	const float backConnChance = .35f;
 	const float levelMaxYOffset = .15f;
-	const float minRadius = 5;
-	const float maxRadius = 7.5f;
-	const float minLevelRadiusDecrease = .25f;
+	const float minRadius = 3.5f;
+	const float maxRadius = 5;
+	const float minLevelRadiusDecrease = -.1f;
 	const float maxLevelRadiusDecrease = .5f;
 	const float minScale = .8f;
 	const float maxScale = 1.2f;
-
-	int sumUp(int arr[], int i) {
-		int sum = 0;
-		while (i >= 0) {
-			sum += arr[i];
-			i--;
-		}
-		return sum;
-	}
 
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
@@ -104,14 +92,8 @@ namespace Battlezone {
 		int ver = rand() % (maxBaseVerticies - minBaseVerticies) + minBaseVerticies;
 		float radius = minRadius + (float)(rand()) / ((float)(RAND_MAX / (maxRadius - minRadius)));
 
-		int* lVxs = new int[lv-1];
-
 		for (int i = 0; i < lv-1; i++) {
-			if (i != 0) ver -= rand() % (maxLevelVerticiesNumberDecrease - minLevelVerticiesNumberDecrease) + minLevelVerticiesNumberDecrease;
-			if (ver < minBaseVerticies) ver = minBaseVerticies;
-
-			lVxs[i] = ver;
-			int noVxLvBw = sumUp(lVxs, i - 1);
+			int noVxLvBw = i * ver;
 
 			float yModifier = (float)(rand()) / (static_cast <float> (RAND_MAX / levelMaxYOffset));
 			if (rand() % 2) yModifier *= -1;
@@ -130,11 +112,31 @@ namespace Battlezone {
 				vec3 point = vec3(tempRadius * cos(angle), (i * lHeight) + yModifier, tempRadius * sin(angle));
 				points.push_back(point);
 
+				//last layer => topmost vertex
 				if (i == lv - 2) {
 					ind.push_back(j + noVxLvBw);
-					ind.push_back(sumUp(lVxs,i));
+					ind.push_back((lv-1)*ver);
 				}
 
+				//every layer before => layer above
+				if (i < lv - 2) {
+					ind.push_back(j + noVxLvBw);
+
+					int nextVx = j + noVxLvBw + ver;
+
+					ind.push_back(nextVx);
+
+					if (rand() % 100 < backConnChance * 100) {
+						ind.push_back(j + noVxLvBw);
+						int _rand = rand() % 2;
+						if (_rand && --nextVx < 0) nextVx = 2;
+						else if (!_rand && ++nextVx > (lv - 1) * ver) nextVx = (lv - 1) * ver - 3;
+						ind.push_back(nextVx);
+					}
+				}
+
+
+				//every vertex in any given layer => vertex next to
 				ind.push_back(j + noVxLvBw);
 				ind.push_back(j + noVxLvBw + 1);
 			}
@@ -155,7 +157,7 @@ namespace Battlezone {
 
 		obstacles.push_back(Gra->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
 	
-		delete[] lVxs;
+		//delete[] lVxs;
 	}
 }
 using namespace Battlezone;
