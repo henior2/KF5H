@@ -66,12 +66,12 @@ namespace Battlezone {
 	std::vector<GameObject*> obstacles;
 
 	const int minBaseVerticies = 3;
-	const int maxBaseVerticies = 7;
+	const int maxBaseVerticies = 9;
 	const float maxVertexOffset = .15f;
-	const int minLevels = 2;
+	const int minLevels = 3;
 	const int maxLevels = 6;
-	const float backConnChance = .35f;
-	const float levelMaxYOffset = .15f;
+	const float backConnChance = .2f;
+	const float levelMaxYOffset = .25f;
 	const float minRadius = 3.5f;
 	const float maxRadius = 5;
 	const float minLevelRadiusDecrease = -.1f;
