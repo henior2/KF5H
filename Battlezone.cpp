@@ -7,7 +7,7 @@ namespace Battlezone {
 	GameObject* player;
 	GameObject* model2;
 
-	float rotationMultiplier = -500.0f;
+	const float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
 	float const velocity = 3.0f;
 	float const rotationMultiplier1 = 35;
@@ -15,8 +15,8 @@ namespace Battlezone {
 	std::vector<GameObject*> przeciwnicy;
 	float shot_cool = 2;
 	float resp_cool = 2;
-	float fast_tank_speed = 4;
-	float tank_speed = 2;
+	const float fast_tank_speed = 4;
+	const float tank_speed = 2;
 
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
@@ -58,8 +58,8 @@ namespace Battlezone {
 		}
 	}
 
-	float camFrontOffset = -2.5f;
-	float camYOffset = 1.75f;
+	const float camFrontOffset = -2.5f;
+	const float camYOffset = 1.75f;
 
 	std::vector<GameObject*> enemiesVector;
 
@@ -161,10 +161,8 @@ namespace Battlezone {
 using namespace Battlezone;
 
 void Game::BattlezoneInit() {
-	float shot_cool = 2;
-	float resp_cool = 2;
-	float zOffset = 0.0f;
-	int xOffset = 0;
+	shot_cool = 2;
+	resp_cool = 2;
 
 	player = Create(vec3(0.0f), vec3(0.0f), vec3(1.0f), "Tank");
 
@@ -300,7 +298,7 @@ void Game::Battlezone(float dt) {
 		else if(enemyType[i]==2)
 			current->MoveGlobal(direction * dt * fast_tank_speed);
 		else
-			throw std::invalid_argument("co tu zawiodło xD");
+			throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
 
 		//Obracanie przeciwników
 		float _angle;
