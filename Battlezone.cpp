@@ -7,6 +7,8 @@ namespace Battlezone {
 	GameObject* player;
 	GameObject* model2;
 
+	GameObject* plane;
+
 	const float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
 	float const velocity = 3.0f;
@@ -78,6 +80,13 @@ namespace Battlezone {
 	const float maxLevelRadiusDecrease = .5f;
 	const float minScale = .8f;
 	const float maxScale = 1.2f;
+
+	const float planeHeight = 30.0f;
+	const float planeSpeedMultiplier = 10.0f;
+	float planeCooldown = 7.5f;
+	bool isPlane = false;
+	vec2 planeStartCoords = vec2(-1000,-1000);
+	const float planeBounds = 100.0f;
 
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
@@ -166,7 +175,12 @@ void Game::BattlezoneInit() {
 	shot_cool = 2;
 	resp_cool = 2;
 
+	planeCooldown = 10.0f;
+	isPlane = false;
+	planeStartCoords = vec2(-1000, -1000);
+
 	player = Create(vec3(0.0f), vec3(0.0f), vec3(1.0f), "Tank");
+	plane = Create(vec3(-1000.0f, 1000, -1000.0f), vec3(0.0f), vec3(1.0f), "BattlezonePlane");
 
 	//bruv you have to clear the vectors here ↓ otherwise it wont work
 	obstacles.clear();
@@ -310,10 +324,47 @@ void Game::Battlezone(float dt) {
 		current->RotateTo(vec3(0.0f, _angle, 0.0f));
 	}
 
+	if (!isPlane) planeCooldown -= dt;
+	if (planeCooldown <= 0) {
+		planeStartCoords.x = planeBounds;
+		if (rand() % 2) planeStartCoords.x *= -1;
+		planeStartCoords.y = rand() % (int)(2*planeBounds) - planeBounds;
+
+		if (rand() % 2) {
+			float temp = planeStartCoords.x;
+			planeStartCoords.x = planeStartCoords.y;
+			planeStartCoords.y = temp;
+		}
+
+		plane->MoveTo(vec3(planeStartCoords.x, planeHeight, planeStartCoords.y));
+
+		float _angle;
+		vec2 direction = normalize(vec2(pPos.x, pPos.z) - planeStartCoords);
+		_angle = atan2(direction.x, direction.y);
+		_angle = _angle * 180.0f / glm::pi<float>();
+		plane->RotateTo(vec3(0.0f, _angle, 0.0f));
+
+		isPlane = true;
+		planeCooldown = 7.5f;
+	}
+	if (isPlane) {
+		plane->Move(plane->Front * dt * planeSpeedMultiplier);
+
+		vec2 planePos = vec2(plane->Transform.position.x, plane->Transform.position.z);
+		if (abs(planePos.x) > planeBounds * 1.25 || abs(planePos.y) > planeBounds * 1.25) { 
+			plane->MoveTo(vec3(-1000, 1000, -1000));
+			isPlane = false; 
+		}
+	}
+
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .1f;
 		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
+	}
+	if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
+		resp_cool = .1f;
+		camera->Position = vec3(0, planeHeight, 0);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

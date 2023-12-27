@@ -397,17 +397,83 @@
     <Text Include="L.ind.txt">
       <Filter>TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="%3b.ind.txt">
+    <Text Include="apostrophe.ind.txt">
       <Filter>TextFiles\Special characters</Filter>
     </Text>
-    <Text Include="%3b.vx.txt">
+    <Text Include="apostrophe.vx.txt">
       <Filter>TextFiles\Special characters</Filter>
     </Text>
-    <Text Include="!.ind.txt">
+    <Text Include="colon.ind.txt">
       <Filter>TextFiles\Special characters</Filter>
     </Text>
-    <Text Include="!.vx.txt">
+    <Text Include="colon.vx.txt">
       <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="comma.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="comma.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="dash.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="dash.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="dot.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="dot.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="exclamation-mark.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="exclamation-mark.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="left-bracket.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="left-bracket.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="percent.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="percent.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="question-mark.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="question-mark.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="right-bracket.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="right-bracket.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="semi-colon.ind.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="semi-colon.vx.txt">
+      <Filter>TextFiles\Special characters</Filter>
+    </Text>
+    <Text Include="TankBullet.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="TankBullet.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="BattlezonePlane.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="BattlezonePlane.ind.txt">
+      <Filter>TextFiles\Models</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

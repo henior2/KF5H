@@ -153,6 +153,8 @@
     <ClInclude Include="Tekst2d.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="BattlezonePlane.ind.txt" />
+    <Text Include="BattlezonePlane.vx.txt" />
     <Text Include="exclamation-mark.ind.txt" />
     <Text Include="exclamation-mark.vx.txt" />
     <Text Include="apostrophe.ind.txt" />

@@ -39,6 +39,7 @@ namespace Test {
 		"LeonardoTank",
 		"FastBullet",
 		"TankBUllet",
+		"BattlezonePlane",
 		"",
 		"MenuCube",
 		"MenuSquare",
