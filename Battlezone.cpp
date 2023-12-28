@@ -1,13 +1,21 @@
 ﻿#include "Game.h"
 #include <time.h>
+#include <any>
 
 using namespace glm;
 
 namespace Battlezone {
+	const double PI = glm::pi<double>();
+	const unsigned int radarPoints = 24;
+	const float radarRadius = 5;
+	const float radarLineLenght = .5f;
+
 	GameObject* player;
 	GameObject* model2;
 
 	GameObject* plane;
+
+	GameObject* radar;
 
 	const float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
@@ -111,7 +119,7 @@ namespace Battlezone {
 			if (radius < minRadius) radius = minRadius;
 
 			for (int j = 0; j < ver; j++) {
-				double angle = 2 * glm::pi<float>() * j / ver;
+				double angle = 2 * PI * j / ver;
 
 				float mxvtr = maxVertexOffset * radius;
 				float radiusModifier = -mxvtr + (float)(rand()) / ((float)(RAND_MAX / (mxvtr + mxvtr))); //i must have been high when i wrote this lmao
@@ -165,8 +173,25 @@ namespace Battlezone {
 		}
 
 		obstacles.push_back(Gra->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
-	
-		//delete[] lVxs;
+	}
+
+	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
+		vec.push_back(a1);
+		vec.push_back(a2);
+		vec.push_back(a3);
+	}
+	void push_back3(std::vector<float>& vec, float a1) {
+		vec.push_back(a1);
+		vec.push_back(a1);
+		vec.push_back(a1);
+	}
+	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
+		vec.push_back(a1);
+		vec.push_back(a2);
+	}
+	void push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
+		vec.push_back(a1);
+		vec.push_back(a1);
 	}
 }
 using namespace Battlezone;
@@ -181,6 +206,71 @@ void Game::BattlezoneInit() {
 
 	player = Create(vec3(0.0f), vec3(0.0f), vec3(1.0f), "Tank");
 	plane = Create(vec3(-1000.0f, 1000, -1000.0f), vec3(0.0f), vec3(1.0f), "BattlezonePlane");
+
+	//making radar
+	std::vector<float> rVx;
+	std::vector<unsigned int> rInd;
+	
+	push_back3(rVx, 0);
+	push_back3(rVx, 0, 1, 0);
+
+	for (int i = 0; i < radarPoints; i++) {
+		float _angle = 2 * PI * i / radarPoints;
+		rVx.push_back(radarRadius * cos(_angle));
+		rVx.push_back(radarRadius * sin(_angle));
+		rVx.push_back(0);
+
+		push_back3(rVx, 0, 1, 0);
+
+		push_back2(rInd, i+1, i+2);
+	}
+	rInd.pop_back();
+	rInd.push_back(1);
+
+	push_back3(rVx, radarRadius * cos(3*PI/4), radarRadius * sin(3*PI/4), 0);
+	push_back3(rVx, 0, 1, 0);
+
+	push_back3(rVx, radarRadius * cos(PI/4), radarRadius * sin(PI/4), 0);
+	push_back3(rVx, 0, 1, 0);
+
+	push_back2(rInd, 0, radarPoints+1);
+	push_back2(rInd, 0, radarPoints+2);
+
+	for (int i = 0; i < 4; i++) {
+		float _angle = PI * i / 2;
+
+		float _x = radarRadius * cos(_angle);
+		float _y = radarRadius * sin(_angle);
+
+		push_back3(rVx, _x, _y, 0);
+		push_back3(rVx, 0, 1, 0);
+
+		switch (i)
+		{
+		case 0:
+			_x -= radarLineLenght;
+			break;
+		case 1:
+			_y -= radarLineLenght;
+			break;
+		case 2:
+			_x += radarLineLenght;
+			break;
+		case 3:
+			_y += radarLineLenght;
+			break;
+		default:
+			throw(std::invalid_argument("how did you manage to go out of bounds of for-loop?!"));
+			break;
+		}
+		
+		push_back3(rVx, _x, _y, 0);
+		push_back3(rVx, 0, 1, 0);
+
+		push_back2(rInd, radarPoints + 3 + i * 2, radarPoints + 4 + i * 2);
+	}
+
+	radar = Create(vec3(0.0f, 5.0f, 0.0f), vec3(0.0f), vec3(.25f), rVx, rInd);
 
 	//bruv you have to clear the vectors here ↓ otherwise it wont work
 	obstacles.clear();
@@ -309,21 +399,48 @@ void Game::Battlezone(float dt) {
 		GameObject* current = przeciwnicy[i];
 		vec3 enemyPos = current->Transform.position;
 		vec3 direction = normalize(pPos - enemyPos);
-		if(enemyType[i]==1 || enemyType[i]==3)
-			current->MoveGlobal(direction * dt * tank_speed);
-		else if(enemyType[i]==2)
-			current->MoveGlobal(direction * dt * fast_tank_speed);
-		else
-			throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+		vec3 distance = pPos - enemyPos;
+		if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
+			if (enemyType[i] == 1 || enemyType[i] == 3)
+				current->MoveGlobal(direction * dt * tank_speed);
+			else if (enemyType[i] == 2) {
+				current->MoveGlobal(direction * dt * fast_tank_speed);
+				if (shot_cool <= 0) {
+					shot_fast(current->Transform.position + vec3(0, 1.06, 0), current->Transform.orientation, this);
+					shot_cool = 2.0;
+				}
+			}
+		}
+		else {
+			if (enemyType[i] == 1 || enemyType[i] == 3) {
+				if (shot_cool <= 0) {
+					if (current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180)
+						shot(current->Transform.position + vec3(0, 2.535, 0), current->Transform.orientation, this);
+					else
+						shot(current->Transform.position + vec3(0, 2.535, 1), current->Transform.orientation, this);
+				}
+				}
+			else if (enemyType[i] == 2) {
+				if (shot_cool <= 0) {
+					shot_fast(current->Transform.position + vec3(0, 1.06, 0), current->Transform.orientation, this);
+					shot_cool = 2.0;
+				}
+			}
+			else
+				throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+		}
+	
+		
 
 		//Obracanie przeciwników
 		float _angle;
 		_angle = atan2(direction.x, direction.z);
-		_angle = _angle * 180.0f / glm::pi<float>();
+		_angle = _angle * 180.0f / PI;
 
 		current->RotateTo(vec3(0.0f, _angle, 0.0f));
 	}
 
+	//Poruszanie samolotu
 	if (!isPlane) planeCooldown -= dt;
 	if (planeCooldown <= 0) {
 		planeStartCoords.x = planeBounds;
@@ -341,7 +458,7 @@ void Game::Battlezone(float dt) {
 		float _angle;
 		vec2 direction = normalize(vec2(pPos.x, pPos.z) - planeStartCoords);
 		_angle = atan2(direction.x, direction.y);
-		_angle = _angle * 180.0f / glm::pi<float>();
+		_angle = _angle * 180.0f / PI;
 		plane->RotateTo(vec3(0.0f, _angle, 0.0f));
 
 		isPlane = true;
