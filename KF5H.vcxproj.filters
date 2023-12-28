@@ -475,6 +475,48 @@
     <Text Include="BattlezonePlane.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="Blaster.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Blaster.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Flipper.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Flipper.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Fuseball.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Fuseball.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpHeart.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpHeart.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpSpeed.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpSpeed.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Spiker.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Spiker.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Tanker.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Tanker.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
