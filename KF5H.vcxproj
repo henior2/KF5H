@@ -165,6 +165,8 @@
     <Text Include="Flipper.vx.txt" />
     <Text Include="Fuseball.ind.txt" />
     <Text Include="Fuseball.vx.txt" />
+    <Text Include="Heart.ind.txt" />
+    <Text Include="Heart.vx.txt" />
     <Text Include="PowerUpSpeed.ind.txt" />
     <Text Include="PowerUpSpeed.vx.txt" />
     <Text Include="semi-colon.ind.txt" />
