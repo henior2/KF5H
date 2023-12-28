@@ -12,7 +12,7 @@ namespace Battlezone {
 	const float radarLineLenght = .5f;
 	const float fullRotationTime = 1;
 	const unsigned int trailLinesNo = 15;
-	const float linesSpaceDeg = .75f;
+	const float linesSpaceDeg = .1f;
 
 	float rtp;
 
@@ -336,6 +336,7 @@ void Game::BattlezoneInit() {
 
 	for (int i = 0; i < trailLinesNo; i++) {
 		GameObject* obj = Create(vec3(0.0f), vec3(0.0f, 0.0f, 90.0f + i * linesSpaceDeg), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+		obj->Stage[0].opacity = (float)(1 - i / trailLinesNo); //not really working but whatever
 		spinningLines.push_back(obj);
 		uiElements.push_back(obj);
 		targetPos.push_back(vec3(0.0f));
