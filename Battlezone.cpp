@@ -43,6 +43,7 @@ namespace Battlezone {
 
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
+	std::vector<float> enemyShotCooldowns;
 
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
@@ -62,22 +63,54 @@ namespace Battlezone {
 		bullet->Move(vec3(0, 0, -1));
 		shot_cool = 2;
 	}
+	void enemyShoot(GameObject* enemy, Game* Gra) {
+		int enemyIndex = -1;
+
+		for (int i = 0; i < przeciwnicy.size(); ++i) {
+			if (przeciwnicy[i] == enemy) {
+				enemyIndex = i;
+				break;
+			}
+		}
+
+		if (enemyIndex != -1) {
+			// Sprawdź, czy czas odnawiania pocisku dla tego przeciwnika minął
+			if (enemyShotCooldowns[enemyIndex] <= 0) {
+				
+
+				// Strzał przeciwnika typu 1
+				if (enemyType[enemyIndex] == 1 || enemyType[enemyIndex] == 3) {
+					shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
+				}
+				// Strzał przeciwnika typu 2
+				else if (enemyType[enemyIndex] == 2) {
+					 shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
+				}
+
+				// Ustaw czas odnawiania pocisku dla tego przeciwnika na nowo
+				enemyShotCooldowns[enemyIndex] = 4.0f;  
+			}
+		}
+	}
 
 	void spawn_enemy(vec3 pos, vec3 rot, Game* Gra, int type) {
 		if (type==1) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
+			enemyShotCooldowns.push_back(0.0f);
 		}
 		else if (type==2) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
+			enemyShotCooldowns.push_back(0.0f);
 		}
 		else if (type == 3) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
+			enemyShotCooldowns.push_back(0.0f);
 		}
 	}
 
@@ -306,8 +339,13 @@ void Game::BattlezoneInit() {
 }
 
 void Game::Battlezone(float dt) {
-	shot_cool -= dt;
+	for (int i = 0; i < enemyShotCooldowns.size(); ++i) {
+		if (enemyShotCooldowns[i] > 0) {
+			enemyShotCooldowns[i] -= dt;
+		}
+	}
 	resp_cool -= dt;
+	shot_cool -= dt;
 
 	rtp += dt;
 	if (rtp >= fullRotationTime) rtp = 0;
@@ -433,13 +471,14 @@ void Game::Battlezone(float dt) {
 		vec3 direction = normalize(pPos - enemyPos);
 		vec3 distance = pPos - enemyPos;
 		if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
-			if (enemyType[i] == 1 || enemyType[i] == 3)
+			if (enemyType[i] == 1 || enemyType[i] == 3) {
 				current->MoveGlobal(direction * dt * tank_speed);
+				enemyShoot(current, this);
+			}
 			else if (enemyType[i] == 2) {
 				current->MoveGlobal(direction * dt * fast_tank_speed);
 				if (shot_cool <= 0) {
-					shot_fast(current->Transform.position + vec3(0, 1.06, 0), current->Transform.orientation, this);
-					shot_cool = 2.0;
+					enemyShoot(current,this);
 				}
 			}
 		}
@@ -447,15 +486,12 @@ void Game::Battlezone(float dt) {
 			if (enemyType[i] == 1 || enemyType[i] == 3) {
 				if (shot_cool <= 0) {
 					if (current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180)
-						shot(current->Transform.position + vec3(0, 2.535, 0), current->Transform.orientation, this);
-					else
-						shot(current->Transform.position + vec3(0, 2.535, 1), current->Transform.orientation, this);
+						enemyShoot(current, this);
 				}
 				}
 			else if (enemyType[i] == 2) {
 				if (shot_cool <= 0) {
-					shot_fast(current->Transform.position + vec3(0, 1.06, 0), current->Transform.orientation, this);
-					shot_cool = 2.0;
+					enemyShoot(current, this);
 				}
 			}
 			else

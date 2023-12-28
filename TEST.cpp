@@ -41,6 +41,8 @@ namespace Test {
 		"TankBUllet",
 		"BattlezonePlane",
 		"PowerUpSpeed",
+		"PowerUpSpeed",
+		"Heart",
 		"",
 		"MenuCube",
 		"MenuSquare",
