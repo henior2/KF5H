@@ -155,10 +155,16 @@
   <ItemGroup>
     <Text Include="BattlezonePlane.ind.txt" />
     <Text Include="BattlezonePlane.vx.txt" />
+    <Text Include="Blaster-spaceship-icone.ind.txt" />
+    <Text Include="Blaster-spaceship-icone.vx.txt" />
     <Text Include="exclamation-mark.ind.txt" />
     <Text Include="exclamation-mark.vx.txt" />
     <Text Include="apostrophe.ind.txt" />
     <Text Include="apostrophe.vx.txt" />
+    <Text Include="Flipper.ind.txt" />
+    <Text Include="Flipper.vx.txt" />
+    <Text Include="Fuseball.ind.txt" />
+    <Text Include="Fuseball.vx.txt" />
     <Text Include="semi-colon.ind.txt" />
     <Text Include="semi-colon.vx.txt" />
     <Text Include="dot.ind.txt" />
@@ -216,6 +222,8 @@
     <Text Include="MenuSquare.ind.txt" />
     <Text Include="MenuSquare.vx.txt" />
     <Text Include="Rocket.vx.txt" />
+    <Text Include="Spiker.ind.txt" />
+    <Text Include="Spiker.vx.txt" />
     <Text Include="Tank.ind.txt" />
     <Text Include="Tank.vx.txt" />
     <Text Include="FragmentShader.txt" />
@@ -225,6 +233,8 @@
     <Text Include="FastTank.vx.txt" />
     <Text Include="TankBullet.ind.txt" />
     <Text Include="TankBullet.vx.txt" />
+    <Text Include="Tanker.ind.txt" />
+    <Text Include="Tanker.vx.txt" />
     <Text Include="Ufo.ind.txt" />
     <Text Include="Ufo.vx.txt" />
     <Text Include="A.ind.txt" />

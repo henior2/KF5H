@@ -55,6 +55,11 @@ namespace Test {
 		"percent",
 		"semi-colon",
 		"question-mark",
+		"",
+		"Blaster-spaceship-icone",
+		"Flipper",  
+		"Spiker",
+		"Fuseball",
 	};
 
 	std::vector<GameObject*> objectsVector;
