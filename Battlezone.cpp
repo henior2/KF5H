@@ -552,7 +552,8 @@ void Game::Battlezone(float dt) {
 	}
 
 	//spinningLine's ori
-	targetOri[1] = normalize(pFront) * (rtp/fullRotationTime * 360) * vec3(0,0,1); //somebody fix this i beg you T_T
+	spinningLine->Rotate(vec3(0, 0, rtp / fullRotationTime * 180 * dt));
+	targetOri[1] = spinningLine->Transform.orientation * vec3(0,0,1);
 
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
