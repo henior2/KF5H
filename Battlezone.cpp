@@ -11,6 +11,8 @@ namespace Battlezone {
 	const float radarRadius = 5;
 	const float radarLineLenght = .5f;
 	const float fullRotationTime = 1;
+	const unsigned int trailLinesNo = 15;
+	const float linesSpaceDeg = .75f;
 
 	float rtp;
 
@@ -23,7 +25,7 @@ namespace Battlezone {
 	GameObject* plane;
 
 	GameObject* radar;
-	GameObject* spinningLine;
+	std::vector<GameObject*> spinningLines;
 
 	std::vector<GameObject*> uiElements;
 
@@ -317,10 +319,11 @@ void Game::BattlezoneInit() {
 	}
 
 	radar = Create(vec3(0.0f), vec3(0.0f), vec3(.25f), rVx, rInd);
-	spinningLine = Create(vec3(0.0f), vec3(0.0f), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 
 	//bruv you have to clear the vectors here ↓ otherwise it wont work
 	obstacles.clear();
+
+	spinningLines.clear();
 
 	targetPos.clear();
 	targetOri.clear();
@@ -331,9 +334,13 @@ void Game::BattlezoneInit() {
 	targetPos.push_back(vec3(0.0f));
 	targetOri.push_back(vec3(0.0f));
 
-	uiElements.push_back(spinningLine);
-	targetPos.push_back(vec3(0.0f));
-	targetOri.push_back(vec3(0.0f));
+	for (int i = 0; i < trailLinesNo; i++) {
+		GameObject* obj = Create(vec3(0.0f), vec3(0.0f, 0.0f, 90.0f + i * linesSpaceDeg), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+		spinningLines.push_back(obj);
+		uiElements.push_back(obj);
+		targetPos.push_back(vec3(0.0f));
+		targetOri.push_back(vec3(0.0f));
+	}
 
 	rtp = 0;
 }
@@ -543,6 +550,13 @@ void Game::Battlezone(float dt) {
 	}
 
 	//adjusting ui elements' pos
+	for (int i = 0; i < spinningLines.size();i++) {
+		GameObject* line = spinningLines[i];
+
+		line->Rotate(vec3(0, 0, rtp / fullRotationTime * 180 * dt));
+		targetOri[i+1] = line->Transform.orientation * vec3(0, 0, 1);
+	}
+
 	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
 	for (int i = 0; i < uiElements.size(); i++) {
 		GameObject* current = uiElements[i];
@@ -550,10 +564,6 @@ void Game::Battlezone(float dt) {
 		current->MoveTo(pPos + _offset + targetPos[i]);
 		current->RotateTo(pOri + targetOri[i]);
 	}
-
-	//spinningLine's ori
-	spinningLine->Rotate(vec3(0, 0, rtp / fullRotationTime * 180 * dt));
-	targetOri[1] = spinningLine->Transform.orientation * vec3(0,0,1);
 
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
