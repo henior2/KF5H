@@ -6,9 +6,16 @@ using namespace glm;
 
 namespace Battlezone {
 	const double PI = glm::pi<double>();
+
 	const unsigned int radarPoints = 24;
 	const float radarRadius = 5;
 	const float radarLineLenght = .5f;
+	const float fullRotationTime = 1;
+
+	float rtp;
+
+	const float uiZOffset = 15;
+	const float uiMaxYOffset = 10;
 
 	GameObject* player;
 	GameObject* model2;
@@ -16,6 +23,12 @@ namespace Battlezone {
 	GameObject* plane;
 
 	GameObject* radar;
+	GameObject* spinningLine;
+
+	std::vector<GameObject*> uiElements;
+
+	std::vector<vec3> targetPos;
+	std::vector<vec3> targetOri;
 
 	const float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
@@ -270,15 +283,34 @@ void Game::BattlezoneInit() {
 		push_back2(rInd, radarPoints + 3 + i * 2, radarPoints + 4 + i * 2);
 	}
 
-	radar = Create(vec3(0.0f, 5.0f, 0.0f), vec3(0.0f), vec3(.25f), rVx, rInd);
+	radar = Create(vec3(0.0f), vec3(0.0f), vec3(.25f), rVx, rInd);
+	spinningLine = Create(vec3(0.0f), vec3(0.0f), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 
 	//bruv you have to clear the vectors here ↓ otherwise it wont work
 	obstacles.clear();
+
+	targetPos.clear();
+	targetOri.clear();
+
+	uiElements.clear();
+
+	uiElements.push_back(radar);
+	targetPos.push_back(vec3(0.0f));
+	targetOri.push_back(vec3(0.0f));
+
+	uiElements.push_back(spinningLine);
+	targetPos.push_back(vec3(0.0f));
+	targetOri.push_back(vec3(0.0f));
+
+	rtp = 0;
 }
 
 void Game::Battlezone(float dt) {
 	shot_cool -= dt;
 	resp_cool -= dt;
+
+	rtp += dt;
+	if (rtp >= fullRotationTime) rtp = 0;
 
 	vec3 pPos = player->Transform.position;
 	vec3 pOri = player->Transform.orientation;
@@ -473,6 +505,18 @@ void Game::Battlezone(float dt) {
 			isPlane = false; 
 		}
 	}
+
+	//adjusting ui elements' pos
+	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
+	for (int i = 0; i < uiElements.size(); i++) {
+		GameObject* current = uiElements[i];
+
+		current->MoveTo(pPos + _offset + targetPos[i]);
+		current->RotateTo(pOri + targetOri[i]);
+	}
+
+	//spinningLine's ori
+	targetOri[1] = normalize(pFront) * (rtp/fullRotationTime * 360) * vec3(0,0,1); //somebody fix this i beg you T_T
 
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
