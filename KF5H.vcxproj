@@ -155,8 +155,8 @@
   <ItemGroup>
     <Text Include="BattlezonePlane.ind.txt" />
     <Text Include="BattlezonePlane.vx.txt" />
-    <Text Include="Blaster-spaceship-icone.ind.txt" />
-    <Text Include="Blaster-spaceship-icone.vx.txt" />
+    <Text Include="Blaster.ind.txt" />
+    <Text Include="Blaster.vx.txt" />
     <Text Include="exclamation-mark.ind.txt" />
     <Text Include="exclamation-mark.vx.txt" />
     <Text Include="apostrophe.ind.txt" />
@@ -165,8 +165,8 @@
     <Text Include="Flipper.vx.txt" />
     <Text Include="Fuseball.ind.txt" />
     <Text Include="Fuseball.vx.txt" />
-    <Text Include="Heart.ind.txt" />
-    <Text Include="Heart.vx.txt" />
+    <Text Include="PowerUpHeart.ind.txt" />
+    <Text Include="PowerUpHeart.vx.txt" />
     <Text Include="PowerUpSpeed.ind.txt" />
     <Text Include="PowerUpSpeed.vx.txt" />
     <Text Include="semi-colon.ind.txt" />

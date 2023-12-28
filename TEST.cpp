@@ -41,8 +41,7 @@ namespace Test {
 		"TankBUllet",
 		"BattlezonePlane",
 		"PowerUpSpeed",
-		"PowerUpSpeed",
-		"Heart",
+		"PowerUpHeart",
 		"",
 		"MenuCube",
 		"MenuSquare",
@@ -59,10 +58,11 @@ namespace Test {
 		"semi-colon",
 		"question-mark",
 		"",
-		"Blaster-spaceship-icone",
+		"Blaster",
 		"Flipper",  
 		"Spiker",
 		"Fuseball",
+		""
 	};
 
 	std::vector<GameObject*> objectsVector;
