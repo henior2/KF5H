@@ -399,12 +399,38 @@ void Game::Battlezone(float dt) {
 		GameObject* current = przeciwnicy[i];
 		vec3 enemyPos = current->Transform.position;
 		vec3 direction = normalize(pPos - enemyPos);
-		if(enemyType[i]==1 || enemyType[i]==3)
-			current->MoveGlobal(direction * dt * tank_speed);
-		else if(enemyType[i]==2)
-			current->MoveGlobal(direction * dt * fast_tank_speed);
-		else
-			throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+		vec3 distance = pPos - enemyPos;
+		if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
+			if (enemyType[i] == 1 || enemyType[i] == 3)
+				current->MoveGlobal(direction * dt * tank_speed);
+			else if (enemyType[i] == 2) {
+				current->MoveGlobal(direction * dt * fast_tank_speed);
+				if (shot_cool <= 0) {
+					shot_fast(current->Transform.position + vec3(0, 1.06, 0), current->Transform.orientation, this);
+					shot_cool = 2.0;
+				}
+			}
+		}
+		else {
+			if (enemyType[i] == 1 || enemyType[i] == 3) {
+				if (shot_cool <= 0) {
+					if (current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180)
+						shot(current->Transform.position + vec3(0, 2.535, 0), current->Transform.orientation, this);
+					else
+						shot(current->Transform.position + vec3(0, 2.535, 1), current->Transform.orientation, this);
+				}
+				}
+			else if (enemyType[i] == 2) {
+				if (shot_cool <= 0) {
+					shot_fast(current->Transform.position + vec3(0, 1.06, 0), current->Transform.orientation, this);
+					shot_cool = 2.0;
+				}
+			}
+			else
+				throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+		}
+	
+		
 
 		//Obracanie przeciwników
 		float _angle;
@@ -414,6 +440,7 @@ void Game::Battlezone(float dt) {
 		current->RotateTo(vec3(0.0f, _angle, 0.0f));
 	}
 
+	//Poruszanie samolotu
 	if (!isPlane) planeCooldown -= dt;
 	if (planeCooldown <= 0) {
 		planeStartCoords.x = planeBounds;
