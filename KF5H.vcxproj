@@ -159,6 +159,8 @@
     <Text Include="exclamation-mark.vx.txt" />
     <Text Include="apostrophe.ind.txt" />
     <Text Include="apostrophe.vx.txt" />
+    <Text Include="PowerUp.ind.txt" />
+    <Text Include="PowerUp.vx.txt" />
     <Text Include="semi-colon.ind.txt" />
     <Text Include="semi-colon.vx.txt" />
     <Text Include="dot.ind.txt" />
