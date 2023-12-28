@@ -161,10 +161,15 @@
     <Text Include="exclamation-mark.vx.txt" />
     <Text Include="apostrophe.ind.txt" />
     <Text Include="apostrophe.vx.txt" />
+<<<<<<< HEAD
     <Text Include="Flipper.ind.txt" />
     <Text Include="Flipper.vx.txt" />
     <Text Include="Fuseball.ind.txt" />
     <Text Include="Fuseball.vx.txt" />
+=======
+    <Text Include="PowerUp.ind.txt" />
+    <Text Include="PowerUp.vx.txt" />
+>>>>>>> ae94fc5adba152c5ced5c68203e1839e7b7a62f6
     <Text Include="semi-colon.ind.txt" />
     <Text Include="semi-colon.vx.txt" />
     <Text Include="dot.ind.txt" />
