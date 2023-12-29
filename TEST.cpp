@@ -59,9 +59,11 @@ namespace Test {
 		"question-mark",
 		"",
 		"Blaster",
-		"Flipper",  
+		"Flipper", 
+		"Tanker",
 		"Spiker",
 		"Fuseball",
+		"Pulsar",
 		""
 	};
 
