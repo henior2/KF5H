@@ -55,7 +55,6 @@ namespace Battlezone {
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
-		shot_cool = 2;
 	}
 
 	void shot(vec3 pos, vec3 rot, Game* Gra) {
@@ -63,15 +62,16 @@ namespace Battlezone {
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
-		shot_cool = 2;
+
 	}
 	void enemyShoot(GameObject* enemy, Game* Gra) {
 		int enemyIndex = -1;
-
-		for (int i = 0; i < przeciwnicy.size(); ++i) {
-			if (przeciwnicy[i] == enemy) {
-				enemyIndex = i;
-				break;
+		if (!przeciwnicy.empty()) {
+			for (int i = 0; i < przeciwnicy.size(); ++i) {
+				if (przeciwnicy[i] == enemy) {
+					enemyIndex = i;
+					break;
+				}
 			}
 		}
 
@@ -346,14 +346,19 @@ void Game::BattlezoneInit() {
 	}
 	spinningLines[0]->Stage[0].opacity = 1.25f;
 	spinningLines[0]->Stage[0].lineWidth = 1.25f;
-
 	rtp = 0;
+	przeciwnicy.clear();
+	enemyShotCooldowns.clear();
+	pociski.clear();
 }
 
 void Game::Battlezone(float dt) {
-	for (int i = 0; i < enemyShotCooldowns.size(); ++i) {
-		if (enemyShotCooldowns[i] > 0) {
-			enemyShotCooldowns[i] -= dt;
+	if (!enemyShotCooldowns.empty()) {
+		for (int i = 0; i < enemyShotCooldowns.size(); ++i) {
+			if (enemyShotCooldowns[i] - dt > 0)
+				enemyShotCooldowns[i] -= dt;
+			else
+				enemyShotCooldowns[i] = 0;
 		}
 	}
 	resp_cool -= dt;
@@ -443,20 +448,22 @@ void Game::Battlezone(float dt) {
 		else
 			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation, this);
 	}
-	for (int i = 0; i < pociski.size(); i++) {
-		GameObject* current = pociski[i];
+	if (!pociski.empty()) {
+		for (int i = 0; i < pociski.size(); i++) {
+			GameObject* current = pociski[i];
 
-		fastBulletTimeRemain[i] -= dt;
-		if (fastBulletTimeRemain[i] <= 0) {
-			Destroy(current);
-			pociski.erase(pociski.begin() + i);
-			fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
-			i--;
-			continue;
+			fastBulletTimeRemain[i] -= dt;
+			if (fastBulletTimeRemain[i] <= 0) {
+				Destroy(current);
+				pociski.erase(pociski.begin() + i);
+				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
+				i--;
+				continue;
+			}
+			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+
+			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
-		current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
-
-		// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 	}
 	//Spawnowanie przeciwników
 	float temp_x = rand() % 51 - 25;
@@ -476,48 +483,54 @@ void Game::Battlezone(float dt) {
 		resp_cool = 2;
 	}
 
-	//Poruszanie przeciwników
-	for (int i = 0; i < przeciwnicy.size(); i++) {
-		GameObject* current = przeciwnicy[i];
-		vec3 enemyPos = current->Transform.position;
-		vec3 direction = normalize(pPos - enemyPos);
-		vec3 distance = pPos - enemyPos;
-		if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
-			if (enemyType[i] == 1 || enemyType[i] == 3) {
-				current->MoveGlobal(direction * dt * tank_speed);
-				enemyShoot(current, this);
-			}
-			else if (enemyType[i] == 2) {
-				current->MoveGlobal(direction * dt * fast_tank_speed);
-				if (shot_cool <= 0) {
-					enemyShoot(current,this);
-				}
-			}
-		}
-		else {
-			if (enemyType[i] == 1 || enemyType[i] == 3) {
-				if (shot_cool <= 0) {
-					if (current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180)
+	//Poruszanie i strzelanie przeciwników
+	if (!przeciwnicy.empty()) {
+		for (int i = 0; i < przeciwnicy.size(); i++) {
+			GameObject* current = przeciwnicy[i];
+			vec3 enemyPos = current->Transform.position;
+			vec3 direction = normalize(pPos - enemyPos);
+			vec3 distance = pPos - enemyPos;
+			if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
+				if (enemyType[i] == 1 || enemyType[i] == 3) {
+					current->MoveGlobal(direction * dt * tank_speed);
+					if (enemyShotCooldowns[i] <= 0) {
 						enemyShoot(current, this);
+						enemyShotCooldowns[i] = 4.0;
+					}
 				}
-				}
-			else if (enemyType[i] == 2) {
-				if (shot_cool <= 0) {
-					enemyShoot(current, this);
+				else if (enemyType[i] == 2) {
+					current->MoveGlobal(direction * dt * fast_tank_speed);
+					if (enemyShotCooldowns[i] <= 0) {
+						enemyShoot(current, this);
+						enemyShotCooldowns[i] = 4.0;
+					}
 				}
 			}
-			else
-				throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+			else {
+				if (enemyType[i] == 1 || enemyType[i] == 3) {
+					if (enemyShotCooldowns[i] <= 0) {
+						if (current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
+							enemyShoot(current, this);
+							enemyShotCooldowns[i] = 4.0;
+						}
+					}
+				}
+				else if (enemyType[i] == 2) {
+					if (enemyShotCooldowns[i] <= 0) {
+						enemyShoot(current, this);
+						enemyShotCooldowns[i] = 4.0;
+					}
+				}
+				else
+					throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+			}
+			//Obracanie przeciwników
+			float _angle;
+			_angle = atan2(direction.x, direction.z);
+			_angle = _angle * 180.0f / PI;
+
+			current->RotateTo(vec3(0.0f, _angle, 0.0f));
 		}
-	
-		
-
-		//Obracanie przeciwników
-		float _angle;
-		_angle = atan2(direction.x, direction.z);
-		_angle = _angle * 180.0f / PI;
-
-		current->RotateTo(vec3(0.0f, _angle, 0.0f));
 	}
 
 	//Poruszanie samolotu
@@ -555,19 +568,23 @@ void Game::Battlezone(float dt) {
 	}
 
 	//adjusting ui elements' pos
-	for (int i = 0; i < spinningLines.size();i++) {
-		GameObject* line = spinningLines[i];
+	if (!spinningLines.empty()) {
+		for (int i = 0; i < spinningLines.size(); i++) {
+			GameObject* line = spinningLines[i];
 
-		line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
-		targetOri[i+1] = line->Transform.orientation * vec3(0, 0, 1);
+			line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
+			targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
+		}
 	}
 
 	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
-	for (int i = 0; i < uiElements.size(); i++) {
-		GameObject* current = uiElements[i];
+	if (!uiElements.empty()) {
+		for (int i = 0; i < uiElements.size(); i++) {
+			GameObject* current = uiElements[i];
 
-		current->MoveTo(pPos + _offset + targetPos[i]);
-		current->RotateTo(pOri + targetOri[i]);
+			current->MoveTo(pPos + _offset + targetPos[i]);
+			current->RotateTo(pOri + targetOri[i]);
+		}
 	}
 
 	//debug ↓
