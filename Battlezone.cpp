@@ -7,12 +7,12 @@ using namespace glm;
 namespace Battlezone {
 	const double PI = glm::pi<double>();
 
-	const unsigned int radarPoints = 24;
+	const unsigned int radarPoints = 35;
 	const float radarRadius = 5;
 	const float radarLineLenght = .5f;
-	const float fullRotationTime = 1;
-	const unsigned int trailLinesNo = 15;
-	const float linesSpaceDeg = .1f;
+	const float fullRotationTime = 4.0f;
+	const unsigned int trailLinesNo = 30;
+	const float linesSpace = .3f;
 
 	float rtp;
 
@@ -335,13 +335,17 @@ void Game::BattlezoneInit() {
 	targetOri.push_back(vec3(0.0f));
 
 	for (int i = 0; i < trailLinesNo; i++) {
-		GameObject* obj = Create(vec3(0.0f), vec3(0.0f, 0.0f, 90.0f + i * linesSpaceDeg), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
-		obj->Stage[0].opacity = (float)(1 - i / trailLinesNo); //not really working but whatever
+		GameObject* obj = Create(vec3(0.0f), vec3(0.0f, 0.0f, (90.0f + (float)(trailLinesNo) * linesSpace) - (float)(i) * linesSpace), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+		float modifier = 1.0f - (float)(i) / (float)(trailLinesNo);
+		obj->Stage[0].opacity = modifier; 
+		obj->Stage[0].lineWidth = modifier; 
 		spinningLines.push_back(obj);
 		uiElements.push_back(obj);
 		targetPos.push_back(vec3(0.0f));
 		targetOri.push_back(vec3(0.0f));
 	}
+	spinningLines[0]->Stage[0].opacity = 1.25f;
+	spinningLines[0]->Stage[0].lineWidth = 1.25f;
 
 	rtp = 0;
 }
@@ -554,7 +558,7 @@ void Game::Battlezone(float dt) {
 	for (int i = 0; i < spinningLines.size();i++) {
 		GameObject* line = spinningLines[i];
 
-		line->Rotate(vec3(0, 0, rtp / fullRotationTime * 180 * dt));
+		line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
 		targetOri[i+1] = line->Transform.orientation * vec3(0, 0, 1);
 	}
 
