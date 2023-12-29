@@ -40,6 +40,8 @@ namespace Test {
 		"FastBullet",
 		"TankBUllet",
 		"BattlezonePlane",
+		"RadarX",
+		"RadarT",
 		"PowerUpSpeed",
 		"PowerUpHeart",
 		"",

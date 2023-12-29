@@ -1,11 +1,12 @@
 ﻿#include "Game.h"
 #include <time.h>
-#include <any>
 
 using namespace glm;
 
 namespace Battlezone {
 	const double PI = glm::pi<double>();
+
+	const float mapSize = 125; //from the middle, so 125 <=> 250x250
 
 	const unsigned int radarPoints = 35;
 	const float radarRadius = 5;
@@ -13,6 +14,8 @@ namespace Battlezone {
 	const float fullRotationTime = 4.0f;
 	const unsigned int trailLinesNo = 30;
 	const float linesSpace = .3f;
+
+	const float FOVmultiplier = 10.0f;
 
 	float rtp;
 
@@ -31,6 +34,12 @@ namespace Battlezone {
 
 	std::vector<vec3> targetPos;
 	std::vector<vec3> targetOri;
+
+	std::vector<GameObject*> radarElements;
+	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost
+
+	const float rPointerScaleDefault = .1f;
+	const float rPointerScaleBig = .15f;
 
 	const float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
@@ -75,44 +84,62 @@ namespace Battlezone {
 			}
 		}
 
-		if (enemyIndex != -1) {
-			// Sprawdź, czy czas odnawiania pocisku dla tego przeciwnika minął
-			if (enemyShotCooldowns[enemyIndex] <= 0) {
-				
-
-				// Strzał przeciwnika typu 1
-				if (enemyType[enemyIndex] == 1 || enemyType[enemyIndex] == 3) {
-					shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
-				}
-				// Strzał przeciwnika typu 2
-				else if (enemyType[enemyIndex] == 2) {
-					 shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
-				}
-
-				// Ustaw czas odnawiania pocisku dla tego przeciwnika na nowo
-				enemyShotCooldowns[enemyIndex] = 4.0f;  
+		//nice ChatGPT lmao
+		if (enemyIndex != -1 && enemyShotCooldowns[enemyIndex] <= 0) {
+			// Strzał przeciwnika typu 1
+			if (enemyType[enemyIndex] == 1 || enemyType[enemyIndex] == 3) {
+				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
 			}
+			// Strzał przeciwnika typu 2
+			else if (enemyType[enemyIndex] == 2) {
+				shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
+			}
+
+			// Ustaw czas odnawiania pocisku dla tego przeciwnika na nowo
+			enemyShotCooldowns[enemyIndex] = 4.0f;
 		}
 	}
 
 	void spawn_enemy(vec3 pos, vec3 rot, Game* Gra, int type) {
-		if (type==1) {
+		if (type == 1) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(0.0f);
+
+			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarX");
+			radarElements.push_back(rPointer);
+			radarElementsType.push_back(0);
+			uiElements.push_back(rPointer);
+			targetPos.push_back(vec3(0.0f));
+			targetOri.push_back(vec3(0.0f));
 		}
-		else if (type==2) {
+		else if (type == 2) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(0.0f);
+
+			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleBig), "RadarX");
+			radarElements.push_back(rPointer);
+			radarElementsType.push_back(0);
+			uiElements.push_back(rPointer);
+			targetPos.push_back(vec3(0.0f));
+			targetOri.push_back(vec3(0.0f));
 		}
 		else if (type == 3) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(0.0f);
+
+			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
+			rPointer->color = vec3(0, 1, 0);
+			radarElements.push_back(rPointer);
+			radarElementsType.push_back(0);
+			uiElements.push_back(rPointer);
+			targetPos.push_back(vec3(0.0f));
+			targetOri.push_back(vec3(0.0f));
 		}
 	}
 
@@ -221,6 +248,13 @@ namespace Battlezone {
 		}
 
 		obstacles.push_back(Gra->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
+		
+		GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarT");
+		radarElements.push_back(rPointer);
+		radarElementsType.push_back(1);
+		uiElements.push_back(rPointer);
+		targetPos.push_back(vec3(0.0f));
+		targetOri.push_back(vec3(0.0f));
 	}
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
@@ -350,6 +384,9 @@ void Game::BattlezoneInit() {
 	przeciwnicy.clear();
 	enemyShotCooldowns.clear();
 	pociski.clear();
+
+	radarElements.clear();
+	radarElementsType.clear();
 }
 
 void Game::Battlezone(float dt) {
@@ -568,28 +605,52 @@ void Game::Battlezone(float dt) {
 	}
 
 	//adjusting ui elements' pos
-	if (!spinningLines.empty()) {
-		for (int i = 0; i < spinningLines.size(); i++) {
-			GameObject* line = spinningLines[i];
+	//adjusting scanner lines' rotation
+	for (int i = 0; i < spinningLines.size(); i++) {
+		GameObject* line = spinningLines[i];
 
-			line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
-			targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
-		}
+		line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
+		targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
 	}
 
-	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
-	if (!uiElements.empty()) {
-		for (int i = 0; i < uiElements.size(); i++) {
-			GameObject* current = uiElements[i];
+	//adjusting scanner elements' position
+	unsigned int radarElementsIterator[] = { 0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 boost
+	for (int i = 0; i < radarElements.size(); i++) {
+		int type = radarElementsType[i];
+		int iterator = radarElementsIterator[type];
 
-			current->MoveTo(pPos + _offset + targetPos[i]);
-			current->RotateTo(pOri + targetOri[i]);
-		}
+		GameObject* current;
+
+		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
+		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];
+		//else if (type == 2 && !powerUps.empty()) current = powerUps[iterator];
+		else throw std::invalid_argument("check deez values mate");
+
+		//this shit broken af
+		vec2 _dP = vec2(current->Transform.position.x - pPos.x, current->Transform.position.z - pPos.z); //orginal position
+		_dP *= FOVmultiplier; // adjustment based on the FOVmultiplier
+		_dP = vec2((_dP.x / mapSize) * radarRadius, (_dP.y / mapSize) * radarRadius); //scaled distance 
+
+		//todo: add out-of-bounds checking condition
+
+		targetPos[1 + trailLinesNo + i].x = _dP.x;
+		targetPos[1 + trailLinesNo + i].z = _dP.y;
+		
+		radarElementsIterator[type]++;
+	}
+
+	//moving the ui althogether
+	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
+	for (int i = 0; i < uiElements.size(); i++) {
+		GameObject* current = uiElements[i];
+
+		current->MoveTo(pPos + _offset + targetPos[i]);
+		current->RotateTo(pOri + targetOri[i]);
 	}
 
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
-		resp_cool = .1f;
+		resp_cool = .5f;
 		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
 	}
 	if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {

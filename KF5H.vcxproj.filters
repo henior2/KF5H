@@ -523,6 +523,15 @@
     <Text Include="Pulsar.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="RadarX.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="RadarT.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="RadarT.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
@@ -540,6 +549,9 @@
       <Filter>dll</Filter>
     </None>
     <None Include="Rocket.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </None>
+    <None Include="RadarX.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </None>
   </ItemGroup>

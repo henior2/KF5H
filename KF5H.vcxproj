@@ -171,6 +171,9 @@
     <Text Include="PowerUpSpeed.vx.txt" />
     <Text Include="Pulsar.ind.txt" />
     <Text Include="Pulsar.vx.txt" />
+    <Text Include="RadarT.ind.txt" />
+    <Text Include="RadarT.vx.txt" />
+    <Text Include="RadarX.ind.txt" />
     <Text Include="semi-colon.ind.txt" />
     <Text Include="semi-colon.vx.txt" />
     <Text Include="dot.ind.txt" />
@@ -304,6 +307,7 @@
   <ItemGroup>
     <None Include="ikpMP3.dll" />
     <None Include="irrKlang.dll" />
+    <None Include="RadarX.vx.txt" />
     <None Include="Rocket.ind.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
