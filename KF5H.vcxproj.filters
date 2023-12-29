@@ -475,9 +475,6 @@
     <Text Include="BattlezonePlane.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="Blaster-spaceship-icone.ind.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
     <Text Include="Tanker.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
@@ -496,12 +493,6 @@
     <Text Include="PowerUpSpeed.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="Heart.vx.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
-    <Text Include="Heart.ind.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
     <Text Include="Fuseball.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
@@ -514,7 +505,22 @@
     <Text Include="Flipper.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="Blaster-spaceship-icone.vx.txt">
+    <Text Include="PowerUpHeart.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Blaster.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Blaster.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpHeart.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Pulsar.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Pulsar.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
   </ItemGroup>

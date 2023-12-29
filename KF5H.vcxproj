@@ -169,6 +169,8 @@
     <Text Include="PowerUpHeart.vx.txt" />
     <Text Include="PowerUpSpeed.ind.txt" />
     <Text Include="PowerUpSpeed.vx.txt" />
+    <Text Include="Pulsar.ind.txt" />
+    <Text Include="Pulsar.vx.txt" />
     <Text Include="semi-colon.ind.txt" />
     <Text Include="semi-colon.vx.txt" />
     <Text Include="dot.ind.txt" />
