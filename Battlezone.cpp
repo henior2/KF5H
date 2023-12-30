@@ -235,10 +235,10 @@ namespace Battlezone {
 		}
 		points.push_back(vec3(0.0f, lv * lHeight, 0.0f));
 
-		for (int i = 0; i < points.size(); i++) {
-			vx.push_back(points[i].x);
-			vx.push_back(points[i].y);
-			vx.push_back(points[i].z);
+		for (auto const& point : points) {
+			vx.push_back(point.x);
+			vx.push_back(point.y);
+			vx.push_back(point.z);
 
 			vx.push_back(0);
 			vx.push_back(1);
@@ -389,11 +389,9 @@ void Game::BattlezoneInit() {
 
 void Game::Battlezone(float dt) {
 	if (!enemyShotCooldowns.empty()) {
-		for (int i = 0; i < enemyShotCooldowns.size(); ++i) {
-			if (enemyShotCooldowns[i] - dt > 0)
-				enemyShotCooldowns[i] -= dt;
-			else
-				enemyShotCooldowns[i] = 0;
+		for (auto& cooldown : enemyShotCooldowns) {
+			cooldown -= dt;
+			if (cooldown < 0) cooldown = 0;
 		}
 	}
 	resp_cool -= dt;
@@ -407,38 +405,15 @@ void Game::Battlezone(float dt) {
 	vec3 pFront = player->Front;
 
 	//Poruszanie kamerą
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		camera->RotateCamera(-rotationMultiplier * dt * camSpeed, 0);
-	}
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		camera->RotateCamera(0, -rotationMultiplier * dt * camSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		camera->RotateCamera(0, rotationMultiplier * dt * camSpeed);
-	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera->RotateCamera(-rotationMultiplier * dt * camSpeed, 0);
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera->RotateCamera(0, -rotationMultiplier * dt * camSpeed);
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) camera->RotateCamera(0, rotationMultiplier * dt * camSpeed);
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		//camera->Position.z -= 5 * dt;
-		camera->MoveCamera(FORWARD, dt / 2 * camSpeed);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		//camera->Position.z += 5 * dt;
-		camera->MoveCamera(BACKWARD, dt / 2 * camSpeed);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		//camera->Position.x -= 5 * dt;
-		camera->MoveCamera(LEFT, dt / 2 * camSpeed);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		//camera->Position.x += 5 * dt;
-		camera->MoveCamera(RIGHT, dt / 2 * camSpeed);
-	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera->MoveCamera(FORWARD, dt / 2 * camSpeed);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera->MoveCamera(BACKWARD, dt / 2 * camSpeed);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera->MoveCamera(LEFT, dt / 2 * camSpeed);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera->MoveCamera(RIGHT, dt / 2 * camSpeed);
 
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera->Position.y += 2 * camSpeed * dt;
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) camera->Position.y -= 2 * camSpeed * dt;
@@ -451,23 +426,13 @@ void Game::Battlezone(float dt) {
 		camera->RotateCamera(0.0f, 0.0f);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		camSpeed = 2;
-	else
-		camSpeed = 1;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) camSpeed = 2;
+	else camSpeed = 1;
 
 	// Poruszanie modelem
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
-		player->Move(vec3(0, 0, -1) * dt * velocity);
-	}
-
-
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
-	}
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-		player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
-	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) player->Move(vec3(0, 0, -1) * dt * velocity);
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 
 	//adjusting the cam's pos
 	/*vec3 cPos = normalize(pFront) * camFrontOffset;
@@ -526,39 +491,33 @@ void Game::Battlezone(float dt) {
 			vec3 enemyPos = current->Transform.position;
 			vec3 direction = normalize(pPos - enemyPos);
 			vec3 distance = pPos - enemyPos;
+			
+/*
+Dear Filip,
+
+I hope this message finds you well. I've been reviewing the code you shared, and I wanted to discuss a couple of points for clarification. I noticed that there's a series of nested if statements, and it seems like using the && operator might have made the code more concise and easier to follow. Could you share your reasoning behind opting for nested if statements in this case?
+
+Additionally, I observed that you checked if enemyType[i] == 1 || enemyType[i] == 3 and executed the exact same code for both true and false cases. I'm curious about the purpose of this construct and if there's a specific reason for handling both cases in a similar manner.
+
+I appreciate your work and the effort you've put into this project. I believe a discussion about these points could help enhance the code further. Also, could you shed some light on your choice to include these particular error messages? It seems like they might be inspired by some existing code; let's avoid unnecessary borrowing of "goofy error messages."
+
+Looking forward to your insights.
+
+Best regards,
+Kamil		
+*/
 			if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
-				if (enemyType[i] == 1 || enemyType[i] == 3) {
-					current->MoveGlobal(direction * dt * tank_speed);
-					if (enemyShotCooldowns[i] <= 0) {
-						enemyShoot(current, this);
-						enemyShotCooldowns[i] = 4.0;
-					}
-				}
-				else if (enemyType[i] == 2) {
-					current->MoveGlobal(direction * dt * fast_tank_speed);
-					if (enemyShotCooldowns[i] <= 0) {
-						enemyShoot(current, this);
-						enemyShotCooldowns[i] = 4.0;
-					}
+				float _sM = fast_tank_speed;
+				if (enemyType[i] != 2) _sM = tank_speed;
+				current->MoveGlobal(direction * dt * _sM);
+				if (enemyShotCooldowns[i] <= 0) {
+					enemyShoot(current, this);
+					enemyShotCooldowns[i] = 4.0;
 				}
 			}
-			else {
-				if (enemyType[i] == 1 || enemyType[i] == 3) {
-					if (enemyShotCooldowns[i] <= 0) {
-						if (current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
-							enemyShoot(current, this);
-							enemyShotCooldowns[i] = 4.0;
-						}
-					}
-				}
-				else if (enemyType[i] == 2) {
-					if (enemyShotCooldowns[i] <= 0) {
-						enemyShoot(current, this);
-						enemyShotCooldowns[i] = 4.0;
-					}
-				}
-				else
-					throw std::invalid_argument("co tu zawiodło xD"); //bro's stealing goofy errors 💀
+			else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
+				enemyShoot(current, this);
+				enemyShotCooldowns[i] = 4.0;
 			}
 			//Obracanie przeciwników
 			float _angle;
@@ -642,7 +601,6 @@ void Game::Battlezone(float dt) {
 	}
 
 	//moving the ui althogether
-	
 	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
 	for (int i = 0; i < uiElements.size(); i++) {
 		GameObject* current = uiElements[i];
@@ -650,7 +608,6 @@ void Game::Battlezone(float dt) {
 		current->MoveTo(pPos + _offset + normalize(pFront) * targetPos[i]);
 		current->RotateTo(pOri + targetOri[i]);
 	}
-
 
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {

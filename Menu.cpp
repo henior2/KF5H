@@ -7,7 +7,7 @@ namespace Menu {
     std::vector<GameObject*> tekst;
 
     const std::string modele[] = { "MenuCube","MenuSquare" };
-    const std::string rareModels[] = { "AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet","Blaster-spaceship-icone","Flipper","exclamation-mark","question-mark" };
+    const std::string rareModels[] = { "AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet","Blaster","Flipper","exclamation-mark","question-mark","RadarT" };
 
     bool esc = false;
 }
