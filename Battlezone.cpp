@@ -15,8 +15,6 @@ namespace Battlezone {
 	const unsigned int trailLinesNo = 30;
 	const float linesSpace = .3f;
 
-	const float FOVmultiplier = 10.0f;
-
 	float rtp;
 
 	const float uiZOffset = 15;
@@ -626,15 +624,17 @@ void Game::Battlezone(float dt) {
 		//else if (type == 2 && !powerUps.empty()) current = powerUps[iterator];
 		else throw std::invalid_argument("check deez values mate");
 
-		//this shit broken af
-		vec2 _dP = vec2(current->Transform.position.x - pPos.x, current->Transform.position.z - pPos.z); //orginal position
-		_dP *= FOVmultiplier; // adjustment based on the FOVmultiplier
-		_dP = vec2((_dP.x / mapSize) * radarRadius, (_dP.y / mapSize) * radarRadius); //scaled distance 
+		float dx = current->Transform.position.x - pPos.x;
+		float dz = current->Transform.position.z - pPos.z;
+
+		dx = dx / mapSize * radarRadius;
+		dz = dz / mapSize * radarRadius;
 
 		//todo: add out-of-bounds checking condition
 
-		targetPos[1 + trailLinesNo + i].x = _dP.x;
-		targetPos[1 + trailLinesNo + i].z = _dP.y;
+		targetPos[1 + trailLinesNo + i].x = dx; 
+		targetPos[1 + trailLinesNo + i].y = dz;
+		targetPos[1 + trailLinesNo + i].z = 0.0f;
 		
 		radarElementsIterator[type]++;
 	}
@@ -644,7 +644,7 @@ void Game::Battlezone(float dt) {
 	for (int i = 0; i < uiElements.size(); i++) {
 		GameObject* current = uiElements[i];
 
-		current->MoveTo(pPos + _offset + targetPos[i]);
+		current->MoveTo(pPos + _offset + normalize(pFront) * targetPos[i]);
 		current->RotateTo(pOri + targetOri[i]);
 	}
 
