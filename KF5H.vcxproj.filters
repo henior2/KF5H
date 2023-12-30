@@ -493,12 +493,6 @@
     <Text Include="PowerUpSpeed.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
-    <Text Include="Fuseball.vx.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
-    <Text Include="Fuseball.ind.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
     <Text Include="Flipper.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
@@ -530,6 +524,12 @@
       <Filter>TextFiles\Models</Filter>
     </Text>
     <Text Include="RadarT.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Fuseball.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Fuseball.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
   </ItemGroup>
