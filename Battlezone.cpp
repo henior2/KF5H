@@ -457,15 +457,15 @@ void Game::Battlezone(float dt) {
 		camSpeed = 1;
 
 	// Poruszanie modelem
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
 		player->Move(vec3(0, 0, -1) * dt * velocity);
 	}
 
 
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 		player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 	}
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
 		player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 	}
 
@@ -478,6 +478,7 @@ void Game::Battlezone(float dt) {
 
 	//Strzelanie
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
+		shot_cool = 2;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
 			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, this);
 		else
@@ -616,7 +617,7 @@ void Game::Battlezone(float dt) {
 	unsigned int radarElementsIterator[] = { 0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 boost
 	for (int i = 0; i < radarElements.size(); i++) {
 		int type = radarElementsType[i];
-		int iterator = radarElementsIterator[type];
+		unsigned int& iterator = radarElementsIterator[type];
 
 		GameObject* current;
 
@@ -637,10 +638,11 @@ void Game::Battlezone(float dt) {
 		targetPos[1 + trailLinesNo + i].y = dz;
 		targetPos[1 + trailLinesNo + i].z = 0.0f;
 		
-		radarElementsIterator[type]++;
+		iterator++;
 	}
 
 	//moving the ui althogether
+	
 	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
 	for (int i = 0; i < uiElements.size(); i++) {
 		GameObject* current = uiElements[i];
@@ -648,6 +650,7 @@ void Game::Battlezone(float dt) {
 		current->MoveTo(pPos + _offset + normalize(pFront) * targetPos[i]);
 		current->RotateTo(pOri + targetOri[i]);
 	}
+
 
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
