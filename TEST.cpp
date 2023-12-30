@@ -65,6 +65,7 @@ namespace Test {
 		"Tanker",
 		"Spiker",
 		"Fuseball",
+		"Fuseball2",
 		"Pulsar",
 		""
 	};
