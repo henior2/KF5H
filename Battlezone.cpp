@@ -612,6 +612,7 @@ void Game::Battlezone(float dt) {
 	}
 
 	//adjusting scanner elements' position
+	float angleRad = pOri.y * PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 boost
 	for (int i = 0; i < radarElements.size(); i++) {
 		int type = radarElementsType[i];
