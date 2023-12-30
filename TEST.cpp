@@ -42,6 +42,7 @@ namespace Test {
 		"BattlezonePlane",
 		"RadarX",
 		"RadarT",
+		"PowerUpBox",
 		"PowerUpSpeed",
 		"PowerUpHeart",
 		"",

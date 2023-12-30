@@ -532,6 +532,12 @@
     <Text Include="Fuseball.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="PowerUpBox.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpBox.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">

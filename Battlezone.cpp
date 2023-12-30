@@ -11,7 +11,7 @@ namespace Battlezone {
 	const unsigned int radarPoints = 35;
 	const float radarRadius = 5;
 	const float radarLineLenght = .5f;
-	const float fullRotationTime = 4.0f;
+	const float fullRotationTime = 6.0f; //part of the GTU (global timing unit)
 	const unsigned int trailLinesNo = 30;
 	const float linesSpace = .3f;
 
@@ -34,7 +34,7 @@ namespace Battlezone {
 	std::vector<vec3> targetOri;
 
 	std::vector<GameObject*> radarElements;
-	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost
+	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 
 	const float rPointerScaleDefault = .1f;
 	const float rPointerScaleBig = .15f;
@@ -84,12 +84,10 @@ namespace Battlezone {
 
 		//nice ChatGPT lmao
 		if (enemyIndex != -1 && enemyShotCooldowns[enemyIndex] <= 0) {
-			// Strzał przeciwnika typu 1
-			if (enemyType[enemyIndex] == 1 || enemyType[enemyIndex] == 3) {
+			if (enemyType[enemyIndex] != 2) {
 				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
 			}
-			// Strzał przeciwnika typu 2
-			else if (enemyType[enemyIndex] == 2) {
+			else {
 				shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
 			}
 
@@ -225,7 +223,6 @@ namespace Battlezone {
 					}
 				}
 
-
 				//every vertex in any given layer => vertex next to
 				ind.push_back(j + noVxLvBw);
 				ind.push_back(j + noVxLvBw + 1);
@@ -273,6 +270,35 @@ namespace Battlezone {
 		vec.push_back(a1);
 		vec.push_back(a1);
 	}
+
+	const float pUScale = 1.25f;
+	const float pUIRotationSpeed = 5.0f;
+	float pUBRotationSpeed = 2.5f; //not const, cuz might be changed in init(), depending on the value of pUSameDirectionRotation
+	const float pUowYOffset = .005f;
+	const bool pUSameDirectionRotation = false;
+
+	const std::string pUModels[] = { "Speed","Heart" };
+	std::vector<GameObject*> powerUpInside;
+	std::vector<GameObject*> powerUpBox;
+	std::vector<int> powerUpType; // 0 - speed, 1 - life, potential: (2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time))
+
+	void createPowerUp(float x, float y, float z, int type) {
+		powerUpInside.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUp"+pUModels[type]));
+		powerUpBox.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUpBox"));
+		powerUpType.push_back(type);
+
+		GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "MenuSquare");
+		radarElements.push_back(rPointer);
+		radarElementsType.push_back(2);
+		uiElements.push_back(rPointer);
+		targetPos.push_back(vec3(0.0f));
+		targetOri.push_back(vec3(0.0f));
+	}
+
+
+	const float pUdYoTU = pUowYOffset / .25f * fullRotationTime; //at least im aware that i suck at naming things
+	float currentPUdYoTU = pUdYoTU; //...
+	bool wasCPUdYoTUChanged = false; //no, CPU does not stang for 'Central Processing Unit'...
 }
 using namespace Battlezone;
 
@@ -352,7 +378,6 @@ void Game::BattlezoneInit() {
 
 	radar = Create(vec3(0.0f), vec3(0.0f), vec3(.25f), rVx, rInd);
 
-	//bruv you have to clear the vectors here ↓ otherwise it wont work
 	obstacles.clear();
 
 	spinningLines.clear();
@@ -378,13 +403,22 @@ void Game::BattlezoneInit() {
 	}
 	spinningLines[0]->Stage[0].opacity = 1.25f;
 	spinningLines[0]->Stage[0].lineWidth = 1.25f;
-	rtp = 0;
+	rtp = 0; //was meant to be used for radar, will be used as a global timing unit (no use in radar, used for pu's however)
+
 	przeciwnicy.clear();
 	enemyShotCooldowns.clear();
 	pociski.clear();
 
 	radarElements.clear();
 	radarElementsType.clear();
+
+	powerUpInside.clear();
+	powerUpBox.clear();
+	powerUpType.clear();
+
+	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
+	currentPUdYoTU = pUdYoTU;
+	wasCPUdYoTUChanged = false;
 }
 
 void Game::Battlezone(float dt) {
@@ -404,7 +438,7 @@ void Game::Battlezone(float dt) {
 	vec3 pOri = player->Transform.orientation;
 	vec3 pFront = player->Front;
 
-	//Poruszanie kamerą
+	//moving the camera
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera->RotateCamera(-rotationMultiplier * dt * camSpeed, 0);
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera->RotateCamera(0, -rotationMultiplier * dt * camSpeed);
@@ -429,7 +463,7 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) camSpeed = 2;
 	else camSpeed = 1;
 
-	// Poruszanie modelem
+	//moving the player
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) player->Move(vec3(0, 0, -1) * dt * velocity);
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
@@ -441,7 +475,7 @@ void Game::Battlezone(float dt) {
 	camera->Position = pPos+cPos;*/
 	//todo: make a WORKING cam rot script
 
-	//Strzelanie
+	//shooting funtion
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
 		shot_cool = 2;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
@@ -466,7 +500,7 @@ void Game::Battlezone(float dt) {
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
 	}
-	//Spawnowanie przeciwników
+	//spawning the enemies
 	float temp_x = rand() % 51 - 25;
 	float temp_z = rand() % 51 - 25;
 	float temp_y = rand() % 361;
@@ -519,7 +553,7 @@ Kamil
 				enemyShoot(current, this);
 				enemyShotCooldowns[i] = 4.0;
 			}
-			//Obracanie przeciwników
+			//rotaing the enemies
 			float _angle;
 			_angle = atan2(direction.x, direction.z);
 			_angle = _angle * 180.0f / PI;
@@ -528,7 +562,35 @@ Kamil
 		}
 	}
 
-	//Poruszanie samolotu
+	//power-ups' animations
+	bool isTimestamp = false;
+	if (rtp > .25f * fullRotationTime && rtp < .75f * fullRotationTime) isTimestamp = true;
+	
+	for (int i = 0; i < powerUpInside.size(); i++) {
+		GameObject* inside = powerUpInside[i];
+		GameObject* box = powerUpBox[i];
+
+		//rotato :D
+		inside->Rotate(vec3(0, 1, 0) * pUIRotationSpeed * dt);
+		box->Rotate(vec3(0, 1, 0) * pUBRotationSpeed * dt);
+
+		//up-down thing (?)
+		//on-off switch
+		if (isTimestamp && !wasCPUdYoTUChanged) {
+			wasCPUdYoTUChanged = true;
+			currentPUdYoTU = -pUdYoTU;
+		}
+		else if (!isTimestamp && wasCPUdYoTUChanged) {
+			wasCPUdYoTUChanged = false;
+			currentPUdYoTU = pUdYoTU;
+		}
+
+		//moving
+		inside->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
+		box->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
+	}
+
+	//moving the plane
 	if (!isPlane) planeCooldown -= dt;
 	if (planeCooldown <= 0) {
 		planeStartCoords.x = planeBounds;
@@ -573,7 +635,7 @@ Kamil
 
 	//adjusting scanner elements' position
 	float angleRad = pOri.y * PI / 180.0f;
-	unsigned int radarElementsIterator[] = { 0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 boost
+	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 	for (int i = 0; i < radarElements.size(); i++) {
 		int type = radarElementsType[i];
 		unsigned int& iterator = radarElementsIterator[type];
@@ -582,7 +644,8 @@ Kamil
 
 		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
 		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];
-		//else if (type == 2 && !powerUps.empty()) current = powerUps[iterator];
+		else if (type == 2 && !powerUpInside.empty()) current = powerUpInside[iterator];
+		//else if (type == 3 && !rockets.empty()) current = rockets[iterator];
 		else throw std::invalid_argument("check deez values mate");
 
 		float dx = current->Transform.position.x - pPos.x;
@@ -614,6 +677,11 @@ Kamil
 		resp_cool = .5f;
 		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
 	}
+	if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && resp_cool <= 0) {
+		resp_cool = .5f;
+		createPowerUp(rand() % 100 - 50, 0, rand() % 100 - 50, rand()%(sizeof(pUModels)/sizeof(std::string)));
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .1f;
 		camera->Position = vec3(0, planeHeight, 0);
