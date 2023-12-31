@@ -180,6 +180,8 @@
     <Text Include="PowerUpReload.vx.txt" />
     <Text Include="PowerUpSpeed.ind.txt" />
     <Text Include="PowerUpSpeed.vx.txt" />
+    <Text Include="PowerUpStar.ind.txt" />
+    <Text Include="PowerUpStar.vx.txt" />
     <Text Include="Pulsar.ind.txt" />
     <Text Include="Pulsar.vx.txt" />
     <Text Include="RadarT.ind.txt" />
