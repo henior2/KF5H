@@ -1,5 +1,4 @@
 ﻿#include "Game.h"
-#include <time.h>
 
 using namespace glm;
 
@@ -90,8 +89,6 @@ namespace Battlezone {
 			else {
 				shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
 			}
-
-			// Ustaw czas odnawiania pocisku dla tego przeciwnika na nowo
 			enemyShotCooldowns[enemyIndex] = 4.0f;
 		}
 	}
@@ -271,10 +268,10 @@ namespace Battlezone {
 		vec.push_back(a1);
 	}
 
-	const float pUScale = 1.25f;
-	const float pUIRotationSpeed = 5.0f;
-	float pUBRotationSpeed = 2.5f; //not const, cuz might be changed in init(), depending on the value of pUSameDirectionRotation
-	const float pUowYOffset = .005f;
+	const float pUScale = 1.15f;
+	const float pUIRotationSpeed = 36.0f;
+	float pUBRotationSpeed = 12.0f; //not const, cuz might be changed in init(), depending on the value of pUSameDirectionRotation
+	const float pUowYOffset = 1.0f;
 	const bool pUSameDirectionRotation = false;
 
 	const std::string pUModels[] = { "Speed","Heart" };
@@ -295,10 +292,8 @@ namespace Battlezone {
 		targetOri.push_back(vec3(0.0f));
 	}
 
-
-	const float pUdYoTU = pUowYOffset / .25f * fullRotationTime; //at least im aware that i suck at naming things
+	const float pUdYoTU = pUowYOffset / (.25f * fullRotationTime); //at least im aware that i suck at naming things
 	float currentPUdYoTU = pUdYoTU; //...
-	bool wasCPUdYoTUChanged = false; //no, CPU does not stang for 'Central Processing Unit'...
 }
 using namespace Battlezone;
 
@@ -418,7 +413,6 @@ void Game::BattlezoneInit() {
 
 	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
 	currentPUdYoTU = pUdYoTU;
-	wasCPUdYoTUChanged = false;
 }
 
 void Game::Battlezone(float dt) {
@@ -566,6 +560,9 @@ Kamil
 	bool isTimestamp = false;
 	if (rtp > .25f * fullRotationTime && rtp < .75f * fullRotationTime) isTimestamp = true;
 	
+	currentPUdYoTU = pUdYoTU;
+	if (!isTimestamp) currentPUdYoTU = -pUdYoTU;
+
 	for (int i = 0; i < powerUpInside.size(); i++) {
 		GameObject* inside = powerUpInside[i];
 		GameObject* box = powerUpBox[i];
@@ -575,19 +572,8 @@ Kamil
 		box->Rotate(vec3(0, 1, 0) * pUBRotationSpeed * dt);
 
 		//up-down thing (?)
-		//on-off switch
-		if (isTimestamp && !wasCPUdYoTUChanged) {
-			wasCPUdYoTUChanged = true;
-			currentPUdYoTU = -pUdYoTU;
-		}
-		else if (!isTimestamp && wasCPUdYoTUChanged) {
-			wasCPUdYoTUChanged = false;
-			currentPUdYoTU = pUdYoTU;
-		}
-
-		//moving
 		inside->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
-		box->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
+		box->MoveTo(inside->Transform.position);
 	}
 
 	//moving the plane
