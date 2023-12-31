@@ -538,6 +538,33 @@
     <Text Include="PowerUpBox.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="PowerUpReload.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow0.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow0.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow1.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow1.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow2.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow2.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow3.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="Arrow3.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
@@ -558,6 +585,9 @@
       <Filter>TextFiles\Models</Filter>
     </None>
     <None Include="RadarX.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </None>
+    <None Include="PowerUpReload.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </None>
   </ItemGroup>

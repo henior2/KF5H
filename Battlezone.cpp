@@ -15,6 +15,7 @@ namespace Battlezone {
 	const float linesSpace = .3f;
 
 	float rtp;
+	float pU2AnimationCooldown;
 
 	const float uiZOffset = 15;
 	const float uiMaxYOffset = 10;
@@ -273,16 +274,26 @@ namespace Battlezone {
 	float pUBRotationSpeed = 12.0f; //not const, cuz might be changed in init(), depending on the value of pUSameDirectionRotation
 	const float pUowYOffset = 1.0f;
 	const bool pUSameDirectionRotation = false;
+	const float pUAFCTime2 = .5f;
 
-	const std::string pUModels[] = { "Speed","Heart" };
+	const std::string pUModels[] = { "Speed","Heart","Reload" };
 	std::vector<GameObject*> powerUpInside;
 	std::vector<GameObject*> powerUpBox;
-	std::vector<int> powerUpType; // 0 - speed, 1 - life, potential: (2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time))
+	std::vector<GameObject*> powerUpAnimation;
+	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, potential: (3 - increase score multiplier, 4 - increase score (one-time))
 
 	void createPowerUp(float x, float y, float z, int type) {
 		powerUpInside.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUp"+pUModels[type]));
 		powerUpBox.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUpBox"));
 		powerUpType.push_back(type);
+
+		if (type == 2) {
+			GameObject* obj = Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "Arrow0");
+			obj->AddStage("Arrow1");
+			obj->AddStage("Arrow2");
+			obj->AddStage("Arrow3");
+			powerUpAnimation.push_back(obj);
+		}
 
 		GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "MenuSquare");
 		radarElements.push_back(rPointer);
@@ -410,9 +421,11 @@ void Game::BattlezoneInit() {
 	powerUpInside.clear();
 	powerUpBox.clear();
 	powerUpType.clear();
+	powerUpAnimation.clear();
 
 	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
 	currentPUdYoTU = pUdYoTU;
+	pU2AnimationCooldown = 0.0f;
 }
 
 void Game::Battlezone(float dt) {
@@ -427,6 +440,7 @@ void Game::Battlezone(float dt) {
 
 	rtp += dt;
 	if (rtp >= fullRotationTime) rtp = 0;
+	pU2AnimationCooldown += dt;
 
 	vec3 pPos = player->Transform.position;
 	vec3 pOri = player->Transform.orientation;
@@ -563,6 +577,7 @@ Kamil
 	currentPUdYoTU = pUdYoTU;
 	if (!isTimestamp) currentPUdYoTU = -pUdYoTU;
 
+	int pUAnimationIt = 0;
 	for (int i = 0; i < powerUpInside.size(); i++) {
 		GameObject* inside = powerUpInside[i];
 		GameObject* box = powerUpBox[i];
@@ -574,6 +589,23 @@ Kamil
 		//up-down thing (?)
 		inside->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
 		box->MoveTo(inside->Transform.position);
+
+		//animation
+		if (powerUpType[i] == 2) {
+			GameObject* animation = powerUpAnimation[pUAnimationIt];
+			animation->Rotate(vec3(0, 1, 0) * pUIRotationSpeed * dt);
+			animation->MoveTo(inside->Transform.position);
+
+			if (pU2AnimationCooldown >= pUAFCTime2) {
+				pU2AnimationCooldown = 0.0f;
+				
+				int aState = animation->activeStage;
+				if (++aState > 3) aState = 0;
+				animation->activeStage = aState;
+			}
+
+			pUAnimationIt++;
+		}
 	}
 
 	//moving the plane

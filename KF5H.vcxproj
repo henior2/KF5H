@@ -153,6 +153,14 @@
     <ClInclude Include="Tekst2d.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Arrow0.ind.txt" />
+    <Text Include="Arrow0.vx.txt" />
+    <Text Include="Arrow1.ind.txt" />
+    <Text Include="Arrow1.vx.txt" />
+    <Text Include="Arrow2.ind.txt" />
+    <Text Include="Arrow2.vx.txt" />
+    <Text Include="Arrow3.ind.txt" />
+    <Text Include="Arrow3.vx.txt" />
     <Text Include="BattlezonePlane.ind.txt" />
     <Text Include="BattlezonePlane.vx.txt" />
     <Text Include="Blaster.ind.txt" />
@@ -169,6 +177,7 @@
     <Text Include="PowerUpBox.vx.txt" />
     <Text Include="PowerUpHeart.ind.txt" />
     <Text Include="PowerUpHeart.vx.txt" />
+    <Text Include="PowerUpReload.vx.txt" />
     <Text Include="PowerUpSpeed.ind.txt" />
     <Text Include="PowerUpSpeed.vx.txt" />
     <Text Include="Pulsar.ind.txt" />
@@ -309,6 +318,7 @@
   <ItemGroup>
     <None Include="ikpMP3.dll" />
     <None Include="irrKlang.dll" />
+    <None Include="PowerUpReload.ind.txt" />
     <None Include="RadarX.vx.txt" />
     <None Include="Rocket.ind.txt" />
   </ItemGroup>
