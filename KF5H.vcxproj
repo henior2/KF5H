@@ -328,6 +328,9 @@
     <None Include="RadarX.vx.txt" />
     <None Include="Rocket.ind.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
