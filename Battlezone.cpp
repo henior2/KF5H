@@ -287,11 +287,11 @@ namespace Battlezone {
 	const bool pUSameDirectionRotation = false;
 	const float pUAFCTime2 = .5f;
 
-	const std::string pUModels[] = { "Speed","Heart","Reload","Star" };
+	const std::string pUModels[] = { "Speed","Heart","Reload","Star","XP","Boost" };
 	std::vector<GameObject*> powerUpInside;
 	std::vector<GameObject*> powerUpBox;
 	std::vector<GameObject*> powerUpAnimation;
-	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, 3 - increase score multiplier, potential: (4 - increase score (one-time))
+	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time), 5 - boost (no idea for it's purpose)
 
 	void createPowerUp(float x, float y, float z, int type) {
 		powerUpInside.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUp"+pUModels[type]));

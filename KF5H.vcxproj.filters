@@ -571,6 +571,18 @@
     <Text Include="PowerUpStar.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="PowerUpBoost.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpBoost.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpXP.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="PowerUpXP.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">

@@ -173,6 +173,8 @@
     <Text Include="Flipper.vx.txt" />
     <Text Include="Fuseball.ind.txt" />
     <Text Include="Fuseball.vx.txt" />
+    <Text Include="PowerUpBoost.ind.txt" />
+    <Text Include="PowerUpBoost.vx.txt" />
     <Text Include="PowerUpBox.ind.txt" />
     <Text Include="PowerUpBox.vx.txt" />
     <Text Include="PowerUpHeart.ind.txt" />
@@ -182,6 +184,8 @@
     <Text Include="PowerUpSpeed.vx.txt" />
     <Text Include="PowerUpStar.ind.txt" />
     <Text Include="PowerUpStar.vx.txt" />
+    <Text Include="PowerUpXP.ind.txt" />
+    <Text Include="PowerUpXP.vx.txt" />
     <Text Include="Pulsar.ind.txt" />
     <Text Include="Pulsar.vx.txt" />
     <Text Include="RadarT.ind.txt" />
@@ -323,6 +327,9 @@
     <None Include="PowerUpReload.ind.txt" />
     <None Include="RadarX.vx.txt" />
     <None Include="Rocket.ind.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
