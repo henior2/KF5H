@@ -71,6 +71,14 @@ namespace Battlezone {
 		bullet->Move(vec3(0, 0, -1));
 
 	}
+
+	void shot_leonardo(vec3 pos,vec3 rot,Game* Gra) {
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet);
+		bullet->Move(vec3(0, 0, -1));
+	}
+
 	void enemyShoot(GameObject* enemy, Game* Gra) {
 		int enemyIndex = -1;
 		if (!przeciwnicy.empty()) {
@@ -84,11 +92,14 @@ namespace Battlezone {
 
 		//nice ChatGPT lmao
 		if (enemyIndex != -1 && enemyShotCooldowns[enemyIndex] <= 0) {
-			if (enemyType[enemyIndex] != 2) {
+			if (enemyType[enemyIndex] == 1) {
 				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
 			}
-			else {
+			else if(enemyType[enemyIndex]==2){
 				shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
+			}
+			else if (enemyType[enemyIndex] == 3) {
+				//shot_leonardo();
 			}
 			enemyShotCooldowns[enemyIndex] = 4.0f;
 		}
@@ -526,13 +537,7 @@ void Game::Battlezone(float dt) {
 		resp_cool = 2;
 	}
 
-	//Poruszanie i strzelanie przeciwników
-	if (!przeciwnicy.empty()) {
-		for (int i = 0; i < przeciwnicy.size(); i++) {
-			GameObject* current = przeciwnicy[i];
-			vec3 enemyPos = current->Transform.position;
-			vec3 direction = normalize(pPos - enemyPos);
-			vec3 distance = pPos - enemyPos;
+	
 			
 /*
 Dear Filip,
@@ -548,6 +553,36 @@ Looking forward to your insights.
 Best regards,
 Kamil		
 */
+
+/*Dear Kamil,
+
+I hope this letter finds you well. It's been a while.
+
+I just read your message and I would like to clarfiy this matter. The code that I've written was just test code - I got plans to rewrite it to be more "clear".
+
+Also I would like you to take into account that it is my first serious project and I'm learning how to do some things correctly.
+
+I really apreciate your help and hope that I'll learn mor things from you.
+
+Yours sincerely,
+Filip
+*/
+
+//Poruszanie i strzelanie przeciwników
+	if (!przeciwnicy.empty()) {
+		for (int i = 0; i < przeciwnicy.size(); i++) {
+			GameObject* current = przeciwnicy[i];
+			vec3 enemyPos = current->Transform.position;
+			vec3 direction = normalize(pPos - enemyPos);
+			vec3 distance = pPos - enemyPos;
+
+//rotaing the enemies
+			float _angle;
+			_angle = atan2(direction.x, direction.z);
+			_angle = _angle * 180.0f / PI;
+
+			current->RotateTo(vec3(0.0f, _angle, 0.0f));
+
 			if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
 				float _sM = fast_tank_speed;
 				if (enemyType[i] != 2) _sM = tank_speed;
@@ -561,12 +596,7 @@ Kamil
 				enemyShoot(current, this);
 				enemyShotCooldowns[i] = 4.0;
 			}
-			//rotaing the enemies
-			float _angle;
-			_angle = atan2(direction.x, direction.z);
-			_angle = _angle * 180.0f / PI;
-
-			current->RotateTo(vec3(0.0f, _angle, 0.0f));
+			
 		}
 	}
 
