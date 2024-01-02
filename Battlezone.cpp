@@ -17,8 +17,8 @@ namespace Battlezone {
 	float rtp;
 	float pU2AnimationCooldown;
 
-	const float uiZOffset = 15;
-	const float uiMaxYOffset = 10;
+	const float uiYOffset = .75f;
+	const float uiScale = .0025f;
 
 	GameObject* player;
 	GameObject* model2;
@@ -450,6 +450,13 @@ void Game::BattlezoneInit() {
 	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
 	currentPUdYoTU = pUdYoTU;
 	pU2AnimationCooldown = 0.0f;
+
+	for (auto& current : uiElements) {
+		current->Stage[0].onTop = true;
+		current->ScaleTo(vec3(uiScale*9,uiScale*16,0));
+		current->MoveTo(vec3(0, uiYOffset, 0));
+		current->Rotate(vec3(0, 180, 0));
+	}
 }
 
 void Game::Battlezone(float dt) {
@@ -771,15 +778,6 @@ Kamil
 		targetPos[1 + trailLinesNo + i].z = 0.0f;
 		
 		iterator++;
-	}
-
-	//moving the ui althogether
-	vec3 _offset = normalize(pFront) * -uiZOffset + vec3(0, uiMaxYOffset, 0);
-	for (int i = 0; i < uiElements.size(); i++) {
-		GameObject* current = uiElements[i];
-
-		current->MoveTo(pPos + _offset + normalize(pFront) * targetPos[i]);
-		current->RotateTo(pOri + targetOri[i]);
 	}
 
 	//debug ↓
