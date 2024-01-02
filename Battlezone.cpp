@@ -25,7 +25,7 @@ namespace Battlezone {
 	GameObject* ufo;
 
 	bool isUfo = false;
-	const float ufoSpeed = 1.25f;
+	const float ufoSpeed = 3.0f;
 	float ufoCooldown;
 	int ufoMovesLeft;
 	vec2 ufoTargetPos;
@@ -665,7 +665,7 @@ Kamil
 
 	//ufo
 	if (!isUfo) ufoCooldown -= dt;
-	if (ufoCooldown <= 0) {
+	if (ufoCooldown <= 0 && !isUfo) {
 		ufo->MoveTo(vec3(rand() % 100 - 50, planeHeight, rand() % 100 - 50));
 		isUfo = true;
 	}
@@ -688,7 +688,12 @@ Kamil
 				}
 			}
 			else {
-				ufo->Move((vec3(ufoTargetPos.x, 0.0f, ufoTargetPos.y) - ufoPos) * dt * ufoSpeed);
+				vec2 dPos = vec2(ufoTargetPos - vec2(ufoPos.x, ufoPos.z));
+				if (dPos.x > ufoSpeed) dPos.x = ufoSpeed;
+				else if (dPos.x < -ufoSpeed) dPos.x = -ufoSpeed;
+				if (dPos.y > ufoSpeed) dPos.y = ufoSpeed;
+				else if (dPos.y < -ufoSpeed) dPos.y = -ufoSpeed;
+				ufo->Move(vec3(dPos.x,0.0f,dPos.y) * dt);
 			}
 		}
 	}
