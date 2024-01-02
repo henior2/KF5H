@@ -80,10 +80,18 @@ namespace Battlezone {
 	}
 
 	void shot_leonardo(vec3 pos,vec3 rot,Game* Gra) {
-		fastBulletTimeRemain.push_back(bulletMaxTime);
-		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
-		pociski.push_back(bullet);
-		bullet->Move(vec3(0, 0, -1));
+		vec3 kat = vec3(0, 0, 0);
+		for (int i = 0; i < 9; i++) {
+			kat += vec3(0, 45, 0);
+			switch (i) {
+			case 0:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				GameObject* bullet = Gra->Create(pos + vec3(2.38, 2, 2.35), rot + kat, vec3(1.0f), "FastBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+			}
+
+		}
 	}
 
 	void enemyShoot(GameObject* enemy, Game* Gra) {
@@ -106,7 +114,7 @@ namespace Battlezone {
 				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation, Gra);
 			}
 			else if (enemyType[enemyIndex] == 3) {
-				//shot_leonardo();
+				shot_leonardo(enemy->Transform.position, enemy->Transform.orientation, Gra);
 			}
 			enemyShotCooldowns[enemyIndex] = 4.0f;
 		}
