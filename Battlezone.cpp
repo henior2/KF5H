@@ -76,22 +76,49 @@ namespace Battlezone {
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
-
 	}
 
 	void shot_leonardo(vec3 pos,vec3 rot,Game* Gra) {
-		vec3 kat = vec3(0, 0, 0);
-		for (int i = 0; i < 9; i++) {
-			kat += vec3(0, 45, 0);
-			switch (i) {
-			case 0:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				GameObject* bullet = Gra->Create(pos + vec3(2.38, 2, 2.35), rot + kat, vec3(1.0f), "FastBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
-			}
 
-		}
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet1 = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet1);
+		bullet1->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet2 = Gra->Create(pos, rot - vec3(0,180,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet2);
+		bullet2->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet3 = Gra->Create(pos, rot - vec3(0,90,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet3);
+		bullet3->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet4 = Gra->Create(pos, rot - vec3(0,270,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet4);
+		bullet4->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet5 = Gra->Create(pos, rot - vec3(0,45,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet5);
+		bullet5	->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet6 = Gra->Create(pos, rot - vec3(0,225,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet6);
+		bullet6->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet7 = Gra->Create(pos, rot - vec3(0,135,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet7);
+		bullet7->Move(vec3(0, 0, -1));
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		GameObject* bullet8 = Gra->Create(pos, rot - vec3(0,315,0), vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet8);
+		bullet8->Move(vec3(0, 0, -1));
 	}
 
 	void enemyShoot(GameObject* enemy, Game* Gra) {
@@ -114,7 +141,7 @@ namespace Battlezone {
 				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation, Gra);
 			}
 			else if (enemyType[enemyIndex] == 3) {
-				shot_leonardo(enemy->Transform.position, enemy->Transform.orientation, Gra);
+				shot_leonardo(enemy->Transform.position + vec3(0,.6, 0), enemy->Transform.orientation, Gra);
 			}
 			enemyShotCooldowns[enemyIndex] = 4.0f;
 		}
@@ -608,7 +635,7 @@ Best regards,
 Kamil
 */
 
-/*Too long, not going to read it         */
+/*Too long, not going to read it */
 
 //Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
@@ -662,7 +689,7 @@ Kamil
 		inside->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
 		box->MoveTo(inside->Transform.position);
 
-		//animation
+		//aniamation
 		if (powerUpType[i] == 2) {
 			GameObject* animation = powerUpAnimation[pUAnimationIt];
 			animation->Rotate(vec3(0, 1, 0) * pUIRotationSpeed * dt);
