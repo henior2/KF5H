@@ -22,6 +22,13 @@ namespace Battlezone {
 
 	GameObject* player;
 	GameObject* model2;
+	GameObject* ufo;
+
+	bool isUfo = false;
+	const float ufoSpeed = 1.25f;
+	float ufoCooldown;
+	int ufoMovesLeft;
+	vec2 ufoTargetPos;
 
 	GameObject* plane;
 
@@ -323,11 +330,17 @@ void Game::BattlezoneInit() {
 	shot_cool = 2;
 	resp_cool = 2;
 
+	isUfo = false;
+	ufoCooldown = 35.0f;
+	ufoMovesLeft = rand() % 3 + 1;
+	ufoTargetPos = vec2(rand() % 100 - 50, rand() % 100 - 50);
+
 	planeCooldown = 10.0f;
 	isPlane = false;
 	planeStartCoords = vec2(-1000, -1000);
 
 	player = Create(vec3(0.0f), vec3(0.0f), vec3(1.0f), "Tank");
+	ufo = Create(vec3(-1000.0f), vec3(0.0f), vec3(1.0f), "Ufo");
 	plane = Create(vec3(-1000.0f, 1000, -1000.0f), vec3(0.0f), vec3(1.0f), "BattlezonePlane");
 
 	//making radar
@@ -536,8 +549,6 @@ void Game::Battlezone(float dt) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 3);
 		resp_cool = 2;
 	}
-
-	
 			
 /*
 Dear Filip,
@@ -554,7 +565,8 @@ Best regards,
 Kamil		
 */
 
-/*Dear Kamil,
+/*
+Dear Kamil,
 
 I hope this letter finds you well. It's been a while.
 
@@ -562,10 +574,23 @@ I just read your message and I would like to clarfiy this matter. The code that 
 
 Also I would like you to take into account that it is my first serious project and I'm learning how to do some things correctly.
 
-I really apreciate your help and hope that I'll learn mor things from you.
+I really apreciate your help and hope that I'll learn more things from you.
 
 Yours sincerely,
 Filip
+*/
+
+/*
+Dear Filip,
+
+Thank you for taking the time to respond. I appreciate your transparency about the code being test code, and I completely understand the learning process involved in tackling a first serious project.
+
+Your willingness to improve and the openness to learn are commendable traits. If you ever have questions or need assistance as you continue with your project, feel free to ask. I've been through similar learning experiences, having worked on the Asteroids game on my own, and I'm more than happy to share insights.
+
+Looking forward to seeing your progress!
+
+Best regards,
+Kamil
 */
 
 //Poruszanie i strzelanie przeciwników
@@ -635,6 +660,36 @@ Filip
 			}
 
 			pUAnimationIt++;
+		}
+	}
+
+	//ufo
+	if (!isUfo) ufoCooldown -= dt;
+	if (ufoCooldown <= 0) {
+		ufo->MoveTo(vec3(rand() % 100 - 50, planeHeight, rand() % 100 - 50));
+		isUfo = true;
+	}
+	if (isUfo) {
+		vec3 ufoPos = ufo->Transform.position;
+		if (ufoPos.y > 0.0f)
+			ufo->Transform.position.y -= ufoSpeed * dt;
+		else if (ufoPos.y < 0.0f) 
+			ufo->Transform.position.y = 0;
+		else {
+			if (ufoPos.x > ufoTargetPos.x - 5.0f && ufoPos.x < ufoTargetPos.x + 5.0f && ufoPos.z > ufoTargetPos.y - 5.0f && ufoPos.z < ufoTargetPos.y + 5.0f) {
+				if (ufoMovesLeft > 0) {
+					ufoMovesLeft -= 1;
+					ufoTargetPos = vec2(rand() % 100 - 50, rand() % 100 - 50);
+				}
+				else {
+					isUfo = false;
+					ufo->Transform.position = vec3(-1000, planeHeight, -1000);
+					ufoCooldown = 35.0f; 
+				}
+			}
+			else {
+				ufo->Move((vec3(ufoTargetPos.x, 0.0f, ufoTargetPos.y) - ufoPos) * dt * ufoSpeed);
+			}
 		}
 	}
 
