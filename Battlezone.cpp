@@ -81,7 +81,7 @@ namespace Battlezone {
 
 	void shot_leonardo(vec3 pos,vec3 rot,Game* Gra) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
-		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
+		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
 	}
@@ -103,7 +103,7 @@ namespace Battlezone {
 				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
 			}
 			else if(enemyType[enemyIndex]==2){
-				shot_fast(enemy->Transform.position + vec3(0, 1.06, 0), enemy->Transform.orientation, Gra);
+				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation, Gra);
 			}
 			else if (enemyType[enemyIndex] == 3) {
 				//shot_leonardo();
@@ -592,6 +592,8 @@ Looking forward to seeing your progress!
 Best regards,
 Kamil
 */
+
+/*Too long, not going to read it         */
 
 //Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
