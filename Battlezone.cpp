@@ -23,6 +23,8 @@ namespace Battlezone {
 	GameObject* player;
 	GameObject* model2;
 	GameObject* ufo;
+	float reloadTime = 5.0f;
+	int bulletsFired = 0;
 
 	bool isUfo = false;
 	const float ufoSpeed = 3.0f;
@@ -568,8 +570,9 @@ void Game::Battlezone(float dt) {
 	//todo: make a WORKING cam rot script
 
 	//shooting funtion
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0) {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0 && bulletsFired<=4) {
 		shot_cool = 2;
+		bulletsFired += 1;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
 			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, this);
 		else
@@ -591,6 +594,13 @@ void Game::Battlezone(float dt) {
 
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
+	}
+	else if (bulletsFired > 4) {
+		if (reloadTime > 0) {
+			reloadTime -= dt;
+		}
+		else
+			bulletsFired = 0;
 	}
 	//spawning the enemies
 	float temp_x = rand() % 51 - 25;
