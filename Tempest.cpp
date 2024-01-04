@@ -3,145 +3,94 @@
 using namespace glm;
 
 namespace Tempest {
+	float debugCooldown = .1f;
 
-	unsigned long long lvlhardness;
-	std::vector <GameObject*> tunel;
+	//to make the code a bit cleaner
+	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
+		vec.push_back(a1);
+		vec.push_back(a2);
+	}
+	void push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
+		vec.push_back(a1);
+		vec.push_back(a1);
+	}
 
-	void tunelspawn(unsigned long long lvlhardness) { //mo¿e dodac unsigned int type, zobaczymy
+	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
+		vec.push_back(a1);
+		vec.push_back(a2);
+		vec.push_back(a3);
+	}
+	void push_back3(std::vector<float>& vec, float a1) {
+		vec.push_back(a1);
+		vec.push_back(a1);
+		vec.push_back(a1);
+	}
 
+	const double M_PI = glm::pi<double>();
+
+	int lvlDif;
+	std::vector <GameObject*> tunnel;
+
+	void tunelspawn(int lvlDif) {
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
 
-		unsigned int tunelSidesNo;
+		int tunnelSidesNo = -1;
+		int tunnelstyle = 0; //types: 0 - normal; 1 - distorted
 
-		unsigned int tunnelstyle;
-		if (lvlhardness < 21) tunnelstyle = 1;
-		else if (lvlhardness < 51) tunnelstyle = 2;
-		else if (lvlhardness < 71) tunnelstyle = 3;
-		else if (lvlhardness < 100) tunnelstyle = 4;
-		else tunnelstyle = rand() % 3 + 1;
+		const float maxOffset = .1f; //[%]
+		const float minOffset = -.1f;
+		const float tunnelRadius =  5.0f;
 
-		switch (tunnelstyle) {
-		case 1: {
-			unsigned int type = rand() % 3;
-			//type 0 wielokat foremny, 1 wielokat "losowy", 2 trójkat, 3 kwadrat
-			switch (type) {
-			case (0 || 1):
+		if (lvlDif < 21) tunnelstyle = 0;
+		else if (lvlDif < 51) tunnelstyle = 1;
+		else if (lvlDif < 71) tunnelSidesNo = 3; //what's the point of these two
+		else if (lvlDif < 100) tunnelSidesNo = 4; //they're easier than the ones before
+		else tunnelstyle = rand() % 2;
 
-				if (lvlhardness < 6) tunelSidesNo = 3 + lvlhardness + rand() % 7 + 2;
-				else if (lvlhardness < 10) tunelSidesNo = lvlhardness + rand() % 4 + 1;
-				else if (lvlhardness < 16) tunelSidesNo = lvlhardness + rand() % 7 - 2;
-				else tunelSidesNo = lvlhardness + rand() % 8 - 3;
-				break;
+		if (tunnelSidesNo == -1) {
+			tunnelSidesNo = rand() % lvlDif * 0.5 + 3; //sth idk dont use so many unnecessary ifs and switches plz
+		}
 
-			case 2:
+		for (int i = 0; i < tunnelSidesNo; i++) {
+			double angle = 2 * M_PI * i / tunnelSidesNo;
+			float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
 
-				if (lvlhardness < 6) tunelSidesNo = 3 * (rand() % 2 + 5);
-				else if (lvlhardness < 10) tunelSidesNo = 3 * (rand() % 3 + 5);
-				else if (lvlhardness < 16) tunelSidesNo = 3 * (rand() % 4 + 5);
-				else tunelSidesNo = 3 * (rand() % 4 + 6);
-				break;
-
-			case 3:
-				if (lvlhardness < 6) tunelSidesNo = 4 * (rand() % 2 + 4);
-				else if (lvlhardness < 10) tunelSidesNo = 4 * (rand() % 3 + 4);
-				else if (lvlhardness < 16) tunelSidesNo = 4 * (rand() % 4 + 4);
-				else tunelSidesNo = 4 * (rand() % 4 + 5);
-				break;
-
-			default:
-				break;
-			}
-			/*
-			for (int i = 0; i < tunelSidesNo; ++i) {
-				double angle = 2 * pi * i / asteroidSidesNo;
-				double radiusModifier = (rand() / (double)RAND_MAX) * 2 * asteroidRadius * asteroidsVertexOffset - asteroidRadius * asteroidsVertexOffset;
-				double modifiedRadius = asteroidRadius + radiusModifier;
-
-				vec2 vertex = { modifiedRadius * cos(angle), modifiedRadius * sin(angle) };
-				points.push_back(vertex);
-			}
-
+			points.push_back(vec2(radius * cos(angle), radius * sin(angle)));
+		}
+		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < points.size(); i++) {
-				v.push_back(points[i].x);
-				v.push_back(points[i].y);
-				v.push_back(0);
-				v.push_back(1);
-				v.push_back(1);
-				v.push_back(1);
+				if(i) push_back2(id, i, i + points.size()); //connections
+				push_back2(id, i+points.size()*j, i+points.size()*j + 1); //ring
+
+				push_back3(v, points[i].x, points[i].y, -12.5f*(j+1)); //points
+				push_back3(v, 0, 0, 1); //color (blue)
 			}
-
-			for (int i = 1; i < asteroidSidesNo; i++) {
-				id.push_back(i - 1);
-				id.push_back(i);
-			}
-			id.push_back(asteroidSidesNo - 1);
-			id.push_back(0);
-
-			switch (type)
-			{
-			case 0:
-				minAsteroidsSize = bigAsteroidSize - bigAsteroidSize * asteroidSizeRange;
-				maxAsteroidsSize = bigAsteroidSize + bigAsteroidSize * asteroidSizeRange;
-				break;
-			case 1:
-				minAsteroidsSize = mediumAsteroidSize - mediumAsteroidSize * asteroidSizeRange;
-				maxAsteroidsSize = mediumAsteroidSize + mediumAsteroidSize * asteroidSizeRange;
-				break;
-			case 2:
-				minAsteroidsSize = smallAsteroidSize - smallAsteroidSize * asteroidSizeRange;
-				maxAsteroidsSize = smallAsteroidSize + smallAsteroidSize * asteroidSizeRange;
-				break;
-			default:
-				throw std::invalid_argument("nuh uh");
-				break;
-			}
-
-			float rot = (float)(rand()) / ((float)(RAND_MAX / 360.0f));
-			asteroidRotation.push_back(rot * pi / 180.0f);
-
-			float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
-			asteroidRotationMultiplier.push_back(rotM);
-
-			vec2 pos;
-			int temp;
-
-			do {
-				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
-				pos.x = temp;
-
-				temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
-				pos.y = temp;
-			} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
-
-			tunel.push_back(Gra->Create(vec3(pos, -90.0f), vec3(0.0f, 0.0f, rot), vec3(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));*/
-			break;
+			id.pop_back();
+			id.push_back(points.size() * j);
+			push_back2(id, 0, points.size());
 		}
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
 
-		default:
-			break;
-
-		}
+		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 	}
+}
 
-	using namespace Tempest;
+using namespace Tempest;
 
-	void Game::TempestInit() {
+void Game::TempestInit() {
+	debugCooldown = .1f;
 
-		tunel.clear();
-		lvlhardness = 1;  //uwa¿ac, mo¿liwe ze bedzie trzeba zmienic na 0/1 + nie wiem czy wgl to jest potrzebne -  moze dac to wczesniej lub wogóle xd
+	tunnel.clear();
+}
+
+void Game::Tempest(float dt) {
+	debugCooldown -= dt;
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && debugCooldown <= 0.0f) {
+		debugCooldown = 0.5f;
+		tunelspawn(rand() % 100 + 1);
 	}
-
-	void Game::Tempest(float dt) {
-
-		// if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) tunelspawn();
-	}
-
+	
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		Game::ChangeState(Game_Menu);
 }
