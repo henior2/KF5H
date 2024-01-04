@@ -835,10 +835,20 @@ void Game::Battlezone(float dt) {
 	//checking if out of bounds
 	vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z));
 	float dOutofbounds;
-	if (absPPos.x > mapSize) {
+	if (absPPos.x > mapSize || absPPos.y > mapSize) {
 		glitchEffectRefreshRate -= dt;
-		dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
-		if (dOutofbounds > 1.0f) player->Transform.position.x = mapSize + maxOutOfBoundsDistance;
+		
+		float isNeg = 1.0f;
+		if (absPPos.x > mapSize) {
+			if (pPos.x < 0) isNeg = -1.0f;
+			dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
+			if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance)*isNeg;
+		}
+		else {
+			if (pPos.z < 0) isNeg = -1.0f;
+			dOutofbounds = (absPPos.y - mapSize) / maxOutOfBoundsDistance;
+			if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance)*isNeg;
+		}
 
 		if (glitchEffectRefreshRate <= 0) {
 			for (auto& currentLine : __lines) {
