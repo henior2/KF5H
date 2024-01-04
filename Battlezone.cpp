@@ -45,6 +45,8 @@ namespace Battlezone {
 	std::vector<GameObject*> radarElements;
 	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 
+	std::vector<float> randomActionTimeLimit;
+
 	const float rPointerScaleDefault = .1f;
 	const float rPointerScaleBig = .15f;
 
@@ -164,6 +166,16 @@ namespace Battlezone {
 				shot_leonardo(enemy->Transform.position + vec3(0,.6, 0), enemy->Transform.orientation, Gra);
 			}
 			enemyShotCooldowns[enemyIndex] = 4.0f;
+		}
+	}
+
+	void random_action(GameObject* enemy, Game* Gra,float dt) {
+		int action = rand() % 2;
+		if (action == 1){
+			enemy->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		}
+		else {
+			enemy->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 		}
 	}
 
@@ -674,6 +686,7 @@ Kamil
 			vec3 distance = pPos - enemyPos;
 
 //rotaing the enemies
+			if(int temp = rand() % 10;)
 			float _angle;
 			_angle = atan2(direction.x, direction.z);
 			_angle = _angle * 180.0f / PI;
