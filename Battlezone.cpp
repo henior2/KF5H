@@ -4,6 +4,7 @@ using namespace glm;
 
 namespace Battlezone {
 	const double PI = glm::pi<double>();
+	bool flag = false;
 
 	const float mapSize = 125; //from the middle, so 125 <=> 250x250
 	const float maxOutOfBoundsDistance = 25;
@@ -173,13 +174,20 @@ namespace Battlezone {
 		}
 	}
 
-	void random_action(GameObject* enemy, Game* Gra,float dt) {
-		int action = rand() % 2;
-		if (action == 1){
-			enemy->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+	void random_action(GameObject* enemy, Game* Gra,float dt, int i) {
+		int action = 1;
+		if (flag == true) {
+			action = rand() % 2;
+			flag = false;
 		}
-		else {
-			enemy->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+		if (randomActionTimeLimit.size() > i) {
+			if (action == 1) {
+				enemy->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+			}
+
+			else {
+				enemy->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+			}
 		}
 	}
 
@@ -531,6 +539,8 @@ void Game::BattlezoneInit() {
 		current->MoveTo(vec3(0, uiYOffset, 0));
 		current->Rotate(vec3(0, 180, 0));
 	}
+
+	randomActionTimeLimit.clear();
 }
 
 void Game::Battlezone(float dt) {
@@ -638,51 +648,6 @@ void Game::Battlezone(float dt) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 3);
 		resp_cool = 2;
 	}
-			
-/*
-Dear Filip,
-
-I hope this message finds you well. I've been reviewing the code you shared, and I wanted to discuss a couple of points for clarification. I noticed that there's a series of nested if statements, and it seems like using the && operator might have made the code more concise and easier to follow. Could you share your reasoning behind opting for nested if statements in this case?
-
-Additionally, I observed that you checked if enemyType[i] == 1 || enemyType[i] == 3 and executed the exact same code for both true and false cases. I'm curious about the purpose of this construct and if there's a specific reason for handling both cases in a similar manner.
-
-I appreciate your work and the effort you've put into this project. I believe a discussion about these points could help enhance the code further. Also, could you shed some light on your choice to include these particular error messages? It seems like they might be inspired by some existing code; let's avoid unnecessary borrowing of "goofy error messages."
-
-Looking forward to your insights.
-
-Best regards,
-Kamil		
-*/
-
-/*
-Dear Kamil,
-
-I hope this letter finds you well. It's been a while.
-
-I just read your message and I would like to clarfiy this matter. The code that I've written was just test code - I got plans to rewrite it to be more "clear".
-
-Also I would like you to take into account that it is my first serious project and I'm learning how to do some things correctly.
-
-I really apreciate your help and hope that I'll learn more things from you.
-
-Yours sincerely,
-Filip
-*/
-
-/*
-Dear Filip,
-
-Thank you for taking the time to respond. I appreciate your transparency about the code being test code, and I completely understand the learning process involved in tackling a first serious project.
-
-Your willingness to improve and the openness to learn are commendable traits. If you ever have questions or need assistance as you continue with your project, feel free to ask. I've been through similar learning experiences, having worked on the Asteroids game on my own, and I'm more than happy to share insights.
-
-Looking forward to seeing your progress!
-
-Best regards,
-Kamil
-*/
-
-/*Too long, not going to read it */
 
 //Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
@@ -692,28 +657,37 @@ Kamil
 			vec3 direction = normalize(pPos - enemyPos);
 			vec3 distance = pPos - enemyPos;
 
-//rotaing the enemies
-			if(int temp = rand() % 10;)
-			float _angle;
-			_angle = atan2(direction.x, direction.z);
-			_angle = _angle * 180.0f / PI;
+			//rotaing the enemies
+			if (int temp = rand() % 10 < 1) {
+				flag = true;
+				if (randomActionTimeLimit[i] > 0) {
+					randomActionTimeLimit[i] -= dt;
+					random_action(current, this, dt,i);
+				}
+			}
+			else {
 
-			current->RotateTo(vec3(0.0f, _angle, 0.0f));
+				float _angle;
+				_angle = atan2(direction.x, direction.z);
+				_angle = _angle * 180.0f / PI;
 
-			if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
-				float _sM = fast_tank_speed;
-				if (enemyType[i] != 2) _sM = tank_speed;
-				current->MoveGlobal(direction * dt * _sM);
-				if (enemyShotCooldowns[i] <= 0) {
+				current->RotateTo(vec3(0.0f, _angle, 0.0f));
+
+				if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
+					float _sM = fast_tank_speed;
+					if (enemyType[i] != 2) _sM = tank_speed;
+					current->MoveGlobal(direction * dt * _sM);
+					if (enemyShotCooldowns[i] <= 0) {
+						enemyShoot(current, this);
+						enemyShotCooldowns[i] = 4.0;
+					}
+				}
+				else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
 					enemyShoot(current, this);
 					enemyShotCooldowns[i] = 4.0;
 				}
+
 			}
-			else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
-				enemyShoot(current, this);
-				enemyShotCooldowns[i] = 4.0;
-			}
-			
 		}
 	}
 
