@@ -174,20 +174,13 @@ namespace Battlezone {
 		}
 	}
 
-	void random_action(GameObject* enemy, Game* Gra,float dt, int i) {
-		int action = 1;
-		if (flag == true) {
-			action = rand() % 2;
-			flag = false;
+	void random_action(GameObject* enemy, float dt, int i) {
+		if (i == 0) {
+			enemy->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
 		}
-		if (randomActionTimeLimit.size() > i) {
-			if (action == 1) {
-				enemy->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
-			}
 
-			else {
-				enemy->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
-			}
+		else {
+			enemy->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 		}
 	}
 
@@ -658,12 +651,14 @@ void Game::Battlezone(float dt) {
 			vec3 distance = pPos - enemyPos;
 
 			//rotaing the enemies
-			if (int temp = rand() % 10 < 1) {
-				flag = true;
-				if (randomActionTimeLimit[i] > 0) {
-					randomActionTimeLimit[i] -= dt;
-					random_action(current, this, dt,i);
-				}
+			if (!randomActionTimeLimit.empty()) {
+				randomActionTimeLimit[i] -= dt;
+				if (randomActionTimeLimit[i] <= 0 && rand() % 10 == 0)
+					flag = true;
+			}
+			if (flag){
+				int type = rand() % 2;
+				random_action(current, dt,type);
 			}
 			else {
 
