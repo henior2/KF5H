@@ -505,7 +505,7 @@ void Game::Asteroids(float dt) {
 
 	checkBounds(ship);
 
-	if (asteroids.size() == 0) hasWaveFinished = true;
+	if (asteroids.empty()) hasWaveFinished = true;
 
 	if (hasWaveFinished) {
 		waveAsteroidsCooldown -= dt;

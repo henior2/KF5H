@@ -6,6 +6,10 @@ namespace Battlezone {
 	const double PI = glm::pi<double>();
 
 	const float mapSize = 125; //from the middle, so 125 <=> 250x250
+	const float maxOutOfBoundsDistance = 25;
+	float glitchEffectRefreshRate = .1f;
+	const unsigned int maxGlitchLinesNumber = 75;
+	std::vector<GameObject*> __lines;
 
 	const unsigned int radarPoints = 35;
 	const float radarRadius = 5;
@@ -248,7 +252,7 @@ namespace Battlezone {
 	float planeCooldown = 7.5f;
 	bool isPlane = false;
 	vec2 planeStartCoords = vec2(-1000,-1000);
-	const float planeBounds = 100.0f;
+	const float planeBounds = 175.0f;
 
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
@@ -397,10 +401,13 @@ void Game::BattlezoneInit() {
 	shot_cool = 2;
 	resp_cool = 2;
 
+	glitchEffectRefreshRate = .1f;
+	__lines.clear();
+
 	isUfo = false;
 	ufoCooldown = 35.0f;
 	ufoMovesLeft = rand() % 3 + 1;
-	ufoTargetPos = vec2(rand() % 100 - 50, rand() % 100 - 50);
+	ufoTargetPos = vec2(rand() % 2 * mapSize - mapSize, rand() % 2 * mapSize - mapSize);
 
 	planeCooldown = 10.0f;
 	isPlane = false;
@@ -751,7 +758,7 @@ Kamil
 	//ufo
 	if (!isUfo) ufoCooldown -= dt;
 	if (ufoCooldown <= 0 && !isUfo) {
-		ufo->MoveTo(vec3(rand() % 100 - 50, planeHeight, rand() % 100 - 50));
+		ufo->MoveTo(vec3(rand() % 2 * mapSize - mapSize, planeHeight, rand() % 2 * mapSize - mapSize));
 		isUfo = true;
 	}
 	if (isUfo) {
@@ -764,7 +771,7 @@ Kamil
 			if (ufoPos.x > ufoTargetPos.x - 5.0f && ufoPos.x < ufoTargetPos.x + 5.0f && ufoPos.z > ufoTargetPos.y - 5.0f && ufoPos.z < ufoTargetPos.y + 5.0f) {
 				if (ufoMovesLeft > 0) {
 					ufoMovesLeft -= 1;
-					ufoTargetPos = vec2(rand() % 100 - 50, rand() % 100 - 50);
+					ufoTargetPos = vec2(rand() % 2*mapSize - mapSize, rand() % 2 * mapSize - mapSize);
 				}
 				else {
 					isUfo = false;
@@ -856,6 +863,30 @@ Kamil
 		iterator++;
 	}
 
+	//checking if out of bounds
+	vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z));
+	float dOutofbounds;
+	if (absPPos.x > mapSize) {
+		glitchEffectRefreshRate -= dt;
+		dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
+		if (dOutofbounds > 1.0f) player->Transform.position.x = mapSize + maxOutOfBoundsDistance;
+
+		if (glitchEffectRefreshRate <= 0) {
+			for (auto& currentLine : __lines) {
+				Destroy(currentLine);
+			}
+			__lines.clear();
+
+			glitchEffectRefreshRate = .1f;
+			for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
+				GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+				current->Stage[0].onTop = true;
+				current->MoveTo(vec3(-1.1f+ static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))),-.1));
+				__lines.push_back(current);
+			}
+		}
+	}
+
 	//debug ↓
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .5f;
@@ -869,6 +900,11 @@ Kamil
 	if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .1f;
 		camera->Position = vec3(0, planeHeight, 0);
+	}
+	if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS && resp_cool <= 0) {
+		resp_cool = .1f;
+		player->Transform.position = vec3(120,0,-120);
+		camera->Position = vec3(120,0,-120);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
