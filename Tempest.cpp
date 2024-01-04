@@ -53,7 +53,6 @@ namespace Tempest {
 				default:
 					break;
 				}
-
 				/*
 				for (int i = 0; i < tunelSidesNo; ++i) {
 					double angle = 2 * pi * i / asteroidSidesNo;
@@ -124,6 +123,9 @@ namespace Tempest {
 			case 3:
 				break;
 			case 4:
+				break;
+
+			default:
 				break;
 			
 			}
