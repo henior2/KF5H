@@ -32,63 +32,80 @@ namespace Tempest {
 	std::vector <GameObject*> tunnel;
 
 	void tunelspawn(int lvlDif) {
+
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
 
-		int tunnelSidesNo = -1;
-		int tunnelstyle = 0; //types: 0 - normal; 1 - distorted
+		unsigned int type;
+		if (lvlDif < 21) type = 0;
+		else if (lvlDif < 51) type = 1;
+		else if (lvlDif < 71) type = 3;
+		else if (lvlDif < 100) type = 4;
+		else type = rand() % 4;
 
-		const float maxOffset = .1f; //[%]
-		const float minOffset = -.1f;
-		const float tunnelRadius =  5.0f;
+		switch (type) {
 
-		if (lvlDif < 21) tunnelstyle = 0;
-		else if (lvlDif < 51) tunnelstyle = 1;
-		else if (lvlDif < 71) tunnelSidesNo = 3; //what's the point of these two
-		else if (lvlDif < 100) tunnelSidesNo = 4; //they're easier than the ones before
-		else tunnelstyle = rand() % 2;
+		case 0:
 
-		if (tunnelSidesNo == -1) {
-			tunnelSidesNo = rand() % lvlDif * 0.5 + 3; //sth idk dont use so many unnecessary ifs and switches plz
-		}
+			int tunnelstyle = rand() % 1; //types: 0 - normal; 1 - distorted
 
-		for (int i = 0; i < tunnelSidesNo; i++) {
-			double angle = 2 * M_PI * i / tunnelSidesNo;
-			float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
+			const float maxOffset = .1f; //[%]
+			const float minOffset = -.1f;
+			const float tunnelRadius = 5.0f;
 
-			points.push_back(vec2(radius * cos(angle), radius * sin(angle)));
-		}
-		for (int j = 0; j < 2; j++) {
-			for (int i = 0; i < points.size(); i++) {
-				if(i) push_back2(id, i, i + points.size()); //connections
-				push_back2(id, i+points.size()*j, i+points.size()*j + 1); //ring
+			//tunnelstyle = rand() % 4;
 
-				push_back3(v, points[i].x, points[i].y, -12.5f*(j+1)); //points
-				push_back3(v, 0, 0, 1); //color (blue)
+			int tunnelSidesNo = lvlDif + rand() % 6 + 1;
+			if (tunnelSidesNo < 5) tunnelSidesNo += rand() % 3 + 4;
+			else if (tunnelSidesNo > 16) tunnelSidesNo -= rand() % 3 + 2;
+
+			for (int i = 0; i < tunnelSidesNo; i++) {
+				double angle = 2 * M_PI * i / tunnelSidesNo;
+				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
+
+				points.push_back(vec2(radius * cos(angle), radius * sin(angle)));
 			}
-			id.pop_back();
-			id.push_back(points.size() * j);
-			push_back2(id, 0, points.size());
-		}
+			for (int j = 0; j < 2; j++) {
+				for (int i = 0; i < points.size(); i++) {
+					if (i) push_back2(id, i, i + points.size()); //connections
+					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
+					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
+					push_back3(v, 0, 0, 1); //color (blue)
+				}
+				id.pop_back();
+				id.push_back(points.size() * j);
+				push_back2(id, 0, points.size());
+			}
+			break;
+
+		}
 		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 	}
-}
 
+}
 using namespace Tempest;
 
 void Game::TempestInit() {
 	debugCooldown = .1f;
+
+	lvlDif = 1;
 
 	tunnel.clear();
 }
 
 void Game::Tempest(float dt) {
 	debugCooldown -= dt;
+
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
-		tunelspawn(rand() % 100 + 1);
+
+		if (tunnel.size() > 0) {
+			Destroy(tunnel[0]);
+			tunnel.pop_back();}
+
+		tunelspawn(lvlDif);
 	}
 	
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
