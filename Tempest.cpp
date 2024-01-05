@@ -32,7 +32,7 @@ namespace Tempest {
 	int lvlDif;
 	std::vector <GameObject*> tunnel;
 
-	void tunelspawn(int lvlDif,int &lastTSN ) { //zapytaæ kogoœ jak dzia³ac na orginale
+	void tunelspawn(int lvlDif,unsigned int &lastTSN ) { 
 
 		std::vector<float> v;
 		std::vector<unsigned int> id;
