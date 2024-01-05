@@ -37,14 +37,14 @@ namespace Tempest {
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
 
-		unsigned int type;
+		unsigned int type;//do not touch please :)
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 3;
 		else if (lvlDif < 100) type = 4;
 		else type = rand() % 4;
 
-		switch (type) {
+		switch (type) { 
 
 		case 0:
 
