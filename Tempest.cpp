@@ -4,6 +4,7 @@ using namespace glm;
 
 namespace Tempest {
 	float debugCooldown = .1f;
+	unsigned int lastTSN;
 
 	//to make the code a bit cleaner
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
@@ -31,13 +32,22 @@ namespace Tempest {
 	int lvlDif;
 	std::vector <GameObject*> tunnel;
 
-	void tunelspawn(int lvlDif) {
+	void tunelspawn(int lvlDif,int &lastTSN ) { //zapytaæ kogoœ jak dzia³ac na orginale
 
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
 
-		unsigned int type;//do not touch please :)
+		int tunnelSidesNo;
+		
+		do { //dla ró¿norodnoœci
+			tunnelSidesNo = lvlDif + rand() % 6 + 1;
+			if (tunnelSidesNo < 5) tunnelSidesNo += rand() % 3 + 4;
+			else if (tunnelSidesNo > 17) tunnelSidesNo -= rand() % 3 + 2;
+		} while (tunnelSidesNo == lastTSN);
+		lastTSN = tunnelSidesNo;
+	
+		unsigned int type;//do not touch :)
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 3;
@@ -48,6 +58,7 @@ namespace Tempest {
 
 		case 0:
 
+			//case 0, podcase 1 (inne to trojkat i kwadrat)
 			int tunnelstyle = rand() % 1; //types: 0 - normal; 1 - distorted
 
 			const float maxOffset = .1f; //[%]
@@ -55,10 +66,6 @@ namespace Tempest {
 			const float tunnelRadius = 5.0f;
 
 			//tunnelstyle = rand() % 4;
-
-			int tunnelSidesNo = lvlDif + rand() % 6 + 1;
-			if (tunnelSidesNo < 5) tunnelSidesNo += rand() % 3 + 4;
-			else if (tunnelSidesNo > 16) tunnelSidesNo -= rand() % 3 + 2;
 
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -90,7 +97,8 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 1;
+	lvlDif = 1; //uwa¿aæ na to w przysz³oœci
+	lastTSN = 0;
 
 	tunnel.clear();
 }
@@ -105,7 +113,7 @@ void Game::Tempest(float dt) {
 			Destroy(tunnel[0]);
 			tunnel.pop_back();}
 
-		tunelspawn(lvlDif);
+		tunelspawn(lvlDif,lastTSN);
 	}
 	
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
