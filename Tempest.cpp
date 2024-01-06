@@ -84,15 +84,13 @@ namespace Tempest {
 				id.push_back(points.size() * j);
 				push_back2(id, 0, points.size());
 			}
-			break;
+		
 
-		}
-
-		case 1: { // odbicia lustrzane
-
+		case 1:  // odbicia lustrzane
 			break;
 		}
 
+		
 		lastTSN = tunnelSidesNo;
 		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 	}
