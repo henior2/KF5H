@@ -57,15 +57,13 @@ namespace Tempest {
 		switch (type) { 
 
 		case 0:
-
-			//case 0, podcase 1 (inne to trojkat i kwadrat)
+			//tunnelstyle = rand() % 4;
+			//case 0, podcase 1 (podcase 2 i 3  to trojkat i kwadrat - bed¹ w ifach)
 			int tunnelstyle = rand() % 1; //types: 0 - normal; 1 - distorted
 
 			const float maxOffset = .1f; //[%]
 			const float minOffset = -.1f;
 			const float tunnelRadius = 5.0f;
-
-			//tunnelstyle = rand() % 4;
 
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
