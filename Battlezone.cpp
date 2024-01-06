@@ -225,6 +225,7 @@ namespace Battlezone {
 			targetPos.push_back(vec3(0.0f));
 			targetOri.push_back(vec3(0.0f));
 		}
+		randomActionTimeLimit.push_back(2.0f);
 	}
 
 	const float camFrontOffset = -2.5f;
@@ -653,7 +654,7 @@ void Game::Battlezone(float dt) {
 			//rotaing the enemies
 			if (!randomActionTimeLimit.empty()) {
 				randomActionTimeLimit[i] -= dt;
-				if (randomActionTimeLimit[i] <= 0 && rand() % 10 == 0)
+				if (randomActionTimeLimit[i] > 0 && rand() % 10000 == 0)
 					flag = true;
 			}
 			if (flag){
