@@ -3,6 +3,7 @@
 using namespace glm;
 
 namespace Tempest {
+
 	float debugCooldown = .1f;
 	unsigned int lastTSN;
 
@@ -86,8 +87,8 @@ namespace Tempest {
 			}
 		
 
-		case 1:  // odbicia lustrzane
-			break;
+		//case 1:  // odbicia lustrzane
+			//break;
 		}
 
 		
