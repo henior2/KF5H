@@ -41,11 +41,8 @@ namespace Tempest {
 		int tunnelSidesNo;
 		
 		do { //dla ró¿norodnoœci
-			tunnelSidesNo = lvlDif + rand() % 6 + 1;
-			if (tunnelSidesNo < 5) tunnelSidesNo += rand() % 3 + 4;
-			else if (tunnelSidesNo > 17) tunnelSidesNo -= rand() % 3 + 2;
+			tunnelSidesNo = rand() % 7 + 5;
 		} while (tunnelSidesNo == lastTSN);
-		lastTSN = tunnelSidesNo;
 	
 		unsigned int type;//do not touch :)
 		if (lvlDif < 21) type = 0;
@@ -57,13 +54,17 @@ namespace Tempest {
 		switch (type) { 
 
 		case 0:
-			//tunnelstyle = rand() % 4;
-			//case 0, podcase 1 (podcase 2 i 3  to trojkat i kwadrat - bed¹ w ifach)
-			int tunnelstyle = rand() % 1; //types: 0 - normal; 1 - distorted
-
+			// podcase 2 i 3  to trojkat i kwadrat - bed¹ w ifach
 			const float maxOffset = .1f; //[%]
 			const float minOffset = -.1f;
 			const float tunnelRadius = 5.0f;
+
+			/*
+			if (tunnelSidesNo % 3 == 0 && lastTSN % 3 == 0 && tunnelSidesNo / 3 > 2){}
+			else if (tunnelSidesNo % 4 == 0 && lastTSN % 2 == 0 && tunnelSidesNo / 4 > 2){}
+			else{}
+			*/
+
 
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -86,6 +87,13 @@ namespace Tempest {
 			break;
 
 		}
+
+		case 1: { // odbicia lustrzane
+
+			break;
+		}
+
+		lastTSN = tunnelSidesNo;
 		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 	}
 
@@ -95,7 +103,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 1; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 19; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
