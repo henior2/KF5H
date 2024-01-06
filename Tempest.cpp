@@ -3,9 +3,8 @@
 using namespace glm;
 
 namespace Tempest {
-
 	float debugCooldown = .1f;
-	unsigned int lastTSN;
+	int lastTSN;
 
 	//to make the code a bit cleaner
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
@@ -33,8 +32,7 @@ namespace Tempest {
 	int lvlDif;
 	std::vector <GameObject*> tunnel;
 
-	void tunelspawn(int lvlDif,unsigned int &lastTSN ) { 
-
+	void tunelspawn(int lvlDif,int &lastTSN ) { 
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -45,27 +43,26 @@ namespace Tempest {
 			tunnelSidesNo = rand() % 7 + 5;
 		} while (tunnelSidesNo == lastTSN);
 	
-		unsigned int type;//do not touch :)
+		int type; //do not touch :) //i wont if you stop being obsessed with putting unsigned everywhere :)
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 3;
 		else if (lvlDif < 100) type = 4;
 		else type = rand() % 4;
 
-		switch (type) { 
+		const float maxOffset = .1f; //[%]
+		const float minOffset = -.1f;
+		const float tunnelRadius = 5.0f;
 
+		switch (type) { 
 		case 0:
 			// podcase 2 i 3  to trojkat i kwadrat - bed¹ w ifach
-			const float maxOffset = .1f; //[%]
-			const float minOffset = -.1f;
-			const float tunnelRadius = 5.0f;
 
 			/*
 			if (tunnelSidesNo % 3 == 0 && lastTSN % 3 == 0 && tunnelSidesNo / 3 > 2){}
 			else if (tunnelSidesNo % 4 == 0 && lastTSN % 2 == 0 && tunnelSidesNo / 4 > 2){}
 			else{}
 			*/
-
 
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -75,7 +72,7 @@ namespace Tempest {
 			}
 			for (int j = 0; j < 2; j++) {
 				for (int i = 0; i < points.size(); i++) {
-					if (i) push_back2(id, i, i + points.size()); //connections
+					if (j) push_back2(id, i, i + points.size()); //connections
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
 					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
@@ -83,15 +80,38 @@ namespace Tempest {
 				}
 				id.pop_back();
 				id.push_back(points.size() * j);
-				push_back2(id, 0, points.size());
 			}
-		
+			push_back2(id, 0, points.size());
+			break;
+		case 1:  // odbicia lustrzane
+			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
+				double angle = 2 * M_PI * i / tunnelSidesNo;
+				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
 
-		//case 1:  // odbicia lustrzane
-			//break;
+				points.push_back(vec2(radius * sin(angle), radius * cos(angle)));
+			}
+			for (int k = 0; k < 2; k++) {
+				for (int j = 0; j < 2; j++) {
+					for (int i = 0; i < points.size(); i++) {
+						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
+						push_back3(v, 0, 0, 1); //color (blue)
+					}
+				}
+			}
+			for (int j = 0; j < 2; j++) {
+				for (int i = 0; i < points.size() * 2; i++) {
+					if (j) push_back2(id, i, i + points.size() * 2); //connections
+					push_back2(id, i + points.size() * 2 * j, i + points.size() * 2 * j + 1); //ring
+				}
+				id.pop_back();
+				id.push_back(points.size() * (j+1) - 1);
+			}
+
+			break;
+		default:
+			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
 		}
 
-		
 		lastTSN = tunnelSidesNo;
 		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 	}
@@ -102,7 +122,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 19; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 50; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
@@ -116,7 +136,8 @@ void Game::Tempest(float dt) {
 
 		if (tunnel.size() > 0) {
 			Destroy(tunnel[0]);
-			tunnel.pop_back();}
+			tunnel.erase(tunnel.begin());
+		}
 
 		tunelspawn(lvlDif,lastTSN);
 	}
