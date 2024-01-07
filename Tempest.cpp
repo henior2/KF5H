@@ -54,6 +54,7 @@ namespace Tempest {
 		const float maxOffset = .1f; //[%]
 		const float minOffset = -.1f;
 		const float tunnelRadius = 5.0f;
+		int help; //poxniej uwazac, prawdopodobnie do usuniecia
 
 		switch (type) { 
 
@@ -112,10 +113,9 @@ namespace Tempest {
 			break;
 
 		case 2: //figury z dziur¹
-
-			int help = round(tunnelSidesNo/4);
+			help = round(tunnelSidesNo/4);
 			push_back3(v, (help / 2), (help / 2), 0); // srodek
-				for (int i = 0; i < tunnelSidesNo; i++) {
+			for (int i = 0; i < tunnelSidesNo; i++) {
 
 			}
 			break;
