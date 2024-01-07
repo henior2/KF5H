@@ -43,7 +43,7 @@ namespace Tempest {
 			tunnelSidesNo = rand() % 7 + 5;
 		} while (tunnelSidesNo == lastTSN);
 	
-		int type; //do not touch :) //i wont if you stop being obsessed with putting unsigned everywhere :)
+		int type; //do not touch :)
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 3;
@@ -56,7 +56,6 @@ namespace Tempest {
 
 		switch (type) { 
 		case 0:
-			// podcase 2 i 3  to trojkat i kwadrat - bed¹ w ifach
 
 			/*
 			if (tunnelSidesNo % 3 == 0 && lastTSN % 3 == 0 && tunnelSidesNo / 3 > 2){}
@@ -83,6 +82,7 @@ namespace Tempest {
 			}
 			push_back2(id, 0, points.size());
 			break;
+
 		case 1:  // odbicia lustrzane
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -106,8 +106,8 @@ namespace Tempest {
 				id.pop_back();
 				id.push_back(points.size() * (j+1) - 1);
 			}
-
 			break;
+
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
 		}
