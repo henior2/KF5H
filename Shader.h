@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include "mat.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>

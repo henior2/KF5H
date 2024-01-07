@@ -140,17 +140,25 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Init.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mat.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Tekst2d.cpp" />
     <ClCompile Include="Tempest.cpp" />
     <ClCompile Include="TEST.cpp" />
+    <ClCompile Include="vec.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="mat.h" />
+    <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Tekst2d.h" />
+    <ClInclude Include="vec.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Arrow0.ind.txt" />
