@@ -122,7 +122,6 @@ namespace Tempest {
 
 			//help = rand() % tunnelSidesNo przerwanie gdzie
 			break;
-
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
 		}
