@@ -55,8 +55,10 @@ namespace Tempest {
 		const float minOffset = -.1f;
 		const float tunnelRadius = 5.0f;
 
+		switch (type) { 
 
-		if (type == 0) {
+		case 0:
+
 			/*
 			if (tunnelSidesNo % 3 == 0 && lastTSN % 3 == 0 && tunnelSidesNo / 3 > 2){}
 			else if (tunnelSidesNo % 4 == 0 && lastTSN % 2 == 0 && tunnelSidesNo / 4 > 2){}
@@ -81,10 +83,9 @@ namespace Tempest {
 				id.push_back(points.size() * j);
 			}
 			push_back2(id, 0, points.size());
-		}
-			
-		else if (type == 1) {
-			// odbicia lustrzane
+			break;
+
+		case 1:  // odbicia lustrzane
 
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -106,18 +107,21 @@ namespace Tempest {
 					push_back2(id, i + points.size() * 2 * j, i + points.size() * 2 * j + 1); //ring
 				}
 				id.pop_back();
-				id.push_back(points.size() * (j + 1) - 1);
+				id.push_back(points.size() * (j+1) - 1);
 			}
-		}
+			break;
 
-		else if (type == 2) {
-			//figury z dziur¹
+		case 2: //figury z dziur¹
 
-			int help = round(tunnelSidesNo / 4);
+			int help = round(tunnelSidesNo/4);
 			push_back3(v, (help / 2), (help / 2), 0); // srodek
-			for (int i = 0; i < tunnelSidesNo; i++) {
+				for (int i = 0; i < tunnelSidesNo; i++) {
 
 			}
+			break;
+
+		default:
+			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
 		}
 
 		lastTSN = tunnelSidesNo;
@@ -130,7 +134,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 60; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 50; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
