@@ -131,7 +131,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 60; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 19; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
