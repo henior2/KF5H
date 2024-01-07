@@ -110,11 +110,12 @@ namespace Tempest {
 			break;
 
 		case 2: //figury z dziur¹
+			//wip!!
 			help = round(tunnelSidesNo/4);
 			push_back3(v, (help / 2), (help / 2), 0); // srodek
 			push_back3(v, 0);
 			for (int i = 0; i < tunnelSidesNo; i++) {
-
+				//todo
 			}
 			break;
 		default:
