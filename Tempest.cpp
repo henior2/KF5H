@@ -30,6 +30,7 @@ namespace Tempest {
 	const double M_PI = glm::pi<double>();
 
 	int lvlDif;
+
 	std::vector <GameObject*> tunnel;
 
 	void tunelspawn(int lvlDif,int &lastTSN ) { 
@@ -54,7 +55,7 @@ namespace Tempest {
 		const float maxOffset = .1f; //[%]
 		const float minOffset = -.1f;
 		const float tunnelRadius = 5.0f;
-		int help; //poxniej uwazac, prawdopodobnie do usuniecia
+		int help = -1; //poxniej uwazac, prawdopodobnie do usuniecia
 
 		switch (type) { 
 
@@ -115,6 +116,7 @@ namespace Tempest {
 		case 2: //figury z dziur¹
 			help = round(tunnelSidesNo/4);
 			push_back3(v, (help / 2), (help / 2), 0); // srodek
+			push_back3(v, 0);
 			for (int i = 0; i < tunnelSidesNo; i++) {
 
 			}
@@ -129,12 +131,13 @@ namespace Tempest {
 	}
 
 }
+
 using namespace Tempest;
 
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 50; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 60; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
