@@ -55,7 +55,7 @@ namespace Tempest {
 		const float maxOffset = .1f; //[%]
 		const float minOffset = -.1f;
 		const float tunnelRadius = 5.0f;
-		int help = -1; //poxniej uwazac, prawdopodobnie do usuniecia
+		double help = -1; //poxniej uwazac, prawdopodobnie do usuniecia
 
 		switch (type) { 
 
@@ -114,12 +114,17 @@ namespace Tempest {
 			break;
 
 		case 2: //figury z dziur¹
-			help = round(tunnelSidesNo/4);
-			push_back3(v, (help / 2), (help / 2), 0); // srodek
-			push_back3(v, 0);
-			for (int i = 0; i < tunnelSidesNo; i++) {
+			help = (tunnelSidesNo/4)/2;//srodek na jednej osi x lub y
+
+			// 1 punkt
+			push_back3(v, help + 0.5, -help, 0);
+			push_back3(v, 0, 0, 1);
+
+			for (int i = 0; i < tunnelSidesNo-1; i++) {
 
 			}
+
+			//help = rand() % tunnelSidesNo przerwanie gdzie
 			break;
 
 		default:
