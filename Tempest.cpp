@@ -33,6 +33,7 @@ namespace Tempest {
 	std::vector <GameObject*> tunnel;
 
 	void tunelspawn(int lvlDif,int &lastTSN ) { 
+
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -55,6 +56,7 @@ namespace Tempest {
 		const float tunnelRadius = 5.0f;
 
 		switch (type) { 
+
 		case 0:
 
 			/*
@@ -84,6 +86,7 @@ namespace Tempest {
 			break;
 
 		case 1:  // odbicia lustrzane
+
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
 				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
@@ -105,6 +108,12 @@ namespace Tempest {
 				}
 				id.pop_back();
 				id.push_back(points.size() * (j+1) - 1);
+			}
+			break;
+
+		case 2: //figury z dziur¹
+			for (int i = 0; i < tunnelSidesNo; i++) {
+
 			}
 			break;
 
