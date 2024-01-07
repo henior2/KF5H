@@ -225,6 +225,14 @@ namespace Battlezone {
 			targetPos.push_back(vec3(0.0f));
 			targetOri.push_back(vec3(0.0f));
 		}
+
+		// kamil forgor 💀
+		auto* current = radarElements.back();
+			current->Stage[0].onTop = true;
+			current->ScaleTo(vec3(uiScale * 9, uiScale * 16, 0));
+			current->MoveTo(vec3(0, uiYOffset, 0));
+			current->Rotate(vec3(0, 180, 0));
+
 		randomActionTimeLimit.push_back(2.0f);
 	}
 
@@ -396,6 +404,8 @@ namespace Battlezone {
 
 	const float pUdYoTU = pUowYOffset / (.25f * fullRotationTime); //at least im aware that i suck at naming things
 	float currentPUdYoTU = pUdYoTU; //...
+
+	// bro AT LEAST LEAVE A COMMENT 😫
 }
 using namespace Battlezone;
 
@@ -803,7 +813,11 @@ void Game::Battlezone(float dt) {
 		targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
 	}
 
-	//adjusting scanner elements' position
+	//adjusting scanner elements' position... or do we? *vsauce music*
+	//(YES WE NEED TO DO IT SOMEONE PLEASE SEND PROFFESIONAL PSYCHICAL HELP)
+
+	const float radarRange = 10.0f; // todo: move it somewhere else
+
 	float angleRad = pOri.y * PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 	for (int i = 0; i < radarElements.size(); i++) {
@@ -821,8 +835,13 @@ void Game::Battlezone(float dt) {
 		float dx = current->Transform.position.x - pPos.x;
 		float dz = current->Transform.position.z - pPos.z;
 
-		dx = dx / mapSize * radarRadius;
-		dz = dz / mapSize * radarRadius;
+		// github copilot moment
+		dx = dx * cos(angleRad) - dz * sin(angleRad);
+		dz = dx * sin(angleRad) + dz * cos(angleRad);
+
+		// todo: discover why it looks wrong without radarRange
+		dx = (dx / mapSize) * radarRadius / radarRange;
+		dz = (dz / mapSize) * radarRadius / radarRange;
 
 		//todo: add out-of-bounds checking condition
 
@@ -830,11 +849,14 @@ void Game::Battlezone(float dt) {
 		targetPos[1 + trailLinesNo + i].y = dz;
 		targetPos[1 + trailLinesNo + i].z = 0.0f;
 		
+		// fun fact: kamil forgot to add this line so I spent like 2 hours trying to figure out why the radar is broken
+		radarElements[iterator]->MoveTo(vec3(-dx, uiYOffset + dz, 0.0f));
+		
 		iterator++;
 	}
 
 	//checking if out of bounds
-	vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z));
+	vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z)); // bro really said PP
 	float dOutofbounds;
 	if (absPPos.x > mapSize || absPPos.y > mapSize) {
 		glitchEffectRefreshRate -= dt;
