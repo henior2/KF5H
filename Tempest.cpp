@@ -30,11 +30,9 @@ namespace Tempest {
 	const double M_PI = glm::pi<double>();
 
 	int lvlDif;
-
 	std::vector <GameObject*> tunnel;
 
 	void tunelspawn(int lvlDif,int &lastTSN ) { 
-
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -45,7 +43,7 @@ namespace Tempest {
 			tunnelSidesNo = rand() % 7 + 5;
 		} while (tunnelSidesNo == lastTSN);
 	
-		int type; //do not touch :)
+		int type; //do not touch :) //i wont if you stop being obsessed with putting unsigned everywhere :)
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 2;
@@ -58,7 +56,6 @@ namespace Tempest {
 		double help = -1; //poxniej uwazac, prawdopodobnie do usuniecia
 
 		switch (type) { 
-
 		case 0:
 
 			/*
@@ -86,9 +83,7 @@ namespace Tempest {
 			}
 			push_back2(id, 0, points.size());
 			break;
-
 		case 1:  // odbicia lustrzane
-
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
 				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
@@ -103,13 +98,14 @@ namespace Tempest {
 					}
 				}
 			}
+			//still work in progress!!
 			for (int j = 0; j < 2; j++) {
 				for (int i = 0; i < points.size() * 2; i++) {
-					if (j) push_back2(id, i, i + points.size() * 2); //connections
-					push_back2(id, i + points.size() * 2 * j, i + points.size() * 2 * j + 1); //ring
+					if (j) push_back2(id, i, i + points.size() * 2);
+					push_back2(id, i, i + 1);
 				}
 				id.pop_back();
-				id.push_back(points.size() * (j+1) - 1);
+				id.push_back(points.size());
 			}
 			break;
 
@@ -136,13 +132,12 @@ namespace Tempest {
 	}
 
 }
-
 using namespace Tempest;
 
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 60; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 19; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
@@ -154,9 +149,11 @@ void Game::Tempest(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
 
-		if (tunnel.size() > 0) {
-			Destroy(tunnel[0]);
-			tunnel.erase(tunnel.begin());
+		if (!tunnel.empty()) {
+			for (auto& c : tunnel) {
+				Destroy(c);
+			}
+			tunnel.clear();
 		}
 
 		tunelspawn(lvlDif,lastTSN);
