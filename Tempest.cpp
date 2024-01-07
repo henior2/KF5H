@@ -98,15 +98,15 @@ namespace Tempest {
 					}
 				}
 			}
+			//still work in progress!!
 			for (int j = 0; j < 2; j++) {
 				for (int i = 0; i < points.size() * 2; i++) {
-					if (j) push_back2(id, i, i + points.size() * 2); //connections
-					push_back2(id, i + points.size() * 2 * j, i + points.size() * 2 * j + 1); //ring
+					if (j) push_back2(id, i, i + points.size() * 2);
+					push_back2(id, i, i + 1);
 				}
 				id.pop_back();
-				id.push_back(points.size() * (j+1) - 1);
+				id.push_back(points.size());
 			}
-
 			break;
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
@@ -122,7 +122,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 50; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 19; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
@@ -134,9 +134,11 @@ void Game::Tempest(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
 
-		if (tunnel.size() > 0) {
-			Destroy(tunnel[0]);
-			tunnel.erase(tunnel.begin());
+		if (!tunnel.empty()) {
+			for (auto& c : tunnel) {
+				Destroy(c);
+			}
+			tunnel.clear();
 		}
 
 		tunelspawn(lvlDif,lastTSN);
