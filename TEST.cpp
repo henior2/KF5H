@@ -152,7 +152,7 @@ void Game::TEST(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
 		camera->Position.y += 20 * camSpeed1 * dt / 2;
-	}\
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		camera->Position.y -= 20 * camSpeed1 * dt / 2;
