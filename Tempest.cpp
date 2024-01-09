@@ -31,7 +31,7 @@ namespace Tempest {
 		// randomowa liczba nie wieksza od x, potrzebne do tych z diura
 	}
 		
-	const double M_PI = glm::pi<double>();
+	//const double M_PI = glm::pi<double>();
 
 	int lvlDif;
 	std::vector <GameObject*> tunnel;

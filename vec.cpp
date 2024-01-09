@@ -31,6 +31,8 @@ vec vec::operator-() const {
 	{
 		result.array[i] = -result.array[i];
 	}
+
+	return result;
 }
 
 vec vec::operator+(const float& second) const {
@@ -49,7 +51,7 @@ vec vec::operator-(const float& second)const {
 
 vec vec::operator+(const vec& second) const {
 	if (size != second.size) {
-		return;
+		return *this;
 	}
 	vec result(0, size);
 	result = *this;
@@ -92,6 +94,8 @@ vec vec::Normalize() const {
 	for (int i = 0; i < size; i++) {
 		result.array[i] /= length;
 	}
+
+	return result;
 }
 
 

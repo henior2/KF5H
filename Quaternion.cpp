@@ -1,4 +1,4 @@
-#include "Quaternion.h"
+/*#include "Quaternion.h"
 #pragma once
 //#ifndef M_PI
 //#define M_PI 3.14159265358979323846
@@ -57,4 +57,4 @@ public:
     }
 };
 
-//#endif
+//#endif*/

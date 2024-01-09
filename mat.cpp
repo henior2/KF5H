@@ -87,11 +87,13 @@ mat mat::operator*(const float& second) const {
 			result.array[i][j] *= second;
 		}
 	}
+
+	return result;
 }
 
 mat mat::operator*(const vec& second) const {
 	if (this->size != second.size) {
-		return;
+		return *this;
 	}
 
 	mat result(0.0f, size);
@@ -108,7 +110,7 @@ mat mat::operator*(const vec& second) const {
 mat mat::Translate(vec& translateVec) {
 
 	if (translateVec.size != size) {
-		return;
+		return *this;
 	}
 
 	mat result(1.0f, size);
@@ -121,7 +123,7 @@ mat mat::Translate(vec& translateVec) {
 }
 mat mat::Rotate(vec& rotateVec) {
 	if (rotateVec.size != 3) {
-		return;
+		return *this;
 	}
 
 	mat result(1.0f, size);
@@ -141,13 +143,13 @@ mat mat::Rotate(vec& rotateVec) {
 }
 mat mat::Scale(vec& scaleVec) {
 	if (scaleVec.size != 3) {
-		return;
+		return * this;
 	}
 
 	mat result(1.0f, size);
 
 	for (int i = 0; i < size; i++) {
-		result.array[i][j] = scaleVec.array[i];
+		result.array[i][i] = scaleVec.array[i];
 	}
 
 	return result;
