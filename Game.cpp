@@ -4,7 +4,7 @@ Game::Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::I
     : State(Game_Init), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height), engine(SoundEngine)
 {
 
-    program = new Shader("VertexShader.txt", "FragmentShader.txt");
+    program = new Shader("textFiles/shaders/VertexShader.txt", "textFiles/shaders/FragmentShader.txt");
     camera = new Camera();
     this->ChangeState(State);
 }

@@ -171,8 +171,8 @@ void Tekst2d::AddVao() {
 }
 
 VertexData Tekst2d::ReadVertexFile(std::string file) {
-	std::string vPath = file + ".vx.txt";
-	std::string iPath = file + ".ind.txt";
+	std::string vPath = "textFiles/alphabet/" + file + ".vx.txt";
+	std::string iPath = "textFiles/alphabet/" + file + ".ind.txt";
 	std::string vCode;
 	std::string iCode;
 	std::ifstream iFile;

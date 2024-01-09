@@ -173,8 +173,8 @@ void GameObject::AddVao(int &vNum, int &iNum, float vertecies[], unsigned int in
 }
 
 VertexData GameObject::ReadVertexFile(std::string file) {
-	std::string vPath = file + ".vx.txt";
-	std::string iPath = file + ".ind.txt";
+	std::string vPath = "textFiles/models/" + file + ".vx.txt";
+	std::string iPath = "textFiles/models/" + file + ".ind.txt";
 	std::string vCode;
 	std::string iCode;
 	std::ifstream iFile;

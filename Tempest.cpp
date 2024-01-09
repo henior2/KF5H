@@ -27,9 +27,9 @@ namespace Tempest {
 		vec.push_back(a1);
 	}
 
-	vec2 randstaszek(double x){
+	//vec2 randstaszek(double x){
 		// randomowa liczba nie wieksza od x, potrzebne do tych z diura
-	}
+	//}
 		
 	//const double M_PI = glm::pi<double>();
 
