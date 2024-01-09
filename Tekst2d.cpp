@@ -110,6 +110,9 @@ void Tekst2d::SetColor(glm::vec3(color)) {
 }
 
 void Tekst2d::AddLetter(std::string file, int letter) {
+	if (file == " ") {
+		return;
+	}
 	VertexData data = ReadVertexFile(file);
 
 	for (int i = 0; i < data.vNum; i+=6) {
@@ -118,11 +121,12 @@ void Tekst2d::AddLetter(std::string file, int letter) {
 			vertecies.push_back(data.vertecies[i + j]);
 	}
 	for (int i = 0; i < data.iNum; i++) {
-		indecies.push_back(data.indecies[i]);
+		indecies.push_back(data.indecies[i] + Alreadyletters);
 	}
 
 	Letters.pointsNum += data.vNum / 6;
 	Letters.lines += data.iNum;
+	Alreadyletters += data.vNum / 6;
 }
 
 void Tekst2d::AddVao() {

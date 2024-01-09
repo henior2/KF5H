@@ -52,6 +52,7 @@ public:
 
 	std::vector<float> vertecies;
 	std::vector<unsigned int> indecies;
+	unsigned int Alreadyletters = 0;
 
 	int index = 0;
 

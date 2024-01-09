@@ -4,7 +4,7 @@ using namespace glm;
 
 namespace Menu {
     std::vector<GameObject*> obiekty;
-    std::vector<GameObject*> tekst;
+    std::vector<Tekst2d*> tekst;
 
     const std::string modele[] = { "MenuCube","MenuSquare" };
     const std::string rareModels[] = { "AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet","Blaster","Flipper","exclamation-mark","question-mark","RadarT","PowerUpBox","PowerUpHeart" };
@@ -18,6 +18,11 @@ void Game::MenuInit() {
     tekst.clear();
     esc = false;
     srand(time(NULL));
+
+    tekst.push_back(CreateTekst(vec2(-0.6, 0.5), 0, vec2(0.1), 1, 0.2f, "GryWektorowe"));
+    tekst.push_back(CreateTekst(vec2(-0.225, -0.1), 0, vec2(0.05), 1, 0.2f, "Asteroids"));
+    tekst.push_back(CreateTekst(vec2(-0.25, -0.3), 0, vec2(0.05), 1, 0.2f, "Battlezone"));
+    tekst.push_back(CreateTekst(vec2(-0.175, -0.5), 0, vec2(0.05), 1, 0.2f, "Tempest"));
     
     for (int i = 0; i < 1500; i++) {
         float x = ((float)(rand() % 100) - 50.0f);
@@ -55,7 +60,7 @@ void Game::Menu(float dt) {
         }
     }
 
-    //todo: add UI
+    //todo: add that clicking on the UI does something. easy
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
