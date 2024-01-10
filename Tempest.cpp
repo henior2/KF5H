@@ -27,9 +27,35 @@ namespace Tempest {
 		vec.push_back(a1);
 	}
 
-	//vec2 randstaszek(double x){
-		// randomowa liczba nie wieksza od x, potrzebne do tych z diura
-	//}
+	vec3 randspc(vec3 lpoint){ 
+		vec3 nextpoint;
+		nextpoint.z == 0;
+
+		if(lpoint.x >= 0 && lpoint.y >= 0)
+		{
+			nextpoint.x = lpoint.x + rand() % 2 + 4;
+			nextpoint.y = lpoint.y - rand() % 2 + 3;
+		}
+
+		else if (lpoint.x >= 0 && lpoint.y <= 0)
+		{
+			nextpoint.x = lpoint.x - rand() % 2 + 3;
+			nextpoint.y = lpoint.y - rand() % 2 + 4;
+		}
+
+		else if (lpoint.x <= 0 && lpoint.y <= 0)
+		{
+			nextpoint.x = lpoint.x + rand() % 2 + 4;
+			nextpoint.y = lpoint.y + rand() % 2 + 4;
+		}
+
+		else //lpoint.x <= 0 && lpoint.y >= 0 
+		{
+			nextpoint.x = lpoint.x + rand() % 2 + 4;
+			nextpoint.y = lpoint.y + rand() % 2 + 4;
+		}
+		return nextpoint;
+	}
 		
 	//const double M_PI = glm::pi<double>();
 
@@ -47,17 +73,19 @@ namespace Tempest {
 			tunnelSidesNo = rand() % 7 + 5;
 		} while (tunnelSidesNo == lastTSN);
 	
-		int type; //do not touch :) //i wont if you stop being obsessed with putting unsigned everywhere :)
+		int type; //do not touch :)
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 2;
 		else if (lvlDif < 100) type = 3;
 		else type = rand() % 3;
 
-		const float maxOffset = .1f; //[%]
-		const float minOffset = -.1f;
+		const float maxOffset = .3f; //[%]
+		const float minOffset = -.2f;
 		const float tunnelRadius = 5.0f;
-		double help = -1; //poxniej uwazac, prawdopodobnie do usuniecia
+		double help = -1; 
+		vec3 pointhelp(-1,-1,0);
+		vec3 lph(-1, -1, 0);
 
 		switch (type) { 
 		case 0:
@@ -87,6 +115,7 @@ namespace Tempest {
 			}
 			push_back2(id, 0, points.size());
 			break;
+
 		case 1:  // odbicia lustrzane
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -114,18 +143,49 @@ namespace Tempest {
 			break;
 
 		case 2: //figury z dziur¹
-			help = (tunnelSidesNo/4)/2;//srodek na jednej osi x lub y
+
+			/*help = (tunnelSidesNo/4)/2;//srodek na jednej osi x lub y
 
 			// 1 punkt
 			push_back3(v, help + 0.5, -help, 0);
+			lph.x = help + 0.5;
+			lph.y = -help;
 			push_back3(v, 0, 0, 1);
+		
+			help = rand() % tunnelSidesNo;
 
-			for (int i = 0; i < tunnelSidesNo-1; i++) {
+			for (int i = 1; i < tunnelSidesNo; i++) {
+				pointhelp = randspc(lph);
+				push_back3(v,pointhelp.x,pointhelp.y,pointhelp.z);
+				push_back2(id, i - 1, i);
+				lph = pointhelp;
+			}
+			break
+*/
+			
+			help = rand() % tunnelSidesNo;
 
+			for (int i = 0; i < tunnelSidesNo; i++) {
+				double angle = 2 * M_PI * i / tunnelSidesNo;
+				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
+
+				points.push_back(vec2(radius * cos(angle), radius * sin(angle)));
 			}
 
-			//help = rand() % tunnelSidesNo przerwanie gdzie
+			for (int j = 0; j < 2; j++) {
+				for (int i = 0; i < points.size(); i++) {
+					if (j) push_back2(id, i, i + points.size()); //connections
+					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
+
+					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
+					push_back3(v, 0, 0, 1); //color (blue)
+				}
+				id.pop_back();
+				id.push_back(points.size() * j);
+			}
+			push_back2(id, 0, points.size());
 			break;
+
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
 		}
@@ -140,7 +200,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 19; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 60; //uwa¿aæ na to w przysz³oœci
 	lastTSN = 0;
 
 	tunnel.clear();
