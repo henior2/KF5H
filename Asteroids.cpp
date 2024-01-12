@@ -39,6 +39,7 @@ namespace Asteroids {
 	float posy;
 
 	std::vector<float> bulletTimeRemain;
+	std::vector<bool> isBulletPlayers;
 
 	const float bulletMaxTime = 3.0f;
 	const float bulletSpeed = 50.0f;
@@ -237,6 +238,8 @@ namespace Asteroids {
 			temp += 1;
 		return temp;
 	}
+
+	vec2 pPos;
 };
 
 using namespace Asteroids;
@@ -281,6 +284,7 @@ void Game::AsteroidsInit() {
 	stars.clear();
 
 	bulletTimeRemain.clear();
+	isBulletPlayers.clear();
 	asteroidSize.clear();
 	asteroidRotation.clear();
 	asteroidRotationMultiplier.clear();
@@ -296,6 +300,8 @@ void Game::AsteroidsInit() {
 }
 
 void Game::Asteroids(float dt) {
+	pPos = ship->Transform.position;
+
 	jumpCooldown -= dt;
 	shootCooldown -= dt;
 
@@ -390,6 +396,7 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown<=0) {
 		shootCooldown = .25f;
 		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
+		isBulletPlayers.push_back(true);
 	}
 
 	for (int i = 0; i < enemies.size(); i++) {
@@ -441,6 +448,7 @@ void Game::Asteroids(float dt) {
 
 			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, this, type);
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
+			isBulletPlayers.push_back(false);
 		}
 
 		if (type) {
@@ -455,6 +463,12 @@ void Game::Asteroids(float dt) {
 			}
 			bigEnemyIterator++;
 		}
+
+		//collisions - player/enemy
+		if (Gra->collisionCircle(pPos, pos)) {
+			//smierc
+			Game::ChangeState(Game_Menu);
+		}
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
@@ -465,15 +479,31 @@ void Game::Asteroids(float dt) {
 			Destroy(current);
 			bullets.erase(bullets.begin() + i);
 			bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+			isBulletPlayers.erase(isBulletPlayers.begin() + i);
 			i--;
 			continue;
 		}
 		current->Move(vec3(0.0f,1.0f,0.0f) * bulletSpeed * dt);
 
 		checkBounds(current);
+
+		vec2 currentPos = current->Transform.position;
+		
+		//collisions - player/bullets
+		if (!isBulletPlayers[i] && Gra->collisionCircle(pPos, current->Transform.position)) {
+			//smierc
+			Game::ChangeState(Game_Menu);
+		}
+
+		//collisions - enemy/bullets
+		for (auto& enemy : enemies) {
+			if (isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
+				//debug - will destroy
+				Game::ChangeState(Game_TEST);
+			}
+		}
 	}
 
-	vec2 pPos = ship->Transform.position;
 	for (int i = 0; i < asteroids.size(); i++) {
 		GameObject* current = asteroids[i];
 
