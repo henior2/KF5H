@@ -1,5 +1,9 @@
 #include "Game.h"
 
+bool Game::collisionCircle(glm::vec2 pos1, glm::vec2 pos2, float r1, float r2) {
+    return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
+}
+
 Game::Game(GLFWwindow* win, unsigned int width, unsigned int height, irrklang::ISoundEngine* SoundEngine)
     : State(Game_Init), Keys(), window(win), SCR_WIDTH(width), SCR_HEIGHT(height), engine(SoundEngine)
 {

@@ -88,6 +88,8 @@ public:
 	void TEST(float dt);
 	void TESTInit();
 
+	bool collisionCircle(glm::vec2 pos1, glm::vec2 pos2, float r1 = 5.0f, float r2 = 5.0f);
+
 	void ChangeState(GameState state);
 	void Render(float dt);
 

@@ -473,6 +473,7 @@ void Game::Asteroids(float dt) {
 		checkBounds(current);
 	}
 
+	vec2 pPos = ship->Transform.position;
 	for (int i = 0; i < asteroids.size(); i++) {
 		GameObject* current = asteroids[i];
 
@@ -498,6 +499,12 @@ void Game::Asteroids(float dt) {
 		current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity* dt);
 
 		checkBounds(current,vec2(camera->cameraWidth+ bounds,camera->cameraHeight+ bounds));
+
+		//collisions - player/asteroid
+		if (Gra->collisionCircle(pPos, current->Transform.position)) {
+			//smierc
+			Game::ChangeState(Game_Menu);
+		}
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

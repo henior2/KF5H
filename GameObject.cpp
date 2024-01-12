@@ -113,10 +113,6 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 	return Stage.size() - 1;
 }
 
-bool collisionCircle(glm::vec2 pos1, glm::vec2 pos2, float r1 = 5.0f, float r2 = 5.0f) {
-	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
-}
-
 void GameObject::UpdateVectors() {
 	glm::vec3 front;
 	float x, y, z;
