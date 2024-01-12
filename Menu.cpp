@@ -3,6 +3,8 @@
 using namespace glm;
 
 namespace Menu {
+    GameObject* pointer;
+
     std::vector<GameObject*> obiekty;
     std::vector<Tekst2d*> tekst;
 
@@ -10,10 +12,20 @@ namespace Menu {
     const std::string rareModels[] = { "AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet","Blaster","Flipper","exclamation-mark","question-mark","RadarT","PowerUpBox","PowerUpHeart" };
 
     bool esc = false;
+
+    const float pointerPosition[] = { -.05,-.25,-.45 };
+    int pointerState;
+
+    float clickCooldown;
 }
 using namespace Menu;
 
 void Game::MenuInit() {
+    pointer = Create(vec3(-.325,-.05,0), vec3(0, 0, -90), vec3(.1), "AsteroidsBullet");
+    pointer->color = vec3(0, 1, 0);
+    pointer->Stage[0].onTop = true;
+    pointerState = 0;
+
     obiekty.clear();
     tekst.clear();
     esc = false;
@@ -45,10 +57,14 @@ void Game::MenuInit() {
 
     camera->RotateCamera(0.0f, 90.0f);
 
+    clickCooldown = .25;
+
     PlaySound2d("mus02.mp3", true);
 }
 
 void Game::Menu(float dt) {
+    clickCooldown -= dt;
+
     for (int i = 0; i < obiekty.size(); i++) {
         obiekty[i]->MoveGlobal(vec3(0.0f, 0.0f, 3 * dt));
         vec3 pos = obiekty[i]->Transform.position;
@@ -65,6 +81,17 @@ void Game::Menu(float dt) {
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) ChangeState(Game_TEST);
+
+    if (clickCooldown<=0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { 
+        clickCooldown = .25;
+        if (++pointerState > 2) pointerState = 0;
+        pointer->Transform.position.y = pointerPosition[pointerState];
+    }
+    if (clickCooldown<=0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        clickCooldown = .25;
+        if (--pointerState < 0) pointerState = 2;
+        pointer->Transform.position.y = pointerPosition[pointerState];
+    }
 
     // gdy klikniety esc to wywolaj zamkniecie okna
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && esc)
