@@ -75,6 +75,8 @@ public:
 
 	int AddStage(std::string file);
 	int AddStage(std::vector<float> vertecies, std::vector<unsigned int> indecies);
+
+	bool collisionCircle(glm::vec2 pos1, glm::vec2 pos2, float r1 = 5.0f, float r2 = 5.0f);
 private:
 	void UpdateVectors();
 
