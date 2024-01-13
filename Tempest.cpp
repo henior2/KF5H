@@ -26,36 +26,6 @@ namespace Tempest {
 		vec.push_back(a1);
 		vec.push_back(a1);
 	}
-
-	vec3 randspc(vec3 lpoint){ 
-		vec3 nextpoint;
-		nextpoint.z == 0;
-
-		if(lpoint.x >= 0 && lpoint.y >= 0)
-		{
-			nextpoint.x = lpoint.x + rand() % 2 + 4;
-			nextpoint.y = lpoint.y - rand() % 2 + 3;
-		}
-
-		else if (lpoint.x >= 0 && lpoint.y <= 0)
-		{
-			nextpoint.x = lpoint.x - rand() % 2 + 3;
-			nextpoint.y = lpoint.y - rand() % 2 + 4;
-		}
-
-		else if (lpoint.x <= 0 && lpoint.y <= 0)
-		{
-			nextpoint.x = lpoint.x + rand() % 2 + 4;
-			nextpoint.y = lpoint.y + rand() % 2 + 4;
-		}
-
-		else //lpoint.x <= 0 && lpoint.y >= 0 
-		{
-			nextpoint.x = lpoint.x + rand() % 2 + 4;
-			nextpoint.y = lpoint.y + rand() % 2 + 4;
-		}
-		return nextpoint;
-	}
 		
 	//const double M_PI = glm::pi<double>();
 
@@ -68,12 +38,11 @@ namespace Tempest {
 		std::vector<vec2> points;
 
 		int tunnelSidesNo;
-		
 		do { //dla ró¿norodnoœci
-			tunnelSidesNo = rand() % 7 + 5;
+			tunnelSidesNo = rand() % 5 + 5;
 		} while (tunnelSidesNo == lastTSN);
-	
-		int type; //do not touch :)
+		
+		int type;
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
 		else if (lvlDif < 71) type = 2;
@@ -84,18 +53,10 @@ namespace Tempest {
 		const float minOffset = -.2f;
 		const float tunnelRadius = 5.0f;
 		double help = -1; 
-		vec3 pointhelp(-1,-1,0);
-		vec3 lph(-1, -1, 0);
 
 		switch (type) { 
 		case 0:
-
-			/*
-			if (tunnelSidesNo % 3 == 0 && lastTSN % 3 == 0 && tunnelSidesNo / 3 > 2){}
-			else if (tunnelSidesNo % 4 == 0 && lastTSN % 2 == 0 && tunnelSidesNo / 4 > 2){}
-			else{}
-			*/
-
+			
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
 				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
@@ -131,59 +92,59 @@ namespace Tempest {
 					}
 				}
 			}
+
 			//still work in progress!!
-			for (int j = 0; j < 2; j++) {
-				for (int i = 0; i < points.size() * 2; i++) {
-					if (j) push_back2(id, i, i + points.size() * 2);
-					push_back2(id, i, i + 1);
-				}
-				id.pop_back();
-				id.push_back(points.size());
+			for (int j = 0; j < points.size() - 1 ; j++) {
+				push_back2(id, j, j + 1);
+				push_back2(id, j + points.size(), j + points.size() + 1);
+				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
 			}
+			push_back2(id, points.size() - 1, points.size() * 2 - 1);
+			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+
+			for (int j = 0; j < points.size() * 2; j++) {
+			
+			}
+
 			break;
 
-		case 2: //figury z dziur¹
+		case 2: //figury z dziur¹, do poprawy
 
-			/*help = (tunnelSidesNo/4)/2;//srodek na jednej osi x lub y
-
-			// 1 punkt
-			push_back3(v, help + 0.5, -help, 0);
-			lph.x = help + 0.5;
-			lph.y = -help;
-			push_back3(v, 0, 0, 1);
-		
-			help = rand() % tunnelSidesNo;
-
-			for (int i = 1; i < tunnelSidesNo; i++) {
-				pointhelp = randspc(lph);
-				push_back3(v,pointhelp.x,pointhelp.y,pointhelp.z);
-				push_back2(id, i - 1, i);
-				lph = pointhelp;
-			}
-			break
-*/
-			
-			help = rand() % tunnelSidesNo;
-
-			for (int i = 0; i < tunnelSidesNo; i++) {
+			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
 				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
 
-				points.push_back(vec2(radius * cos(angle), radius * sin(angle)));
+				points.push_back(vec2(radius * sin(angle), radius * cos(angle)));
 			}
-
-			for (int j = 0; j < 2; j++) {
-				for (int i = 0; i < points.size(); i++) {
-					if (j) push_back2(id, i, i + points.size()); //connections
-					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
-
-					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
-					push_back3(v, 0, 0, 1); //color (blue)
+			for (int k = 0; k < 2; k++) {
+				for (int j = 0; j < 2; j++) {
+					for (int i = 0; i < points.size(); i++) {
+						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
+						push_back3(v, 0, 0, 1); //color (blue)
+					}
 				}
-				id.pop_back();
-				id.push_back(points.size() * j);
 			}
-			push_back2(id, 0, points.size());
+		
+			break;
+
+		case 3: //do zmienienia kolory
+
+			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
+				double angle = 2 * M_PI * i / tunnelSidesNo;
+				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
+
+				points.push_back(vec2(radius * sin(angle), radius * cos(angle)));
+			}
+			for (int k = 0; k < 2; k++) {
+				for (int j = 0; j < 2; j++) {
+					for (int i = 0; i < points.size(); i++) {
+						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
+						push_back3(v, 0, 0, 1); //color (blue)
+					}
+				}
+			}
+
 			break;
 
 		default:
@@ -200,7 +161,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 60; //uwa¿aæ na to w przysz³oœci
+	lvlDif = 40; //uwa¿aæ na to w przysz³oœci, ma byc 1 lub 0
 	lastTSN = 0;
 
 	tunnel.clear();
