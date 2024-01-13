@@ -103,7 +103,7 @@ namespace Tempest {
 			push_back2(id, points.size() - 1, points.size() * 2 - 1);
 			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
 
-			for (int j = 0; j < points.size() * 2; j++) {
+			for (int j = 0; j < points.size() * 2; j++) {// tu dodac po³¹czenia, warunek chyba jest z³y
 			
 			}
 
