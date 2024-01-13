@@ -92,8 +92,7 @@ namespace Tempest {
 					}
 				}
 			}
-
-			
+			//conections
 			for (int j = 0; j < points.size() - 1 ; j++) {
 				push_back2(id, j, j + 1);
 				push_back2(id, j + points.size(), j + points.size() + 1);
@@ -106,7 +105,6 @@ namespace Tempest {
 			for (int i = 0; i < points.size() * 2; i++) {
 				push_back2(id, i, i + points.size() * 2);
 			}
-
 			break;
 
 		case 2: //figury z dziur¹, do poprawy
@@ -124,6 +122,19 @@ namespace Tempest {
 						push_back3(v, 0, 0, 1); //color (blue)
 					}
 				}
+			}
+			//conections
+			for (int j = 0; j < points.size() - 1; j++) {
+				push_back2(id, j, j + 1);
+				push_back2(id, j + points.size(), j + points.size() + 1);
+				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+			}
+			push_back2(id, points.size() - 1, points.size() * 2 - 1);
+			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+
+			for (int i = 0; i < points.size() * 2; i++) {
+				push_back2(id, i, i + points.size() * 2);
 			}
 		
 			break;
@@ -143,6 +154,19 @@ namespace Tempest {
 						push_back3(v, 0, 0, 1); //color (blue)
 					}
 				}
+			}
+			//conections
+			for (int j = 0; j < points.size() - 1; j++) {
+				push_back2(id, j, j + 1);
+				push_back2(id, j + points.size(), j + points.size() + 1);
+				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+			}
+			push_back2(id, points.size() - 1, points.size() * 2 - 1);
+			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+
+			for (int i = 0; i < points.size() * 2; i++) {
+				push_back2(id, i, i + points.size() * 2);
 			}
 
 			break;
