@@ -45,14 +45,20 @@ namespace Tempest {
 		int type;
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) type = 1;
-		else if (lvlDif < 71) type = 2;
+		else if (lvlDif < 90) type = 2;
 		else if (lvlDif < 100) type = 3;
 		else type = rand() % 3;
 
 		float maxOffset = .3f; //[%]
 		float minOffset = -.2f;
 		float tunnelRadius = 5.0f;
-		vec3 help(-1, -1, -1); 
+
+		vec3 help;
+		do {
+			help.x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			help.y = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			help.z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		} while(help.x == 0 && help.y == 0 && help.z == 0);
 
 		switch (type) { 
 		case 0:
@@ -69,7 +75,8 @@ namespace Tempest {
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
 					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
-					push_back3(v, 0, 0, 1); //color (blue)
+					if (lvlDif < 71) push_back3(v, help.x, help.y, help.z);
+					else push_back3(v, 0, 0, 1); //color (blue)
 				}
 				id.pop_back();
 				id.push_back(points.size() * j);
@@ -88,7 +95,8 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 0, 0, 1); //color (blue)
+						if (lvlDif < 71) push_back3(v, help.x, help.y, help.z);
+						else push_back3(v, 0, 0, 1); //color (blue)
 					}
 				}
 			}
@@ -118,8 +126,9 @@ namespace Tempest {
 			for (int k = 0; k < 2; k++) {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
-						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 0, 0, 1); //color (blue)
+						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //point
+						if (lvlDif < 71) push_back3(v, help.x, help.y, help.z);
+						else push_back3(v, 0, 0, 1); //color (blue)
 					}
 				}
 			}
@@ -130,6 +139,7 @@ namespace Tempest {
 			for (int j = 0; j < points.size() - 1 ; j++) {
 				if ( j != help.x ) push_back2(id, j, j + 1);
 				if( j + points.size() != help.x ) push_back2(id, j + points.size(), j + points.size() + 1);
+
 				if ( j + points.size() * 2 != help.x ) push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
 				if (j + points.size() * 3 != help.x) push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
 			}
@@ -143,7 +153,7 @@ namespace Tempest {
 		
 			break;
 
-		case 3: //do zmienienia kolory
+		case 3: //niewidzialne
 
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -155,11 +165,11 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 1, 1, 1); //color (black) - zmieniæ!!!
+						push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 					}
 				}
 			}
-			//conections, przekopiowaæ z poprzedniego
+			//conections, przekopiowaæ z poprzedniego jak bedzie gotowy
 			for (int j = 0; j < points.size() - 1; j++) {
 				push_back2(id, j, j + 1);
 				push_back2(id, j + points.size(), j + points.size() + 1);
