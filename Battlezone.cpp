@@ -317,16 +317,29 @@ namespace Battlezone {
 		ind.pop_back();
 		ind.push_back(0);
 
+		int countingOffset = mountainNumber * 2;
 		for (int i = 0; i < moonPointsNumber; i++) {
 			double angle = 2 * PI * i / moonPointsNumber;
 
 			push_back3(vx, moonRadius * cos(angle), moonAboveMountains + maxMountainHeight + moonRadius * sin(angle), distance);
 			push_back3(vx, 0, 1, 0);
 
-			push_back2(ind, mountainNumber * 2 + i, mountainNumber * 2 + i + 1);
+			push_back2(ind, countingOffset + i, countingOffset + i + 1);
 		}
 		ind.pop_back();
-		ind.push_back(mountainNumber * 2);
+		ind.push_back(countingOffset);
+
+		countingOffset += moonPointsNumber;
+		for (int i = 0; i < mountainNumber * 2; i++) {
+			double angle = PI * i / mountainNumber;
+
+			push_back3(vx, distance * cos(angle), 0, distance * sin(angle));
+			push_back3(vx, 0, 1, 0);
+
+			push_back2(ind, countingOffset + i, countingOffset + i + 1);
+		}
+		ind.pop_back();
+		ind.push_back(countingOffset);
 
 		horizon = Gra->Create(vec3(0), vec3(0), vec3(1), vx, ind);
 	}
