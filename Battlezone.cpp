@@ -245,7 +245,7 @@ namespace Battlezone {
 			targetOri.push_back(vec3(0.0f));
 		}
 
-		// kamil forgor 💀
+		// kamil forgor 💀 //stfu
 		auto* current = radarElements.back();
 			current->Stage[0].onTop = true;
 			current->ScaleTo(vec3(uiScale * 9, uiScale * 16, 0));

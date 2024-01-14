@@ -14,6 +14,7 @@ namespace Menu {
     bool esc = false;
 
     const float pointerPosition[] = { -.05,-.25,-.45 };
+    const GameState gameStates[] = { Game_Asteroids,Game_Battlezone,Game_Tempest };
     int pointerState;
 
     float clickCooldown;
@@ -91,6 +92,10 @@ void Game::Menu(float dt) {
         clickCooldown = .25;
         if (--pointerState < 0) pointerState = 2;
         pointer->Transform.position.y = pointerPosition[pointerState];
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        ChangeState(gameStates[pointerState]);
     }
 
     // gdy klikniety esc to wywolaj zamkniecie okna

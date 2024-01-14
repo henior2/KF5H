@@ -15,9 +15,9 @@
 enum GameState {
 	Game_Init,
 	Game_Menu,
+	Game_Asteroids,
 	Game_Battlezone,
 	Game_Tempest,
-	Game_Asteroids,
 	Game_TEST
 };
 
