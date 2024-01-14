@@ -49,10 +49,10 @@ namespace Tempest {
 		else if (lvlDif < 100) type = 3;
 		else type = rand() % 3;
 
-		const float maxOffset = .3f; //[%]
-		const float minOffset = -.2f;
-		const float tunnelRadius = 5.0f;
-		double help = -1; 
+		float maxOffset = .3f; //[%]
+		float minOffset = -.2f;
+		float tunnelRadius = 5.0f;
+		vec3 help(-1, -1, -1); 
 
 		switch (type) { 
 		case 0:
@@ -123,15 +123,18 @@ namespace Tempest {
 					}
 				}
 			}
+
+			help.x = rand() % points.size() * 2;
+
 			//conections
 			for (int j = 0; j < points.size() - 1; j++) {
-				push_back2(id, j, j + 1);
-				push_back2(id, j + points.size(), j + points.size() + 1);
-				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
-				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+				if ( j != help.x ) push_back2(id, j, j + 1);
+				if( j + points.size() != help.x ) push_back2(id, j + points.size(), j + points.size() + 1);
+				if ( j + points.size() * 2 != help.x ) push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+				if (j + points.size() * 3 != help.x) push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
 			}
-			push_back2(id, points.size() - 1, points.size() * 2 - 1);
-			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+			if (points.size() - 1 != help.x && points.size() * 2 - 1 != help.x) push_back2(id, points.size() - 1, points.size() * 2 - 1);
+			if (points.size() * 3 - 1 != help.x && points.size() * 4 - 1 - 1 != help.x) push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
 
 			for (int i = 0; i < points.size() * 2; i++) {
 				push_back2(id, i, i + points.size() * 2);
@@ -151,7 +154,7 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 0, 0, 1); //color (blue)
+						push_back3(v, 1, 1, 1); //color (black)
 					}
 				}
 			}
@@ -185,7 +188,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 40; //uwa¿aæ na to w przysz³oœci, ma byc 1 lub 0
+	lvlDif = 70; //uwa¿aæ na to w przysz³oœci, ma byc 1 lub 0
 	lastTSN = 0;
 
 	tunnel.clear();
