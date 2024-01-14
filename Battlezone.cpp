@@ -6,6 +6,25 @@ namespace Battlezone {
 	const double PI = glm::pi<double>();
 	bool flag = false;
 
+	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
+		vec.push_back(a1);
+		vec.push_back(a2);
+		vec.push_back(a3);
+	}
+	void push_back3(std::vector<float>& vec, float a1) {
+		vec.push_back(a1);
+		vec.push_back(a1);
+		vec.push_back(a1);
+	}
+	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
+		vec.push_back(a1);
+		vec.push_back(a2);
+	}
+	void push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
+		vec.push_back(a1);
+		vec.push_back(a1);
+	}
+
 	const float mapSize = 125; //from the middle, so 125 <=> 250x250
 	const float maxOutOfBoundsDistance = 25;
 	float glitchEffectRefreshRate = .1f;
@@ -264,6 +283,54 @@ namespace Battlezone {
 	vec2 planeStartCoords = vec2(-1000,-1000);
 	const float planeBounds = 175.0f;
 
+	GameObject* horizon;
+
+	void makeHorizon() {
+		std::vector<float> vx;
+		std::vector<unsigned int> ind;
+
+		const float distance = 60.0f;
+		const float maxMountainHeight = 12.5f;
+		const float minMountainHeight = 5.0f;
+		const int mountainNumber = 15;
+
+		const int moonPointsNumber = 10;
+		const float moonRadius = 2.5f;
+		const float moonAboveMountains = 5.0f; //how high the moon is above the mountains
+
+		for (int i = 0; i < mountainNumber; i++) {
+			double angle = 2 * PI * i / mountainNumber;
+			double nextAngle = 2 * PI * (i + 1) / mountainNumber;
+			
+			float yPos = minMountainHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxMountainHeight - minMountainHeight)));
+			push_back3(vx, distance * cos(angle), yPos, distance * sin(angle));
+			push_back3(vx, 0, 1, 0);
+
+			yPos = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / minMountainHeight));
+			float randAngle = angle + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (nextAngle - angle)));
+			push_back3(vx, distance * cos(randAngle), yPos, distance * sin(randAngle));
+			push_back3(vx, 0, 1, 0);
+
+			push_back2(ind, 2 * i, 2 * i + 1);
+			push_back2(ind, 2 * i + 1, 2 * i + 2);
+		}
+		ind.pop_back();
+		ind.push_back(0);
+
+		for (int i = 0; i < moonPointsNumber; i++) {
+			double angle = 2 * PI * i / moonPointsNumber;
+
+			push_back3(vx, moonRadius * cos(angle), moonAboveMountains + maxMountainHeight + moonRadius * sin(angle), distance);
+			push_back3(vx, 0, 1, 0);
+
+			push_back2(ind, mountainNumber * 2 + i, mountainNumber * 2 + i + 1);
+		}
+		ind.pop_back();
+		ind.push_back(mountainNumber * 2);
+
+		horizon = Gra->Create(vec3(0), vec3(0), vec3(1), vx, ind);
+	}
+
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
 		std::vector<unsigned int> ind;
@@ -347,25 +414,6 @@ namespace Battlezone {
 		uiElements.push_back(rPointer);
 		targetPos.push_back(vec3(0.0f));
 		targetOri.push_back(vec3(0.0f));
-	}
-
-	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
-		vec.push_back(a1);
-		vec.push_back(a2);
-		vec.push_back(a3);
-	}
-	void push_back3(std::vector<float>& vec, float a1) {
-		vec.push_back(a1);
-		vec.push_back(a1);
-		vec.push_back(a1);
-	}
-	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
-		vec.push_back(a1);
-		vec.push_back(a2);
-	}
-	void push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
-		vec.push_back(a1);
-		vec.push_back(a1);
 	}
 
 	const float pUScale = 1.15f;
@@ -545,6 +593,7 @@ void Game::BattlezoneInit() {
 	}
 
 	randomActionTimeLimit.clear();
+	makeHorizon();
 }
 
 void Game::Battlezone(float dt) {
@@ -635,6 +684,10 @@ void Game::Battlezone(float dt) {
 		else
 			bulletsFired = 0;
 	}
+
+	//moving the horizon
+	horizon->MoveTo(pPos);
+
 	//spawning the enemies
 	float temp_x = rand() % 51 - 25;
 	float temp_z = rand() % 51 - 25;
