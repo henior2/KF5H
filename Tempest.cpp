@@ -49,7 +49,7 @@ namespace Tempest {
 		else if (lvlDif < 100) type = 3;
 		else type = rand() % 3;
 
-		float maxOffset = .3f; //[%]
+		float maxOffset = .2f; //[%]
 		float minOffset = -.2f;
 		float tunnelRadius = 5.0f;
 
