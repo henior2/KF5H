@@ -127,12 +127,13 @@ namespace Tempest {
 			help.x = rand() % points.size() * 2;
 
 			//conections
-			for (int j = 0; j < points.size() - 1; j++) {
+			for (int j = 0; j < points.size() - 1 ; j++) {
 				if ( j != help.x ) push_back2(id, j, j + 1);
 				if( j + points.size() != help.x ) push_back2(id, j + points.size(), j + points.size() + 1);
 				if ( j + points.size() * 2 != help.x ) push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
 				if (j + points.size() * 3 != help.x) push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
 			}
+
 			if (points.size() - 1 != help.x && points.size() * 2 - 1 != help.x) push_back2(id, points.size() - 1, points.size() * 2 - 1);
 			if (points.size() * 3 - 1 != help.x && points.size() * 4 - 1 - 1 != help.x) push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
 
@@ -154,11 +155,11 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 1, 1, 1); //color (black)
+						push_back3(v, 1, 1, 1); //color (black) - zmieniæ!!!
 					}
 				}
 			}
-			//conections
+			//conections, przekopiowaæ z poprzedniego
 			for (int j = 0; j < points.size() - 1; j++) {
 				push_back2(id, j, j + 1);
 				push_back2(id, j + points.size(), j + points.size() + 1);
