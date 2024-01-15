@@ -137,15 +137,21 @@ namespace Tempest {
 
 			//conections
 			for (int j = 0; j < points.size() - 1 ; j++) {
-				if ( j != help.x ) push_back2(id, j, j + 1);
-				if( j + points.size() != help.x ) push_back2(id, j + points.size(), j + points.size() + 1);
+				if (j != help.x) {
+					push_back2(id, j, j + 1);
+					push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+				}
 
-				if ( j + points.size() * 2 != help.x ) push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
-				if (j + points.size() * 3 != help.x) push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+				if (j + points.size() != help.x) {
+					push_back2(id, j + points.size(), j + points.size() + 1);
+					push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+				}
 			}
 
-			if (points.size() - 1 != help.x && points.size() * 2 - 1 != help.x) push_back2(id, points.size() - 1, points.size() * 2 - 1);
-			if (points.size() * 3 - 1 != help.x && points.size() * 4 - 1 - 1 != help.x) push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+			if (points.size() - 1 != help.x && points.size() * 2 - 1 != help.x) {
+				push_back2(id, points.size() - 1, points.size() * 2 - 1);
+				push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+			}
 
 			for (int i = 0; i < points.size() * 2; i++) {
 				push_back2(id, i, i + points.size() * 2);
@@ -169,7 +175,7 @@ namespace Tempest {
 					}
 				}
 			}
-			//conections, przekopiowaæ z poprzedniego jak bedzie gotowy
+			//conections
 			for (int j = 0; j < points.size() - 1; j++) {
 				push_back2(id, j, j + 1);
 				push_back2(id, j + points.size(), j + points.size() + 1);
