@@ -85,7 +85,7 @@ namespace Tempest {
 					if (j) push_back2(id, i, i + points.size()); //connections
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
-					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
+					push_back3(v, points[i].x, points[i].y, -16.5f * (j + 1) + 2); //points
 					if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
 					else push_back3(v, 0, 0, 1); //color (blue)
 				}
@@ -105,7 +105,7 @@ namespace Tempest {
 			for (int k = 0; k < 2; k++) {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
-						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
+						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2); //points
 						if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 						else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
 						else push_back3(v, 0, 0, 1); //color (blue)
