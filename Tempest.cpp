@@ -26,37 +26,54 @@ namespace Tempest {
 		vec.push_back(a1);
 		vec.push_back(a1);
 	}
-		
-	//const double M_PI = glm::pi<double>();
 
 	int lvlDif;
 	std::vector <GameObject*> tunnel;
 
-	void tunelspawn(int lvlDif,int &lastTSN ) { 
+	void tunelspawn(int lvlDif, int& lastTSN) {
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
 
 		int tunnelSidesNo;
-		do { //dla ró¿norodnoœci
+		do {
 			tunnelSidesNo = rand() % 5 + 5;
 		} while (tunnelSidesNo == lastTSN);
-		
+
 		int type;
+		int type2;
 		if (lvlDif < 21) type = 0;
-		else if (lvlDif < 51) type = 1;
-		else if (lvlDif < 71) type = 2;
-		else if (lvlDif < 100) type = 3;
-		else type = rand() % 3;
+		else if (lvlDif < 51) {
+			type = 1;
+			type2 = 0;
+		}
+		else if (lvlDif < 90) {
+			type = 1;
+			type2 = 1;
+		}
+		else if (lvlDif < 100) {
+			type = 1;
+			type2 = rand() % 1;
+		}
+		else {
+			type = rand() % 1;
+			type2 = rand() % 1;
+		}
 
-		const float maxOffset = .3f; //[%]
-		const float minOffset = -.2f;
-		const float tunnelRadius = 5.0f;
-		double help = -1; 
+		float maxOffset = .2f; //[%]
+		float minOffset = -.2f;
+		float tunnelRadius = 5.0f;
 
-		switch (type) { 
+		vec3 help;
+		do {
+			help.x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			help.y = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			help.z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		} while (help.x == 0 && help.y == 0 && help.z == 0);
+
+		switch (type) {
 		case 0:
-			
+
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
 				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
@@ -68,8 +85,9 @@ namespace Tempest {
 					if (j) push_back2(id, i, i + points.size()); //connections
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
-					push_back3(v, points[i].x, points[i].y, -12.5f * (j + 1)); //points
-					push_back3(v, 0, 0, 1); //color (blue)
+					push_back3(v, points[i].x, points[i].y, -16.5f * (j + 1) + 2); //points
+					if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
+					else push_back3(v, 0, 0, 1); //color (blue)
 				}
 				id.pop_back();
 				id.push_back(points.size() * j);
@@ -87,105 +105,66 @@ namespace Tempest {
 			for (int k = 0; k < 2; k++) {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
-						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 0, 0, 1); //color (blue)
+						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2); //points
+						if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
+						else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
+						else push_back3(v, 0, 0, 1); //color (blue)
 					}
 				}
 			}
 			//conections
-			for (int j = 0; j < points.size() - 1 ; j++) {
-				push_back2(id, j, j + 1);
-				push_back2(id, j + points.size(), j + points.size() + 1);
-				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
-				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+			if (type2 == 0) {//without hole
+				for (int j = 0; j < points.size() - 1; j++) {
+					push_back2(id, j, j + 1);
+					push_back2(id, j + points.size(), j + points.size() + 1);
+					push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+					push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
+				}
+				push_back2(id, points.size() - 1, points.size() * 2 - 1);
+				push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
 			}
-			push_back2(id, points.size() - 1, points.size() * 2 - 1);
-			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
+			else {//with hole
+				help.x = rand() % points.size() * 2;
 
-			for (int i = 0; i < points.size() * 2; i++) {
-				push_back2(id, i, i + points.size() * 2);
-			}
-			break;
+				for (int j = 0; j < points.size() - 1; j++) {
+					if (j != help.x) {
+						push_back2(id, j, j + 1);
+						push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
+					}
 
-		case 2: //figury z dziur¹, do poprawy
-
-			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
-				double angle = 2 * M_PI * i / tunnelSidesNo;
-				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
-
-				points.push_back(vec2(radius * sin(angle), radius * cos(angle)));
-			}
-			for (int k = 0; k < 2; k++) {
-				for (int j = 0; j < 2; j++) {
-					for (int i = 0; i < points.size(); i++) {
-						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 0, 0, 1); //color (blue)
+					if (j + points.size() != help.x) {
+						push_back2(id, j + points.size(), j + points.size() + 1);
+						push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
 					}
 				}
-			}
-			//conections
-			for (int j = 0; j < points.size() - 1; j++) {
-				push_back2(id, j, j + 1);
-				push_back2(id, j + points.size(), j + points.size() + 1);
-				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
-				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
-			}
-			push_back2(id, points.size() - 1, points.size() * 2 - 1);
-			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
 
-			for (int i = 0; i < points.size() * 2; i++) {
-				push_back2(id, i, i + points.size() * 2);
-			}
-		
-			break;
-
-		case 3: //do zmienienia kolory
-
-			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
-				double angle = 2 * M_PI * i / tunnelSidesNo;
-				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
-
-				points.push_back(vec2(radius * sin(angle), radius * cos(angle)));
-			}
-			for (int k = 0; k < 2; k++) {
-				for (int j = 0; j < 2; j++) {
-					for (int i = 0; i < points.size(); i++) {
-						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -12.5f * (k + 1)); //points
-						push_back3(v, 0, 0, 1); //color (blue)
-					}
+				if (points.size() - 1 != help.x && points.size() * 2 - 1 != help.x) {
+					push_back2(id, points.size() - 1, points.size() * 2 - 1);
+					push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
 				}
 			}
-			//conections
-			for (int j = 0; j < points.size() - 1; j++) {
-				push_back2(id, j, j + 1);
-				push_back2(id, j + points.size(), j + points.size() + 1);
-				push_back2(id, j + points.size() * 2, j + points.size() * 2 + 1);
-				push_back2(id, j + points.size() * 3, j + points.size() * 3 + 1);
-			}
-			push_back2(id, points.size() - 1, points.size() * 2 - 1);
-			push_back2(id, points.size() * 3 - 1, points.size() * 4 - 1);
-
+			//conection between rings
 			for (int i = 0; i < points.size() * 2; i++) {
 				push_back2(id, i, i + points.size() * 2);
 			}
-
-			break;
+				break;
 
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
+			}
+
+			lastTSN = tunnelSidesNo;
+			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
 
-		lastTSN = tunnelSidesNo;
-		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 	}
 
-}
 using namespace Tempest;
 
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 40; //uwa¿aæ na to w przysz³oœci, ma byc 1 lub 0
+	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 1 lub 0
 	lastTSN = 0;
 
 	tunnel.clear();
@@ -196,7 +175,7 @@ void Game::Tempest(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
-
+		lvlDif++;
 		if (!tunnel.empty()) {
 			for (auto& c : tunnel) {
 				Destroy(c);
