@@ -77,10 +77,6 @@ void Game::Menu(float dt) {
         }
     }
 
-    //todo: add that clicking on the UI does something. easy
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) ChangeState(Game_Asteroids);
-    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) ChangeState(Game_Battlezone);
-    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) ChangeState(Game_Tempest);
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) ChangeState(Game_TEST);
 
     if (clickCooldown<=0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { 

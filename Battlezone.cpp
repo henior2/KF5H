@@ -69,7 +69,13 @@ namespace Battlezone {
 	std::vector<GameObject*> radarElements;
 	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 
-	std::vector<float> randomActionTimeLimit;
+	std::vector<float> randomActionTimeLimit; //indicates how much time of performing the random action is left
+	std::vector<float> randomActionTimeCooldown; //indicates how much time is left until performing a random action  
+	std::vector<int> randomActionType; //0 - none, 1 - left, 2 - right, 3 - forward, 4 - stop
+
+	const float maxRandomActionLimit = 5.0f;
+	const float maxRandomActionCooldown = 25.0f;
+	const float rotationsPerSecond = .15f;
 
 	const float rPointerScaleDefault = .1f;
 	const float rPointerScaleBig = .15f;
@@ -193,16 +199,6 @@ namespace Battlezone {
 		}
 	}
 
-	void random_action(GameObject* enemy, float dt, int i) {
-		if (i == 0) {
-			enemy->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
-		}
-
-		else {
-			enemy->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
-		}
-	}
-
 	void spawn_enemy(vec3 pos, vec3 rot, Game* Gra, int type) {
 		if (type == 1) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
@@ -252,7 +248,9 @@ namespace Battlezone {
 			current->MoveTo(vec3(0, uiYOffset, 0));
 			current->Rotate(vec3(0, 180, 0));
 
-		randomActionTimeLimit.push_back(2.0f);
+		randomActionTimeLimit.push_back(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionLimit))); //x∈Q: [0;mRAL]
+		randomActionTimeCooldown.push_back(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionCooldown))); //x∈Q: [0;mRAC]
+		randomActionType.push_back(0);
 	}
 
 	const float camFrontOffset = -2.5f;
@@ -466,7 +464,7 @@ namespace Battlezone {
 	const float pUdYoTU = pUowYOffset / (.25f * fullRotationTime); //at least im aware that i suck at naming things
 	float currentPUdYoTU = pUdYoTU; //...
 
-	// bro AT LEAST LEAVE A COMMENT 😫
+	// bro AT LEAST LEAVE A COMMENT 😫 //nuh
 }
 using namespace Battlezone;
 
@@ -606,6 +604,8 @@ void Game::BattlezoneInit() {
 	}
 
 	randomActionTimeLimit.clear();
+	randomActionTimeCooldown.clear();
+	randomActionType.clear();
 	makeHorizon();
 }
 
@@ -727,38 +727,51 @@ void Game::Battlezone(float dt) {
 			vec3 direction = normalize(pPos - enemyPos);
 			vec3 distance = pPos - enemyPos;
 
-			//rotaing the enemies
-			if (!randomActionTimeLimit.empty()) {
+			//random actions
+			randomActionTimeCooldown[i] -= dt;
+			if (randomActionTimeCooldown[i] <= 0) {
+				if(!randomActionType[i]) randomActionType[i] = rand() % 4 + 1;
 				randomActionTimeLimit[i] -= dt;
-				if (randomActionTimeLimit[i] > 0 && rand() % 10000 == 0)
-					flag = true;
-			}
-			if (flag){
-				int type = rand() % 2;
-				random_action(current, dt,type);
-			}
-			else {
-
-				float _angle;
-				_angle = atan2(direction.x, direction.z);
-				_angle = _angle * 180.0f / PI;
-
-				current->RotateTo(vec3(0.0f, _angle, 0.0f));
-
-				if (int temp = distance.x * distance.x + distance.z * distance.z > 225) {
-					float _sM = fast_tank_speed;
-					if (enemyType[i] != 2) _sM = tank_speed;
-					current->MoveGlobal(direction * dt * _sM);
-					if (enemyShotCooldowns[i] <= 0) {
-						enemyShoot(current, this);
-						enemyShotCooldowns[i] = 4.0;
-					}
+				if (randomActionTimeLimit[i] <= 0) {
+					randomActionTimeCooldown[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionCooldown));
+					randomActionTimeLimit[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionLimit));
+					randomActionType[i] = 0;
 				}
-				else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
+			}  
+
+			// calculating rotation angle 
+			float _angle;
+			switch (randomActionType[i]) {
+			case 0:
+				_angle = 0;
+				current->RotateTo(vec3(0.0f, atan2(direction.x, direction.z) * 180.0f / PI, 0.0f));
+				break;
+			case 1:
+				_angle = -360.0f * rotationsPerSecond * dt; // -360deg * 0.5 = 180deg to the left each second (2s/full rotation)
+				break;
+			case 2:
+				_angle = 360.0f * rotationsPerSecond * dt; // 360deg * 0.5 = 180deg to the right each second
+				break;
+			default:
+				_angle = 0; // for 3 and 4 - no rotation
+			}
+
+			current->Rotate(vec3(0, _angle, 0));
+
+			// bro what xDD
+			// i'd assume that this is supposed to move the tanks, rigth?
+			if (distance.x * distance.x + distance.z * distance.z > 225 && !randomActionType[i] || randomActionType[i] == 3) { //move only for case 0 or 3
+				float _sM = fast_tank_speed;
+				if (enemyType[i] != 2) _sM = tank_speed;
+				current->MoveGlobal(direction * dt * _sM);
+				if (enemyShotCooldowns[i] <= 0) {
 					enemyShoot(current, this);
 					enemyShotCooldowns[i] = 4.0;
 				}
-
+			}
+			else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
+				enemyShoot(current, this);
+				enemyShotCooldowns[i] = 4.0;
 			}
 		}
 	}
