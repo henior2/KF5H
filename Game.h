@@ -83,7 +83,7 @@ public:
 	void TempestInit();
 
 	void Asteroids(float dt);
-	void AsteroidsInit();
+	void AsteroidsInit(bool again=false);
 
 	void TEST(float dt);
 	void TESTInit();
