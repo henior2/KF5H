@@ -1,4 +1,4 @@
-
+﻿
 #include "Game.h"
 
 #define pi 3.14159265359
@@ -14,7 +14,11 @@ namespace Asteroids {
 
 	bool isDead = false;
 	std::vector<GameObject*> debris;
+	std::vector<vec2> debrisDirection;
+	std::vector<vec2> debrisRotation;
 	float respawnCooldown = 5.0f;
+	const float debrisSpeedMultiplier = 10.0f;
+	const float maxDebrisRotationMultiplier = 2.5f;
 
 	const int camW = 160;
 	const int camH = 90;
@@ -276,13 +280,13 @@ namespace Asteroids {
 
 	vec2 pPos;
 	//please ignore how messy this code is, i was tired
-	void death(bool tp = false, std::vector<unsigned int> _ind = std::vector<unsigned int>{}, std::vector<glm::vec2> _vx = std::vector<glm::vec2>{}, vec3 _pos = vec3(pPos,0)) {
+	void death(bool tp = false, vec3 _pos = ship->Transform.position, vec3 _rot = ship->Transform.orientation) {
 		isDead = true;
-		std::vector<vec2> vxs = breakIntoPieces(_ind,_vx);
+		std::vector<vec2> vxs = breakIntoPieces();
 		ship->MoveTo(vec3(-10000, -10000, 0));
 		int random = rand() % (int)(vxs.size() * .8);
 		int size = vxs.size();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size/2; i++) {
 			std::vector<float> vx1;
 			int it = 1;
 			if (rand() % size < random) it = 2;
@@ -290,11 +294,21 @@ namespace Asteroids {
 			for (int k = 0; k < it; k++) {
 				vx1.clear();
 				for (int j = 0; j < 2; j++) {
-					vx1.push_back(vxs[i * 2 + j + k].x); vx1.push_back(vxs[i * 2 + j + k].y); vx1.push_back(-80);
+					vx1.push_back(vxs[i * 2 + j + k].x); vx1.push_back(vxs[i * 2 + j + k].y); vx1.push_back(0);
 					vx1.push_back(1); vx1.push_back(1); vx1.push_back(1);
 				}
-				debris.push_back(Gra->Create(_pos, vec3(0), vec3(5), vx1, std::vector<unsigned int>{0, 1}));
+				debris.push_back(Gra->Create(_pos, _rot, vec3(5), vx1, std::vector<unsigned int>{0, 1}));
 			}
+		}
+		for (int i = 0; i < debris.size(); i++) {
+			debrisDirection.push_back(vec2(-1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))))); //x∈Q:[-1;1]
+			debrisRotation.push_back(vec2(-maxDebrisRotationMultiplier + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * maxDebrisRotationMultiplier)))));
+		}
+	}
+
+	void clearVec(std::vector<GameObject*>& vec) {
+		for (auto& obj : vec) {
+			Gra->Destroy(obj);
 		}
 	}
 };
@@ -307,8 +321,9 @@ void Game::AsteroidsInit(bool again) {
 		ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
 		modelShipFire = ship->AddStage("AsteroidsShipFire");
 	}
+	ship->MoveTo(vec3(0,0,-80));
+	ship->RotateTo(vec3(0));
 	isDead = false;
-	debris.clear();
 	respawnCooldown = 5.0f;
 
 	velocity = vec2(0.0f);
@@ -329,8 +344,11 @@ void Game::AsteroidsInit(bool again) {
 	}
 
 	_asteroidsNo = 4;
-	score = 0;
-	lives = 3;
+	lives--;
+	if (!again) {
+		score = 0;
+		lives = 3;
+	}
 
 	_return = 0;
 
@@ -342,10 +360,17 @@ void Game::AsteroidsInit(bool again) {
 
 	bigEnemyIterator = 0;
 
+	if (again) {
+		clearVec(asteroids); clearVec(bullets); clearVec(enemies);
+	}
+
 	asteroids.clear();
 	enemies.clear();
 	bullets.clear();
-	stars.clear();
+	if (!again) {
+		stars.clear();
+		debris.clear();
+	}
 
 	bulletTimeRemain.clear();
 	isBulletPlayers.clear();
@@ -355,6 +380,7 @@ void Game::AsteroidsInit(bool again) {
 	enemyType.clear();
 	enemyShootCooldown.clear();
 	eBDPos.clear();
+	debrisDirection.clear();
 
 	if (!again) {
 		for (int i = 0; i < starsAmount; i++) {
@@ -373,7 +399,7 @@ void Game::Asteroids(float dt) {
 
 	bigEnemyIterator = 0;
 
-	if (!isDead && glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+	if (!isDead && (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)) {
 		vec2 shipUp = ship->Up;
 
 		velocity += acceleration * dt * vec2(shipUp.x, shipUp.y);
@@ -394,9 +420,9 @@ void Game::Asteroids(float dt) {
 			}
 		}
 		
-		for (int i = 0; i < starsAmount; i++) {
-			stars[i]->MoveGlobal(vec3(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
-			checkBounds(stars[i], vec2(160, 90));
+		for (auto& star : stars) {
+			star->MoveGlobal(vec3(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
+			checkBounds(star, vec2(160, 90));
 		}
 	}
 	else {
@@ -406,10 +432,10 @@ void Game::Asteroids(float dt) {
 
 		ship->activeStage = 0;
 	}
-	if (!isDead && glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	if (!isDead && (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)) {
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
 	}
-	if (!isDead && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	if (!isDead && (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)) {
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
 	}
 
@@ -635,6 +661,14 @@ void Game::Asteroids(float dt) {
 
 	if (isDead) {
 		respawnCooldown -= dt;
-		if (respawnCooldown <= 0) AsteroidsInit(true);
+		for (int i = 0; i < debris.size();i++) {
+			debris[i]->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
+			debris[i]->Rotate(vec3(debrisRotation[i],0) * dt);
+		}
+		if (respawnCooldown <= 0) {
+			AsteroidsInit(true);
+			clearVec(debris);
+			debris.clear();
+		}
 	}
 }
