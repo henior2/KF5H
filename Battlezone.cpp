@@ -6,6 +6,7 @@ namespace Battlezone {
 	const double PI = glm::pi<double>();
 	bool flag = false;
 	int lives = 3;
+	float damageCooldown = 1.5f;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -97,7 +98,7 @@ namespace Battlezone {
 	std::vector<float> enemyShotCooldowns;
 
 	const float bulletMaxTime = 4.0f;
-	const float bulletSpeed = 28.0f;
+	const float bulletSpeed = 8.0f;
 
 	void shot_fast(vec3 pos, vec3 rot, Game* Gra) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
@@ -205,7 +206,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(2.0f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarX");
 			radarElements.push_back(rPointer);
@@ -218,7 +219,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(2.0f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleBig), "RadarX");
 			radarElements.push_back(rPointer);
@@ -231,7 +232,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(2.0f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
 			rPointer->color = vec3(0, 1, 0);
@@ -245,7 +246,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(2.0f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
 			rPointer->color = vec3(0, 1, 0);
@@ -638,6 +639,7 @@ void Game::Battlezone(float dt) {
 	}
 	resp_cool -= dt;
 	shot_cool -= dt;
+	damageCooldown -= dt;
 
 	rtp += dt;
 	if (rtp >= fullRotationTime) rtp = 0;
@@ -706,6 +708,17 @@ void Game::Battlezone(float dt) {
 				continue;
 			}
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+			if(damageCooldown<=0){
+				if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z))) {
+					if (lives > 1) {
+						lives -= 1;
+					}
+					else {
+						CreateTekst(vec2(-.4, 0), 0, vec2(0.06), 2, 1, "UMARLES");
+						damageCooldown = 1.5f;
+					}
+				}
+			}
 
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
@@ -762,13 +775,15 @@ void Game::Battlezone(float dt) {
 					randomActionType[i] = 0;
 				}
 			}  
-
-			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z))) {
-				if (lives > 1) {
-					lives -= 1;
-				}
-				else {
-					CreateTekst(vec2(0, 0), 0, vec2(0.1), 2, 1, "UMARLES");
+			if(damageCooldown<=0){
+				if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z))) {
+					if (lives > 1) {
+						lives -= 1;
+					}
+					else {
+						CreateTekst(vec2(-.4, 0), 0, vec2(0.06), 2, 1, "UMARLES");
+						damageCooldown = 1.5f;
+					}
 				}
 			}
 
