@@ -928,7 +928,7 @@ void Game::Battlezone(float dt) {
 		//dx = (dx / mapSize) * radarRadius / radarRange;
 		//dz = (dz / mapSize) * radarRadius / radarRange;
 
-		/*dx /= 50;
+		dx /= 50;
 		dz /= 50;
 
 		float dist = dx * dx + dz * dz;
@@ -950,10 +950,7 @@ void Game::Battlezone(float dt) {
 		dist *= radarRadius;
 
 		dx = dist * cos(deg);
-		dz = dist * sin(deg);*/
-
-		dx /= 10;
-		dz /= 10;
+		dz = dist * sin(deg);
 
 
 
