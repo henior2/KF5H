@@ -12,6 +12,9 @@ namespace Asteroids {
 	std::vector<GameObject*> bullets;
 	std::vector<GameObject*> stars;
 
+	Tekst2d* tScore;
+	std::vector<GameObject*> tLives;
+
 	bool isDead = false;
 	bool hasLost = false;
 	std::vector<GameObject*> debris;
@@ -41,7 +44,7 @@ namespace Asteroids {
 	float shipAnimationCooldown;
 	float shipAnimationCooldown2;
 
-	float shootCooldown = .25f;
+	float shootCooldown;
 
 	float velocityd;
 	float posx;
@@ -83,10 +86,10 @@ namespace Asteroids {
 
 	float maxAsteroidRotationMultiplier = 50.0f;
 
-	int bounds = 15;
+	const int bounds = 15;
 
 	bool hasWaveFinished;
-	float waveAsteroidsCooldown = 2.5f;
+	float waveAsteroidsCooldown;
 
 	const int starsAmount = 100;
 	const float starsSpeedMultiplier = 2.5f;
@@ -97,7 +100,7 @@ namespace Asteroids {
 	const float enemyMaxDelay = 5.0f;
 	float enemyDelay;
 
-	float enemySizes[] = { 5.0f, 7.5f };
+	const float enemySizes[] = { 5.0f, 7.5f };
 	std::vector<bool> enemyType;
 
 	const float maxEnemyVelocity = 10.0f;
@@ -349,7 +352,7 @@ void Game::AsteroidsInit(bool again) {
 	lives--;
 	if (!again) {
 		score = 0;
-		lives = 3;
+		lives = 5;
 	}
 	if (lives <= 0) {
 		isDead = true;
@@ -367,7 +370,7 @@ void Game::AsteroidsInit(bool again) {
 	bigEnemyIterator = 0;
 
 	if (again) {
-		clearVec(asteroids); clearVec(bullets); clearVec(enemies);
+		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
 	}
 
 	asteroids.clear();
@@ -387,6 +390,7 @@ void Game::AsteroidsInit(bool again) {
 	enemyShootCooldown.clear();
 	eBDPos.clear();
 	debrisDirection.clear();
+	tLives.clear();
 
 	if (!again) {
 		for (int i = 0; i < starsAmount; i++) {
@@ -394,6 +398,18 @@ void Game::AsteroidsInit(bool again) {
 		}
 
 		PlaySound2d("mus01.mp3", true);
+	}
+
+	//tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, std::to_string(score));
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, "xxx");
+	tScore->color = vec3(1); //todo: fix changing color
+
+	for (int i = 0; i < lives; i++) {
+		std::string modelName = "AsteroidsShip";
+		if (i == lives - 1) modelName = "AsteroidsShipFire";
+		GameObject* current = Create(vec3(-.9 + .012 + .035 * i, .7, 0), vec3(0), vec3(.04), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
+		current->Stage[0].onTop = true;
+		tLives.push_back(current);
 	}
 }
 
@@ -671,8 +687,10 @@ void Game::Asteroids(float dt) {
 		}
 		respawnCooldown -= dt;
 		for (int i = 0; i < debris.size();i++) {
-			debris[i]->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
-			debris[i]->Rotate(vec3(debrisRotation[i],0) * dt);
+			GameObject* current = debris[i];
+			current->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
+			current->Rotate(vec3(debrisRotation[i],0) * dt);
+			checkBounds(current);
 		}
 		if (respawnCooldown <= 0 && !hasLost) {
 			AsteroidsInit(true);
