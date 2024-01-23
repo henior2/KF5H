@@ -13,6 +13,7 @@ namespace Asteroids {
 	std::vector<GameObject*> stars;
 
 	bool isDead = false;
+	bool hasLost = false;
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
 	std::vector<vec2> debrisRotation;
@@ -324,6 +325,7 @@ void Game::AsteroidsInit(bool again) {
 	ship->MoveTo(vec3(0,0,-80));
 	ship->RotateTo(vec3(0));
 	isDead = false;
+	hasLost = false;
 	respawnCooldown = 5.0f;
 
 	velocity = vec2(0.0f);
@@ -348,6 +350,10 @@ void Game::AsteroidsInit(bool again) {
 	if (!again) {
 		score = 0;
 		lives = 3;
+	}
+	if (lives <= 0) {
+		isDead = true;
+		hasLost = true;
 	}
 
 	_return = 0;
@@ -660,12 +666,15 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (isDead) {
+		if (hasLost) {
+			//todo: make
+		}
 		respawnCooldown -= dt;
 		for (int i = 0; i < debris.size();i++) {
 			debris[i]->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
 			debris[i]->Rotate(vec3(debrisRotation[i],0) * dt);
 		}
-		if (respawnCooldown <= 0) {
+		if (respawnCooldown <= 0 && !hasLost) {
 			AsteroidsInit(true);
 			clearVec(debris);
 			debris.clear();
