@@ -342,6 +342,8 @@ namespace Battlezone {
 		horizon = Gra->Create(vec3(0), vec3(0), vec3(1), vx, ind);
 	}
 
+	//where is radar?
+
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
 		std::vector<unsigned int> ind;
@@ -488,9 +490,11 @@ void Game::BattlezoneInit() {
 	ufo = Create(vec3(-1000.0f), vec3(0.0f), vec3(1.0f), "Ufo");
 	plane = Create(vec3(-1000.0f, 1000, -1000.0f), vec3(0.0f), vec3(1.0f), "BattlezonePlane");
 
-	//making radar
+	//making radar , oh I found it
 	std::vector<float> rVx;
 	std::vector<unsigned int> rInd;
+
+	//nvm I think it's not here
 	
 	push_back3(rVx, 0);
 	push_back3(rVx, 0, 1, 0);
@@ -893,7 +897,9 @@ void Game::Battlezone(float dt) {
 	}
 
 	//adjusting scanner elements' position... or do we? *vsauce music*
-	//(YES WE NEED TO DO IT SOMEONE PLEASE SEND PROFFESIONAL PSYCHICAL HELP)
+	//(YES WE NEED TO DO IT SOMEONE PLEASE SEND PROFFESIONAL PSYCHICAL HELP) *intense music*
+	//Profesional help decending from sky
+	//Don't warry, be happy
 
 	const float radarRange = 10.0f; // todo: move it somewhere else
 
@@ -915,12 +921,31 @@ void Game::Battlezone(float dt) {
 		float dz = current->Transform.position.z - pPos.z;
 
 		// github copilot moment
-		dx = dx * cos(angleRad) - dz * sin(angleRad);
-		dz = dx * sin(angleRad) + dz * cos(angleRad);
+		//dx = dx * cos(angleRad) - dz * sin(angleRad);
+		//dz = dx * sin(angleRad) + dz * cos(angleRad);
 
 		// todo: discover why it looks wrong without radarRange
-		dx = (dx / mapSize) * radarRadius / radarRange;
-		dz = (dz / mapSize) * radarRadius / radarRange;
+		//dx = (dx / mapSize) * radarRadius / radarRange;
+		//dz = (dz / mapSize) * radarRadius / radarRange;
+
+		dx /= mapSize;
+		dz /= mapSize;
+
+		if (dx * dx + dz * dz >= radarRadius * radarRadius) {
+			radarElements[1 + trailLinesNo + i]->Stage[radarElements[1 + trailLinesNo + i]->activeStage].opacity = 1;
+			continue;
+		}
+		else {
+			radarElements[1 + trailLinesNo + i]->Stage[radarElements[1 + trailLinesNo + i]->activeStage].opacity = 0;
+		}
+
+		float deg = glm::dot(player->Front, vec3(dx, 0, dz));
+
+		float rot = glm::degrees(deg);
+
+		//bomboclat - Adam Cisek
+
+
 
 		//todo: add out-of-bounds checking condition
 
