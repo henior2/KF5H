@@ -3,6 +3,30 @@
 using namespace glm;
 
 namespace Battlezone {
+	float signed_angle_between_vectors(const glm::vec3& A, const glm::vec3& B, const glm::vec3& axis) {
+		float dotProduct = glm::dot(A, B);
+		float magnitudeA = glm::length(A);
+		float magnitudeB = glm::length(B);
+
+		float cosTheta = dotProduct / (magnitudeA * magnitudeB);
+		float sinTheta = glm::length(glm::cross(A, B)) / (magnitudeA * magnitudeB);
+
+		// Calculate the signed angle using the arctangent and the dot product with the axis
+		float thetaRad = atan2(sinTheta, cosTheta);
+
+		// Calculate the dot product with the axis to determine the sign
+		float dotWithAxis = glm::dot(glm::cross(A, B), axis);
+
+		// Adjust the sign of the angle based on the axis
+		float signedAngleRad = dotWithAxis >= 0 ? thetaRad : -thetaRad;
+
+		// Convert to degrees and ensure the result is in the range (-180, 180]
+		float signedAngleDeg = glm::degrees(signedAngleRad);
+		signedAngleDeg = fmod(signedAngleDeg + 180.0f, 360.0f) - 180.0f;
+
+		return signedAngleDeg;
+	}
+
 	const double PI = glm::pi<double>();
 	bool flag = false;
 	int lives = 3;
@@ -957,7 +981,7 @@ void Game::Battlezone(float dt) {
 		//dx = (dx / mapSize) * radarRadius / radarRange;
 		//dz = (dz / mapSize) * radarRadius / radarRange;
 
-		dx /= 50;
+		/*dx /= 50;
 		dz /= 50;
 
 		float dist = dx * dx + dz * dz;
@@ -970,18 +994,56 @@ void Game::Battlezone(float dt) {
 			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
 		}
 
-		float deg = glm::dot(player->Front, vec3(dx, 0, dz));
+		float deg = glm::dot(player->Front, vec3(dx, 0, dz)); // oh no. The cos(a) is not equal to something else(I don't know what). How is that possible. It took me 2 h to figure that out
 
-		
+		deg = acos(deg);
+		std::string t = std::to_string(deg);
+		t += ", " + std::to_string(dx) + ", " + std::to_string(dz);
+		glfwSetWindowTitle(window, t.c_str());
 
 		//bomboclat - Adam Cisek
 
-		dist *= radarRadius;
+		dx = sqrt(dist) * cos(deg);
+		dz = sqrt(dist) * sin(deg);*/
 
-		dx = dist * cos(deg);
-		dz = dist * sin(deg);
+		//float rdx = dx * cos(player->Transform.orientation.y) + dz * sin(player->Transform.orientation.y);
+		//float rdz = -dx * sin(player->Transform.orientation.y) + dz * cos(player->Transform.orientation.y);
+
+		//float angleCos = glm::dot(glm::normalize(player->Front), glm::normalize(vec3(dx, 0, dz)));
+
+		//glfwSetWindowTitle(window, std::to_string(angleCos).c_str());
+
+		//float angle = acos(angleCos);
+
+		float angle = signed_angle_between_vectors(player->Front, vec3(dx, 0, dz), vec3(0, 1, 0));
+
+		float dist = dx * dx + dz * dz;
+
+		dist = sqrt(dist) / radarRange;
+
+		if (dist >= 1) {
+			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
+			continue;
+		}
+		else {
+			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
+		}
+
+		glfwSetWindowTitle(window, std::to_string(dist).c_str());
 
 
+
+		angle = glm::radians(angle);
+		dx = dist * sin(angle);
+		dz = -dist * cos(angle);
+
+		glfwSetWindowTitle(window, std::to_string(dx).c_str());
+
+		//dx *= radarRadius;
+		//dz *= radarRadius; // Ja nie moge. Radar radius tak skamuje że spędziłem jakieś 30 min myśląc czemu to nie działa
+
+		dx *= 0.2;
+		dz *= 0.2;
 
 		//todo: add out-of-bounds checking condition
 
