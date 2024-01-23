@@ -928,33 +928,44 @@ void Game::Battlezone(float dt) {
 		//dx = (dx / mapSize) * radarRadius / radarRange;
 		//dz = (dz / mapSize) * radarRadius / radarRange;
 
-		dx /= mapSize;
-		dz /= mapSize;
+		/*dx /= 50;
+		dz /= 50;
 
-		if (dx * dx + dz * dz >= radarRadius * radarRadius) {
-			radarElements[1 + trailLinesNo + i]->Stage[radarElements[1 + trailLinesNo + i]->activeStage].opacity = 1;
+		float dist = dx * dx + dz * dz;
+
+		if (dist >= 1) {
+			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
 			continue;
 		}
 		else {
-			radarElements[1 + trailLinesNo + i]->Stage[radarElements[1 + trailLinesNo + i]->activeStage].opacity = 0;
+			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
 		}
 
 		float deg = glm::dot(player->Front, vec3(dx, 0, dz));
 
-		float rot = glm::degrees(deg);
+		
 
 		//bomboclat - Adam Cisek
+
+		dist *= radarRadius;
+
+		dx = dist * cos(deg);
+		dz = dist * sin(deg);*/
+
+		dx /= 10;
+		dz /= 10;
 
 
 
 		//todo: add out-of-bounds checking condition
 
-		targetPos[1 + trailLinesNo + i].x = dx; 
-		targetPos[1 + trailLinesNo + i].y = dz;
-		targetPos[1 + trailLinesNo + i].z = 0.0f;
+		//targetPos[1 + trailLinesNo + i].x = dx; 
+		//targetPos[1 + trailLinesNo + i].y = dz;
+		//targetPos[1 + trailLinesNo + i].z = 0.0f;
 		
 		// fun fact: kamil forgot to add this line so I spent like 2 hours trying to figure out why the radar is broken
-		radarElements[iterator]->MoveTo(vec3(-dx, uiYOffset + dz, 0.0f));
+		//radarElements[iterator]->MoveTo(vec3(-dx, uiYOffset + dz, 0.0f));
+		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
 		
 		iterator++;
 	}
