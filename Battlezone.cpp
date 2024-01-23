@@ -5,6 +5,7 @@ using namespace glm;
 namespace Battlezone {
 	const double PI = glm::pi<double>();
 	bool flag = false;
+	int lives = 3;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -228,6 +229,20 @@ namespace Battlezone {
 		}
 		else if (type == 3) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
+			przeciwnicy.push_back(enemy);
+			enemyType.push_back(type);
+			enemyShotCooldowns.push_back(0.0f);
+
+			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
+			rPointer->color = vec3(0, 1, 0);
+			radarElements.push_back(rPointer);
+			radarElementsType.push_back(0);
+			uiElements.push_back(rPointer);
+			targetPos.push_back(vec3(0.0f));
+			targetOri.push_back(vec3(0.0f));
+		}
+		else if (type == 4) {
+			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(0.0f);
@@ -473,6 +488,7 @@ using namespace Battlezone;
 void Game::BattlezoneInit() {
 	shot_cool = 2;
 	resp_cool = 2;
+	lives = 3;
 
 	glitchEffectRefreshRate = .1f;
 	__lines.clear();
@@ -722,6 +738,10 @@ void Game::Battlezone(float dt) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 3);
 		resp_cool = 2;
 	}
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && resp_cool <= 0) {
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 4);
+		resp_cool = 2;
+	}
 
 //Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
@@ -742,6 +762,15 @@ void Game::Battlezone(float dt) {
 					randomActionType[i] = 0;
 				}
 			}  
+
+			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z))) {
+				if (lives > 1) {
+					lives -= 1;
+				}
+				else {
+					CreateTekst(vec2(0, 0), 0, vec2(0.1), 2, 1, "UMARLES");
+				}
+			}
 
 			// calculating rotation angle 
 			float _angle;
