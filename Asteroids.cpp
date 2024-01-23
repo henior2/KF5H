@@ -1,7 +1,4 @@
-﻿
-#include "Game.h"
-
-#define pi 3.14159265359
+﻿#include "Game.h"
 
 using namespace glm;
 
@@ -11,6 +8,9 @@ namespace Asteroids {
 	std::vector<GameObject*> asteroids;
 	std::vector<GameObject*> bullets;
 	std::vector<GameObject*> stars;
+
+	Tekst2d* tScore;
+	std::vector<GameObject*> tLives;
 
 	bool isDead = false;
 	bool hasLost = false;
@@ -31,7 +31,7 @@ namespace Asteroids {
 	const float maxVelocity = 25;
 	const float acceleration = 15;
 	const float deacceleration = 0.99;
-	
+
 	vec2 velocity;
 	float speed;
 
@@ -41,7 +41,7 @@ namespace Asteroids {
 	float shipAnimationCooldown;
 	float shipAnimationCooldown2;
 
-	float shootCooldown = .25f;
+	float shootCooldown;
 
 	float velocityd;
 	float posx;
@@ -83,10 +83,10 @@ namespace Asteroids {
 
 	float maxAsteroidRotationMultiplier = 50.0f;
 
-	int bounds = 15;
+	const int bounds = 15;
 
 	bool hasWaveFinished;
-	float waveAsteroidsCooldown = 2.5f;
+	float waveAsteroidsCooldown;
 
 	const int starsAmount = 100;
 	const float starsSpeedMultiplier = 2.5f;
@@ -97,7 +97,7 @@ namespace Asteroids {
 	const float enemyMaxDelay = 5.0f;
 	float enemyDelay;
 
-	float enemySizes[] = { 5.0f, 7.5f };
+	const float enemySizes[] = { 5.0f, 7.5f };
 	std::vector<bool> enemyType;
 
 	const float maxEnemyVelocity = 10.0f;
@@ -131,7 +131,7 @@ namespace Asteroids {
 			asteroidSidesNo = rand() % (maxAsteroidsSidesNo - minAsteroidsSidesno) + minAsteroidsSidesno;
 
 			for (int i = 0; i < asteroidSidesNo; ++i) {
-				double angle = 2 * pi * i / asteroidSidesNo;
+				double angle = 2 * M_PI * i / asteroidSidesNo;
 				double radiusModifier = (rand() / (double)RAND_MAX) * 2 * asteroidRadius * asteroidsVertexOffset - asteroidRadius * asteroidsVertexOffset;
 				double modifiedRadius = asteroidRadius + radiusModifier;
 
@@ -175,7 +175,7 @@ namespace Asteroids {
 			}
 
 			float rot = (float)(rand()) / ((float)(RAND_MAX / 360.0f));
-			asteroidRotation.push_back(rot * pi / 180.0f);
+			asteroidRotation.push_back(rot * M_PI / 180.0f);
 
 			float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
 			asteroidRotationMultiplier.push_back(rotM);
@@ -248,7 +248,7 @@ namespace Asteroids {
 		return temp;
 	}
 
-	std::vector<glm::vec2> breakIntoPieces(std::vector<unsigned int> ind = std::vector<unsigned int>{}, std::vector<glm::vec2> vx = std::vector<glm::vec2>{}) {
+	std::vector<glm::vec2> breakIntoM_PIeces(std::vector<unsigned int> ind = std::vector<unsigned int>{}, std::vector<glm::vec2> vx = std::vector<glm::vec2>{}) {
 		float line[2][2];
 		std::vector<glm::vec2> newVx;
 
@@ -283,11 +283,11 @@ namespace Asteroids {
 	//please ignore how messy this code is, i was tired
 	void death(bool tp = false, vec3 _pos = ship->Transform.position, vec3 _rot = ship->Transform.orientation) {
 		isDead = true;
-		std::vector<vec2> vxs = breakIntoPieces();
+		std::vector<vec2> vxs = breakIntoM_PIeces();
 		ship->MoveTo(vec3(-10000, -10000, 0));
 		int random = rand() % (int)(vxs.size() * .8);
 		int size = vxs.size();
-		for (int i = 0; i < size/2; i++) {
+		for (int i = 0; i < size / 2; i++) {
 			std::vector<float> vx1;
 			int it = 1;
 			if (rand() % size < random) it = 2;
@@ -322,7 +322,7 @@ void Game::AsteroidsInit(bool again) {
 		ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
 		modelShipFire = ship->AddStage("AsteroidsShipFire");
 	}
-	ship->MoveTo(vec3(0,0,-80));
+	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
 	isDead = false;
 	hasLost = false;
@@ -335,7 +335,7 @@ void Game::AsteroidsInit(bool again) {
 	posx = posy = 0.0f;
 
 	jumpCooldown = 0.5f;
-	shipAnimationCooldown = (rand() % 4)/2 + 1;
+	shipAnimationCooldown = (rand() % 4) / 2 + 1;
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 	shootCooldown = .1f;
 
@@ -349,7 +349,7 @@ void Game::AsteroidsInit(bool again) {
 	lives--;
 	if (!again) {
 		score = 0;
-		lives = 3;
+		lives = 5;
 	}
 	if (lives <= 0) {
 		isDead = true;
@@ -367,7 +367,7 @@ void Game::AsteroidsInit(bool again) {
 	bigEnemyIterator = 0;
 
 	if (again) {
-		clearVec(asteroids); clearVec(bullets); clearVec(enemies);
+		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
 	}
 
 	asteroids.clear();
@@ -387,6 +387,7 @@ void Game::AsteroidsInit(bool again) {
 	enemyShootCooldown.clear();
 	eBDPos.clear();
 	debrisDirection.clear();
+	tLives.clear();
 
 	if (!again) {
 		for (int i = 0; i < starsAmount; i++) {
@@ -394,6 +395,18 @@ void Game::AsteroidsInit(bool again) {
 		}
 
 		PlaySound2d("mus01.mp3", true);
+	}
+
+	//tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, std::to_string(score));
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, "xxx");
+	tScore->color = vec3(1); //todo: fix changing color
+
+	for (int i = 0; i < lives; i++) {
+		std::string modelName = "AsteroidsShip";
+		if (i == lives - 1) modelName = "AsteroidsShipFire";
+		GameObject* current = Create(vec3(-.9 + .012 + .035 * i, .7, 0), vec3(0), vec3(.04), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
+		current->Stage[0].onTop = true;
+		tLives.push_back(current);
 	}
 }
 
@@ -414,7 +427,7 @@ void Game::Asteroids(float dt) {
 		ship->MoveGlobal(vec3(velocity.x * dt, velocity.y * dt, 0));
 
 		ship->activeStage = modelShipFire;
-		
+
 		shipAnimationCooldown -= dt;
 		if (shipAnimationCooldown <= 0) {
 			ship->activeStage = 0;
@@ -425,7 +438,7 @@ void Game::Asteroids(float dt) {
 				shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 			}
 		}
-		
+
 		for (auto& star : stars) {
 			star->MoveGlobal(vec3(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
 			checkBounds(star, vec2(160, 90));
@@ -477,7 +490,7 @@ void Game::Asteroids(float dt) {
 		}
 		else {
 			random = rand() % 8 - 1;
-			random = (random*2)+4;
+			random = (random * 2) + 4;
 
 			if (random < asteroids.size()) {
 				death(true);
@@ -489,7 +502,7 @@ void Game::Asteroids(float dt) {
 		}
 	}
 
-	if (!isDead && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown<=0) {
+	if (!isDead && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown <= 0) {
 		shootCooldown = .25f;
 		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
 		isBulletPlayers.push_back(true);
@@ -521,14 +534,14 @@ void Game::Asteroids(float dt) {
 		}
 
 		vec2 dMov = vec2(sPos.x - pos.x, sPos.y - pos.y);
-		
+
 		if (dMov.x > maxEnemyVelocity) dMov.x = maxEnemyVelocity;
 		else if (dMov.x < -maxEnemyVelocity) dMov.x = -maxEnemyVelocity;
 
 		if (dMov.y > maxEnemyVelocity) dMov.y = maxEnemyVelocity;
 		else if (dMov.y < -maxEnemyVelocity) dMov.y = -maxEnemyVelocity;
 
-		if(!isDead) current->MoveGlobal(vec3(dMov, 0.0f)*dt);
+		if (!isDead) current->MoveGlobal(vec3(dMov, 0.0f) * dt);
 
 		float _angle;
 
@@ -538,7 +551,7 @@ void Game::Asteroids(float dt) {
 				enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]);
 
 				_angle = atan2(sPos.y - pos.y, sPos.x - pos.x);
-				_angle = _angle * 180.0f / pi - 90.0f;
+				_angle = _angle * 180.0f / M_PI - 90.0f;
 			}
 			else _angle = rand() % 360;
 
@@ -585,7 +598,7 @@ void Game::Asteroids(float dt) {
 		}
 
 		vec2 currentPos = current->Transform.position;
-		
+
 		//collisions - player/bullets
 		if (!isDead && !isBulletPlayers[i] && Gra->collisionCircle(pPos, current->Transform.position)) {
 			death();
@@ -620,13 +633,13 @@ void Game::Asteroids(float dt) {
 		}
 
 		float deg = asteroidRotation[i];
-		
+
 		if (!isDead) {
 			current->Rotate(vec3(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
 			current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity * dt);
 		}
 
-		checkBounds(current,vec2(camera->cameraWidth+ bounds,camera->cameraHeight+ bounds));
+		checkBounds(current, vec2(camera->cameraWidth + bounds, camera->cameraHeight + bounds));
 
 		//collisions - player/asteroid
 		if (!isDead && Gra->collisionCircle(pPos, current->Transform.position)) {
@@ -637,7 +650,7 @@ void Game::Asteroids(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	if(!isDead) checkBounds(ship);
+	if (!isDead) checkBounds(ship);
 
 	if (!isDead && asteroids.empty()) hasWaveFinished = true;
 
@@ -656,8 +669,8 @@ void Game::Asteroids(float dt) {
 	if (!isDead && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
-			for (int i = 0; i < _return; i++) 
-				spawnEnemy(0,this);
+			for (int i = 0; i < _return; i++)
+				spawnEnemy(0, this);
 
 			enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay;
 			enemyProb += enemyProb * enemyDeltaProb;
@@ -670,9 +683,11 @@ void Game::Asteroids(float dt) {
 			//todo: make
 		}
 		respawnCooldown -= dt;
-		for (int i = 0; i < debris.size();i++) {
-			debris[i]->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
-			debris[i]->Rotate(vec3(debrisRotation[i],0) * dt);
+		for (int i = 0; i < debris.size(); i++) {
+			GameObject* current = debris[i];
+			current->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
+			current->Rotate(vec3(debrisRotation[i], 0) * dt);
+			checkBounds(current);
 		}
 		if (respawnCooldown <= 0 && !hasLost) {
 			AsteroidsInit(true);
