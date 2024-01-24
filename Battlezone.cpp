@@ -28,7 +28,7 @@ namespace Battlezone {
 	}
 
 	bool flag = false;
-	int lives = 3;
+	int hp = 100;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -89,6 +89,7 @@ namespace Battlezone {
 
 	std::vector<vec3> targetPos;
 	std::vector<vec3> targetOri;
+	std::vector<GameObject*> pociski_gracza;
 
 	std::vector<GameObject*> radarElements;
 	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
@@ -132,7 +133,7 @@ namespace Battlezone {
 	void shot(vec3 pos, vec3 rot, Game* Gra) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
-		pociski.push_back(bullet);
+		pociski_gracza.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
 	}
 
@@ -219,7 +220,7 @@ namespace Battlezone {
 			else if (enemyType[enemyIndex] == 3) {
 				shot_leonardo(enemy->Transform.position + vec3(0, .6, 0), enemy->Transform.orientation, Gra);
 			}
-			enemyShotCooldowns[enemyIndex] = 4.0f;
+			enemyShotCooldowns[enemyIndex] = 4.20f;
 		}
 	}
 
@@ -228,7 +229,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(4.20f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarX");
 			radarElements.push_back(rPointer);
@@ -241,7 +242,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(4.20f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleBig), "RadarX");
 			radarElements.push_back(rPointer);
@@ -254,7 +255,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(4.20f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
 			rPointer->color = vec3(0, 1, 0);
@@ -268,7 +269,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(4.20f);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
 			rPointer->color = vec3(0, 1, 0);
@@ -554,7 +555,7 @@ void Game::BattlezoneInit() {
 
 	shot_cool = 2;
 	resp_cool = 2;
-	lives = 3;
+	hp = 3;
 
 	glitchEffectRefreshRate = .1f;
 	__lines.clear();
@@ -703,6 +704,10 @@ void Game::Battlezone(float dt) {
 		timeMultiplier = 1.0f;
 	}
 
+	if (hp <= 0) {
+		CreateTekst(vec2(-.1, 0), 0, vec2(0.05), 2, 1, "Przegrales");
+	}
+
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
 			cooldown -= dt;
@@ -766,6 +771,8 @@ void Game::Battlezone(float dt) {
 		else
 			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation, this);
 	}
+
+	//Moving the bullets
 	if (!pociski.empty()) {
 		for (int i = 0; i < pociski.size(); i++) {
 			GameObject* current = pociski[i];
@@ -779,6 +786,11 @@ void Game::Battlezone(float dt) {
 				continue;
 			}
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z))) {
+				hp -= 25;
+				Destroy(current);
+				pociski.erase(pociski.begin() + i);
+			}
 
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
@@ -791,7 +803,7 @@ void Game::Battlezone(float dt) {
 			bulletsFired = 0;
 	}
 
-	//moving the horizon
+	//moving the forza horizon
 	horizon->MoveTo(pPos);
 
 	//spawning the enemies
@@ -836,13 +848,9 @@ void Game::Battlezone(float dt) {
 				}
 			}
 
+			//Player enemy collision
 			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z))) {
-				if (lives > 1) {
-					lives -= 1;
-				}
-				else {
-					CreateTekst(vec2(0, 0), 0, vec2(0.1), 2, 1, "UMARLES");
-				}
+				hp -= 25;
 			}
 
 			// calculating rotation angle 
@@ -872,12 +880,12 @@ void Game::Battlezone(float dt) {
 				current->MoveGlobal(direction * dt * _sM);
 				if (enemyShotCooldowns[i] <= 0) {
 					enemyShoot(current, this);
-					enemyShotCooldowns[i] = 4.0;
+					enemyShotCooldowns[i] = 4.20;
 				}
 			}
 			else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
 				enemyShoot(current, this);
-				enemyShotCooldowns[i] = 4.0;
+				enemyShotCooldowns[i] = 4.20;
 			}
 		}
 	}
