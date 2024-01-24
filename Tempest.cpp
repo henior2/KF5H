@@ -156,8 +156,11 @@ namespace Tempest {
 			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
 
-	void shipmovement(bool rigorlef) {
-
+	void shipmovement(bool rigorlef, int& llenght,int lvlDif) {
+		int shipaclenght, shipfutlenght;
+		if (lvlDif == 0) 	shipaclenght = -1; //wyliczyæ jak krzyœ odpowie
+		else shipaclenght = llenght;
+		
 	}
 	}
 
@@ -166,7 +169,7 @@ using namespace Tempest;
 void Game::TempestInit() {
 	debugCooldown = .1f;
 
-	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 1 lub 0
+	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 
 	tunnel.clear();
