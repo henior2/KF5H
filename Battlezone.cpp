@@ -29,6 +29,7 @@ namespace Battlezone {
 
 	bool flag = false;
 	float hp;
+	int score;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -81,6 +82,7 @@ namespace Battlezone {
 	vec2 ufoTargetPos;
 
 	GameObject* plane;
+	Tekst2d* tScore;
 
 	GameObject* radar;
 	std::vector<GameObject*> sM_PInningLines;
@@ -554,6 +556,7 @@ void Game::BattlezoneInit() {
 	timeMultiplier = 1.0f;
 	isMissleSelfTargeting = false;
 	timeEffectLeft = 0;
+	score = 0;
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -710,6 +713,14 @@ void Game::Battlezone(float dt) {
 		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
 	}
 
+	//Score
+	std::string scoreStr = std::to_string(score);
+	while (scoreStr.length() < 3) {
+		scoreStr = "0" + scoreStr;
+	}
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, scoreStr);
+
+
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
 			cooldown -= dt;
@@ -771,7 +782,7 @@ void Game::Battlezone(float dt) {
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
 			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, true);
 		else
-			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation);
+			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation,true);
 	}
 
 	//Moving the bullets
@@ -793,6 +804,7 @@ void Game::Battlezone(float dt) {
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
 			}
+
 
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
