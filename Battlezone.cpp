@@ -135,7 +135,7 @@ namespace Battlezone {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
 		pociski.push_back(bullet);
-		if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
+		//if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
 		bullet->Move(vec3(0, 0, -1));
 	}
 
@@ -217,10 +217,10 @@ namespace Battlezone {
 				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
 			}
 			else if (enemyType[enemyIndex] == 2) {
-				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation, Gra);
+				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation);
 			}
 			else if (enemyType[enemyIndex] == 3) {
-				shot_leonardo(enemy->Transform.position + vec3(0, .6, 0), enemy->Transform.orientation, Gra);
+				shot_leonardo(enemy->Transform.position + vec3(0, .6, 0), enemy->Transform.orientation);
 			}
 			enemyShotCooldowns[enemyIndex] = 4.20f;
 		}
@@ -557,7 +557,7 @@ void Game::BattlezoneInit() {
 
 	shot_cool = 2;
 	resp_cool = 2;
-	hp = 3;
+	hp = 100;
 
 	glitchEffectRefreshRate = .1f;
 	__lines.clear();
@@ -707,7 +707,7 @@ void Game::Battlezone(float dt) {
 	}
 
 	if (hp <= 0) {
-		CreateTekst(vec2(-.1, 0), 0, vec2(0.05), 2, 1, "Przegrales");
+		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
 	}
 
 	if (!enemyShotCooldowns.empty()) {
