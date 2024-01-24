@@ -122,21 +122,23 @@ namespace Battlezone {
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
 
-	void shot_fast(vec3 pos, vec3 rot, Game* Gra) {
+	void shot_fast(vec3 pos, vec3 rot) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec3(0, 0, -1));
 	}
 
-	void shot(vec3 pos, vec3 rot, Game* Gra) {
+	GameObject* auto_bullet;
+	void shot(vec3 pos, vec3 rot, bool isPlayer = false) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
 		pociski.push_back(bullet);
+		if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
 		bullet->Move(vec3(0, 0, -1));
 	}
 
-	void shot_leonardo(vec3 pos, vec3 rot, Game* Gra) {
+	void shot_leonardo(vec3 pos, vec3 rot) {
 
 		int temp = rand() % 8 + 1;
 
@@ -197,7 +199,7 @@ namespace Battlezone {
 		}
 	}
 
-	void enemyShoot(GameObject* enemy, Game* Gra) {
+	void enemyShoot(GameObject* enemy) {
 		int enemyIndex = -1;
 		if (!przeciwnicy.empty()) {
 			for (int i = 0; i < przeciwnicy.size(); ++i) {
@@ -223,7 +225,7 @@ namespace Battlezone {
 		}
 	}
 
-	void spawn_enemy(vec3 pos, vec3 rot, Game* Gra, int type) {
+	void spawn_enemy(vec3 pos, vec3 rot, int type) {
 		if (type == 1) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
@@ -474,7 +476,7 @@ namespace Battlezone {
 	const bool pUSameDirectionRotation = false;
 	const float pUAFCTime2 = .5f;
 
-	const std::string pUModels[] = { "Speed","Heart","Reload","Star","XP","Boost" };
+	const std::string pUModels[] = { "Speed","Heart","Reload","Boost","XP","Star" };
 	std::vector<GameObject*> powerUM_PInside;
 	std::vector<GameObject*> powerUpBox;
 	std::vector<GameObject*> powerUpAnimation;
@@ -521,7 +523,7 @@ namespace Battlezone {
 
 		switch (_type) {
 		case 0:
-			velocity *= (1+speedBoost);
+			velocity *= (1 + speedBoost);
 			break;
 		case 1:
 			//hp += healthBoost; //waiting for Filip to make this
@@ -699,7 +701,7 @@ void Game::Battlezone(float dt) {
 	dt *= timeMultiplier;
 	timeEffectLeft -= dt;
 	if (timeEffectLeft <= 0) {
-		timeEffectLeft = 0; 
+		timeEffectLeft = 0;
 		timeMultiplier = 1.0f;
 	}
 
@@ -762,9 +764,9 @@ void Game::Battlezone(float dt) {
 		shot_cool = 2;
 		bulletsFired += 1;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
-			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, this);
+			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, true);
 		else
-			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation, this);
+			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation);
 	}
 	if (!pociski.empty()) {
 		for (int i = 0; i < pociski.size(); i++) {
@@ -800,19 +802,19 @@ void Game::Battlezone(float dt) {
 	float temp_y = rand() % 361;
 
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
-		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 1);
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 1);
 		resp_cool = 2;
 	}
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && resp_cool <= 0) {
-		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 2);
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 2);
 		resp_cool = 2;
 	}
 	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && resp_cool <= 0) {
-		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 3);
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 3);
 		resp_cool = 2;
 	}
 	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && resp_cool <= 0) {
-		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 4);
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 4);
 		resp_cool = 2;
 	}
 
@@ -871,12 +873,12 @@ void Game::Battlezone(float dt) {
 				if (enemyType[i] != 2) _sM = tank_speed;
 				current->MoveGlobal(direction * dt * _sM);
 				if (enemyShotCooldowns[i] <= 0) {
-					enemyShoot(current, this);
+					enemyShoot(current);
 					enemyShotCooldowns[i] = 4.0;
 				}
 			}
 			else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
-				enemyShoot(current, this);
+				enemyShoot(current);
 				enemyShotCooldowns[i] = 4.0;
 			}
 		}
