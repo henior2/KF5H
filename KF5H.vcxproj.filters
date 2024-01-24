@@ -607,6 +607,12 @@
     <Text Include="PowerUpXP.ind.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="tempest_ship.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="tempest_ship.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">

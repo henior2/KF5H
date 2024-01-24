@@ -269,6 +269,8 @@
     <Text Include="TankBullet.vx.txt" />
     <Text Include="Tanker.ind.txt" />
     <Text Include="Tanker.vx.txt" />
+    <Text Include="tempest_ship.ind.txt" />
+    <Text Include="tempest_ship.vx.txt" />
     <Text Include="Ufo.ind.txt" />
     <Text Include="Ufo.vx.txt" />
     <Text Include="A.ind.txt" />

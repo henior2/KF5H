@@ -6,7 +6,6 @@ namespace Tempest {
 	float debugCooldown = .1f;
 	int lastTSN;
 
-	//to make the code a bit cleaner
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
 		vec.push_back(a1);
 		vec.push_back(a2);
@@ -157,6 +156,9 @@ namespace Tempest {
 			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
 
+	void shipmovement(bool rigorlef) {
+
+	}
 	}
 
 using namespace Tempest;
@@ -168,6 +170,8 @@ void Game::TempestInit() {
 	lastTSN = 0;
 
 	tunnel.clear();
+
+	GameObject* blaster = Create(vec3(0, 0, -25), vec3(0), vec3(1, 1, 1), "tempest_ship");
 }
 
 void Game::Tempest(float dt) {
@@ -185,7 +189,7 @@ void Game::Tempest(float dt) {
 
 		tunelspawn(lvlDif,lastTSN);
 	}
-	
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 }

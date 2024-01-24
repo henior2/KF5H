@@ -75,6 +75,7 @@ namespace Test {
 		"Spiker",
 		"Fuseball",
 		"Pulsar",
+		"tempest_ship",
 		""
 	};
 
