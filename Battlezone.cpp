@@ -92,6 +92,7 @@ namespace Battlezone {
 	std::vector<vec3> targetPos;
 	std::vector<vec3> targetOri;
 	std::vector<GameObject*> pociski_gracza;
+	std::vector<float> bulletTimeRemain;
 
 	std::vector<GameObject*> radarElements;
 	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
@@ -134,9 +135,11 @@ namespace Battlezone {
 
 	GameObject* auto_bullet;
 	void shot(vec3 pos, vec3 rot, bool isPlayer = false) {
-		fastBulletTimeRemain.push_back(bulletMaxTime);
+		if (isPlayer)bulletTimeRemain.push_back(bulletMaxTime);
+		else fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
-		pociski.push_back(bullet);
+		if (!isPlayer)pociski.push_back(bullet);
+		else pociski_gracza.push_back(bullet);
 		//if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
 		bullet->Move(vec3(0, 0, -1));
 	}
@@ -557,6 +560,8 @@ void Game::BattlezoneInit() {
 	isMissleSelfTargeting = false;
 	timeEffectLeft = 0;
 	score = 0;
+	bulletTimeRemain.clear();
+	pociski_gracza.clear(); 
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -782,7 +787,7 @@ void Game::Battlezone(float dt) {
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
 			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, true);
 		else
-			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation,true);
+			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation, true);
 	}
 
 	//Moving the bullets
@@ -807,6 +812,22 @@ void Game::Battlezone(float dt) {
 
 
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
+		}
+	}
+
+	if (!pociski_gracza.empty()) {
+		for (int i = 0; i < pociski_gracza.size(); i++) {
+			GameObject* current = pociski_gracza[i];
+
+			bulletTimeRemain[i] -= dt;
+			if (bulletTimeRemain[i] <= 0) {
+				Destroy(current);
+				pociski_gracza.erase(pociski_gracza.begin() + i);
+				bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+				i--;
+				continue;
+			}
+			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
 		}
 	}
 	else if (bulletsFired > 4) {
