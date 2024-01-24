@@ -126,6 +126,21 @@ namespace Battlezone {
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
 
+	void destroy_enemy( GameObject*, int i) {
+		Gra->Destroy(przeciwnicy[i]);
+		fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
+		przeciwnicy.erase(przeciwnicy.begin() + i);
+		enemyType.erase(enemyType.begin() + i);
+		enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
+		radarElements.erase(radarElements.begin() + i);
+		radarElementsType.erase(radarElementsType.begin() + i);
+		uiElements.erase(uiElements.begin() + i);
+		targetPos.erase(targetPos.begin() + i);
+		targetOri.erase(targetOri.begin() + i);
+		
+		
+	}
+
 	void shot_fast(vec3 pos, vec3 rot) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
@@ -219,7 +234,7 @@ namespace Battlezone {
 		//nice ChatGPT lmao
 		if (enemyIndex != -1 && enemyShotCooldowns[enemyIndex] <= 0) {
 			if (enemyType[enemyIndex] == 1) {
-				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
+				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation);
 			}
 			else if (enemyType[enemyIndex] == 2) {
 				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation);
@@ -555,6 +570,7 @@ namespace Battlezone {
 using namespace Battlezone;
 
 void Game::BattlezoneInit() {
+
 	velocity = 3.0f;
 	timeMultiplier = 1.0f;
 	isMissleSelfTargeting = false;
@@ -804,6 +820,8 @@ void Game::Battlezone(float dt) {
 				continue;
 			}
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+
+			//Player bullet collsion
 			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z))) {
 				hp -= 25;
 				Destroy(current);
@@ -815,6 +833,7 @@ void Game::Battlezone(float dt) {
 		}
 	}
 
+	//Moving player bullets
 	if (!pociski_gracza.empty()) {
 		for (int i = 0; i < pociski_gracza.size(); i++) {
 			GameObject* current = pociski_gracza[i];
@@ -828,6 +847,18 @@ void Game::Battlezone(float dt) {
 				continue;
 			}
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+
+			//Enemy bullet collision
+			for (int j = 0; j < przeciwnicy.size(); j++) {
+				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z),2,2)){
+					//Usuwanie pocisku
+					Destroy(current);
+					pociski_gracza.erase(pociski_gracza.begin() + j);
+					bulletTimeRemain.erase(bulletTimeRemain.begin() + j);
+					//Usuwanie przeciwnika
+					destroy_enemy(przeciwnicy[j], j);
+				}
+			}
 		}
 	}
 	else if (bulletsFired > 4) {
