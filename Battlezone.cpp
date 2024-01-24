@@ -737,7 +737,7 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
 		camera->Position = vec3(0.0f, 0.0f, 0.0f);
 		camera->Yaw = -90.0f;
-		camera->M_PItch = 0.0f;
+		camera->Pitch = 0.0f;
 		camera->MoveCamera(FORWARD, 0.0f);
 		camera->RotateCamera(0.0f, 0.0f);
 	}
