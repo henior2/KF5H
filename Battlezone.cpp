@@ -1016,7 +1016,7 @@ void Game::Battlezone(float dt) {
 	//Profesional help decending from sky
 	//Don't warry, be happy
 
-	const float radarRange = 10.0f; // todo: move it somewhere else
+	const float radarRange = 50.0f; // todo: move it somewhere else
 
 	float angleRad = pOri.y * M_PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
@@ -1044,6 +1044,7 @@ void Game::Battlezone(float dt) {
 
 		if (dist >= 1) {
 			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
+			iterator++;
 			continue;
 		}
 		else {
