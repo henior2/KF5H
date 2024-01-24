@@ -1,10 +1,14 @@
 #include "Game.h"
+#include "algorithm"
 
 using namespace glm;
 
 namespace Tempest {
+
 	float debugCooldown = .1f;
 	int lastTSN;
+	int lvlDif;
+	std::vector <GameObject*> tunnel;
 
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
 		vec.push_back(a1);
@@ -26,10 +30,44 @@ namespace Tempest {
 		vec.push_back(a1);
 	}
 
-	int lvlDif;
-	std::vector <GameObject*> tunnel;
+	bool boolfunc(vec3 a, vec3 b) {
+		if (a.y > b.y) return true;
+		else return false;
+	}
 
-	void tunelspawn(int lvlDif, int& lastTSN) {
+	float signed_angle_between_vectors(const glm::vec3& A, const glm::vec3& B, const glm::vec3& axis) {
+		float dotProduct = glm::dot(A, B);
+		float magnitudeA = glm::length(A);
+		float magnitudeB = glm::length(B);
+
+		float cosTheta = dotProduct / (magnitudeA * magnitudeB);
+		float sinTheta = glm::length(glm::cross(A, B)) / (magnitudeA * magnitudeB);
+
+		// Calculate the signed angle using the arctangent and the dot product with the axis
+		float thetaRad = atan2(sinTheta, cosTheta);
+
+		// Calculate the dot product with the axis to determine the sign
+		float dotWithAxis = glm::dot(glm::cross(A, B), axis);
+
+		// Adjust the sign of the angle based on the axis
+		float signedAngleRad = dotWithAxis >= 0 ? thetaRad : -thetaRad;
+
+		// Convert to degrees and ensure the result is in the range (-180, 180]
+		float signedAngleDeg = glm::degrees(signedAngleRad);
+		signedAngleDeg = fmod(signedAngleDeg + 180.0f, 360.0f) - 180.0f;
+
+		return signedAngleDeg;
+	}
+	
+	void points_move_list(std::vector <float> vec, std::vector <vec3>& points) {
+		std::vector <vec3> hlp;
+		for (int i = 0; i < vec.size(); i+=6) {
+			hlp.push_back(vec3(vec[i], vec[i + 1],0));
+		}
+		std::sort(hlp.begin(), hlp.end(), boolfunc);
+	}
+
+	void tunelspawn(int lvlDif, int& lastTSN ) {//std::vector <vec3>& points2
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -156,10 +194,8 @@ namespace Tempest {
 			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
 
-	void shipmovement(bool rigorlef, int& llenght,int lvlDif) {
-		int shipaclenght, shipfutlenght;
-		if (lvlDif == 0) 	shipaclenght = -1; //wyliczyæ jak krzyœ odpowie
-		else shipaclenght = llenght;
+	void shipmovement(bool r_or_l, vec3& llenght, std::vector <vec3> points) {
+		
 		
 	}
 	}
@@ -171,9 +207,10 @@ void Game::TempestInit() {
 
 	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
+	vec3 llenght(0, 0, 0);
 
 	tunnel.clear();
-
+	
 	GameObject* blaster = Create(vec3(0, 0, -25), vec3(0), vec3(1, 1, 1), "tempest_ship");
 }
 
