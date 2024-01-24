@@ -29,6 +29,7 @@ namespace Battlezone {
 
 	bool flag = false;
 	float hp;
+	int score;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -81,6 +82,7 @@ namespace Battlezone {
 	vec2 ufoTargetPos;
 
 	GameObject* plane;
+	Tekst2d* tScore;
 
 	GameObject* radar;
 	std::vector<GameObject*> sM_PInningLines;
@@ -90,6 +92,7 @@ namespace Battlezone {
 	std::vector<vec3> targetPos;
 	std::vector<vec3> targetOri;
 	std::vector<GameObject*> pociski_gracza;
+	std::vector<float> bulletTimeRemain;
 
 	std::vector<GameObject*> radarElements;
 	std::vector<unsigned int> radarElementsType; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
@@ -123,6 +126,21 @@ namespace Battlezone {
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
 
+	void destroy_enemy( GameObject*, int i) {
+		Gra->Destroy(przeciwnicy[i]);
+		fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
+		przeciwnicy.erase(przeciwnicy.begin() + i);
+		enemyType.erase(enemyType.begin() + i);
+		enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
+		radarElements.erase(radarElements.begin() + i);
+		radarElementsType.erase(radarElementsType.begin() + i);
+		uiElements.erase(uiElements.begin() + i);
+		targetPos.erase(targetPos.begin() + i);
+		targetOri.erase(targetOri.begin() + i);
+		
+		
+	}
+
 	void shot_fast(vec3 pos, vec3 rot) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "FastBullet");
@@ -132,9 +150,11 @@ namespace Battlezone {
 
 	GameObject* auto_bullet;
 	void shot(vec3 pos, vec3 rot, bool isPlayer = false) {
-		fastBulletTimeRemain.push_back(bulletMaxTime);
+		if (isPlayer)bulletTimeRemain.push_back(bulletMaxTime);
+		else fastBulletTimeRemain.push_back(bulletMaxTime);
 		GameObject* bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
-		pociski.push_back(bullet);
+		if (!isPlayer)pociski.push_back(bullet);
+		else pociski_gracza.push_back(bullet);
 		//if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
 		bullet->Move(vec3(0, 0, -1));
 	}
@@ -214,7 +234,7 @@ namespace Battlezone {
 		//nice ChatGPT lmao
 		if (enemyIndex != -1 && enemyShotCooldowns[enemyIndex] <= 0) {
 			if (enemyType[enemyIndex] == 1) {
-				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
+				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation);
 			}
 			else if (enemyType[enemyIndex] == 2) {
 				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation);
@@ -550,10 +570,14 @@ namespace Battlezone {
 using namespace Battlezone;
 
 void Game::BattlezoneInit() {
+
 	velocity = 3.0f;
 	timeMultiplier = 1.0f;
 	isMissleSelfTargeting = false;
 	timeEffectLeft = 0;
+	score = 0;
+	bulletTimeRemain.clear();
+	pociski_gracza.clear(); 
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -710,6 +734,14 @@ void Game::Battlezone(float dt) {
 		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
 	}
 
+	//Score
+	std::string scoreStr = std::to_string(score);
+	while (scoreStr.length() < 3) {
+		scoreStr = "0" + scoreStr;
+	}
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, scoreStr);
+
+
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
 			cooldown -= dt;
@@ -771,7 +803,7 @@ void Game::Battlezone(float dt) {
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
 			shot(player->Transform.position + vec3(0, 2.535, 0), player->Transform.orientation, true);
 		else
-			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation);
+			shot(player->Transform.position + vec3(0, 2.535, 1), player->Transform.orientation, true);
 	}
 
 	//Moving the bullets
@@ -788,13 +820,45 @@ void Game::Battlezone(float dt) {
 				continue;
 			}
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+
+			//Player bullet collsion
 			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z))) {
 				hp -= 25;
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
 			}
 
+
 			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
+		}
+	}
+
+	//Moving player bullets
+	if (!pociski_gracza.empty()) {
+		for (int i = 0; i < pociski_gracza.size(); i++) {
+			GameObject* current = pociski_gracza[i];
+
+			bulletTimeRemain[i] -= dt;
+			if (bulletTimeRemain[i] <= 0) {
+				Destroy(current);
+				pociski_gracza.erase(pociski_gracza.begin() + i);
+				bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+				i--;
+				continue;
+			}
+			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+
+			//Enemy bullet collision
+			for (int j = 0; j < przeciwnicy.size(); j++) {
+				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z),2,2)){
+					//Usuwanie pocisku
+					Destroy(current);
+					pociski_gracza.erase(pociski_gracza.begin() + j);
+					bulletTimeRemain.erase(bulletTimeRemain.begin() + j);
+					//Usuwanie przeciwnika
+					destroy_enemy(przeciwnicy[j], j);
+				}
+			}
 		}
 	}
 	else if (bulletsFired > 4) {
@@ -1016,7 +1080,7 @@ void Game::Battlezone(float dt) {
 	//Profesional help decending from sky
 	//Don't warry, be happy
 
-	const float radarRange = 10.0f; // todo: move it somewhere else
+	const float radarRange = 50.0f; // todo: move it somewhere else
 
 	float angleRad = pOri.y * M_PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
@@ -1044,6 +1108,7 @@ void Game::Battlezone(float dt) {
 
 		if (dist >= 1) {
 			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
+			iterator++;
 			continue;
 		}
 		else {

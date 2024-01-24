@@ -19,10 +19,11 @@ namespace Asteroids {
 	bool hasLost = false;
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
-	std::vector<vec2> debrisRotation;
+	std::vector<float> debrisRotation;
 	float respawnCooldown = 5.0f;
 	const float debrisSpeedMultiplier = 10.0f;
-	const float maxDebrisRotationMultiplier = 2.5f;
+	const float maxDebrisRotationMultiplier = 12.5f;
+	std::vector<float> debrisTimeLeft;
 
 	const int camW = 160;
 	const int camH = 90;
@@ -115,8 +116,7 @@ namespace Asteroids {
 
 	int bigEnemyIterator;
 
-	const int smallUfoXP = 990;
-	const int bigUfoXP = 200;
+	const int ufoXP[] = { 990,200 }; // small/big
 
 	void checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
 		if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0));
@@ -313,8 +313,9 @@ namespace Asteroids {
 			}
 		}
 		for (int i = 0; i < debris.size(); i++) {
-			debrisDirection.push_back(vec2(-1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))))); //x∈Q:[-1;1]
-			debrisRotation.push_back(vec2(-maxDebrisRotationMultiplier + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * maxDebrisRotationMultiplier)))));
+			debrisDirection.push_back(vec2(-1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))), -1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))))); //x∈Q:[-1;1]
+			debrisRotation.push_back((-maxDebrisRotationMultiplier + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * maxDebrisRotationMultiplier)))));
+			debrisTimeLeft.push_back(respawnCooldown);
 		}
 	}
 
@@ -354,7 +355,7 @@ void Game::AsteroidsInit(bool again) {
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4) / 2 + 1;
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
-	shootCooldown = .1f;
+	shootCooldown = .25f;
 
 	if (!again) {
 		camera->perspective = false;
@@ -404,6 +405,7 @@ void Game::AsteroidsInit(bool again) {
 	enemyShootCooldown.clear();
 	eBDPos.clear();
 	debrisDirection.clear();
+	debrisTimeLeft.clear();
 	tLives.clear();
 
 	if (!again) {
@@ -626,14 +628,17 @@ void Game::Asteroids(float dt) {
 		}
 
 		//collisions - enemy/bullets
-		for (int j = 0; j < enemies.size(); j++) {
+		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
 			if (!isDead && isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
-				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[j]);
+				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[enemyType[j]], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
-				j--;
-				score += smallUfoXP;
+				score += ufoXP[enemyType[j]];
 				tScore = refreshText(tScore, std::to_string(score));
+
+				bulletTimeRemain[i] = 0;
+				i++;
+				continue;
 			}
 		}
 	}
@@ -703,17 +708,26 @@ void Game::Asteroids(float dt) {
 		}
 	}
 
+	for (int i = 0; i < debris.size(); i++) {
+		GameObject* current = debris[i];
+		current->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
+		current->Rotate(vec3(0, 0, 1) * debrisRotation[i] * dt);
+		checkBounds(current);
+
+		debrisTimeLeft[i] -= dt;
+		if (debrisTimeLeft[i] <= 0) {
+			Destroy(current);
+			debris.erase(debris.begin() + i);
+			debrisTimeLeft.erase(debrisTimeLeft.begin() + i);
+			debrisDirection.erase(debrisDirection.begin() + i);
+			debrisRotation.erase(debrisRotation.begin() + i);
+		}
+	}
 	if (isDead) {
 		if (hasLost) {
 			//todo: make
 		}
 		respawnCooldown -= dt;
-		for (int i = 0; i < debris.size(); i++) {
-			GameObject* current = debris[i];
-			current->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
-			current->Rotate(vec3(debrisRotation[i], 0) * dt);
-			checkBounds(current);
-		}
 		if (respawnCooldown <= 0 && !hasLost) {
 			AsteroidsInit(true);
 			clearVec(debris);
