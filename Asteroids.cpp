@@ -22,7 +22,7 @@ namespace Asteroids {
 	std::vector<float> debrisRotation;
 	float respawnCooldown = 5.0f;
 	const float debrisSpeedMultiplier = 10.0f;
-	const float maxDebrisRotationMultiplier = 2.5f;
+	const float maxDebrisRotationMultiplier = 12.5f;
 	std::vector<float> debrisTimeLeft;
 
 	const int camW = 160;
@@ -355,7 +355,7 @@ void Game::AsteroidsInit(bool again) {
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4) / 2 + 1;
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
-	shootCooldown = .1f;
+	shootCooldown = .25f;
 
 	if (!again) {
 		camera->perspective = false;
@@ -635,7 +635,10 @@ void Game::Asteroids(float dt) {
 				enemies.erase(enemies.begin() + j);
 				score += ufoXP[enemyType[j]];
 				tScore = refreshText(tScore, std::to_string(score));
-				i++; //i dont think this helps in any way lmao
+
+				bulletTimeRemain[i] = 0;
+				i++;
+				continue;
 			}
 		}
 	}
@@ -708,7 +711,7 @@ void Game::Asteroids(float dt) {
 	for (int i = 0; i < debris.size(); i++) {
 		GameObject* current = debris[i];
 		current->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
-		current->Rotate(vec3(0, 0, debrisRotation[i]) * dt);
+		current->Rotate(vec3(0, 0, 1) * debrisRotation[i] * dt);
 		checkBounds(current);
 
 		debrisTimeLeft[i] -= dt;
