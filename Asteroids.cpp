@@ -397,9 +397,13 @@ void Game::AsteroidsInit(bool again) {
 		PlaySound2d("mus01.mp3", true);
 	}
 
-	//tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, std::to_string(score));
-	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, "xxx");
-	tScore->color = vec3(1); //todo: fix changing color
+	std::string scoreStr = std::to_string(score);
+	while (scoreStr.length() < 3) {
+		scoreStr = "0" + scoreStr;
+	}
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
+	//tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, "xxx");
+	tScore->SetColor(vec3(1)); //todo: fix
 
 	for (int i = 0; i < lives; i++) {
 		std::string modelName = "AsteroidsShip";
