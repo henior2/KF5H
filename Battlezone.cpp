@@ -28,7 +28,7 @@ namespace Battlezone {
 	}
 
 	bool flag = false;
-	int hp = 100;
+	float hp;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -527,7 +527,7 @@ namespace Battlezone {
 			velocity *= (1 + speedBoost);
 			break;
 		case 1:
-			//hp += healthBoost; //waiting for Filip to make this
+			hp += healthBoost;
 			break;
 		case 2:
 			timeMultiplier *= (1 - timeDecrease);
