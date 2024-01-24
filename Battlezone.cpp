@@ -27,7 +27,6 @@ namespace Battlezone {
 		return signedAngleDeg;
 	}
 
-	const double PI = glm::pi<double>();
 	bool flag = false;
 	int lives = 3;
 
@@ -84,7 +83,7 @@ namespace Battlezone {
 	GameObject* plane;
 
 	GameObject* radar;
-	std::vector<GameObject*> spinningLines;
+	std::vector<GameObject*> sM_PInningLines;
 
 	std::vector<GameObject*> uiElements;
 
@@ -107,7 +106,7 @@ namespace Battlezone {
 
 	const float rotationMultiplier = -500.0f;
 	int camSpeed = 1;
-	float const velocity = 3.0f;
+	float velocity;
 	float const rotationMultiplier1 = 35;
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
@@ -214,11 +213,11 @@ namespace Battlezone {
 			if (enemyType[enemyIndex] == 1) {
 				shot(enemy->Transform.position + vec3(0, 2.535, 0), enemy->Transform.orientation, Gra);
 			}
-			else if(enemyType[enemyIndex]==2){
+			else if (enemyType[enemyIndex] == 2) {
 				shot_fast(enemy->Transform.position + vec3(0, 2.12, 0), enemy->Transform.orientation, Gra);
 			}
 			else if (enemyType[enemyIndex] == 3) {
-				shot_leonardo(enemy->Transform.position + vec3(0,.6, 0), enemy->Transform.orientation, Gra);
+				shot_leonardo(enemy->Transform.position + vec3(0, .6, 0), enemy->Transform.orientation, Gra);
 			}
 			enemyShotCooldowns[enemyIndex] = 4.0f;
 		}
@@ -282,10 +281,10 @@ namespace Battlezone {
 
 		// kamil forgor 💀 //stfu
 		auto* current = radarElements.back();
-			current->Stage[0].onTop = true;
-			current->ScaleTo(vec3(uiScale * 9, uiScale * 16, 0));
-			current->MoveTo(vec3(0, uiYOffset, 0));
-			current->Rotate(vec3(0, 180, 0));
+		current->Stage[0].onTop = true;
+		current->ScaleTo(vec3(uiScale * 9, uiScale * 16, 0));
+		current->MoveTo(vec3(0, uiYOffset, 0));
+		current->Rotate(vec3(0, 180, 0));
 
 		randomActionTimeLimit.push_back(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionLimit))); //x∈Q: [0;mRAL]
 		randomActionTimeCooldown.push_back(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionCooldown))); //x∈Q: [0;mRAC]
@@ -317,7 +316,7 @@ namespace Battlezone {
 	const float planeSpeedMultiplier = 10.0f;
 	float planeCooldown = 7.5f;
 	bool isPlane = false;
-	vec2 planeStartCoords = vec2(-1000,-1000);
+	vec2 planeStartCoords = vec2(-1000, -1000);
 	const float planeBounds = 175.0f;
 
 	GameObject* horizon;
@@ -336,9 +335,9 @@ namespace Battlezone {
 		const float moonAboveMountains = 5.0f; //how high the moon is above the mountains
 
 		for (int i = 0; i < mountainNumber; i++) {
-			double angle = 2 * PI * i / mountainNumber;
-			double nextAngle = 2 * PI * (i + 1) / mountainNumber;
-			
+			double angle = 2 * M_PI * i / mountainNumber;
+			double nextAngle = 2 * M_PI * (i + 1) / mountainNumber;
+
 			float yPos = minMountainHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxMountainHeight - minMountainHeight)));
 			push_back3(vx, distance * cos(angle), yPos, distance * sin(angle));
 			push_back3(vx, 0, 1, 0);
@@ -356,7 +355,7 @@ namespace Battlezone {
 
 		int countingOffset = mountainNumber * 2;
 		for (int i = 0; i < moonPointsNumber; i++) {
-			double angle = 2 * PI * i / moonPointsNumber;
+			double angle = 2 * M_PI * i / moonPointsNumber;
 
 			push_back3(vx, moonRadius * cos(angle), moonAboveMountains + maxMountainHeight + moonRadius * sin(angle), distance);
 			push_back3(vx, 0, 1, 0);
@@ -368,7 +367,7 @@ namespace Battlezone {
 
 		countingOffset += moonPointsNumber;
 		for (int i = 0; i < mountainNumber * 2; i++) {
-			double angle = PI * i / mountainNumber;
+			double angle = M_PI * i / mountainNumber;
 
 			push_back3(vx, distance * cos(angle), 0, distance * sin(angle));
 			push_back3(vx, 0, 1, 0);
@@ -396,7 +395,7 @@ namespace Battlezone {
 		int ver = rand() % (maxBaseVerticies - minBaseVerticies) + minBaseVerticies;
 		float radius = minRadius + (float)(rand()) / ((float)(RAND_MAX / (maxRadius - minRadius)));
 
-		for (int i = 0; i < lv-1; i++) {
+		for (int i = 0; i < lv - 1; i++) {
 			int noVxLvBw = i * ver;
 
 			float yModifier = (float)(rand()) / (static_cast <float> (RAND_MAX / levelMaxYOffset));
@@ -406,7 +405,7 @@ namespace Battlezone {
 			if (radius < minRadius) radius = minRadius;
 
 			for (int j = 0; j < ver; j++) {
-				double angle = 2 * PI * j / ver;
+				double angle = 2 * M_PI * j / ver;
 
 				float mxvtr = maxVertexOffset * radius;
 				float radiusModifier = -mxvtr + (float)(rand()) / ((float)(RAND_MAX / (mxvtr + mxvtr))); //i must have been high when i wrote this lmao
@@ -419,7 +418,7 @@ namespace Battlezone {
 				//last layer => topmost vertex
 				if (i == lv - 2) {
 					ind.push_back(j + noVxLvBw);
-					ind.push_back((lv-1)*ver);
+					ind.push_back((lv - 1) * ver);
 				}
 
 				//every layer before => layer above
@@ -459,7 +458,7 @@ namespace Battlezone {
 		}
 
 		obstacles.push_back(Gra->Create(vec3(x, 0.0f, z), vec3(0.0f, rand() % 360, 0.0f), vec3(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
-		
+
 		GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarT");
 		radarElements.push_back(rPointer);
 		radarElementsType.push_back(1);
@@ -476,14 +475,24 @@ namespace Battlezone {
 	const float pUAFCTime2 = .5f;
 
 	const std::string pUModels[] = { "Speed","Heart","Reload","Star","XP","Boost" };
-	std::vector<GameObject*> powerUpInside;
+	std::vector<GameObject*> powerUM_PInside;
 	std::vector<GameObject*> powerUpBox;
 	std::vector<GameObject*> powerUpAnimation;
 	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time), 5 - boost (no idea for it's purpose)
 
+	const float speedBoost = .05; //[5%]
+	const float healthBoost = 10; //idk maybe will be changed later
+	float timeMultiplier;
+	const float timeDecrease = .1; //[10%]
+	const float timeEffectLength = 10; //[10s (NOT real life time)]
+	float timeEffectLeft;
+	float scoreMultiplier;
+	const float scoreMultiplierChange = .1;
+	const float scoreChange = 150; //[150xp]
+	bool isMissleSelfTargeting;
 	void createPowerUp(float x, float y, float z, int type) {
-		powerUpInside.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUp"+pUModels[type]));
-		powerUpBox.push_back(Gra->Create(vec3(x,y,z), vec3(0.0f), vec3(pUScale), "PowerUpBox"));
+		powerUM_PInside.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUp" + pUModels[type]));
+		powerUpBox.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUpBox"));
 		powerUpType.push_back(type);
 
 		if (type == 2) {
@@ -506,10 +515,43 @@ namespace Battlezone {
 	float currentPUdYoTU = pUdYoTU; //...
 
 	// bro AT LEAST LEAVE A COMMENT 😫 //nuh
+
+	void collectPowerUp(GameObject* _inside, GameObject* _box, unsigned int _type) {
+		Gra->Destroy(_inside); Gra->Destroy(_box);
+
+		switch (_type) {
+		case 0:
+			velocity *= (1+speedBoost);
+			break;
+		case 1:
+			//hp += healthBoost; //waiting for Filip to make this
+			break;
+		case 2:
+			timeMultiplier *= (1 - timeDecrease);
+			timeEffectLeft = timeEffectLength;
+			break;
+		case 3:
+			scoreMultiplier *= (1 + scoreMultiplierChange);
+			break;
+		case 4:
+			//score += scoreChange; //waiting for Filip to make this as well
+			break;
+		case 5:
+			isMissleSelfTargeting = true;
+			break;
+		default:
+			throw std::invalid_argument("You might have forgotten to code what happens after collecting the PU. Chceck the `colleckPowerUp()` function.");
+		}
+	}
 }
 using namespace Battlezone;
 
 void Game::BattlezoneInit() {
+	velocity = 3.0f;
+	timeMultiplier = 1.0f;
+	isMissleSelfTargeting = false;
+	timeEffectLeft = 0;
+
 	shot_cool = 2;
 	resp_cool = 2;
 	lives = 3;
@@ -534,35 +576,35 @@ void Game::BattlezoneInit() {
 	std::vector<float> rVx;
 	std::vector<unsigned int> rInd;
 
-	//nvm I think it's not here
-	
+	//nvm I think it's not here //bro's having a bipolar disorder 💀
+
 	push_back3(rVx, 0);
 	push_back3(rVx, 0, 1, 0);
 
 	for (int i = 0; i < radarPoints; i++) {
-		float _angle = 2 * PI * i / radarPoints;
+		float _angle = 2 * M_PI * i / radarPoints;
 		rVx.push_back(radarRadius * cos(_angle));
 		rVx.push_back(radarRadius * sin(_angle));
 		rVx.push_back(0);
 
 		push_back3(rVx, 0, 1, 0);
 
-		push_back2(rInd, i+1, i+2);
+		push_back2(rInd, i + 1, i + 2);
 	}
 	rInd.pop_back();
 	rInd.push_back(1);
 
-	push_back3(rVx, radarRadius * cos(3*PI/4), radarRadius * sin(3*PI/4), 0);
+	push_back3(rVx, radarRadius * cos(3 * M_PI / 4), radarRadius * sin(3 * M_PI / 4), 0);
 	push_back3(rVx, 0, 1, 0);
 
-	push_back3(rVx, radarRadius * cos(PI/4), radarRadius * sin(PI/4), 0);
+	push_back3(rVx, radarRadius * cos(M_PI / 4), radarRadius * sin(M_PI / 4), 0);
 	push_back3(rVx, 0, 1, 0);
 
-	push_back2(rInd, 0, radarPoints+1);
-	push_back2(rInd, 0, radarPoints+2);
+	push_back2(rInd, 0, radarPoints + 1);
+	push_back2(rInd, 0, radarPoints + 2);
 
 	for (int i = 0; i < 4; i++) {
-		float _angle = PI * i / 2;
+		float _angle = M_PI * i / 2;
 
 		float _x = radarRadius * cos(_angle);
 		float _y = radarRadius * sin(_angle);
@@ -588,7 +630,7 @@ void Game::BattlezoneInit() {
 			throw(std::invalid_argument("how did you manage to go out of bounds of for-loop?!"));
 			break;
 		}
-		
+
 		push_back3(rVx, _x, _y, 0);
 		push_back3(rVx, 0, 1, 0);
 
@@ -599,7 +641,7 @@ void Game::BattlezoneInit() {
 
 	obstacles.clear();
 
-	spinningLines.clear();
+	sM_PInningLines.clear();
 
 	targetPos.clear();
 	targetOri.clear();
@@ -611,17 +653,17 @@ void Game::BattlezoneInit() {
 	targetOri.push_back(vec3(0.0f));
 
 	for (int i = 0; i < trailLinesNo; i++) {
-		GameObject* obj = Create(vec3(0.0f), vec3(0.0f, 0.0f, (90.0f + (float)(trailLinesNo) * linesSpace) - (float)(i) * linesSpace), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+		GameObject* obj = Create(vec3(0.0f), vec3(0.0f, 0.0f, (90.0f + (float)(trailLinesNo)*linesSpace) - (float)(i)*linesSpace), vec3(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 		float modifier = 1.0f - (float)(i) / (float)(trailLinesNo);
-		obj->Stage[0].opacity = modifier; 
-		obj->Stage[0].lineWidth = modifier; 
-		spinningLines.push_back(obj);
+		obj->Stage[0].opacity = modifier;
+		obj->Stage[0].lineWidth = modifier;
+		sM_PInningLines.push_back(obj);
 		uiElements.push_back(obj);
 		targetPos.push_back(vec3(0.0f));
 		targetOri.push_back(vec3(0.0f));
 	}
-	spinningLines[0]->Stage[0].opacity = 1.25f;
-	spinningLines[0]->Stage[0].lineWidth = 1.25f;
+	sM_PInningLines[0]->Stage[0].opacity = 1.25f;
+	sM_PInningLines[0]->Stage[0].lineWidth = 1.25f;
 	rtp = 0; //was meant to be used for radar, will be used as a global timing unit (no use in radar, used for pu's however)
 
 	przeciwnicy.clear();
@@ -631,7 +673,7 @@ void Game::BattlezoneInit() {
 	radarElements.clear();
 	radarElementsType.clear();
 
-	powerUpInside.clear();
+	powerUM_PInside.clear();
 	powerUpBox.clear();
 	powerUpType.clear();
 	powerUpAnimation.clear();
@@ -642,7 +684,7 @@ void Game::BattlezoneInit() {
 
 	for (auto& current : uiElements) {
 		current->Stage[0].onTop = true;
-		current->ScaleTo(vec3(uiScale*9,uiScale*16,0));
+		current->ScaleTo(vec3(uiScale * 9, uiScale * 16, 0));
 		current->MoveTo(vec3(0, uiYOffset, 0));
 		current->Rotate(vec3(0, 180, 0));
 	}
@@ -654,6 +696,13 @@ void Game::BattlezoneInit() {
 }
 
 void Game::Battlezone(float dt) {
+	dt *= timeMultiplier;
+	timeEffectLeft -= dt;
+	if (timeEffectLeft <= 0) {
+		timeEffectLeft = 0; 
+		timeMultiplier = 1.0f;
+	}
+
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
 			cooldown -= dt;
@@ -688,7 +737,7 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
 		camera->Position = vec3(0.0f, 0.0f, 0.0f);
 		camera->Yaw = -90.0f;
-		camera->Pitch = 0.0f;
+		camera->M_PItch = 0.0f;
 		camera->MoveCamera(FORWARD, 0.0f);
 		camera->RotateCamera(0.0f, 0.0f);
 	}
@@ -709,7 +758,7 @@ void Game::Battlezone(float dt) {
 	//todo: make a WORKING cam rot script
 
 	//shooting funtion
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0 && bulletsFired<=4) {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0 && bulletsFired <= 4) {
 		shot_cool = 2;
 		bulletsFired += 1;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
@@ -751,7 +800,7 @@ void Game::Battlezone(float dt) {
 	float temp_y = rand() % 361;
 
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
-		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0,temp_y,0), this,1);
+		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), this, 1);
 		resp_cool = 2;
 	}
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && resp_cool <= 0) {
@@ -767,7 +816,7 @@ void Game::Battlezone(float dt) {
 		resp_cool = 2;
 	}
 
-//Poruszanie i strzelanie przeciwników
+	//Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); i++) {
 			GameObject* current = przeciwnicy[i];
@@ -778,14 +827,14 @@ void Game::Battlezone(float dt) {
 			//random actions
 			randomActionTimeCooldown[i] -= dt;
 			if (randomActionTimeCooldown[i] <= 0) {
-				if(!randomActionType[i]) randomActionType[i] = rand() % 4 + 1;
+				if (!randomActionType[i]) randomActionType[i] = rand() % 4 + 1;
 				randomActionTimeLimit[i] -= dt;
 				if (randomActionTimeLimit[i] <= 0) {
 					randomActionTimeCooldown[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionCooldown));
 					randomActionTimeLimit[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionLimit));
 					randomActionType[i] = 0;
 				}
-			}  
+			}
 
 			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z))) {
 				if (lives > 1) {
@@ -801,7 +850,7 @@ void Game::Battlezone(float dt) {
 			switch (randomActionType[i]) {
 			case 0:
 				_angle = 0;
-				current->RotateTo(vec3(0.0f, atan2(direction.x, direction.z) * 180.0f / PI, 0.0f));
+				current->RotateTo(vec3(0.0f, atan2(direction.x, direction.z) * 180.0f / M_PI, 0.0f));
 				break;
 			case 1:
 				_angle = -360.0f * rotationsPerSecond * dt; // -360deg * 0.5 = 180deg to the left each second (2s/full rotation)
@@ -836,13 +885,13 @@ void Game::Battlezone(float dt) {
 	//power-ups' animations
 	bool isTimestamp = false;
 	if (rtp > .25f * fullRotationTime && rtp < .75f * fullRotationTime) isTimestamp = true;
-	
+
 	currentPUdYoTU = pUdYoTU;
 	if (!isTimestamp) currentPUdYoTU = -pUdYoTU;
 
 	int pUAnimationIt = 0;
-	for (int i = 0; i < powerUpInside.size(); i++) {
-		GameObject* inside = powerUpInside[i];
+	for (int i = 0; i < powerUM_PInside.size(); i++) {
+		GameObject* inside = powerUM_PInside[i];
 		GameObject* box = powerUpBox[i];
 
 		//rotato :D
@@ -861,7 +910,7 @@ void Game::Battlezone(float dt) {
 
 			if (pU2AnimationCooldown >= pUAFCTime2) {
 				pU2AnimationCooldown = 0.0f;
-				
+
 				int aState = animation->activeStage;
 				if (++aState > 3) aState = 0;
 				animation->activeStage = aState;
@@ -869,6 +918,9 @@ void Game::Battlezone(float dt) {
 
 			pUAnimationIt++;
 		}
+
+		//collisions: player/power-up
+		if (collisionCircle(vec2(pPos.x, pPos.z), vec2(inside->Transform.position.x, inside->Transform.position.z))) collectPowerUp(inside, box, powerUpType[i]); //someone optimize this please xD
 	}
 
 	//ufo
@@ -881,18 +933,18 @@ void Game::Battlezone(float dt) {
 		vec3 ufoPos = ufo->Transform.position;
 		if (ufoPos.y > 0.0f)
 			ufo->Transform.position.y -= ufoSpeed * dt;
-		else if (ufoPos.y < 0.0f) 
+		else if (ufoPos.y < 0.0f)
 			ufo->Transform.position.y = 0;
 		else {
 			if (ufoPos.x > ufoTargetPos.x - 5.0f && ufoPos.x < ufoTargetPos.x + 5.0f && ufoPos.z > ufoTargetPos.y - 5.0f && ufoPos.z < ufoTargetPos.y + 5.0f) {
 				if (ufoMovesLeft > 0) {
 					ufoMovesLeft -= 1;
-					ufoTargetPos = vec2(rand() % 2*mapSize - mapSize, rand() % 2 * mapSize - mapSize);
+					ufoTargetPos = vec2(rand() % 2 * mapSize - mapSize, rand() % 2 * mapSize - mapSize);
 				}
 				else {
 					isUfo = false;
 					ufo->Transform.position = vec3(-1000, planeHeight, -1000);
-					ufoCooldown = 35.0f; 
+					ufoCooldown = 35.0f;
 				}
 			}
 			else {
@@ -901,7 +953,7 @@ void Game::Battlezone(float dt) {
 				else if (dPos.x < -ufoSpeed) dPos.x = -ufoSpeed;
 				if (dPos.y > ufoSpeed) dPos.y = ufoSpeed;
 				else if (dPos.y < -ufoSpeed) dPos.y = -ufoSpeed;
-				ufo->Move(vec3(dPos.x,0.0f,dPos.y) * dt);
+				ufo->Move(vec3(dPos.x, 0.0f, dPos.y) * dt);
 			}
 		}
 	}
@@ -911,7 +963,7 @@ void Game::Battlezone(float dt) {
 	if (planeCooldown <= 0) {
 		planeStartCoords.x = planeBounds;
 		if (rand() % 2) planeStartCoords.x *= -1;
-		planeStartCoords.y = rand() % (int)(2*planeBounds) - planeBounds;
+		planeStartCoords.y = rand() % (int)(2 * planeBounds) - planeBounds;
 
 		if (rand() % 2) {
 			float temp = planeStartCoords.x;
@@ -924,7 +976,7 @@ void Game::Battlezone(float dt) {
 		float _angle;
 		vec2 direction = normalize(vec2(pPos.x, pPos.z) - planeStartCoords);
 		_angle = atan2(direction.x, direction.y);
-		_angle = _angle * 180.0f / PI;
+		_angle = _angle * 180.0f / M_PI;
 		plane->RotateTo(vec3(0.0f, _angle, 0.0f));
 
 		isPlane = true;
@@ -934,16 +986,16 @@ void Game::Battlezone(float dt) {
 		plane->Move(plane->Front * dt * planeSpeedMultiplier);
 
 		vec2 planePos = vec2(plane->Transform.position.x, plane->Transform.position.z);
-		if (abs(planePos.x) > planeBounds * 1.25 || abs(planePos.y) > planeBounds * 1.25) { 
+		if (abs(planePos.x) > planeBounds * 1.25 || abs(planePos.y) > planeBounds * 1.25) {
 			plane->MoveTo(vec3(-1000, 1000, -1000));
-			isPlane = false; 
+			isPlane = false;
 		}
 	}
 
 	//adjusting ui elements' pos
 	//adjusting scanner lines' rotation
-	for (int i = 0; i < spinningLines.size(); i++) {
-		GameObject* line = spinningLines[i];
+	for (int i = 0; i < sM_PInningLines.size(); i++) {
+		GameObject* line = sM_PInningLines[i];
 
 		line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
 		targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
@@ -956,7 +1008,7 @@ void Game::Battlezone(float dt) {
 
 	const float radarRange = 10.0f; // todo: move it somewhere else
 
-	float angleRad = pOri.y * PI / 180.0f;
+	float angleRad = pOri.y * M_PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 	for (int i = 0; i < radarElements.size(); i++) {
 		int type = radarElementsType[i];
@@ -966,54 +1018,13 @@ void Game::Battlezone(float dt) {
 
 		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
 		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];
-		else if (type == 2 && !powerUpInside.empty()) current = powerUpInside[iterator];
+		else if (type == 2 && !powerUM_PInside.empty()) current = powerUM_PInside[iterator];
 		//else if (type == 3 && !rockets.empty()) current = rockets[iterator];
 		else throw std::invalid_argument("check deez values mate");
 
 		float dx = current->Transform.position.x - pPos.x;
 		float dz = current->Transform.position.z - pPos.z;
 
-		// github copilot moment
-		//dx = dx * cos(angleRad) - dz * sin(angleRad);
-		//dz = dx * sin(angleRad) + dz * cos(angleRad);
-
-		// todo: discover why it looks wrong without radarRange
-		//dx = (dx / mapSize) * radarRadius / radarRange;
-		//dz = (dz / mapSize) * radarRadius / radarRange;
-
-		/*dx /= 50;
-		dz /= 50;
-
-		float dist = dx * dx + dz * dz;
-
-		if (dist >= 1) {
-			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
-			continue;
-		}
-		else {
-			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
-		}
-
-		float deg = glm::dot(player->Front, vec3(dx, 0, dz)); // oh no. The cos(a) is not equal to something else(I don't know what). How is that possible. It took me 2 h to figure that out
-
-		deg = acos(deg);
-		std::string t = std::to_string(deg);
-		t += ", " + std::to_string(dx) + ", " + std::to_string(dz);
-		glfwSetWindowTitle(window, t.c_str());
-
-		//bomboclat - Adam Cisek
-
-		dx = sqrt(dist) * cos(deg);
-		dz = sqrt(dist) * sin(deg);*/
-
-		//float rdx = dx * cos(player->Transform.orientation.y) + dz * sin(player->Transform.orientation.y);
-		//float rdz = -dx * sin(player->Transform.orientation.y) + dz * cos(player->Transform.orientation.y);
-
-		//float angleCos = glm::dot(glm::normalize(player->Front), glm::normalize(vec3(dx, 0, dz)));
-
-		//glfwSetWindowTitle(window, std::to_string(angleCos).c_str());
-
-		//float angle = acos(angleCos);
 
 		float angle = signed_angle_between_vectors(player->Front, vec3(dx, 0, dz), vec3(0, 1, 0));
 
@@ -1029,32 +1040,16 @@ void Game::Battlezone(float dt) {
 			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
 		}
 
-		glfwSetWindowTitle(window, std::to_string(dist).c_str());
-
-
-
 		angle = glm::radians(angle);
 		dx = dist * sin(angle);
 		dz = -dist * cos(angle);
-
-		glfwSetWindowTitle(window, std::to_string(dx).c_str());
-
-		//dx *= radarRadius;
-		//dz *= radarRadius; // Ja nie moge. Radar radius tak skamuje że spędziłem jakieś 30 min myśląc czemu to nie działa
 
 		dx *= 0.2;
 		dz *= 0.2;
 
 		//todo: add out-of-bounds checking condition
-
-		//targetPos[1 + trailLinesNo + i].x = dx; 
-		//targetPos[1 + trailLinesNo + i].y = dz;
-		//targetPos[1 + trailLinesNo + i].z = 0.0f;
-		
-		// fun fact: kamil forgot to add this line so I spent like 2 hours trying to figure out why the radar is broken
-		//radarElements[iterator]->MoveTo(vec3(-dx, uiYOffset + dz, 0.0f));
 		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
-		
+
 		iterator++;
 	}
 
@@ -1063,17 +1058,17 @@ void Game::Battlezone(float dt) {
 	float dOutofbounds;
 	if (absPPos.x > mapSize || absPPos.y > mapSize) {
 		glitchEffectRefreshRate -= dt;
-		
+
 		float isNeg = 1.0f;
 		if (absPPos.x > mapSize) {
 			if (pPos.x < 0) isNeg = -1.0f;
 			dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
-			if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance)*isNeg;
+			if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance) * isNeg;
 		}
 		else {
 			if (pPos.z < 0) isNeg = -1.0f;
 			dOutofbounds = (absPPos.y - mapSize) / maxOutOfBoundsDistance;
-			if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance)*isNeg;
+			if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance) * isNeg;
 		}
 
 		if (glitchEffectRefreshRate <= 0) {
@@ -1084,9 +1079,9 @@ void Game::Battlezone(float dt) {
 
 			glitchEffectRefreshRate = .1f;
 			for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
-				GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+				GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 				current->Stage[0].onTop = true;
-				current->MoveTo(vec3(-1.1f+ static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f+static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))),-.1));
+				current->MoveTo(vec3(-1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -.1));
 				__lines.push_back(current);
 			}
 		}
@@ -1099,7 +1094,7 @@ void Game::Battlezone(float dt) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .5f;
-		createPowerUp(rand() % 100 - 50, 0, rand() % 100 - 50, rand()%(sizeof(pUModels)/sizeof(std::string)));
+		createPowerUp(rand() % 100 - 50, 0, rand() % 100 - 50, rand() % (sizeof(pUModels) / sizeof(std::string)));
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
@@ -1108,8 +1103,8 @@ void Game::Battlezone(float dt) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS && resp_cool <= 0) {
 		resp_cool = .1f;
-		player->Transform.position = vec3(120,0,-120);
-		camera->Position = vec3(120,0,-120);
+		player->Transform.position = vec3(120, 0, -120);
+		camera->Position = vec3(120, 0, -120);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
