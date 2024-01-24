@@ -9,6 +9,9 @@ namespace Asteroids {
 	std::vector<GameObject*> bullets;
 	std::vector<GameObject*> stars;
 
+	const std::vector<vec2> __enemyVx = { vec2(-1.0, 0.0), vec2(1.0, 0.0), vec2(-0.6, -0.3), vec2(0.6, -0.3), vec2(-0.6, 0.3), vec2(0.6, 0.3), vec2(-0.5, 0.7), vec2(0.5, 0.7) };
+	const std::vector<unsigned int> __enemyInd = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 2, 1, 3, 0, 4, 1, 5, 4, 6, 5, 7 };
+
 	Tekst2d* tScore;
 	std::vector<GameObject*> tLives;
 
@@ -111,6 +114,9 @@ namespace Asteroids {
 	std::vector<vec3> eBDPos;
 
 	int bigEnemyIterator;
+
+	const int smallUfoXP = 990;
+	const int bigUfoXP = 200;
 
 	void checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
 		if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0));
@@ -248,7 +254,7 @@ namespace Asteroids {
 		return temp;
 	}
 
-	std::vector<glm::vec2> breakIntoM_PIeces(std::vector<unsigned int> ind = std::vector<unsigned int>{}, std::vector<glm::vec2> vx = std::vector<glm::vec2>{}) {
+	std::vector<glm::vec2> breakIntoPieces(std::vector<unsigned int> ind = std::vector<unsigned int>{}, std::vector<glm::vec2> vx = std::vector<glm::vec2>{}) {
 		float line[2][2];
 		std::vector<glm::vec2> newVx;
 
@@ -281,10 +287,15 @@ namespace Asteroids {
 
 	vec2 pPos;
 	//please ignore how messy this code is, i was tired
-	void death(bool tp = false, vec3 _pos = ship->Transform.position, vec3 _rot = ship->Transform.orientation) {
-		isDead = true;
-		std::vector<vec2> vxs = breakIntoM_PIeces();
-		ship->MoveTo(vec3(-10000, -10000, 0));
+	void death(bool tp = false, vec3 _pos = ship->Transform.position, vec3 _rot = ship->Transform.orientation, bool isShip = true, GameObject* obj = ship, float scale = 5, std::vector<vec2> _vx = {}, std::vector<unsigned int> _ind = {}) {
+		if (isShip) {
+			isDead = true;
+			ship->MoveTo(vec3(-10000, -10000, 0));
+		}
+		else {
+			Gra->Destroy(obj);
+		}
+		std::vector<vec2> vxs = breakIntoPieces(_ind,_vx);
 		int random = rand() % (int)(vxs.size() * .8);
 		int size = vxs.size();
 		for (int i = 0; i < size / 2; i++) {
@@ -298,7 +309,7 @@ namespace Asteroids {
 					vx1.push_back(vxs[i * 2 + j + k].x); vx1.push_back(vxs[i * 2 + j + k].y); vx1.push_back(0);
 					vx1.push_back(1); vx1.push_back(1); vx1.push_back(1);
 				}
-				debris.push_back(Gra->Create(_pos, _rot, vec3(5), vx1, std::vector<unsigned int>{0, 1}));
+				debris.push_back(Gra->Create(_pos, _rot, vec3(scale), vx1, std::vector<unsigned int>{0, 1}));
 			}
 		}
 		for (int i = 0; i < debris.size(); i++) {
@@ -311,6 +322,12 @@ namespace Asteroids {
 		for (auto& obj : vec) {
 			Gra->Destroy(obj);
 		}
+	}
+
+	Tekst2d* refreshText(Tekst2d* text, std::string str) {
+		Gra->DestroyTekst(text);
+		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, str);
+		return text;
 	}
 };
 
@@ -401,8 +418,8 @@ void Game::AsteroidsInit(bool again) {
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
-	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
-	//tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, 1, "xxx");
+	if (!again) tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
+	else tScore = refreshText(tScore, scoreStr);
 	tScore->SetColor(vec3(1)); //todo: fix
 
 	for (int i = 0; i < lives; i++) {
@@ -609,10 +626,14 @@ void Game::Asteroids(float dt) {
 		}
 
 		//collisions - enemy/bullets
-		for (auto& enemy : enemies) {
+		for (int j = 0; j < enemies.size(); j++) {
+			GameObject* enemy = enemies[j];
 			if (!isDead && isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
-				//debug - will destroy
-				Game::ChangeState(Game_TEST);
+				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[j]);
+				enemies.erase(enemies.begin() + j);
+				j--;
+				score += smallUfoXP;
+				tScore = refreshText(tScore, std::to_string(score));
 			}
 		}
 	}
