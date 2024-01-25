@@ -114,10 +114,12 @@ namespace Battlezone {
 	float const rotationMultiplier1 = 35;
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
+	std::vector<GameObject*> rakiety;
 	float shot_cool = 2;
 	float resp_cool = 2;
 	const float fast_tank_speed = 4;
 	const float tank_speed = 2;
+	const float rocket_speed = 6;
 
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
@@ -289,14 +291,15 @@ namespace Battlezone {
 		}
 		else if (type == 4) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
-			przeciwnicy.push_back(enemy);
+			rakiety.push_back(enemy);
+			
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(4.20f);
+			enemyShotCooldowns.push_back(0.0f);
 
-			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
+			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsShip");
 			rPointer->color = vec3(0, 1, 0);
 			radarElements.push_back(rPointer);
-			radarElementsType.push_back(0);
+			radarElementsType.push_back(3);
 			uiElements.push_back(rPointer);
 			targetPos.push_back(vec3(0.0f));
 			targetOri.push_back(vec3(0.0f));
@@ -939,7 +942,7 @@ void Game::Battlezone(float dt) {
 			current->Rotate(vec3(0, _angle, 0));
 
 			// bro what xDD
-			// i'd assume that this is supposed to move the tanks, rigth?
+			// i'd assume that this is supposed to move the tanks, right?
 			if (distance.x * distance.x + distance.z * distance.z > 225 && !randomActionType[i] || randomActionType[i] == 3) { //move only for case 0 or 3
 				float _sM = fast_tank_speed;
 				if (enemyType[i] != 2) _sM = tank_speed;
@@ -953,6 +956,28 @@ void Game::Battlezone(float dt) {
 				enemyShoot(current);
 				enemyShotCooldowns[i] = 4.20;
 			}
+		}
+	}
+
+	// poruszanie rakiet
+	if (!rakiety.empty()) {
+		for (int i = 0; i < rakiety.size(); i++) {
+			GameObject* current = rakiety[i];
+			vec3 enemyPos = current->Transform.position;
+			vec3 direction = normalize(pPos - enemyPos);
+			vec3 distance = pPos - enemyPos;
+
+			//Player enemy collision
+			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z), 5.0f, 2.0f)) {
+				hp -= 25;
+			}
+
+			// calculating rotation angle 
+			current->RotateTo(vec3(0.0f, atan2(direction.x, direction.z) * 180.0f / M_PI, 0.0f));
+			
+			// move the shit
+			current->Move(vec3(0, 0, -1) * rocket_speed * dt);
+
 		}
 	}
 
@@ -1093,7 +1118,7 @@ void Game::Battlezone(float dt) {
 		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
 		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];
 		else if (type == 2 && !powerUM_PInside.empty()) current = powerUM_PInside[iterator];
-		//else if (type == 3 && !rockets.empty()) current = rockets[iterator];
+		else if (type == 3 && !rakiety.empty()) current = rakiety[iterator];
 		else throw std::invalid_argument("check deez values mate");
 
 		float dx = current->Transform.position.x - pPos.x;
