@@ -7,11 +7,12 @@ namespace Tempest {
 	float debugCooldown = .1f;
 	int lastTSN;
 	int lvlDif;
+	int type;
 	std::vector <GameObject*> tunnel;
+	GameObject* blaster;
 	std::vector <vec3> move;
 	std::vector <vec3> point;
 	int position;
-	int type;
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
 		vec.push_back(a1);
 		vec.push_back(a2);
@@ -55,7 +56,6 @@ namespace Tempest {
 
 		return signedAngleDeg;
 	}
-
 	int findsmallest(std::vector <vec3> a) {
 		int smallest = 0;
 		for (int i = 0; i < a.size(); i++) {
@@ -63,8 +63,8 @@ namespace Tempest {
 		}
 		return smallest;
 	}
-
-	void points_move_list(std::vector <vec3> point, std::vector <vec3>& move, int type) {
+	void points_move_list(std::vector <vec3>& move, int type) {
+		move.clear();
 		if (type == 1)
 		{
 			move.push_back(point[point.size() - 1]);
@@ -86,8 +86,13 @@ namespace Tempest {
 			}
 		}
 	}
+	void shipspawn() {
+		vec3 a = move[0], b = move[1];
+		blaster = Gra->Create(vec3(a.x / 2, a.y / 2, -25), vec3(0, 0, signed_angle_between_vectors(a, b, vec3(0, 0, 1))), vec3(glm::length(b - a)), "tempest_ship");
+	}
 
-	void tunelspawn(int lvlDif, int& lastTSN, std::vector <vec3>& point, int& type) {
+	void tunelspawn( int& lastTSN, std::vector <vec3>& point, int& type) {
+		point.clear();
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -129,7 +134,6 @@ namespace Tempest {
 
 		switch (type) {
 		case 0:
-
 			for (int i = 0; i < tunnelSidesNo; i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
 				float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
@@ -163,7 +167,7 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2); //points
-						if (j == 0) point.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2));
+						if (k == 0) point.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2));
 						if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 						else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
 						else push_back3(v, 0, 0, 1); //color (blue)
@@ -205,38 +209,44 @@ namespace Tempest {
 			for (int i = 0; i < points.size() * 2; i++) {
 				push_back2(id, i, i + points.size() * 2);
 			}
+			
 			break;
 
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
 		}
 
+		points_move_list(move, type);
 		lastTSN = tunnelSidesNo;
 		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
+		shipspawn();
 	}
 
-	void shipmovement(bool r_or_l, int& position, GameObject* ship) {
-		points_move_list(point, move, type);
-		vec3 a, b;
+	void shipmovement(bool right, int& position) {
+		vec3 a = move[position], b;
+		if (right && position == point.size() - 1) position = 0;
+		else if (!right && position == 0) position = point.size() - 1;
+		else if (right) position++;
+		else position--;
+		b = move[position];
 
-
-		ship->MoveTo(vec3(b.x / 2, b.y / 2, b.z / 2));
-		ship->ScaleTo(vec3(glm::length(b - a)));
-		double angle = signed_angle_between_vectors(a, b, vec3(0, 0, 1));//czy dobrze ostatni
-		ship->Rotate(vec3(0, 0, angle));
-
+		blaster->MoveTo(vec3(b.x / 2, b.y / 2, b.z));
+		blaster->ScaleTo(vec3(glm::length(b - a)));
+		blaster->Rotate(vec3(0, 0, signed_angle_between_vectors(a, b, vec3(0, 0, 1))));
 	}
+	
 }
 using namespace Tempest;
 
 void Game::TempestInit() {
 	debugCooldown = .1f;
-
 	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 	tunnel.clear();
-	
-	GameObject* blaster = Create(vec3(0, 0, -25), vec3(0), vec3(1, 1, 1), "tempest_ship");
+	position = 0;
+
+	tunelspawn(lastTSN, point, type);
+	points_move_list(move, type);
 }
 
 void Game::Tempest(float dt) {
@@ -245,14 +255,13 @@ void Game::Tempest(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
 		lvlDif++;
-		if (!tunnel.empty()) {
-			for (auto& c : tunnel) {
-				Destroy(c);
-			}
-			tunnel.clear();
+		for (auto& c : tunnel) {
+			Destroy(c);
 		}
-
-		tunelspawn(lvlDif, lastTSN, point, type);
+		tunnel.clear();
+		Destroy(blaster);
+		tunelspawn(lastTSN, point, type);
+		points_move_list(move, type);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
