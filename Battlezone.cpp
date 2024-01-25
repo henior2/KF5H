@@ -222,6 +222,12 @@ namespace Battlezone {
 		}
 	}
 
+	Tekst2d* refreshText(Tekst2d* text, std::string str) {
+		Gra->DestroyTekst(text);
+		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, str);
+		return text;
+	}
+
 	void enemyShoot(GameObject* enemy) {
 		int enemyIndex = -1;
 		if (!przeciwnicy.empty()) {
@@ -854,6 +860,8 @@ void Game::Battlezone(float dt) {
 			//Enemy bullet collision
 			for (int j = 0; j < przeciwnicy.size(); j++) {
 				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z),2,2)){
+					score += 200 * scoreMultiplier;
+					tScore = refreshText(tScore, std::to_string(score));
 					//Usuwanie pocisku
 					Destroy(current);
 					pociski_gracza.erase(pociski_gracza.begin() + j);
