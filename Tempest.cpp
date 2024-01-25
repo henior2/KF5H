@@ -9,7 +9,10 @@ namespace Tempest {
 	int lastTSN;
 	int lvlDif;
 	std::vector <GameObject*> tunnel;
-
+	std::vector <vec3> move;
+	std::vector <vec3> point;
+	int position;
+	int type;
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
 		vec.push_back(a1);
 		vec.push_back(a2);
@@ -28,11 +31,6 @@ namespace Tempest {
 		vec.push_back(a1);
 		vec.push_back(a1);
 		vec.push_back(a1);
-	}
-
-	bool boolfunc(vec3 a, vec3 b) {
-		if (a.y > b.y) return true;
-		else return false;
 	}
 
 	float signed_angle_between_vectors(const glm::vec3& A, const glm::vec3& B, const glm::vec3& axis) {
@@ -59,15 +57,38 @@ namespace Tempest {
 		return signedAngleDeg;
 	}
 	
-	void points_move_list(std::vector <float> vec, std::vector <vec3>& points) {
-		std::vector <vec3> hlp;
-		for (int i = 0; i < vec.size(); i+=6) {
-			hlp.push_back(vec3(vec[i], vec[i + 1],0));
+	int findsmallest(std::vector <vec3> a) {
+		int smallest = 0;
+		for (int i = 0; i < a.size(); i++) {
+			if (a[smallest].y > a[i].y) smallest = i;
 		}
-		std::sort(hlp.begin(), hlp.end(), boolfunc);
+		return smallest;
 	}
 
-	void tunelspawn(int lvlDif, int& lastTSN ) {//std::vector <vec3>& points2
+	void points_move_list(std::vector <vec3> point, std::vector <vec3>& move, int type) {
+		if (type == 1) 
+		{
+			move.push_back(point[point.size()-1]);
+			for (int i = point.size() / 2; i >= 0; i--) {
+				move.push_back(point[i]);
+			}
+			for (int i = point.size() / 2 + 1; i < point.size() - 1; i) {
+				move.push_back(point[i]);
+			}
+		}
+		else {
+			int sid = findsmallest(point);
+			move.push_back(point[sid]);
+			for (int i = sid - 1; i >= 0; i--) {
+				move.push_back(point[i]);
+			}
+			for (int i = sid + 1; i < point.size(); i++) {
+				move.push_back(point[i]);
+			}
+		}
+	}
+
+	void tunelspawn(int lvlDif, int& lastTSN, std::vector <vec3>& point, int& type) {
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -77,7 +98,6 @@ namespace Tempest {
 			tunnelSidesNo = rand() % 5 + 5;
 		} while (tunnelSidesNo == lastTSN);
 
-		int type;
 		int type2;
 		if (lvlDif < 21) type = 0;
 		else if (lvlDif < 51) {
@@ -123,6 +143,7 @@ namespace Tempest {
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
 					push_back3(v, points[i].x, points[i].y, -16.5f * (j + 1) + 2); //points
+					if (j == 0) point.push_back(vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2));
 					if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
 					else push_back3(v, 0, 0, 1); //color (blue)
 				}
@@ -143,6 +164,7 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2); //points
+						if (j == 0) point.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2));
 						if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 						else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
 						else push_back3(v, 0, 0, 1); //color (blue)
@@ -194,10 +216,11 @@ namespace Tempest {
 			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
 
-	void shipmovement(bool r_or_l, vec3& llenght, std::vector <vec3> points) {
-		
-		
+	void shipmovement(bool r_or_l, int& position) {
+		points_move_list(point, move, type);
+
 	}
+
 	}
 
 using namespace Tempest;
@@ -208,7 +231,6 @@ void Game::TempestInit() {
 	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 	vec3 llenght(0, 0, 0);
-
 	tunnel.clear();
 	
 	GameObject* blaster = Create(vec3(0, 0, -25), vec3(0), vec3(1, 1, 1), "tempest_ship");
@@ -227,7 +249,7 @@ void Game::Tempest(float dt) {
 			tunnel.clear();
 		}
 
-		tunelspawn(lvlDif,lastTSN);
+		tunelspawn(lvlDif, lastTSN, point, type);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
