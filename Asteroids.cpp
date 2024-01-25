@@ -21,9 +21,10 @@ namespace Asteroids {
 	std::vector<vec2> debrisDirection;
 	std::vector<float> debrisRotation;
 	float respawnCooldown = 5.0f;
-	const float debrisSpeedMultiplier = 10.0f;
-	const float maxDebrisRotationMultiplier = 12.5f;
-	std::vector<float> debrisTimeLeft;
+	const float debrisSpeedMultiplier = 25.0f;
+	const float maxDebrisRotationMultiplier = 25.0f;
+	const float playerDebrisSpeedMultiplier = 10.0f;
+	std::vector<int> playersDebris;
 
 	const int camW = 160;
 	const int camH = 90;
@@ -118,11 +119,13 @@ namespace Asteroids {
 
 	const int ufoXP[] = { 990,200 }; // small/big
 
-	void checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
-		if (current->Transform.position.y > bounds.y) current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0));
-		if (current->Transform.position.y < -bounds.y) current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));
-		if (current->Transform.position.x > bounds.x) current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));
-		if (current->Transform.position.x < -bounds.x) current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));
+	bool checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
+		bool flag = false;
+		if (current->Transform.position.y > bounds.y) {current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0)); flag = true;}
+		if (current->Transform.position.y < -bounds.y) {current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0)); flag = true;}
+		if (current->Transform.position.x > bounds.x) {current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0)); flag = true;}
+		if (current->Transform.position.x < -bounds.x) {current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0)); flag = true;}
+		return flag;
 	}
 
 	void spawnAsteroids(int asteroidsNum, unsigned int type) {
@@ -296,7 +299,7 @@ namespace Asteroids {
 			Gra->Destroy(obj);
 		}
 		std::vector<vec2> vxs = breakIntoPieces(_ind,_vx);
-		int random = rand() % (int)(vxs.size() * .8);
+		int random = rand() % (int)(vxs.size() * .2);
 		int size = vxs.size();
 		for (int i = 0; i < size / 2; i++) {
 			std::vector<float> vx1;
@@ -310,12 +313,12 @@ namespace Asteroids {
 					vx1.push_back(1); vx1.push_back(1); vx1.push_back(1);
 				}
 				debris.push_back(Gra->Create(_pos, _rot, vec3(scale), vx1, std::vector<unsigned int>{0, 1}));
+				if (isShip) { debris[debris.size() - 1]->SetColor(vec3(1,0,0)); playersDebris.push_back(debris.size() - 1); }
 			}
 		}
 		for (int i = 0; i < debris.size(); i++) {
 			debrisDirection.push_back(vec2(-1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))), -1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))))); //x∈Q:[-1;1]
 			debrisRotation.push_back((-maxDebrisRotationMultiplier + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * maxDebrisRotationMultiplier)))));
-			debrisTimeLeft.push_back(respawnCooldown);
 		}
 	}
 
@@ -405,7 +408,7 @@ void Game::AsteroidsInit(bool again) {
 	enemyShootCooldown.clear();
 	eBDPos.clear();
 	debrisDirection.clear();
-	debrisTimeLeft.clear();
+	playersDebris.clear();
 	tLives.clear();
 
 	if (!again) {
@@ -713,15 +716,15 @@ void Game::Asteroids(float dt) {
 
 	for (int i = 0; i < debris.size(); i++) {
 		GameObject* current = debris[i];
-		current->Move(vec3(debrisDirection[i], 0) * dt * debrisSpeedMultiplier);
+		float multiplier = debrisSpeedMultiplier;
+		bool isPlayers = false;
+		if (std::find(playersDebris.begin(), playersDebris.end(), i) != playersDebris.end()) { multiplier = playerDebrisSpeedMultiplier; isPlayers = true; }
+		current->MoveGlobal(vec3(debrisDirection[i], 0) * dt * multiplier);
 		current->Rotate(vec3(0, 0, 1) * debrisRotation[i] * dt);
-		checkBounds(current);
 
-		debrisTimeLeft[i] -= dt;
-		if (debrisTimeLeft[i] <= 0) {
+		if (checkBounds(current) && !isPlayers) {
 			Destroy(current);
 			debris.erase(debris.begin() + i);
-			debrisTimeLeft.erase(debrisTimeLeft.begin() + i);
 			debrisDirection.erase(debrisDirection.begin() + i);
 			debrisRotation.erase(debrisRotation.begin() + i);
 		}
