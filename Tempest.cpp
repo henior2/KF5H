@@ -55,7 +55,7 @@ namespace Tempest {
 
 		return signedAngleDeg;
 	}
-	
+
 	int findsmallest(std::vector <vec3> a) {
 		int smallest = 0;
 		for (int i = 0; i < a.size(); i++) {
@@ -65,9 +65,9 @@ namespace Tempest {
 	}
 
 	void points_move_list(std::vector <vec3> point, std::vector <vec3>& move, int type) {
-		if (type == 1) 
+		if (type == 1)
 		{
-			move.push_back(point[point.size()-1]);
+			move.push_back(point[point.size() - 1]);
 			for (int i = point.size() / 2; i >= 0; i--) {
 				move.push_back(point[i]);
 			}
@@ -205,29 +205,28 @@ namespace Tempest {
 			for (int i = 0; i < points.size() * 2; i++) {
 				push_back2(id, i, i + points.size() * 2);
 			}
-				break;
+			break;
 
 		default:
 			throw std::invalid_argument("invalid arg for tunnel type (" + std::to_string(type) + ")");
-			}
-
-			lastTSN = tunnelSidesNo;
-			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
+
+		lastTSN = tunnelSidesNo;
+		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
+	}
 
 	void shipmovement(bool r_or_l, int& position, GameObject* ship) {
 		points_move_list(point, move, type);
 		vec3 a, b;
 
 
-		ship->MoveTo(b / 2);//czemu b³¹d?
-		ship->ScaleTo(glm::length(b - a));// cz nie mozna tak?
+		ship->MoveTo(vec3(b.x / 2, b.y / 2, b.z / 2));
+		ship->ScaleTo(vec3(glm::length(b - a)));
 		double angle = signed_angle_between_vectors(a, b, vec3(0, 0, 1));//czy dobrze ostatni
-		ship->Rotate(angle);
-	}
+		ship->Rotate(vec3(0, 0, angle));
 
 	}
-
+}
 using namespace Tempest;
 
 void Game::TempestInit() {
@@ -235,7 +234,6 @@ void Game::TempestInit() {
 
 	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
-	vec3 llenght(0, 0, 0);
 	tunnel.clear();
 	
 	GameObject* blaster = Create(vec3(0, 0, -25), vec3(0), vec3(1, 1, 1), "tempest_ship");
