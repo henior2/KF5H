@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "algorithm"
 
 using namespace glm;
 
@@ -216,9 +215,15 @@ namespace Tempest {
 			tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		}
 
-	void shipmovement(bool r_or_l, int& position) {
+	void shipmovement(bool r_or_l, int& position, GameObject* ship) {
 		points_move_list(point, move, type);
+		vec3 a, b;
 
+
+		ship->MoveTo(b / 2);//czemu b³¹d?
+		ship->ScaleTo(glm::length(b - a));// cz nie mozna tak?
+		double angle = signed_angle_between_vectors(a, b, vec3(0, 0, 1));//czy dobrze ostatni
+		ship->Rotate(angle);
 	}
 
 	}
