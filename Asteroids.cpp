@@ -301,7 +301,7 @@ namespace Asteroids {
 		for (int i = 0; i < size / 2; i++) {
 			std::vector<float> vx1;
 			int it = 1;
-			if (rand() % size < random) it = 2;
+			if (rand() % size < random && i<(size/2)-1) it = 2;
 			if (tp) _pos = vec3(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80);
 			for (int k = 0; k < it; k++) {
 				vx1.clear();
@@ -631,13 +631,16 @@ void Game::Asteroids(float dt) {
 		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
 			if (!isDead && isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
-				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[enemyType[j]], __enemyVx, __enemyInd);
+       			death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
+				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
+				enemyShootCooldown.erase(enemyShootCooldown.begin() + j);
+
 				score += ufoXP[enemyType[j]];
+				enemyType.erase(enemyType.begin() + j);
 				tScore = refreshText(tScore, std::to_string(score));
 
 				bulletTimeRemain[i] = 0;
-				i++;
 				continue;
 			}
 		}
