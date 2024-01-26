@@ -118,6 +118,7 @@ namespace Asteroids {
 	int bigEnemyIterator;
 
 	const int ufoXP[] = { 990,200 }; // small/big
+	const int asteroidsXP[] = { 20,50,100 }; // big/normal/small
 
 	bool checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
 		bool flag = false;
@@ -128,7 +129,7 @@ namespace Asteroids {
 		return flag;
 	}
 
-	void spawnAsteroids(int asteroidsNum, unsigned int type) {
+	void spawnAsteroids(int asteroidsNum, unsigned int type, float _posX = -10000, float _posY = -10000, float rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 360.0f))) {
 		float minAsteroidsSize;
 		float maxAsteroidsSize;
 
@@ -183,22 +184,23 @@ namespace Asteroids {
 				break;
 			}
 
-			float rot = (float)(rand()) / ((float)(RAND_MAX / 360.0f));
 			asteroidRotation.push_back(rot * M_PI / 180.0f);
 
 			float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
 			asteroidRotationMultiplier.push_back(rotM);
 
-			vec2 pos;
 			int temp;
 
-			do {
-				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
-				pos.x = temp;
+			vec2 pos = vec2(_posX, _posY);
+			if (_posX == -10000 || _posY == -10000) {
+				do {
+					temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+					pos.x = temp;
 
-				temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
-				pos.y = temp;
-			} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+					temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
+					pos.y = temp;
+				} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+			}
 
 			asteroids.push_back(Gra->Create(vec3(pos, -90.0f), vec3(0.0f, 0.0f, rot), vec3(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 			asteroidSize.push_back(type);
@@ -607,6 +609,7 @@ void Game::Asteroids(float dt) {
 
 	for (int i = 0; i < bullets.size(); i++) {
 		GameObject* current = bullets[i];
+		bool shouldSkip = false;
 
 		bulletTimeRemain[i] -= dt;
 		if (bulletTimeRemain[i] <= 0) {
@@ -644,7 +647,38 @@ void Game::Asteroids(float dt) {
 				tScore = refreshText(tScore, std::to_string(score));
 
 				bulletTimeRemain[i] = 0;
-				continue;
+				shouldSkip = true;
+				break;
+			}
+		}
+		if (shouldSkip) continue;
+
+		//collisions - asteroids/bullets
+		for (int j = asteroids.size() - 1; j >= 0; j--) {
+			GameObject* asteroid = asteroids[j];
+			if (!isDead && Gra->collisionCircle(currentPos, asteroid->Transform.position)) {
+				int type = asteroidSize[j];
+				if (type < 2) {
+					float ori = asteroid->Transform.orientation.z;
+					vec3 pos = asteroid->Transform.position;
+					float randomChange = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 45.0f)); // [-45;45]
+
+					spawnAsteroids(1, type + 1, pos.x, pos.y, ori + randomChange);
+					spawnAsteroids(1, type + 1, pos.x, pos.y, ori - randomChange);
+				}
+
+				Destroy(asteroid);
+				asteroids.erase(asteroids.begin() + j);
+				asteroidSize.erase(asteroidSize.begin() + j);
+				asteroidRotation.erase(asteroidRotation.begin() + j);
+				asteroidRotationMultiplier.erase(asteroidRotationMultiplier.begin() + j);
+
+				score += asteroidsXP[type];
+				tScore = refreshText(tScore, std::to_string(score));
+
+				bulletTimeRemain[i] = 0;
+				shouldSkip = true;
+				break;
 			}
 		}
 	}
