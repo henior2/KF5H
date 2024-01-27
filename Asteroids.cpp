@@ -1,4 +1,5 @@
 ﻿#include "Game.h"
+#include <fstream>
 
 using namespace glm;
 
@@ -372,7 +373,7 @@ void Game::AsteroidsInit(bool again) {
 	lives--;
 	if (!again) {
 		score = 0;
-		lives = 5;
+		lives = 3;
 	}
 	if (lives <= 0) {
 		isDead = true;
@@ -765,7 +766,49 @@ void Game::Asteroids(float dt) {
 	}
 	if (isDead) {
 		if (hasLost) {
-			//todo: make
+			std::ifstream file("_scoredata.txt"); // reading the file
+
+			if (!file.is_open()) {
+				std::ofstream createFile("_scoredata.txt"); // creating a new file if it doesn't exist
+				createFile.close(); // close the file immediately
+				file.open("_scoredata.txt"); // open the file for reading after creating
+			}
+
+			std::vector<std::string> usernames; // char[3] would be enough, but it's not letting me do it
+			std::vector<int> scores;
+			std::string line;
+
+			while (std::getline(file, line)) {
+				usernames.push_back(line.substr(0, 3));
+				scores.push_back(std::stoi(line.substr(3)));
+			}
+			file.close();
+
+			std::string new_username = "kys"; //temp
+
+			int n = 10;
+			for (int i = 0; i < scores.size(); i++) {
+				if (score >= scores[i]) {
+					n = i;
+					break;
+				}
+			}
+			
+			usernames.insert(usernames.begin() + n, new_username); // inserting the new username
+			scores.insert(scores.begin() + n, score); // and score
+
+			if (usernames.size() >= 10) {
+				usernames.pop_back(); // removing the last (worst) username
+				scores.pop_back(); // and score (there can only be <= 10)
+			}
+
+			std::ofstream file_out("_scoredata.txt"); // opening the file
+
+			for (int i = 0; i < usernames.size(); i++) {
+				file_out << (usernames[i] + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
+			}
+
+			file_out.close(); // closing the file
 		}
 		respawnCooldown -= dt;
 		if (respawnCooldown <= 0 && !hasLost) {
