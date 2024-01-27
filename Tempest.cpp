@@ -88,7 +88,7 @@ namespace Tempest {
 	}
 	void shipspawn() {
 		vec3 a = move[0], b = move[1];
-		blaster = Gra->Create(vec3(a.x / 2, a.y / 2, -25), vec3(0, 0, signed_angle_between_vectors(a, b, vec3(0, 0, 1))), vec3(glm::length(b - a)), "tempest_ship");
+		blaster = Gra->Create(vec3(a.x / 2, a.y / 2, a.z), vec3(0, 0, signed_angle_between_vectors(a, b, vec3(0, 0, 1))), vec3(glm::length(b - a)/2), "tempest_ship");
 	}
 
 	void tunelspawn( int& lastTSN, std::vector <vec3>& point, int& type) {

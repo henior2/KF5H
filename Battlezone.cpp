@@ -222,9 +222,10 @@ namespace Battlezone {
 		}
 	}
 
-	Tekst2d* refreshText(Tekst2d* text, std::string str) {
+	Tekst2d* refreshText(Tekst2d* text, int score, int scoreMultiplier, int addedScore) {
 		Gra->DestroyTekst(text);
-		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, str);
+		score += addedScore * scoreMultiplier;
+		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, std::to_string(score));
 		return text;
 	}
 
@@ -587,6 +588,7 @@ void Game::BattlezoneInit() {
 	score = 0;
 	bulletTimeRemain.clear();
 	pociski_gracza.clear(); 
+	scoreMultiplier = 1;
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -611,6 +613,13 @@ void Game::BattlezoneInit() {
 	//making radar , oh I found it
 	std::vector<float> rVx;
 	std::vector<unsigned int> rInd;
+
+	//Score
+	std::string scoreStr = std::to_string(score);
+	while (scoreStr.length() < 3) {
+		scoreStr = "0" + scoreStr;
+	}
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, scoreStr);
 
 	//nvm I think it's not here //bro's having a bipolar disorder 💀
 
@@ -743,14 +752,6 @@ void Game::Battlezone(float dt) {
 		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
 	}
 
-	//Score
-	std::string scoreStr = std::to_string(score);
-	while (scoreStr.length() < 3) {
-		scoreStr = "0" + scoreStr;
-	}
-	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, scoreStr);
-
-
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
 			cooldown -= dt;
@@ -859,9 +860,21 @@ void Game::Battlezone(float dt) {
 
 			//Enemy bullet collision
 			for (int j = 0; j < przeciwnicy.size(); j++) {
-				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z),2,2)){
-					score += 200 * scoreMultiplier;
-					tScore = refreshText(tScore, std::to_string(score));
+				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z), 2, 2)) {
+					switch (enemyType[i]) {
+						case 1:
+							tScore = refreshText(tScore, score, scoreMultiplier, 200);
+							break;
+						case 2:
+							tScore = refreshText(tScore, score, scoreMultiplier, 300);
+							break;
+						case 3:
+							tScore = refreshText(tScore, score, scoreMultiplier, 400);
+							break;
+						case 4:
+							tScore = refreshText(tScore, score, scoreMultiplier, 500);
+					}
+
 					//Usuwanie pocisku
 					Destroy(current);
 					pociski_gracza.erase(pociski_gracza.begin() + j);
@@ -982,7 +995,7 @@ void Game::Battlezone(float dt) {
 
 			// calculating rotation angle 
 			current->RotateTo(vec3(0.0f, atan2(direction.x, direction.z) * 180.0f / M_PI, 0.0f));
-			
+
 			// move the shit
 			current->Move(vec3(0, 0, -1) * rocket_speed * dt);
 
@@ -1159,62 +1172,62 @@ void Game::Battlezone(float dt) {
 		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
 
 		iterator++;
-	}
+		
+		//checking if out of bounds
+		vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z)); // bro really said PP
+		float dOutofbounds;
+		if (absPPos.x > mapSize || absPPos.y > mapSize) {
+			glitchEffectRefreshRate -= dt;
 
-	//checking if out of bounds
-	vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z)); // bro really said PP
-	float dOutofbounds;
-	if (absPPos.x > mapSize || absPPos.y > mapSize) {
-		glitchEffectRefreshRate -= dt;
-
-		float isNeg = 1.0f;
-		if (absPPos.x > mapSize) {
-			if (pPos.x < 0) isNeg = -1.0f;
-			dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
-			if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance) * isNeg;
-		}
-		else {
-			if (pPos.z < 0) isNeg = -1.0f;
-			dOutofbounds = (absPPos.y - mapSize) / maxOutOfBoundsDistance;
-			if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance) * isNeg;
-		}
-
-		if (glitchEffectRefreshRate <= 0) {
-			for (auto& currentLine : __lines) {
-				Destroy(currentLine);
+			float isNeg = 1.0f;
+			if (absPPos.x > mapSize) {
+				if (pPos.x < 0) isNeg = -1.0f;
+				dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
+				if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance) * isNeg;
 			}
-			__lines.clear();
+			else {
+				if (pPos.z < 0) isNeg = -1.0f;
+				dOutofbounds = (absPPos.y - mapSize) / maxOutOfBoundsDistance;
+				if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance) * isNeg;
+			}
 
-			glitchEffectRefreshRate = .1f;
-			for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
-				GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
-				current->Stage[0].onTop = true;
-				current->MoveTo(vec3(-1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -.1));
-				__lines.push_back(current);
+			if (glitchEffectRefreshRate <= 0) {
+				for (auto& currentLine : __lines) {
+					Destroy(currentLine);
+				}
+				__lines.clear();
+
+				glitchEffectRefreshRate = .1f;
+				for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
+					GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+					current->Stage[0].onTop = true;
+					current->MoveTo(vec3(-1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -.1));
+					__lines.push_back(current);
+				}
 			}
 		}
-	}
 
-	//debug ↓
-	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
-		resp_cool = .5f;
-		makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
-	}
-	if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && resp_cool <= 0) {
-		resp_cool = .5f;
-		createPowerUp(rand() % 100 - 50, 0, rand() % 100 - 50, rand() % (sizeof(pUModels) / sizeof(std::string)));
-	}
+		//debug ↓
+		if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
+			resp_cool = .5f;
+			makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
+		}
+		if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && resp_cool <= 0) {
+			resp_cool = .5f;
+			createPowerUp(rand() % 100 - 50, 0, rand() % 100 - 50, rand() % (sizeof(pUModels) / sizeof(std::string)));
+		}
 
-	if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
-		resp_cool = .1f;
-		camera->Position = vec3(0, planeHeight, 0);
-	}
-	if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS && resp_cool <= 0) {
-		resp_cool = .1f;
-		player->Transform.position = vec3(120, 0, -120);
-		camera->Position = vec3(120, 0, -120);
-	}
+		if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
+			resp_cool = .1f;
+			camera->Position = vec3(0, planeHeight, 0);
+		}
+		if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS && resp_cool <= 0) {
+			resp_cool = .1f;
+			player->Transform.position = vec3(120, 0, -120);
+			camera->Position = vec3(120, 0, -120);
+		}
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		Game::ChangeState(Game_Menu);
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			Game::ChangeState(Game_Menu);
+	}
 }
