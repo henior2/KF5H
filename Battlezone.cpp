@@ -128,19 +128,14 @@ namespace Battlezone {
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
 
-	void destroy_enemy( GameObject*, int i) {
+	void destroy_enemy(GameObject*, int i) {
 		Gra->Destroy(przeciwnicy[i]);
-		fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
 		przeciwnicy.erase(przeciwnicy.begin() + i);
 		enemyType.erase(enemyType.begin() + i);
 		enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
 		radarElements.erase(radarElements.begin() + i);
 		radarElementsType.erase(radarElementsType.begin() + i);
 		uiElements.erase(uiElements.begin() + i);
-		targetPos.erase(targetPos.begin() + i);
-		targetOri.erase(targetOri.begin() + i);
-		
-		
 	}
 
 	void shot_fast(vec3 pos, vec3 rot) {
@@ -222,9 +217,8 @@ namespace Battlezone {
 		}
 	}
 
-	Tekst2d* refreshText(Tekst2d* text, int score, int scoreMultiplier, int addedScore) {
+	Tekst2d* refreshText(Tekst2d* text, int score) {
 		Gra->DestroyTekst(text);
-		score += addedScore * scoreMultiplier;
 		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, std::to_string(score));
 		return text;
 	}
@@ -299,7 +293,7 @@ namespace Battlezone {
 		else if (type == 4) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			rakiety.push_back(enemy);
-			
+
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(0.0f);
 
@@ -587,7 +581,7 @@ void Game::BattlezoneInit() {
 	timeEffectLeft = 0;
 	score = 0;
 	bulletTimeRemain.clear();
-	pociski_gracza.clear(); 
+	pociski_gracza.clear();
 	scoreMultiplier = 1;
 
 	shot_cool = 2;
@@ -862,17 +856,21 @@ void Game::Battlezone(float dt) {
 			for (int j = 0; j < przeciwnicy.size(); j++) {
 				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z), 2, 2)) {
 					switch (enemyType[i]) {
-						case 1:
-							tScore = refreshText(tScore, score, scoreMultiplier, 200);
-							break;
-						case 2:
-							tScore = refreshText(tScore, score, scoreMultiplier, 300);
-							break;
-						case 3:
-							tScore = refreshText(tScore, score, scoreMultiplier, 400);
-							break;
-						case 4:
-							tScore = refreshText(tScore, score, scoreMultiplier, 500);
+					case 1:
+						score += 100 * scoreMultiplier;
+						tScore = refreshText(tScore, score);
+						break;
+					case 2:
+						score += 200 * scoreMultiplier;
+						tScore = refreshText(tScore, score);
+						break;
+					case 3:
+						score += 300 * scoreMultiplier;
+						tScore = refreshText(tScore, score);
+						break;
+					case 4:
+						score += 500 * scoreMultiplier;
+						tScore = refreshText(tScore, score);
 					}
 
 					//Usuwanie pocisku
@@ -1137,7 +1135,7 @@ void Game::Battlezone(float dt) {
 		GameObject* current;
 
 		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
-		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];
+		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];      
 		else if (type == 2 && !powerUM_PInside.empty()) current = powerUM_PInside[iterator];
 		else if (type == 3 && !rakiety.empty()) current = rakiety[iterator];
 		else throw std::invalid_argument("check deez values mate");
@@ -1172,7 +1170,7 @@ void Game::Battlezone(float dt) {
 		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
 
 		iterator++;
-		
+
 		//checking if out of bounds
 		vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z)); // bro really said PP
 		float dOutofbounds;
