@@ -16,8 +16,9 @@ namespace Asteroids {
 	Tekst2d* tScore;
 	std::vector<GameObject*> tLives;
 
-	bool isDead = false;
-	bool hasLost = false;
+	bool isDead;
+	bool hasLost;
+	bool endingScreen;
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
 	std::vector<float> debrisRotation;
@@ -350,6 +351,7 @@ void Game::AsteroidsInit(bool again) {
 	ship->RotateTo(vec3(0));
 	isDead = false;
 	hasLost = false;
+	endingScreen = false;
 	respawnCooldown = 5.0f;
 
 	velocity = vec2(0.0f);
@@ -765,14 +767,8 @@ void Game::Asteroids(float dt) {
 		}
 	}
 	if (isDead) {
-		if (hasLost) {
+		if (hasLost && !endingScreen) {
 			std::ifstream file("_scoredata.txt"); // reading the file
-
-			if (!file.is_open()) {
-				std::ofstream createFile("_scoredata.txt"); // creating a new file if it doesn't exist
-				createFile.close(); // close the file immediately
-				file.open("_scoredata.txt"); // open the file for reading after creating
-			}
 
 			std::vector<std::string> usernames; // char[3] would be enough, but it's not letting me do it
 			std::vector<int> scores;
@@ -786,12 +782,10 @@ void Game::Asteroids(float dt) {
 
 			std::string new_username = "kys"; //temp
 
-			int n = 10;
+			int n = 0;
 			for (int i = 0; i < scores.size(); i++) {
-				if (score >= scores[i]) {
-					n = i;
-					break;
-				}
+				n = i;
+				if (score >= scores[i]) break;
 			}
 			
 			usernames.insert(usernames.begin() + n, new_username); // inserting the new username
@@ -809,6 +803,11 @@ void Game::Asteroids(float dt) {
 			}
 
 			file_out.close(); // closing the file
+
+			endingScreen = true;
+		}
+		if (endingScreen) {
+			//todo: add
 		}
 		respawnCooldown -= dt;
 		if (respawnCooldown <= 0 && !hasLost) {
