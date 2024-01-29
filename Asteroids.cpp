@@ -35,11 +35,11 @@ namespace Asteroids {
 
 	int modelShipFire;
 
-	const float rotationMultiplier = 100.0;
+	const float rotationMultiplier = 80.0;
 
 	const float maxVelocity = 25;
-	const float acceleration = 15;
-	const float deacceleration = 0.99;
+	const float acceleration = 12.5;
+	const float deacceleration = 0.75;
 
 	vec2 velocity;
 	float speed;
@@ -59,7 +59,7 @@ namespace Asteroids {
 	std::vector<float> bulletTimeRemain;
 	std::vector<bool> isBulletPlayers;
 
-	const float bulletMaxTime = 3.0f;
+	const float bulletMaxTime = 2.5f;
 	const float bulletSpeed = 50.0f;
 
 	int _asteroidsNo;
@@ -101,8 +101,8 @@ namespace Asteroids {
 	const float starsSpeedMultiplier = 2.5f;
 
 	float enemyProb;
-	const float enemyDeltaProb = .15f;
-	const float enemyMinDelay = 2.5f;
+	const float enemyDeltaProb = .2f;
+	const float enemyMinDelay = 1.5f;
 	const float enemyMaxDelay = 5.0f;
 	float enemyDelay;
 
@@ -366,7 +366,7 @@ void Game::AsteroidsInit(bool again) {
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4) / 2 + 1;
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
-	shootCooldown = .25f;
+	shootCooldown = .5f;
 
 	lives--;
 	if (!again) {
@@ -380,7 +380,7 @@ void Game::AsteroidsInit(bool again) {
 		_return = 0;
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
-		enemyProb = 15.0f;
+		enemyProb = 20.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
 	if (lives <= 0) {
@@ -531,7 +531,7 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (!isDead && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown <= 0) {
-		shootCooldown = .25f;
+		shootCooldown = .5f;
 		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
 		isBulletPlayers.push_back(true);
 	}
