@@ -19,6 +19,8 @@ namespace Asteroids {
 	bool isDead;
 	bool hasLost;
 	bool endingScreen;
+	std::string new_username;
+
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
 	std::vector<float> debrisRotation;
@@ -352,6 +354,7 @@ void Game::AsteroidsInit(bool again) {
 	isDead = false;
 	hasLost = false;
 	endingScreen = false;
+	new_username = "";
 	respawnCooldown = 5.0f;
 
 	velocity = vec2(0.0f);
@@ -780,31 +783,39 @@ void Game::Asteroids(float dt) {
 			}
 			file.close();
 
-			std::string new_username = "kys"; //temp
-
-			int n = 0;
-			for (int i = 0; i < scores.size(); i++) {
-				n = i;
-				if (score >= scores[i]) break;
+			if (new_username.length() < 3) {
+				for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
+					if (glfwGetKey(window, key) == GLFW_PRESS && jumpCooldown <= 0) {
+						jumpCooldown = .25f; //im using this variable on purpose
+						new_username += (char)('A' + (key - GLFW_KEY_A));
+					}
+				}
 			}
-			
-			usernames.insert(usernames.begin() + n, new_username); // inserting the new username
-			scores.insert(scores.begin() + n, score); // and score
+			else {
+				int n = 0;
+				for (int i = 0; i < scores.size(); i++) {
+					n = i;
+					if (score >= scores[i]) break;
+				}
 
-			if (usernames.size() >= 10) {
-				usernames.pop_back(); // removing the last (worst) username
-				scores.pop_back(); // and score (there can only be <= 10)
+				usernames.insert(usernames.begin() + n, new_username); // inserting the new username
+				scores.insert(scores.begin() + n, score); // and score
+
+				if (usernames.size() >= 10) {
+					usernames.pop_back(); // removing the last (worst) username
+					scores.pop_back(); // and score (there can only be <= 10)
+				}
+
+				std::ofstream file_out("_scoredata.txt"); // opening the file
+
+				for (int i = 0; i < usernames.size(); i++) {
+					file_out << (usernames[i] + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
+				}
+
+				file_out.close(); // closing the file
+
+				endingScreen = true;
 			}
-
-			std::ofstream file_out("_scoredata.txt"); // opening the file
-
-			for (int i = 0; i < usernames.size(); i++) {
-				file_out << (usernames[i] + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
-			}
-
-			file_out.close(); // closing the file
-
-			endingScreen = true;
 		}
 		if (endingScreen) {
 			//todo: add
