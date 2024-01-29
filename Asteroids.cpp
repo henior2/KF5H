@@ -368,31 +368,25 @@ void Game::AsteroidsInit(bool again) {
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 	shootCooldown = .25f;
 
+	lives--;
 	if (!again) {
 		camera->perspective = false;
 		camera->cameraHeight = camH;
 		camera->cameraWidth = camW;
-	}
 
-	_asteroidsNo = 4;
-	lives--;
-	if (!again) {
+		_asteroidsNo = 4;
 		score = 0;
 		lives = 3;
+		_return = 0;
+		hasWaveFinished = false;
+		waveAsteroidsCooldown = 2.5f;
+		enemyProb = 15.0f;
+		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
 	if (lives <= 0) {
 		isDead = true;
 		hasLost = true;
 	}
-
-	_return = 0;
-
-	hasWaveFinished = false;
-	waveAsteroidsCooldown = 2.5f;
-
-	enemyProb = 15.0f;
-	enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
-
 	bigEnemyIterator = 0;
 
 	if (again) {
@@ -779,7 +773,7 @@ void Game::Asteroids(float dt) {
 
 			while (std::getline(file, line)) {
 				usernames.push_back(line.substr(0, 3));
-				scores.push_back(std::stoi(line.substr(3)));
+				scores.push_back(std::stoi(line.substr(4)));
 			}
 			file.close();
 
@@ -809,7 +803,7 @@ void Game::Asteroids(float dt) {
 				std::ofstream file_out("_scoredata.txt"); // opening the file
 
 				for (int i = 0; i < usernames.size(); i++) {
-					file_out << (usernames[i] + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
+					file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
 				}
 
 				file_out.close(); // closing the file
