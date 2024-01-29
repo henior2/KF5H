@@ -30,6 +30,8 @@ namespace Battlezone {
 	bool flag = false;
 	float hp;
 	int score;
+	int wavePoints;
+	bool waveFlag;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -318,6 +320,24 @@ namespace Battlezone {
 		randomActionType.push_back(0);
 	}
 
+	void wave(int wavePoints) {
+		waveFlag = true;
+		if (waveFlag) {
+			if (wavePoints > 0) {
+				float temp_x = rand() % 51 - 25;
+				float temp_z = rand() % 51 - 25;
+				float temp_y = rand() % 361;
+				if (przeciwnicy.empty() && rakiety.empty()) {
+					int enemy = rand() % 4 + 1;
+					if (wavePoints - enemy >= 0) {
+						spawn_enemy(vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), enemy);
+						wavePoints -= enemy;
+					}
+				}
+			}
+		}
+	}
+
 	const float camFrontOffset = -2.5f;
 	const float camYOffset = 1.75f;
 
@@ -583,6 +603,8 @@ void Game::BattlezoneInit() {
 	bulletTimeRemain.clear();
 	pociski_gracza.clear();
 	scoreMultiplier = 1;
+	wavePoints = 1;
+	waveFlag = true;
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -737,6 +759,7 @@ void Game::BattlezoneInit() {
 void Game::Battlezone(float dt) {
 	dt *= timeMultiplier;
 	timeEffectLeft -= dt;
+
 	if (timeEffectLeft <= 0) {
 		timeEffectLeft = 0;
 		timeMultiplier = 1.0f;
@@ -915,6 +938,13 @@ void Game::Battlezone(float dt) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 4);
 		resp_cool = 2;
 	}
+
+	if (waveFlag) {
+		wavePoints += 1;
+		waveFlag = false;
+		wave(wavePoints);
+	}
+	
 
 	//Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
