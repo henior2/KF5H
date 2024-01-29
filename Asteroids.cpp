@@ -35,11 +35,11 @@ namespace Asteroids {
 
 	int modelShipFire;
 
-	const float rotationMultiplier = 100.0;
+	const float rotationMultiplier = 80.0;
 
 	const float maxVelocity = 25;
-	const float acceleration = 15;
-	const float deacceleration = 0.99;
+	const float acceleration = 12.5;
+	const float deacceleration = 0.75;
 
 	vec2 velocity;
 	float speed;
@@ -59,14 +59,14 @@ namespace Asteroids {
 	std::vector<float> bulletTimeRemain;
 	std::vector<bool> isBulletPlayers;
 
-	const float bulletMaxTime = 3.0f;
+	const float bulletMaxTime = 2.5f;
 	const float bulletSpeed = 50.0f;
 
 	int _asteroidsNo;
 	int score;
 	int lives;
 
-	bool _return;
+	int _return;
 
 	const int asteroidRadius = 10;
 	const int maxAsteroidsSidesNo = 14;
@@ -101,8 +101,8 @@ namespace Asteroids {
 	const float starsSpeedMultiplier = 2.5f;
 
 	float enemyProb;
-	const float enemyDeltaProb = .15f;
-	const float enemyMinDelay = 2.5f;
+	const float enemyDeltaProb = .2f;
+	const float enemyMinDelay = 1.5f;
 	const float enemyMaxDelay = 5.0f;
 	float enemyDelay;
 
@@ -124,12 +124,12 @@ namespace Asteroids {
 	const int ufoXP[] = { 990,200 }; // small/big
 	const int asteroidsXP[] = { 20,50,100 }; // big/normal/small
 
-	bool checkBounds(GameObject* current, vec2 bounds = vec2(170, 95)) {
+	bool checkBounds(GameObject* current, bool stay = false, vec2 bounds = vec2(170, 95)) {
 		bool flag = false;
-		if (current->Transform.position.y > bounds.y) {current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0)); flag = true;}
-		if (current->Transform.position.y < -bounds.y) {current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0)); flag = true;}
-		if (current->Transform.position.x > bounds.x) {current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0)); flag = true;}
-		if (current->Transform.position.x < -bounds.x) {current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0)); flag = true;}
+		if (current->Transform.position.y > bounds.y) {if(!stay) {current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0));} flag = true;}
+		if (current->Transform.position.y < -bounds.y) {if(!stay) {current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));} flag = true;}
+		if (current->Transform.position.x > bounds.x) {if(!stay) {current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));} flag = true;}
+		if (current->Transform.position.x < -bounds.x) {if(!stay) {current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));} flag = true;}
 		return flag;
 	}
 
@@ -254,11 +254,13 @@ namespace Asteroids {
 		bullet->Move(vec3(0.0f, _offset, 0.0f));
 	}
 
-	bool wave(int asteroidsNum) {
+	int wave(int asteroidsNum) {
 		spawnAsteroids(asteroidsNum, 0);
 
 		int temp = 0;
-		while (rand() % 100 <= enemyProb)
+		float tempProb = enemyProb;
+		while (rand() % 100 <= tempProb)
+			tempProb -= 100;
 			temp += 1;
 		return temp;
 	}
@@ -366,33 +368,27 @@ void Game::AsteroidsInit(bool again) {
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4) / 2 + 1;
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
-	shootCooldown = .25f;
+	shootCooldown = .5f;
 
+	lives--;
 	if (!again) {
 		camera->perspective = false;
 		camera->cameraHeight = camH;
 		camera->cameraWidth = camW;
-	}
 
-	_asteroidsNo = 4;
-	lives--;
-	if (!again) {
+		_asteroidsNo = 4;
 		score = 0;
 		lives = 3;
+		_return = 0;
+		hasWaveFinished = false;
+		waveAsteroidsCooldown = 2.5f;
+		enemyProb = 20.0f; 
+		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
 	if (lives <= 0) {
 		isDead = true;
 		hasLost = true;
 	}
-
-	_return = 0;
-
-	hasWaveFinished = false;
-	waveAsteroidsCooldown = 2.5f;
-
-	enemyProb = 15.0f;
-	enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
-
 	bigEnemyIterator = 0;
 
 	if (again) {
@@ -452,7 +448,7 @@ void Game::Asteroids(float dt) {
 
 	bigEnemyIterator = 0;
 
-	if (!isDead && (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)) {
+	if (!isDead && (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)) {
 		vec2 shipUp = ship->Up;
 
 		velocity += acceleration * dt * vec2(shipUp.x, shipUp.y);
@@ -475,7 +471,7 @@ void Game::Asteroids(float dt) {
 
 		for (auto& star : stars) {
 			star->MoveGlobal(vec3(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
-			checkBounds(star, vec2(160, 90));
+			checkBounds(star, false, vec2(160, 90));
 		}
 	}
 	else {
@@ -485,35 +481,12 @@ void Game::Asteroids(float dt) {
 
 		ship->activeStage = 0;
 	}
-	if (!isDead && (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)) {
+	if (!isDead && (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)) {
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
 	}
-	if (!isDead && (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)) {
+	if (!isDead && (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)) {
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
 	}
-
-	//debug - dont touch please :)
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		jumpCooldown = 0.5f;
-		hasWaveFinished = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		jumpCooldown = 0.5f;
-		spawnAsteroids(5, 2);
-	}
-	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		jumpCooldown = 0.5f;
-		spawnAsteroids(5, 1);
-	}
-	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		jumpCooldown = .5f;
-		spawnEnemy(0, this);
-	}
-	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		jumpCooldown = .5f;
-		spawnEnemy(1, this);
-	}
-	//end of debug :)
 
 	if (!isDead && glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
 		jumpCooldown = 0.5f;
@@ -537,7 +510,7 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (!isDead && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown <= 0) {
-		shootCooldown = .25f;
+		shootCooldown = .5f;
 		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
 		isBulletPlayers.push_back(true);
 	}
@@ -580,7 +553,7 @@ void Game::Asteroids(float dt) {
 		float _angle;
 
 		enemyShootCooldown[i] -= dt;
-		if (!isDead && enemyShootCooldown[i] <= 0) {
+		if (!isDead && enemyShootCooldown[i] <= 0 && !checkBounds(current, true)) {
 			if (!type) {
 				enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]);
 
@@ -715,7 +688,7 @@ void Game::Asteroids(float dt) {
 			current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity * dt);
 		}
 
-		checkBounds(current, vec2(camera->cameraWidth + bounds, camera->cameraHeight + bounds));
+		checkBounds(current, false, vec2(camera->cameraWidth + bounds, camera->cameraHeight + bounds));
 
 		//collisions - player/asteroid
 		if (!isDead && Gra->collisionCircle(pPos, current->Transform.position)) {
@@ -745,12 +718,11 @@ void Game::Asteroids(float dt) {
 	if (!isDead && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
-			for (int i = 0; i < _return; i++)
-				spawnEnemy(0, this);
+			spawnEnemy(0, this);
 
 			enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay;
 			enemyProb += enemyProb * enemyDeltaProb;
-			_return = 0;
+			_return--;
 		}
 	}
 
@@ -779,7 +751,7 @@ void Game::Asteroids(float dt) {
 
 			while (std::getline(file, line)) {
 				usernames.push_back(line.substr(0, 3));
-				scores.push_back(std::stoi(line.substr(3)));
+				scores.push_back(std::stoi(line.substr(4)));
 			}
 			file.close();
 
@@ -792,10 +764,9 @@ void Game::Asteroids(float dt) {
 				}
 			}
 			else {
-				int n = 0;
-				for (int i = 0; i < scores.size(); i++) {
-					n = i;
-					if (score >= scores[i]) break;
+				int n;
+				for (n = 0; n < scores.size(); n++) {
+					if (score >= scores[n]) break;
 				}
 
 				usernames.insert(usernames.begin() + n, new_username); // inserting the new username
@@ -809,7 +780,7 @@ void Game::Asteroids(float dt) {
 				std::ofstream file_out("_scoredata.txt"); // opening the file
 
 				for (int i = 0; i < usernames.size(); i++) {
-					file_out << (usernames[i] + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
+					file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
 				}
 
 				file_out.close(); // closing the file
