@@ -601,7 +601,6 @@ namespace Battlezone {
 			throw std::invalid_argument("You might have forgotten to code what happens after collecting the PU. Chceck the `colleckPowerUp()` function.");
 		}
 	}
-	std::string new_username;
 }
 using namespace Battlezone;
 
@@ -1008,15 +1007,14 @@ void Game::Battlezone(float dt) {
 	
 	if (waveTime <= 0) waveFlag = true;
 	else waveTime -= dt;
-	if (waveFlag) {
-			DestroyTekst(fala);
-			fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA" + std::to_string(wavePoints));
-			wavePoints += 1;
-			waveFlag = false;
-			wave(wavePoints, dt);
-			waveTime = 4.0f;
+	if (waveFlag && przeciwnicy.empty() && rakiety.empty()) {
+		DestroyTekst(fala);
+		fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA" + std::to_string(wavePoints));
+		wavePoints += 1;
+		waveFlag = false;
+		wave(wavePoints, dt);
+		waveTime = 4.0f;
 	}
-	
 
 	//Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
