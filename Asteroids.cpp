@@ -748,7 +748,7 @@ void Game::Asteroids(float dt) {
 	}
 	if (isDead) {
 		if (hasLost && !endingScreen) {
-			std::ifstream file("_scoredata.txt"); // reading the file
+			std::ifstream file("_asteroidsscoredata.txt"); // reading the file
 
 			std::vector<std::string> usernames; // char[3] would be enough, but it's not letting me do it
 			std::vector<int> scores;
@@ -782,7 +782,7 @@ void Game::Asteroids(float dt) {
 					scores.pop_back(); // and score (there can only be <= 10)
 				}
 
-				std::ofstream file_out("_scoredata.txt"); // opening the file
+				std::ofstream file_out("_asteroidsscoredata.txt"); // opening the file
 
 				for (int i = 0; i < usernames.size(); i++) {
 					file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
