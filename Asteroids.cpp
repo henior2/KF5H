@@ -101,6 +101,7 @@ namespace Asteroids {
 	const float starsSpeedMultiplier = 2.5f;
 
 	float enemyProb;
+	float smallEnemyProb;
 	const float enemyDeltaProb = .2f;
 	const float enemyMinDelay = 1.5f;
 	const float enemyMaxDelay = 5.0f;
@@ -383,6 +384,7 @@ void Game::AsteroidsInit(bool again) {
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
 		enemyProb = 20.0f; 
+		smallEnemyProb = 20.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
 	if (lives <= 0) {
@@ -718,10 +720,13 @@ void Game::Asteroids(float dt) {
 	if (!isDead && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
-			spawnEnemy(0, this);
+			bool type = 0;
+			if (rand() % 100 > smallEnemyProb) type = 1;
+			spawnEnemy(type, this);
 
 			enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay;
 			enemyProb += enemyProb * enemyDeltaProb;
+			smallEnemyProb += smallEnemyProb * enemyDeltaProb;
 			_return--;
 		}
 	}
