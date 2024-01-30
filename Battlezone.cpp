@@ -38,6 +38,8 @@ namespace Battlezone {
 	bool waveFlag;
 	Tekst2d* fala;
 
+	std::string new_username;
+
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
 	std::vector<float> enemyShotCooldowns;
