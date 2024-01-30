@@ -137,7 +137,7 @@ namespace Battlezone {
 	float const rotationMultiplier1 = 35;
 
 	const float bulletMaxTime = 4.0f;
-	const float bulletSpeed = 28.0f;
+	const float bulletSpeed = 14.0f;
 
 	void destroy_enemy(GameObject*, int i) {
 		Gra->Destroy(przeciwnicy[i]);
@@ -170,61 +170,57 @@ namespace Battlezone {
 	void shot_leonardo(vec3 pos, vec3 rot) {
 
 		int temp = rand() % 8 + 1;
-
-		if (temp == 1) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet1 = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet1);
-			bullet1->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 2) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet2 = Gra->Create(pos, rot - vec3(0, 180, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet2);
-			bullet2->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 3) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet3 = Gra->Create(pos, rot - vec3(0, 90, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet3);
-			bullet3->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 4) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet4 = Gra->Create(pos, rot - vec3(0, 270, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet4);
-			bullet4->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 5) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet5 = Gra->Create(pos, rot - vec3(0, 45, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet5);
-			bullet5->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 6) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet6 = Gra->Create(pos, rot - vec3(0, 225, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet6);
-			bullet6->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 7) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet7 = Gra->Create(pos, rot - vec3(0, 135, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet7);
-			bullet7->Move(vec3(0, 0, -1));
-		}
-
-		else if (temp == 8) {
-			fastBulletTimeRemain.push_back(bulletMaxTime);
-			GameObject* bullet8 = Gra->Create(pos, rot - vec3(0, 315, 0), vec3(1.0f), "TankBullet");
-			pociski.push_back(bullet8);
-			bullet8->Move(vec3(0, 0, -1));
+		GameObject* bullet;
+		switch (temp)
+		{
+			case 1:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 2:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 180, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 3:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 90, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 4:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 270, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 5:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 45, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 6:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 225, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 7:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 135, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
+			case 8:
+				fastBulletTimeRemain.push_back(bulletMaxTime);
+				bullet = Gra->Create(pos, rot - vec3(0, 315, 0), vec3(1.0f), "TankBullet");
+				pociski.push_back(bullet);
+				bullet->Move(vec3(0, 0, -1));
+				break;
 		}
 	}
 
@@ -304,7 +300,6 @@ namespace Battlezone {
 		else if (type == 4) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			rakiety.push_back(enemy);
-
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(0.0f);
 
@@ -917,7 +912,7 @@ void Game::Battlezone(float dt) {
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
 
 			//Player bullet collsion
-			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z))) {
+			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z),2,2)) {
 				hp -= 25;
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
@@ -956,11 +951,7 @@ void Game::Battlezone(float dt) {
 						score += 300 * scoreMultiplier;
 						tScore = refreshText(tScore, score);
 						break;
-					case 4:
-						score += 500 * scoreMultiplier;
-						tScore = refreshText(tScore, score);
 					}
-
 					//Usuwanie pocisku
 					Destroy(current);
 					pociski_gracza.erase(pociski_gracza.begin() + j);
@@ -969,6 +960,25 @@ void Game::Battlezone(float dt) {
 					destroy_enemy(przeciwnicy[j], j);
 				}
 			}
+			//Rocket bullet collision
+			for (int j = 0; j < rakiety.size(); j++) {
+				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(rakiety[j]->Transform.position.x, rakiety[j]->Transform.position.z), 2, 2)) {
+					score += 500 * scoreMultiplier;
+					//Usuwanie pocisku
+					Destroy(current);
+					pociski_gracza.erase(pociski_gracza.begin() + i);
+					bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+					//Usuwanie rakiety
+					Destroy(rakiety[j]);
+					enemyType.erase(enemyType.begin() + j);
+					enemyShotCooldowns.erase(enemyShotCooldowns.begin() + j);
+					rakiety.erase(rakiety.begin() + j);
+					radarElements.erase(radarElements.begin() + j);
+					radarElementsType.erase(radarElementsType.begin() + j);
+					uiElements.erase(uiElements.begin() + j);
+				}
+			}
+
 		}
 	}
 	else if (bulletsFired > 4) {
@@ -1080,11 +1090,6 @@ void Game::Battlezone(float dt) {
 			vec3 enemyPos = current->Transform.position;
 			vec3 direction = normalize(pPos - enemyPos);
 			vec3 distance = pPos - enemyPos;
-
-			//Player enemy collision
-			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z), 5.0f, 2.0f)) {
-				hp -= 25;
-			}
 
 			// calculating rotation angle 
 			current->RotateTo(vec3(0.0f, atan2(direction.x, direction.z) * 180.0f / M_PI, 0.0f));
