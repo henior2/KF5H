@@ -1097,6 +1097,19 @@ void Game::Battlezone(float dt) {
 			// move the shit
 			current->Move(vec3(0, 0, -1) * rocket_speed * dt);
 
+			//Player rocket collision
+			if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(pPos.x, pPos.z), 2, 2)) {
+				Destroy(current);
+				rakiety.erase(rakiety.begin() + i);
+				enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
+				enemyType.erase(enemyType.begin() + i);
+
+				radarElements.erase(radarElements.begin() + i);
+				radarElementsType.erase(radarElementsType.begin() + i);
+				uiElements.erase(uiElements.begin() + i);
+
+				hp -= 50;
+			}
 		}
 	}
 
