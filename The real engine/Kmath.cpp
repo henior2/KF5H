@@ -10,7 +10,7 @@ mat Kmath::LookAt(const vec& Eye, const vec& Center, const vec& Up) {
 	vec forward(3);
 	vec right(3);
 	vec newUp(3);
-	forward = (Center - Eye).Normalize();
+	forward = -(Center - Eye).Normalize();
 	right = vec::Cross(Up, forward).Normalize();
 	newUp = vec::Cross(forward, right);
 
@@ -24,13 +24,13 @@ mat Kmath::LookAt(const vec& Eye, const vec& Center, const vec& Up) {
 	ViewMatrix.array[1][1] = newUp.y;
 	ViewMatrix.array[2][1] = newUp.z;
 
-	ViewMatrix.array[0][2] = -forward.x;
-	ViewMatrix.array[1][2] = -forward.y;
-	ViewMatrix.array[2][2] = -forward.z;
+	ViewMatrix.array[0][2] = forward.x;
+	ViewMatrix.array[1][2] = forward.y;
+	ViewMatrix.array[2][2] = forward.z;
 
-	ViewMatrix.array[3][0] = -vec::Dot(right, Eye);
-	ViewMatrix.array[3][1] = -vec::Dot(newUp, Eye);
-	ViewMatrix.array[3][2] = -vec::Dot(forward, Eye);
+	ViewMatrix.array[0][3] = -vec::Dot(right, Eye);
+	ViewMatrix.array[1][3] = -vec::Dot(newUp, Eye);
+	ViewMatrix.array[2][3] = -vec::Dot(forward, Eye);
 
 	return ViewMatrix;
 }
@@ -40,11 +40,17 @@ mat Kmath::Perspective(const float& Fov, const float& AspectRatio, const float& 
 
 	mat PerspectiveMatrix(4);
 
-	PerspectiveMatrix.array[0][0] = f / AspectRatio;
+	/*PerspectiveMatrix.array[0][0] = f / AspectRatio;
 	PerspectiveMatrix.array[1][1] = f;
 	PerspectiveMatrix.array[2][2] = (FarPlane + NearPlane) / (NearPlane - FarPlane);
 	PerspectiveMatrix.array[2][3] = (2 * FarPlane * NearPlane) / (NearPlane - FarPlane);
-	PerspectiveMatrix.array[3][2] = -1.0f;
+	PerspectiveMatrix.array[3][2] = -1.0f;*/
+
+	PerspectiveMatrix.array[0][0] = f / AspectRatio;
+	PerspectiveMatrix.array[1][1] = f;
+	PerspectiveMatrix.array[2][2] = -FarPlane / (FarPlane - NearPlane);
+	PerspectiveMatrix.array[3][2] = -(FarPlane * NearPlane) / (FarPlane - NearPlane);
+	PerspectiveMatrix.array[2][3] = -1.0f;
 
 	return PerspectiveMatrix;
 }

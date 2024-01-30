@@ -112,11 +112,6 @@ vec vec::operator*(const float& second) const {
 	return result;
 }
 
-vec vec::operator*(const mat& second) const {
-	vec result(4);
-	result = second * *this;
-}
-
 void vec::operator+=(const vec& second) {
 	*this = *this + second;
 }
@@ -189,7 +184,7 @@ float vec::Dot(const vec& A, const vec& B) {
 	const float L2 = B.Length();
 
 	float result;
-	result = A.x * B.x + A.y + B.y + A.z + B.z;
+	result = A.x * B.x + A.y * B.y + A.z * B.z;
 	result *= L1 * L2;
 
 	return result;

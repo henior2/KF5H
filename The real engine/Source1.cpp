@@ -245,10 +245,10 @@ void Drawing(HWND& hwnd, int width, int height) {
 }
 
 void Frame(double dt, std::vector<GameObject*>& OBJS, Camera* camera) {
-	GameObject* N = new GameObject(vec(0, 0, -10), vec(0, 0, 0), vec(0.1, 3), L"MenuCube", 0);
-	//camera->MoveCamera(RIGHT, dt * 100);
-	//camera->RotateCamera(dt * 1, 0);
-	//N->Move(vec(dt, 3));
+	GameObject* N = new GameObject(vec(0, 0, -1), vec(0, 0, 0), vec(0.1, 3), L"MenuCube", 0);
+	camera->MoveCamera(FORWARD, dt * 0.01);
+	//camera->RotateCamera(dt * 50, 0);
+	N->Move(vec(0, 0, dt));
 	std::vector<GameObject*> a;
 	a.push_back(N);
 	OBJS = a;

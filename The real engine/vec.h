@@ -1,6 +1,4 @@
 #pragma once
-
-#include "mat.h"
 #include <cmath>
 class vec
 {
@@ -30,8 +28,6 @@ public:
 	vec operator-(const vec& second) const;
 
 	vec operator*(const float& second) const;
-
-	vec operator*(const mat& second) const;
 
 	void operator +=(const vec& second);
 	void operator -=(const vec& second);

@@ -89,10 +89,13 @@ vec mat::operator*(const vec& second) const {
 	vec New(0, size);
 	if (this->size != second.size)
 		New = second.addNeutralizer();
-	vec result(0.0f, size);
+	else if (size == second.size)
+		New = second;
 
 	if (this->size != New.size)
-		return result;
+		return New;
+
+	vec result(0, size);
 
 	for (int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++)

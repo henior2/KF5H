@@ -35,17 +35,23 @@ void Renderer::DrawObject(VertexData Data, HDC& hdc, Transformations Model, cons
 		vec posS1 = vec(100, 4);
 		vec posS2 = vec(100, 4);
 
+		//posS1 = ProjectionMatrix * ViewMatrix * ModelMatrix * pos1;
+		//posS2 = ProjectionMatrix * ViewMatrix * ModelMatrix * pos2;
+
+		//posS1 = ModelMatrix * pos1;
+		//posS2 = //ModelMatrix * pos2;
+
 		posS1 = ProjectionMatrix * ViewMatrix * ModelMatrix * pos1;
 		posS2 = ProjectionMatrix * ViewMatrix * ModelMatrix * pos2;
 
-		posS1 = pos1 * ModelMatrix;
-		posS2 = pos2 * ModelMatrix;
+		/*posS1 = ModelMatrix * pos1;
+		posS2 = ModelMatrix * pos2;
 
-		posS1 = posS1 * ViewMatrix;
-		posS2 = posS2 * ViewMatrix;
+		posS1 = ViewMatrix * posS1;
+		posS2 = ViewMatrix * posS2;
 
-		posS1 = posS1 * ProjectionMatrix;
-		posS2 = posS2 * ProjectionMatrix;
+		posS1 = ProjectionMatrix * posS1;
+		posS2 = ProjectionMatrix * posS2;*/
 
 		posS1.x = (posS1.x * width) + width;
 		posS1.y = (-posS1.y * height) + height;
