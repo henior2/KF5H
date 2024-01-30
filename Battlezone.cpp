@@ -327,20 +327,22 @@ namespace Battlezone {
 		randomActionType.push_back(0);
 	}
 
-	void wave(int wavePoints) {
-		waveFlag = true;
-		if (waveFlag) {
-			if (wavePoints > 0) {
-				float temp_x = rand() % 51 - 25;
-				float temp_z = rand() % 51 - 25;
-				float temp_y = rand() % 361;
-				if (przeciwnicy.empty() && rakiety.empty()) {
-					int enemy = rand() % 4 + 1;
-					if (wavePoints - enemy >= 0) {
-						spawn_enemy(vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), enemy);
-						wavePoints -= enemy;
-					}
+	void wave(int wavePoints, float dt) {
+		if (wavePoints > 0) {
+			float temp_x = rand() % 51 - 25;
+			float temp_z = rand() % 51 - 25;
+			float temp_y = rand() % 361;
+			if (przeciwnicy.empty() && rakiety.empty()){
+				int enemy = rand() % 4 + 1;
+				if (wavePoints - enemy >= 0) {
+					spawn_enemy(vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), enemy);
+					wavePoints -= enemy;
 				}
+			}
+		}
+		else {
+			while (waveTime > 0) {
+				waveTime -= dt;
 			}
 		}
 	}
@@ -597,6 +599,7 @@ namespace Battlezone {
 			throw std::invalid_argument("You might have forgotten to code what happens after collecting the PU. Chceck the `colleckPowerUp()` function.");
 		}
 	}
+	std::string new_username;
 }
 using namespace Battlezone;
 
@@ -611,7 +614,7 @@ void Game::BattlezoneInit() {
 	pociski_gracza.clear();
 	scoreMultiplier = 1;
 	wavePoints = 1;
-	waveFlag = true;
+	waveFlag = false;
 	waveTime = 4.0f;
 	fala = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, "FALA 1");
 
@@ -999,16 +1002,17 @@ void Game::Battlezone(float dt) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 4);
 		resp_cool = 2;
 	}
-
-	waveTime -= dt;
+	
+	
+	if (waveTime <= 0) waveFlag = true;
+	else waveTime -= dt;
 	if (waveFlag) {
-		DestroyTekst(fala);
-		fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA" + std::to_string(wavePoints));
-		if (waveTime <= 0) {
+			DestroyTekst(fala);
+			fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA" + std::to_string(wavePoints));
 			wavePoints += 1;
 			waveFlag = false;
-			wave(wavePoints);
-		}
+			wave(wavePoints, dt);
+			waveTime = 4.0f;
 	}
 	
 
