@@ -33,6 +33,7 @@ namespace Battlezone {
 	int wavePoints;
 	float waveTime;
 	bool waveFlag;
+	Tekst2d* fala;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -607,6 +608,7 @@ void Game::BattlezoneInit() {
 	wavePoints = 1;
 	waveFlag = true;
 	waveTime = 4.0f;
+	fala = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, "FALA 1");
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -943,6 +945,8 @@ void Game::Battlezone(float dt) {
 
 	waveTime -= dt;
 	if (waveFlag) {
+		DestroyTekst(fala);
+		fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA" + std::to_string(wavePoints));
 		if (waveTime <= 0) {
 			wavePoints += 1;
 			waveFlag = false;
