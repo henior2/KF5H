@@ -38,7 +38,19 @@ namespace Battlezone {
 	bool waveFlag;
 	Tekst2d* fala;
 
-	std::string new_username;
+	std::vector<float> fastBulletTimeRemain;
+	std::vector<int> enemyType;
+	std::vector<float> enemyShotCooldowns;
+
+	std::vector<GameObject*> pociski;
+	std::vector<GameObject*> przeciwnicy;
+	std::vector<GameObject*> rakiety;
+	float shot_cool = 2;
+	float resp_cool = 2;
+	const float fast_tank_speed = 3;
+	const float tank_speed = 2;
+	const float rocket_speed = 5;
+
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -121,18 +133,6 @@ namespace Battlezone {
 	int camSpeed = 1;
 	float velocity;
 	float const rotationMultiplier1 = 35;
-	std::vector<GameObject*> pociski;
-	std::vector<GameObject*> przeciwnicy;
-	std::vector<GameObject*> rakiety;
-	float shot_cool = 2;
-	float resp_cool = 2;
-	const float fast_tank_speed = 4;
-	const float tank_speed = 2;
-	const float rocket_speed = 6;
-
-	std::vector<float> fastBulletTimeRemain;
-	std::vector<int> enemyType;
-	std::vector<float> enemyShotCooldowns;
 
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 28.0f;
@@ -537,7 +537,7 @@ namespace Battlezone {
 	const float speedBoost = .05; //[5%]
 	const float healthBoost = 10; //idk maybe will be changed later
 	float timeMultiplier;
-	const float timeDecrease = .1; //[10%]
+	const float timeDecrease = .5; //[50%]
 	const float timeEffectLength = 10; //[10s (NOT real life time)]
 	float timeEffectLeft;
 	float scoreMultiplier;
@@ -772,6 +772,9 @@ void Game::BattlezoneInit() {
 void Game::Battlezone(float dt) {
 	dt *= timeMultiplier;
 	timeEffectLeft -= dt;
+	resp_cool -= dt;
+	shot_cool -= dt;
+	rtp += dt;
 
 	if (timeEffectLeft <= 0) {
 		timeEffectLeft = 0;
@@ -839,10 +842,7 @@ void Game::Battlezone(float dt) {
 			if (cooldown < 0) cooldown = 0;
 		}
 	}
-	resp_cool -= dt;
-	shot_cool -= dt;
 
-	rtp += dt;
 	if (rtp >= fullRotationTime) rtp = 0;
 	pU2AnimationCooldown += dt;
 
@@ -918,9 +918,6 @@ void Game::Battlezone(float dt) {
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
 			}
-
-
-			// model->Rotate(vec3(0.0f, 0.0f, 1.0f), 40.0f * dt);
 		}
 	}
 
@@ -1033,11 +1030,6 @@ void Game::Battlezone(float dt) {
 					randomActionTimeLimit[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionLimit));
 					randomActionType[i] = 0;
 				}
-			}
-
-			//Player enemy collision
-			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(enemyPos.x, enemyPos.z))) {
-				hp -= 25;
 			}
 
 			// calculating rotation angle 
