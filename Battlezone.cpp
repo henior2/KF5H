@@ -1,4 +1,5 @@
 ﻿#include "Game.h"
+#include <fstream>
 
 using namespace glm;
 
@@ -28,12 +29,16 @@ namespace Battlezone {
 	}
 
 	bool flag = false;
+	bool isDead;
+	bool endingScreen;
 	float hp;
 	int score;
 	int wavePoints;
 	float waveTime;
 	bool waveFlag;
 	Tekst2d* fala;
+
+	std::string new_username;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
@@ -583,7 +588,7 @@ namespace Battlezone {
 			scoreMultiplier *= (1 + scoreMultiplierChange);
 			break;
 		case 4:
-			//score += scoreChange; //waiting for Filip to make this as well
+			score += scoreChange; 
 			break;
 		case 5:
 			isMissleSelfTargeting = true;
@@ -613,6 +618,10 @@ void Game::BattlezoneInit() {
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
+	isDead = false;
+	endingScreen = false;
+
+	new_username = "";
 
 	glitchEffectRefreshRate = .1f;
 	__lines.clear();
@@ -771,6 +780,57 @@ void Game::Battlezone(float dt) {
 
 	if (hp <= 0) {
 		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
+		isDead = true; //kinda useless but whatever lmao
+	}
+
+	if (isDead && !endingScreen) {
+		std::ifstream file("_battlezonescoredata.txt");
+
+		std::vector<std::string> usernames;
+		std::vector<int> scores;
+		std::string line;
+
+		while (std::getline(file, line)) {
+			usernames.push_back(line.substr(0, 3));
+			scores.push_back(std::stoi(line.substr(4)));
+		}
+		file.close();
+
+		if (new_username.length() < 3) {
+			for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
+				if (glfwGetKey(window, key) == GLFW_PRESS && resp_cool <= 0) {
+					resp_cool = .25f; 
+					new_username += (char)('A' + (key - GLFW_KEY_A));
+				}
+			}
+		}
+		else {
+			int n;
+			for (n = 0; n < scores.size(); n++) {
+				if (score >= scores[n]) break;
+			}
+
+			usernames.insert(usernames.begin() + n, new_username);
+			scores.insert(scores.begin() + n, score);
+
+			if (usernames.size() >= 10) {
+				usernames.pop_back();
+				scores.pop_back();
+			}
+
+			std::ofstream file_out("_asteroidsscoredata.txt");
+
+			for (int i = 0; i < usernames.size(); i++) {
+				file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n");
+			}
+
+			file_out.close();
+
+			endingScreen = true;
+		}
+	}
+	if (endingScreen) {
+		//todo: add
 	}
 
 	if (!enemyShotCooldowns.empty()) {
