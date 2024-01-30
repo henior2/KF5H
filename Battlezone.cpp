@@ -31,6 +31,7 @@ namespace Battlezone {
 	float hp;
 	int score;
 	int wavePoints;
+	float waveTime;
 	bool waveFlag;
 
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
@@ -605,6 +606,7 @@ void Game::BattlezoneInit() {
 	scoreMultiplier = 1;
 	wavePoints = 1;
 	waveFlag = true;
+	waveTime = 4.0f;
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -939,10 +941,13 @@ void Game::Battlezone(float dt) {
 		resp_cool = 2;
 	}
 
+	waveTime -= dt;
 	if (waveFlag) {
-		wavePoints += 1;
-		waveFlag = false;
-		wave(wavePoints);
+		if (waveTime <= 0) {
+			wavePoints += 1;
+			waveFlag = false;
+			wave(wavePoints);
+		}
 	}
 	
 
