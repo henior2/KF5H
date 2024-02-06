@@ -820,7 +820,7 @@ void Game::Battlezone(float dt) {
 				scores.pop_back();
 			}
 
-			std::ofstream file_out("_asteroidsscoredata.txt");
+			std::ofstream file_out("_battlezonescoredata.txt");
 
 			for (int i = 0; i < usernames.size(); i++) {
 				file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n");
