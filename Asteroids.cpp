@@ -788,7 +788,7 @@ void Game::Asteroids(float dt) {
 				usernames.insert(usernames.begin() + n, new_username); // inserting the new username
 				scores.insert(scores.begin() + n, score); // and score
 
-				if (usernames.size() >= 10) {
+				if (usernames.size() > 10) {
 					usernames.pop_back(); // removing the last (worst) username
 					scores.pop_back(); // and score (there can only be <= 10)
 				}
