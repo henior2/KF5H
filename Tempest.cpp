@@ -88,7 +88,7 @@ namespace Tempest {
 	}
 	void shipspawn() {
 		vec3 a = move[0], b = move[1];
-		blaster = Gra->Create(vec3(a.x / 2, a.y / 2, a.z), vec3(0, 0, signed_angle_between_vectors(a, b, vec3(0, 0, 1))), vec3(glm::length(b - a)/2), "tempest_ship");
+		blaster = Gra->Create(vec3(b.x / 2, b.y / 2, b.z), vec3(0, 0, signed_angle_between_vectors(a,b, vec3(0, 0, 1))), vec3(glm::length(b - a)/2), "tempest_ship");
 	}
 
 	void tunelspawn( int& lastTSN, std::vector <vec3>& point, int& type) {
@@ -132,6 +132,7 @@ namespace Tempest {
 			help.z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 		} while (help.x == 0 && help.y == 0 && help.z == 0);
 
+		point.clear();
 		switch (type) {
 		case 0:
 			for (int i = 0; i < tunnelSidesNo; i++) {
@@ -246,7 +247,6 @@ void Game::TempestInit() {
 	position = 0;
 
 	tunelspawn(lastTSN, point, type);
-	points_move_list(move, type);
 }
 
 void Game::Tempest(float dt) {
@@ -261,7 +261,6 @@ void Game::Tempest(float dt) {
 		tunnel.clear();
 		Destroy(blaster);
 		tunelspawn(lastTSN, point, type);
-		points_move_list(move, type);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
