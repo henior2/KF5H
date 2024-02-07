@@ -14,6 +14,7 @@ namespace Asteroids {
 	const std::vector<unsigned int> __enemyInd = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 2, 1, 3, 0, 4, 1, 5, 4, 6, 5, 7 };
 
 	Tekst2d* tScore;
+	Tekst2d* endingUsername;
 	std::vector<GameObject*> tLives;
 
 	bool isDead;
@@ -338,8 +339,13 @@ namespace Asteroids {
 	}
 
 	Tekst2d* refreshText(Tekst2d* text, std::string str) {
+		vec2 pos = text->Transform.position;
+		float rot = text->Transform.orientation;
+		vec2 scale = text->Transform.scale;
+		float height = text->properties.height;
+		float spacing = text->properties.spacing;
 		Gra->DestroyTekst(text);
-		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, str);
+		text = Gra->CreateTekst(pos, rot, scale, height, spacing, str);
 		return text;
 	}
 };
@@ -429,7 +435,10 @@ void Game::AsteroidsInit(bool again) {
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
-	if (!again) tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
+	if (!again) {
+		tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
+		endingUsername = CreateTekst(vec2(-.01, -.01), 0, vec2(.03), 1, .5, new_username);
+	}
 	else tScore = refreshText(tScore, scoreStr);
 	tScore->SetColor(vec3(1)); //todo: fix
 
@@ -765,6 +774,8 @@ void Game::Asteroids(float dt) {
 					if (glfwGetKey(window, key) == GLFW_PRESS && jumpCooldown <= 0) {
 						jumpCooldown = .25f; //im using this variable on purpose
 						new_username += (char)('A' + (key - GLFW_KEY_A));
+
+						endingUsername = refreshText(endingUsername, new_username);
 					}
 				}
 			}
@@ -777,7 +788,7 @@ void Game::Asteroids(float dt) {
 				usernames.insert(usernames.begin() + n, new_username); // inserting the new username
 				scores.insert(scores.begin() + n, score); // and score
 
-				if (usernames.size() >= 10) {
+				if (usernames.size() > 10) {
 					usernames.pop_back(); // removing the last (worst) username
 					scores.pop_back(); // and score (there can only be <= 10)
 				}

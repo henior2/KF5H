@@ -612,7 +612,7 @@ void Game::BattlezoneInit() {
 	wavePoints = 1;
 	waveFlag = false;
 	waveTime = 4.0f;
-	fala = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, "FALA 1");
+	fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA1");
 
 	shot_cool = 2;
 	resp_cool = 2;
@@ -820,7 +820,7 @@ void Game::Battlezone(float dt) {
 				scores.pop_back();
 			}
 
-			std::ofstream file_out("_asteroidsscoredata.txt");
+			std::ofstream file_out("_battlezonescoredata.txt");
 
 			for (int i = 0; i < usernames.size(); i++) {
 				file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n");
@@ -880,10 +880,10 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 
 	//adjusting the cam's pos
-	/*vec3 cPos = normalize(pFront) * camFrontOffset;
+	vec3 cPos = normalize(pFront) * camFrontOffset;
 	cPos.y += camYOffset;
 
-	camera->Position = pPos+cPos;*/
+	camera->Position = pPos+cPos;
 	//todo: make a WORKING cam rot script
 
 	//shooting funtion
@@ -936,9 +936,9 @@ void Game::Battlezone(float dt) {
 			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
 
 			//Enemy bullet collision
-			for (int j = 0; j < przeciwnicy.size(); j++) {
+ 			for (int j = 0; j < przeciwnicy.size(); j++) {
 				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z), 2, 2)) {
-					switch (enemyType[i]) {
+					switch (enemyType[j]) {
 					case 1:
 						score += 100 * scoreMultiplier;
 						tScore = refreshText(tScore, score);
@@ -954,8 +954,8 @@ void Game::Battlezone(float dt) {
 					}
 					//Usuwanie pocisku
 					Destroy(current);
-					pociski_gracza.erase(pociski_gracza.begin() + j);
-					bulletTimeRemain.erase(bulletTimeRemain.begin() + j);
+					pociski_gracza.erase(pociski_gracza.begin() + i);
+					bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 					//Usuwanie przeciwnika
 					destroy_enemy(przeciwnicy[j], j);
 				}
