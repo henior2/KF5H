@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "fstream"
+#include "string"
 
 using namespace glm;
 
@@ -8,6 +10,22 @@ namespace Tempest {
 	int lastTSN;
 	int lvlDif;
 	int type;
+	
+	void zapisywanie(int plik, vec3 data) {
+		std::ofstream out;
+		if (plik == 0) {
+			out.open("move_vector.txt", std::ios_base::app);
+		}
+		else if (plik == 1) {
+			out.open("point_vector.txt", std::ios_base::app);
+		}
+		std::string datax = std::to_string(data.x);
+		std::string datay = std::to_string(data.y);
+		std::string dataz = std::to_string(data.z);
+		std::string zdanie = datax + ' ' + datay + ' ' + dataz + '\n';
+		out << zdanie;
+		out.close();
+	}
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <vec3> move;
@@ -78,11 +96,14 @@ namespace Tempest {
 		else {
 			int sid = findsmallest(point);
 			move.push_back(point[sid]);
+			zapisywanie(0, point[sid]);
 			for (int i = sid - 1; i >= 0; i--) {
 				move.push_back(point[i]);
+				zapisywanie(0, point[i]);
 			}
 			for (int i = sid + 1; i < point.size(); i++) {
 				move.push_back(point[i]);
+				zapisywanie(0, point[i]);
 			}
 		}
 	}
@@ -147,7 +168,9 @@ namespace Tempest {
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
 					push_back3(v, points[i].x, points[i].y, -16.5f * (j + 1) + 2); //points
-					if (j == 0) point.push_back(vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2));
+					if (j == 0) { point.push_back(vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2)); 
+					zapisywanie(1,vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2));
+					}
 					if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
 					else push_back3(v, 0, 0, 1); //color (blue)
 				}
