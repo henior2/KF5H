@@ -108,7 +108,7 @@ namespace Battlezone {
 	Tekst2d* tScore;
 
 	GameObject* radar;
-	std::vector<GameObject*> sM_PInningLines;
+	std::vector<GameObject*> spinningLines;
 
 	std::vector<GameObject*> uiElements;
 
@@ -528,7 +528,7 @@ namespace Battlezone {
 	const float pUAFCTime2 = .5f;
 
 	const std::string pUModels[] = { "Speed","Heart","Reload","Boost","XP","Star" };
-	std::vector<GameObject*> powerUM_PInside;
+	std::vector<GameObject*> powerUpInside;
 	std::vector<GameObject*> powerUpBox;
 	std::vector<GameObject*> powerUpAnimation;
 	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time), 5 - boost (no idea for it's purpose)
@@ -544,7 +544,7 @@ namespace Battlezone {
 	const float scoreChange = 150; //[150xp]
 	bool isMissleSelfTargeting;
 	void createPowerUp(float x, float y, float z, int type) {
-		powerUM_PInside.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUp" + pUModels[type]));
+		powerUpInside.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUp" + pUModels[type]));
 		powerUpBox.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUpBox"));
 		powerUpType.push_back(type);
 
@@ -714,7 +714,7 @@ void Game::BattlezoneInit() {
 
 	obstacles.clear();
 
-	sM_PInningLines.clear();
+	spinningLines.clear();
 
 	targetPos.clear();
 	targetOri.clear();
@@ -730,13 +730,13 @@ void Game::BattlezoneInit() {
 		float modifier = 1.0f - (float)(i) / (float)(trailLinesNo);
 		obj->Stage[0].opacity = modifier;
 		obj->Stage[0].lineWidth = modifier;
-		sM_PInningLines.push_back(obj);
+		spinningLines.push_back(obj);
 		uiElements.push_back(obj);
 		targetPos.push_back(vec3(0.0f));
 		targetOri.push_back(vec3(0.0f));
 	}
-	sM_PInningLines[0]->Stage[0].opacity = 1.25f;
-	sM_PInningLines[0]->Stage[0].lineWidth = 1.25f;
+	spinningLines[0]->Stage[0].opacity = 1.25f;
+	spinningLines[0]->Stage[0].lineWidth = 1.25f;
 	rtp = 0; //was meant to be used for radar, will be used as a global timing unit (no use in radar, used for pu's however)
 
 	przeciwnicy.clear();
@@ -746,7 +746,7 @@ void Game::BattlezoneInit() {
 	radarElements.clear();
 	radarElementsType.clear();
 
-	powerUM_PInside.clear();
+	powerUpInside.clear();
 	powerUpBox.clear();
 	powerUpType.clear();
 	powerUpAnimation.clear();
@@ -1121,8 +1121,8 @@ void Game::Battlezone(float dt) {
 	if (!isTimestamp) currentPUdYoTU = -pUdYoTU;
 
 	int pUAnimationIt = 0;
-	for (int i = 0; i < powerUM_PInside.size(); i++) {
-		GameObject* inside = powerUM_PInside[i];
+	for (int i = 0; i < powerUpInside.size(); i++) {
+		GameObject* inside = powerUpInside[i];
 		GameObject* box = powerUpBox[i];
 
 		//rotato :D
@@ -1225,8 +1225,8 @@ void Game::Battlezone(float dt) {
 
 	//adjusting ui elements' pos
 	//adjusting scanner lines' rotation
-	for (int i = 0; i < sM_PInningLines.size(); i++) {
-		GameObject* line = sM_PInningLines[i];
+	for (int i = 0; i < spinningLines.size(); i++) {
+		GameObject* line = spinningLines[i];
 
 		line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
 		targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
@@ -1249,7 +1249,7 @@ void Game::Battlezone(float dt) {
 
 		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
 		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];      
-		else if (type == 2 && !powerUM_PInside.empty()) current = powerUM_PInside[iterator];
+		else if (type == 2 && !powerUpInside.empty()) current = powerUpInside[iterator];
 		else if (type == 3 && !rakiety.empty()) current = rakiety[iterator];
 		else throw std::invalid_argument("check deez values mate");
 

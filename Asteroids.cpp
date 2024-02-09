@@ -15,6 +15,7 @@ namespace Asteroids {
 
 	Tekst2d* tScore;
 	Tekst2d* endingUsername;
+	Tekst2d* usernameInfo;
 	std::vector<GameObject*> tLives;
 
 	bool isDead;
@@ -62,6 +63,9 @@ namespace Asteroids {
 
 	const float bulletMaxTime = 2.5f;
 	const float bulletSpeed = 50.0f;
+
+	const float endingScreenAnimationTime = 2.0f;
+	const float endingScreenAnimationSize = 25.0f;
 
 	int _asteroidsNo;
 	int score;
@@ -396,6 +400,8 @@ void Game::AsteroidsInit(bool again) {
 	if (lives <= 0) {
 		isDead = true;
 		hasLost = true;
+
+		usernameInfo = CreateTekst(vec2(-.8, .6), 0, vec2(.07), 1, .5, "EnterYourUsername"); //todo: change to "Enter your username:" //todo: add language options (maybe)
 	}
 	bigEnemyIterator = 0;
 
@@ -437,7 +443,7 @@ void Game::AsteroidsInit(bool again) {
 	}
 	if (!again) {
 		tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
-		endingUsername = CreateTekst(vec2(-.01, -.01), 0, vec2(.03), 1, .5, new_username);
+		endingUsername = CreateTekst(vec2(-.125, .3), 0, vec2(.06), 1, .5, new_username);
 	}
 	else tScore = refreshText(tScore, scoreStr);
 	tScore->SetColor(vec3(1)); //todo: fix
@@ -804,11 +810,19 @@ void Game::Asteroids(float dt) {
 				endingScreen = true;
 			}
 		}
-		if (endingScreen) {
-			//todo: add
+		if (endingScreen && hasLost) {
+			for (int i = 0; i < stars.size() - 1; i++) {
+				GameObject* current = stars[i];
+				float angle = 2 * M_PI * i / starsAmount;
+
+				current->Move(vec3(endingScreenAnimationSize * cos(angle) - current->Transform.position.x, endingScreenAnimationSize * sin(angle) - current->Transform.position.y, 0) * dt / endingScreenAnimationTime); //probably multiplied the values wrong but still looks cool
+			
+				//todo: do something about that one star, thats always left behind [the (0.0,1.0) one]
+				//todo: add more (optional)
+			}
 		}
 		respawnCooldown -= dt;
-		if (respawnCooldown <= 0 && !hasLost) {
+		if (respawnCooldown <= 0 && !hasLost && !endingScreen) {
 			AsteroidsInit(true);
 			clearVec(debris);
 			debris.clear();
