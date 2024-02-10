@@ -22,6 +22,7 @@ namespace Asteroids {
 	bool hasLost;
 	bool endingScreen;
 	std::string new_username;
+	int bestScore;
 
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
@@ -64,8 +65,13 @@ namespace Asteroids {
 	const float bulletMaxTime = 2.5f;
 	const float bulletSpeed = 50.0f;
 
+	const int starsAmount = 100;
+	const float starsSpeedMultiplier = 2.5f;
 	const float endingScreenAnimationTime = 2.0f;
+
 	const float endingScreenAnimationSize = 25.0f;
+	const int endingScreenAnimationNumber = starsAmount * .8;
+	const int endingScreenIndicatorNumber = starsAmount - endingScreenAnimationNumber;
 
 	int _asteroidsNo;
 	int score;
@@ -101,9 +107,6 @@ namespace Asteroids {
 
 	bool hasWaveFinished;
 	float waveAsteroidsCooldown;
-
-	const int starsAmount = 100;
-	const float starsSpeedMultiplier = 2.5f;
 
 	float enemyProb;
 	float smallEnemyProb;
@@ -342,13 +345,19 @@ namespace Asteroids {
 		}
 	}
 
-	Tekst2d* refreshText(Tekst2d* text, std::string str) {
+	Tekst2d* refreshText(Tekst2d* text, std::string str, bool format = false) {
 		vec2 pos = text->Transform.position;
 		float rot = text->Transform.orientation;
 		vec2 scale = text->Transform.scale;
 		float height = text->properties.height;
 		float spacing = text->properties.spacing;
 		Gra->DestroyTekst(text);
+		std::string textValue = str;
+		if (format) {
+			while (textValue.length() < 3) {
+				textValue = "0" + textValue;
+			}
+		}
 		text = Gra->CreateTekst(pos, rot, scale, height, spacing, str);
 		return text;
 	}
@@ -369,6 +378,13 @@ void Game::AsteroidsInit(bool again) {
 	endingScreen = false;
 	new_username = "";
 	respawnCooldown = 5.0f;
+
+	if (!again) {
+		std::ifstream file("_asteroidsscoredata.txt");
+		std::string line; 
+		bestScore = -1;
+		if(std::getline(file, line)) bestScore = std::stoi(line.substr(4));
+	}
 
 	velocity = vec2(0.0f);
 	speed = 0;
@@ -445,7 +461,7 @@ void Game::AsteroidsInit(bool again) {
 		tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
 		endingUsername = CreateTekst(vec2(-.125, .3), 0, vec2(.06), 1, .5, new_username);
 	}
-	else tScore = refreshText(tScore, scoreStr);
+	else tScore = refreshText(tScore, scoreStr, true);
 	tScore->SetColor(vec3(1)); //todo: fix
 
 	for (int i = 0; i < lives; i++) {
@@ -640,7 +656,7 @@ void Game::Asteroids(float dt) {
 
 				score += ufoXP[enemyType[j]];
 				enemyType.erase(enemyType.begin() + j);
-				tScore = refreshText(tScore, std::to_string(score));
+				tScore = refreshText(tScore, std::to_string(score), true);
 
 				bulletTimeRemain[i] = 0;
 				shouldSkip = true;
@@ -670,7 +686,7 @@ void Game::Asteroids(float dt) {
 				asteroidRotationMultiplier.erase(asteroidRotationMultiplier.begin() + j);
 
 				score += asteroidsXP[type];
-				tScore = refreshText(tScore, std::to_string(score));
+				tScore = refreshText(tScore, std::to_string(score), true);
 
 				bulletTimeRemain[i] = 0;
 				shouldSkip = true;
@@ -811,14 +827,20 @@ void Game::Asteroids(float dt) {
 			}
 		}
 		if (endingScreen && hasLost) {
-			for (int i = 0; i < stars.size() - 1; i++) {
+			for (int i = 0; i < starsAmount; i++) {
 				GameObject* current = stars[i];
-				float angle = 2 * M_PI * i / starsAmount;
+				float angle = -M_PI/2;
+				float size = (i % endingScreenIndicatorNumber) * endingScreenAnimationSize / (endingScreenIndicatorNumber * .5) - endingScreenAnimationSize;
+				
+				if (bestScore < score) bestScore = score;
 
-				current->Move(vec3(endingScreenAnimationSize * cos(angle) - current->Transform.position.x, endingScreenAnimationSize * sin(angle) - current->Transform.position.y, 0) * dt / endingScreenAnimationTime); //probably multiplied the values wrong but still looks cool
-			
-				//todo: do something about that one star, thats always left behind [the (0.0,1.0) one]
-				//todo: add more (optional)
+				if (i < endingScreenAnimationNumber) {
+					angle = 2 * M_PI * i / endingScreenAnimationNumber;
+					size = endingScreenAnimationSize;
+				}
+				else if (i >= starsAmount - (.5 * endingScreenIndicatorNumber) && bestScore != -1) angle = (90.0f - (360.0f * score / bestScore)) * M_PI / 180.0f;
+
+				current->Move(vec3(size * cos(angle) - current->Transform.position.x, size * sin(angle) - current->Transform.position.y, 0) * dt / endingScreenAnimationTime); //probably multiplied the values wrong but still looks cool
 			}
 		}
 		respawnCooldown -= dt;
