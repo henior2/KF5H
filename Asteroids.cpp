@@ -358,7 +358,7 @@ namespace Asteroids {
 				textValue = "0" + textValue;
 			}
 		}
-		text = Gra->CreateTekst(pos, rot, scale, height, spacing, str);
+		text = Gra->CreateTekst(pos, rot, scale, height, spacing, textValue);
 		return text;
 	}
 };
@@ -799,6 +799,12 @@ void Game::Asteroids(float dt) {
 
 						endingUsername = refreshText(endingUsername, new_username);
 					}
+				}
+				if ((glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) && jumpCooldown <= 0){
+					jumpCooldown = .25f;
+					new_username.pop_back();
+
+					endingUsername = refreshText(endingUsername, new_username);
 				}
 			}
 			else {
