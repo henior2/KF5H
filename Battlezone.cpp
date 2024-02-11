@@ -4,6 +4,8 @@
 using namespace glm;
 
 namespace Battlezone {
+	float keyCooldown;
+
 	float signed_angle_between_vectors(const glm::vec3& A, const glm::vec3& B, const glm::vec3& axis) {
 		float dotProduct = glm::dot(A, B);
 		float magnitudeA = glm::length(A);
@@ -598,10 +600,56 @@ namespace Battlezone {
 			throw std::invalid_argument("You might have forgotten to code what happens after collecting the PU. Chceck the `colleckPowerUp()` function.");
 		}
 	}
+
+	int money;
+	const std::string shopModels[] = { "PowerUpHeart" };
+	int itemsPrice[3]; //assign values
+	int itemsType[3];  //^ ^ ^ ^ ^ ^ ^
+	GameObject* shopDisplayIcons[3];
+	const float shopXPos = .75;
+	const float shopYPos = .3;
+	GameObject* shopDisplaySquares[3]; //not const, cuz im putting them onTop in init()
+
+	void insertItem(int item) {
+		itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
+		shopDisplayIcons[item] = Gra->Create(vec3(-shopXPos, shopYPos - item * shopYPos, 0), vec3(0), vec3(1), shopModels[itemsType[item]]);
+		shopDisplayIcons[item]->Stage[item].onTop = true;
+	}
+
+	void buyItem(int type, int cost,int item) {
+		money -= cost;
+
+		switch (type) {
+		case 0:
+			if (hp < 100) hp = 100;
+			else hp += 25;
+		default:
+			throw std::invalid_argument("the shop is out of stock");
+		}
+
+		itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
+		//itemsPrice[item] = //todo: add pricing
+
+
+	}
+
+	void shopAction(int item, bool isForced) {
+		if (money >= itemsPrice[item] || isForced) buyItem(itemsType[item], itemsPrice[item], item);
+	}
 }
 using namespace Battlezone;
 
 void Game::BattlezoneInit() {
+	keyCooldown = .25f;
+	money = 0;
+
+	shopDisplaySquares[0] = Gra->Create(vec3(-shopXPos, shopYPos,  0), vec3(0), vec3(1), "MenuSquare");
+	shopDisplaySquares[1] = Gra->Create(vec3(-shopXPos, 0,         0), vec3(0), vec3(1), "MenuSquare");
+	shopDisplaySquares[2] = Gra->Create(vec3(-shopXPos, -shopYPos, 0), vec3(0), vec3(1), "MenuSquare");
+
+	shopDisplaySquares[0]->Stage[0].onTop = true; shopDisplaySquares[1]->Stage[0].onTop = true; shopDisplaySquares[0]->Stage[2].onTop = true;
+
+	insertItem(0); insertItem(1); insertItem(2);
 
 	velocity = 3.0f;
 	timeMultiplier = 1.0f;
@@ -703,7 +751,6 @@ void Game::BattlezoneInit() {
 			break;
 		default:
 			throw(std::invalid_argument("how did you manage to go out of bounds of for-loop?!"));
-			break;
 		}
 
 		push_back3(rVx, _x, _y, 0);
@@ -771,6 +818,7 @@ void Game::BattlezoneInit() {
 }
 
 void Game::Battlezone(float dt) {
+	keyCooldown -= dt;
 	dt *= timeMultiplier;
 	timeEffectLeft -= dt;
 	resp_cool -= dt;
@@ -999,19 +1047,19 @@ void Game::Battlezone(float dt) {
 	float temp_z = rand() % 51 - 25;
 	float temp_y = rand() % 361;
 
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && resp_cool <= 0) {
+	if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS && resp_cool <= 0) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 1);
 		resp_cool = 2;
 	}
-	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && resp_cool <= 0) {
+	if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS && resp_cool <= 0) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 2);
 		resp_cool = 2;
 	}
-	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && resp_cool <= 0) {
+	if (glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS && resp_cool <= 0) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 3);
 		resp_cool = 2;
 	}
-	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && resp_cool <= 0) {
+	if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS && resp_cool <= 0) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 4);
 		resp_cool = 2;
 	}
@@ -1329,6 +1377,20 @@ void Game::Battlezone(float dt) {
 					__lines.push_back(current);
 				}
 			}
+		}
+
+		//shop
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && keyCooldown <= 0) {
+			keyCooldown = .25f;
+			shopAction(0, false);
+		}
+		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && keyCooldown <= 0) {
+			keyCooldown = .25f;
+			shopAction(1, false);
+		}
+		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && keyCooldown <= 0) {
+			keyCooldown = .25f;
+			shopAction(2, false);
 		}
 
 		//debug ↓
