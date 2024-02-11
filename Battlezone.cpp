@@ -53,7 +53,6 @@ namespace Battlezone {
 	const float tank_speed = 2;
 	const float rocket_speed = 5;
 
-
 	void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
 		vec.push_back(a1);
 		vec.push_back(a2);
@@ -105,6 +104,8 @@ namespace Battlezone {
 	vec2 ufoTargetPos;
 
 	GameObject* plane;
+	const float dropRadius = 1.0f;
+	vec2 dropPos;
 	Tekst2d* tScore;
 
 	GameObject* radar;
@@ -526,6 +527,7 @@ namespace Battlezone {
 	const float pUowYOffset = 1.0f;
 	const bool pUSameDirectionRotation = false;
 	const float pUAFCTime2 = .5f;
+	const float powerUpFallingSpeed = 2.0f;
 
 	const std::string pUModels[] = { "Speed","Heart","Reload","Boost","XP","Star" };
 	std::vector<GameObject*> powerUpInside;
@@ -880,10 +882,10 @@ void Game::Battlezone(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 
 	//adjusting the cam's pos
-	vec3 cPos = normalize(pFront) * camFrontOffset;
+	/*vec3 cPos = normalize(pFront) * camFrontOffset;
 	cPos.y += camYOffset;
 
-	camera->Position = pPos+cPos;
+	camera->Position = pPos+cPos;*/
 	//todo: make a WORKING cam rot script
 
 	//shooting funtion
@@ -1083,7 +1085,7 @@ void Game::Battlezone(float dt) {
 		}
 	}
 
-	// poruszanie rakiet
+	// moving the rockets
 	if (!rakiety.empty()) {
 		for (int i = 0; i < rakiety.size(); i++) {
 			GameObject* current = rakiety[i];
@@ -1130,7 +1132,9 @@ void Game::Battlezone(float dt) {
 		box->Rotate(vec3(0, 1, 0) * pUBRotationSpeed * dt);
 
 		//up-down thing (?)
-		inside->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
+		if (inside->Transform.position.y >= 10) inside->Move(vec3(0, -powerUpFallingSpeed, 0) * dt);
+		else inside->Move(vec3(0, 1, 0) * dt * currentPUdYoTU);
+		
 		box->MoveTo(inside->Transform.position);
 
 		//aniamation
@@ -1205,7 +1209,10 @@ void Game::Battlezone(float dt) {
 		plane->MoveTo(vec3(planeStartCoords.x, planeHeight, planeStartCoords.y));
 
 		float _angle;
-		vec2 direction = normalize(vec2(pPos.x, pPos.z) - planeStartCoords);
+		
+		dropPos = vec2(-dropRadius + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * dropRadius))), -dropRadius + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * dropRadius)))) + vec2(pPos.x, pPos.z);
+
+		vec2 direction = normalize(dropPos - planeStartCoords);
 		_angle = atan2(direction.x, direction.y);
 		_angle = _angle * 180.0f / M_PI;
 		plane->RotateTo(vec3(0.0f, _angle, 0.0f));
@@ -1217,6 +1224,12 @@ void Game::Battlezone(float dt) {
 		plane->Move(plane->Front * dt * planeSpeedMultiplier);
 
 		vec2 planePos = vec2(plane->Transform.position.x, plane->Transform.position.z);
+
+		
+		if (abs(planePos.x) <= dropRadius || abs(planePos.y) <= dropRadius) {										// d = (a+b)/2 = 0/2 = 0
+			createPowerUp(planePos.x,planeHeight,planePos.y, rand() % (sizeof(pUModels) / sizeof(std::string)));	// y = b-d = b
+		}																											// |x-d|<=y => |x|<=b
+
 		if (abs(planePos.x) > planeBounds * 1.25 || abs(planePos.y) > planeBounds * 1.25) {
 			plane->MoveTo(vec3(-1000, 1000, -1000));
 			isPlane = false;
