@@ -171,7 +171,6 @@ namespace Battlezone {
 	}
 
 	void shot_leonardo(vec3 pos, vec3 rot) {
-
 		int temp = rand() % 8 + 1;
 		GameObject* bullet;
 		switch (temp)
@@ -264,7 +263,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(4.20f);
+			enemyShotCooldowns.push_back(15);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarX");
 			radarElements.push_back(rPointer);
@@ -277,7 +276,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(4.20f);
+			enemyShotCooldowns.push_back(15);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleBig), "RadarX");
 			radarElements.push_back(rPointer);
@@ -290,7 +289,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(4.20f);
+			enemyShotCooldowns.push_back(15);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
 			rPointer->color = vec3(0, 1, 0);
@@ -436,7 +435,7 @@ namespace Battlezone {
 		horizon = Gra->Create(vec3(0), vec3(0), vec3(1), vx, ind);
 	}
 
-	//where is radar?
+	//where is radar? //no idea, mate. try using ctrl+f
 
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
@@ -821,6 +820,24 @@ void Game::BattlezoneInit() {
 
 void Game::Battlezone(float dt) {
 	keyCooldown -= dt;
+
+	if (hp <= 0) {
+		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
+		isDead = true; //kinda useless but whatever lmao
+	}
+
+	if (isDead && !endingScreen) {
+		//todo: add
+	}
+	if (endingScreen) {
+		//todo: add
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		Game::ChangeState(Game_Menu);
+
+	if (isDead) return; //this stops the game after death. anything above still will be executed
+
 	dt *= timeMultiplier;
 	timeEffectLeft -= dt;
 	resp_cool -= dt;
@@ -832,60 +849,6 @@ void Game::Battlezone(float dt) {
 		timeMultiplier = 1.0f;
 	}
 
-	if (hp <= 0) {
-		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
-		isDead = true; //kinda useless but whatever lmao
-	}
-
-	if (isDead && !endingScreen) {
-		std::ifstream file("_battlezonescoredata.txt");
-
-		std::vector<std::string> usernames;
-		std::vector<int> scores;
-		std::string line;
-
-		while (std::getline(file, line)) {
-			usernames.push_back(line.substr(0, 3));
-			scores.push_back(std::stoi(line.substr(4)));
-		}
-		file.close();
-
-		if (new_username.length() < 3) {
-			for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
-				if (glfwGetKey(window, key) == GLFW_PRESS && resp_cool <= 0) {
-					resp_cool = .25f; 
-					new_username += (char)('A' + (key - GLFW_KEY_A));
-				}
-			}
-		}
-		else {
-			int n;
-			for (n = 0; n < scores.size(); n++) {
-				if (score >= scores[n]) break;
-			}
-
-			usernames.insert(usernames.begin() + n, new_username);
-			scores.insert(scores.begin() + n, score);
-
-			if (usernames.size() >= 10) {
-				usernames.pop_back();
-				scores.pop_back();
-			}
-
-			std::ofstream file_out("_battlezonescoredata.txt");
-
-			for (int i = 0; i < usernames.size(); i++) {
-				file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n");
-			}
-
-			file_out.close();
-
-			endingScreen = true;
-		}
-	}
-	if (endingScreen) {
-		//todo: add
-	}
 
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
@@ -1414,8 +1377,5 @@ void Game::Battlezone(float dt) {
 			player->Transform.position = vec3(120, 0, -120);
 			camera->Position = vec3(120, 0, -120);
 		}
-
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			Game::ChangeState(Game_Menu);
 	}
 }
