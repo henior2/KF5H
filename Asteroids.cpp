@@ -35,6 +35,9 @@ namespace Asteroids {
 
 	const int camW = 160;
 	const int camH = 90;
+	
+	const vec2 animationPos = vec2(80, 0);
+	//const vec2 scoreTablePos = vec2(-80, 0);
 
 	int modelShipFire;
 
@@ -69,7 +72,7 @@ namespace Asteroids {
 	const float starsSpeedMultiplier = 2.5f;
 	const float endingScreenAnimationTime = 2.0f;
 
-	const float endingScreenAnimationSize = 25.0f;
+	const float endingScreenAnimationSize = 40.0f;
 	const int endingScreenAnimationNumber = starsAmount * .8;
 	const int endingScreenIndicatorNumber = starsAmount - endingScreenAnimationNumber;
 
@@ -305,7 +308,7 @@ namespace Asteroids {
 		return newVx;
 	}
 
-	vec2 pPos;
+	vec2 pPos; vec3 pOri;
 	//please ignore how messy this code is, i was tired
 	void death(bool tp = false, vec3 _pos = ship->Transform.position, vec3 _rot = ship->Transform.orientation, bool isShip = true, GameObject* obj = ship, float scale = 5, std::vector<vec2> _vx = {}, std::vector<unsigned int> _ind = {}) {
 		if (isShip) {
@@ -423,6 +426,8 @@ void Game::AsteroidsInit(bool again) {
 
 	if (again) {
 		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
+
+		_asteroidsNo -= 2;
 	}
 
 	asteroids.clear();
@@ -475,6 +480,7 @@ void Game::AsteroidsInit(bool again) {
 
 void Game::Asteroids(float dt) {
 	pPos = ship->Transform.position;
+	pOri = ship->Transform.orientation;
 
 	jumpCooldown -= dt;
 	shootCooldown -= dt;
@@ -837,6 +843,7 @@ void Game::Asteroids(float dt) {
 				GameObject* current = stars[i];
 				float angle = -M_PI/2;
 				float size = (i % endingScreenIndicatorNumber) * endingScreenAnimationSize / (endingScreenIndicatorNumber * .5) - endingScreenAnimationSize;
+				float scoredAngle = (90.0f - (360.0f * score / bestScore)) * M_PI / 180.0f;
 				
 				if (bestScore < score) bestScore = score;
 
@@ -844,9 +851,11 @@ void Game::Asteroids(float dt) {
 					angle = 2 * M_PI * i / endingScreenAnimationNumber;
 					size = endingScreenAnimationSize;
 				}
-				else if (i >= starsAmount - (.5 * endingScreenIndicatorNumber) && bestScore != -1) angle = (90.0f - (360.0f * score / bestScore)) * M_PI / 180.0f;
+				else if (i >= starsAmount - (.5 * endingScreenIndicatorNumber) && bestScore != -1) angle = scoredAngle;
 
-				current->Move(vec3(size * cos(angle) - current->Transform.position.x, size * sin(angle) - current->Transform.position.y, 0) * dt / endingScreenAnimationTime); //probably multiplied the values wrong but still looks cool
+				float coefficient = dt / endingScreenAnimationTime; //probably multiplied the values wrong but still looks cool
+				current->Move(vec3(size * cos(angle) - current->Transform.position.x + animationPos.x, size * sin(angle) - current->Transform.position.y + animationPos.y, 0) * coefficient);
+				//todo: move and rotate the player ship accordingly
 			}
 		}
 		respawnCooldown -= dt;
