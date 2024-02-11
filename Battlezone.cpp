@@ -603,17 +603,20 @@ namespace Battlezone {
 
 	int money;
 	const std::string shopModels[] = { "PowerUpHeart" };
-	int itemsPrice[3]; //assign values
-	int itemsType[3];  //^ ^ ^ ^ ^ ^ ^
+	int itemsPrice[3];
+	int itemsType[3];
 	GameObject* shopDisplayIcons[3];
-	const float shopXPos = .75;
-	const float shopYPos = .3;
-	GameObject* shopDisplaySquares[3]; //not const, cuz im putting them onTop in init()
+	GameObject* shopDisplaySquares[3];
+	const float shopXPos = .825f;
+	const float shopYPos = .2f;
+	const float shopScale = .15f;
 
-	void insertItem(int item) {
+	void insertItem(int item, bool isTheFirstTime = false) {
 		itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
-		shopDisplayIcons[item] = Gra->Create(vec3(-shopXPos, shopYPos - item * shopYPos, 0), vec3(0), vec3(1), shopModels[itemsType[item]]);
-		shopDisplayIcons[item]->Stage[item].onTop = true;
+		itemsPrice[item] = 15; //todo: add proper pricing
+		if(!isTheFirstTime) Gra->Destroy(shopDisplayIcons[item]);
+		shopDisplayIcons[item] = Gra->Create(vec3(-shopXPos, shopYPos - item * shopYPos, 0), vec3(0), vec3(shopScale), shopModels[itemsType[item]]);
+		shopDisplayIcons[item]->Stage[0].onTop = true;
 	}
 
 	void buyItem(int type, int cost,int item) {
@@ -623,17 +626,16 @@ namespace Battlezone {
 		case 0:
 			if (hp < 100) hp = 100;
 			else hp += 25;
+
+			break;
 		default:
 			throw std::invalid_argument("the shop is out of stock");
 		}
 
-		itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
-		//itemsPrice[item] = //todo: add pricing
-
-
+		insertItem(item);
 	}
 
-	void shopAction(int item, bool isForced) {
+	void shopAction(int item, bool isForced = false) {
 		if (money >= itemsPrice[item] || isForced) buyItem(itemsType[item], itemsPrice[item], item);
 	}
 }
@@ -643,13 +645,13 @@ void Game::BattlezoneInit() {
 	keyCooldown = .25f;
 	money = 0;
 
-	shopDisplaySquares[0] = Gra->Create(vec3(-shopXPos, shopYPos,  0), vec3(0), vec3(1), "MenuSquare");
-	shopDisplaySquares[1] = Gra->Create(vec3(-shopXPos, 0,         0), vec3(0), vec3(1), "MenuSquare");
-	shopDisplaySquares[2] = Gra->Create(vec3(-shopXPos, -shopYPos, 0), vec3(0), vec3(1), "MenuSquare");
+	shopDisplaySquares[0] = Gra->Create(vec3(-shopXPos, shopYPos,  0), vec3(0), vec3(shopScale), "MenuSquare");
+	shopDisplaySquares[1] = Gra->Create(vec3(-shopXPos, 0,         0), vec3(0), vec3(shopScale), "MenuSquare");
+	shopDisplaySquares[2] = Gra->Create(vec3(-shopXPos, -shopYPos, 0), vec3(0), vec3(shopScale), "MenuSquare");
 
-	shopDisplaySquares[0]->Stage[0].onTop = true; shopDisplaySquares[1]->Stage[0].onTop = true; shopDisplaySquares[0]->Stage[2].onTop = true;
+	shopDisplaySquares[0]->Stage[0].onTop = true; shopDisplaySquares[1]->Stage[0].onTop = true; shopDisplaySquares[2]->Stage[0].onTop = true;
 
-	insertItem(0); insertItem(1); insertItem(2);
+	insertItem(0, true); insertItem(1, true); insertItem(2, true);
 
 	velocity = 3.0f;
 	timeMultiplier = 1.0f;
@@ -1382,15 +1384,15 @@ void Game::Battlezone(float dt) {
 		//shop
 		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && keyCooldown <= 0) {
 			keyCooldown = .25f;
-			shopAction(0, false);
+			shopAction(0);
 		}
 		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && keyCooldown <= 0) {
 			keyCooldown = .25f;
-			shopAction(1, false);
+			shopAction(1);
 		}
 		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && keyCooldown <= 0) {
 			keyCooldown = .25f;
-			shopAction(2, false);
+			shopAction(2);
 		}
 
 		//debug ↓
