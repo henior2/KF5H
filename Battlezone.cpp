@@ -77,7 +77,7 @@ namespace Battlezone {
 
 	const float mapSize = 125; //from the middle, so 125 <=> 250x250
 	const float maxOutOfBoundsDistance = 25;
-	const float glitchEffectRefreshRate = .1f;
+	float glitchEffectRefreshRate;
 	const unsigned int maxGlitchLinesNumber = 75;
 	std::vector<GameObject*> __lines;
 
@@ -668,6 +668,7 @@ void Game::BattlezoneInit() {
 	waveTime = 4.0f;
 	bulletsFired = 0;
 	fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA1");
+	glitchEffectRefreshRate = .1f;
 
 	shot_cool = 2;
 	resp_cool = 2;

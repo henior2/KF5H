@@ -855,7 +855,7 @@ void Game::Asteroids(float dt) {
 
 				float coefficient = dt / endingScreenAnimationTime; //probably multiplied the values wrong but still looks cool
 				current->Move(vec3(size * cos(angle) - current->Transform.position.x + animationPos.x, size * sin(angle) - current->Transform.position.y + animationPos.y, 0) * coefficient);
-				//todo: move and rotate the player ship accordingly
+				ship->RotateTo(vec3(0, 0, -90.0f));
 			}
 		}
 		respawnCooldown -= dt;
