@@ -26,8 +26,8 @@ void Game::ChangeState(GameState state) {
         delete Objects[i];
     }
     for (int i = 0; i < Teksts.size(); i++) {
-		delete Teksts[i];
-	}
+        delete Teksts[i];
+    }
     Teksts.clear();
     Objects.clear();
     camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -48,7 +48,7 @@ void Game::ChangeState(GameState state) {
         this->TempestInit();
     }
     else if (state == Game_TEST) {
-		this->TESTInit();
+        this->TESTInit();
     }
     else if (state == Game_Init) {
         this->GameInit();
@@ -57,9 +57,10 @@ void Game::ChangeState(GameState state) {
 
 void Game::Update(float dt)
 {
-    if (this->State == Game_Menu){
+    if (this->State == Game_Menu) {
         this->Menu(dt);
-    }else if (this->State == Game_Battlezone) {
+    }
+    else if (this->State == Game_Battlezone) {
         this->Battlezone(dt);
     }
     else if (this->State == Game_Asteroids) {
@@ -78,7 +79,7 @@ void Game::Update(float dt)
     this->Render(dt);
 }
 
-void Game::Render(float dt){
+void Game::Render(float dt) {
     glClearColor(Buffer.Red, Buffer.Green, Buffer.Blue, Buffer.Alpha);  // tworzenie bufferru
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -95,7 +96,7 @@ void Game::Render(float dt){
     program->setMat4("viev", viev);
 
     for (int i = 0; i < Objects.size(); i++) {
-        
+
         program->SetBool("onTop", Objects[i]->Stage[Objects[i]->activeStage].onTop);
 
         glBindVertexArray(this->Objects[i]->Stage[Objects[i]->activeStage].VAO);
@@ -123,7 +124,7 @@ void Game::Render(float dt){
         glDrawElements(GL_LINES, this->Objects[i]->Stage[Objects[i]->activeStage].lines, GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_POINTS, 0, this->Objects[i]->Stage[Objects[i]->activeStage].pointsNum);
     }
-    
+
     for (int i = 0; i < Teksts.size(); i++) {
         program->SetBool("onTop", true);
 
@@ -171,8 +172,6 @@ void Game::Destroy(GameObject* obj) {
     delete obj;
 }
 
-
-
 Tekst2d* Game::CreateTekst(glm::vec2 pos, float rot, glm::vec2 scale, float height, float spacing, std::string tekst) {
     Tekst2d* txt = new Tekst2d(pos, rot, scale, tekst, height, spacing, Teksts.size());
     Teksts.push_back(txt);
@@ -186,16 +185,13 @@ void Game::DestroyTekst(Tekst2d* tekst) {
     delete tekst;
 }
 
-
-
-
 void Game::ProcessInput(float dt)
 {
 
 }
 
 void Game::PlaySound2d(const char file[], bool loop) {
-   engine->play2D(file, loop);
+    engine->play2D(file, loop);
 }
 
 void Game::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
