@@ -96,21 +96,23 @@ namespace Tempest {
 		else {
 			int sid = findsmallest(point);
 			move.push_back(point[sid]);
-			zapisywanie(0, point[sid]);
+			//zapisywanie(0, point[sid]);
 			for (int i = sid - 1; i >= 0; i--) {
 				move.push_back(point[i]);
-				zapisywanie(0, point[i]);
+				//zapisywanie(0, point[i]);
 			}
 			for (int i = sid + 1; i < point.size(); i++) {
 				move.push_back(point[i]);
-				zapisywanie(0, point[i]);
+				//zapisywanie(0, point[i]);
 			}
 		}
 	}
 	void shipspawn() {
 		vec3 a = move[0], b = move[1];
-		blaster = Gra->Create(vec3(b.x / 2, b.y / 2, b.z), vec3(0, 0, signed_angle_between_vectors(a,b, vec3(0, 0, 1))), vec3(glm::length(b - a)/2), "tempest_ship");
-	}
+		blaster = Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), "tempest_ship");
+		//+ .25 so that is't "on top" of the tunnel
+		//2.25 so that is doesn't take up the whole space
+		}
 
 	void tunelspawn( int& lastTSN, std::vector <vec3>& point, int& type) {
 		point.clear();
@@ -168,8 +170,9 @@ namespace Tempest {
 					push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
 					push_back3(v, points[i].x, points[i].y, -16.5f * (j + 1) + 2); //points
-					if (j == 0) { point.push_back(vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2)); 
-					zapisywanie(1,vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2));
+					if (j == 0) {
+						point.push_back(vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2));
+						//zapisywanie(1, vec3(points[i].x, points[i].y, -16.5f * (j + 1) + 2));
 					}
 					if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
 					else push_back3(v, 0, 0, 1); //color (blue)
@@ -254,9 +257,9 @@ namespace Tempest {
 		else position--;
 		b = move[position];
 
-		blaster->MoveTo(vec3(b.x / 2, b.y / 2, b.z));
-		blaster->ScaleTo(vec3(glm::length(b - a)));
-		blaster->Rotate(vec3(0, 0, signed_angle_between_vectors(a, b, vec3(0, 0, 1))));
+		blaster->MoveTo(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
+		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
+		blaster->Rotate(vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f));
 	}
 	
 }
