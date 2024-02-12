@@ -30,7 +30,7 @@ namespace Battlezone {
 		return signedAngleDeg;
 	}
 
-	bool flag = false;
+	bool flag;
 	bool isDead;
 	bool endingScreen;
 	float hp;
@@ -77,7 +77,7 @@ namespace Battlezone {
 
 	const float mapSize = 125; //from the middle, so 125 <=> 250x250
 	const float maxOutOfBoundsDistance = 25;
-	float glitchEffectRefreshRate = .1f;
+	const float glitchEffectRefreshRate = .1f;
 	const unsigned int maxGlitchLinesNumber = 75;
 	std::vector<GameObject*> __lines;
 
@@ -98,9 +98,9 @@ namespace Battlezone {
 	GameObject* model2;
 	GameObject* ufo;
 	float reloadTime = 5.0f;
-	int bulletsFired = 0;
+	int bulletsFired;
 
-	bool isUfo = false;
+	bool isUfo;
 	const float ufoSpeed = 3.0f;
 	float ufoCooldown;
 	int ufoMovesLeft;
@@ -136,7 +136,7 @@ namespace Battlezone {
 	const float rPointerScaleBig = .15f;
 
 	const float rotationMultiplier = -500.0f;
-	int camSpeed = 1;
+	int camSpeed;
 	float velocity;
 	float const rotationMultiplier1 = 35;
 
@@ -370,9 +370,9 @@ namespace Battlezone {
 
 	const float planeHeight = 30.0f;
 	const float planeSpeedMultiplier = 10.0f;
-	float planeCooldown = 7.5f;
-	bool isPlane = false;
-	vec2 planeStartCoords = vec2(-1000, -1000);
+	float planeCooldown;
+	bool isPlane;
+	vec2 planeStartCoords;
 	const float planeBounds = 175.0f;
 
 	GameObject* horizon;
@@ -653,7 +653,9 @@ void Game::BattlezoneInit() {
 
 	insertItem(0, true); insertItem(1, true); insertItem(2, true);
 
+	flag = false;
 	velocity = 3.0f;
+	camSpeed = 1;
 	timeMultiplier = 1.0f;
 	isMissleSelfTargeting = false;
 	timeEffectLeft = 0;
@@ -664,6 +666,7 @@ void Game::BattlezoneInit() {
 	wavePoints = 1;
 	waveFlag = false;
 	waveTime = 4.0f;
+	bulletsFired = 0;
 	fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA1");
 
 	shot_cool = 2;
@@ -674,7 +677,6 @@ void Game::BattlezoneInit() {
 
 	new_username = "";
 
-	glitchEffectRefreshRate = .1f;
 	__lines.clear();
 
 	isUfo = false;
