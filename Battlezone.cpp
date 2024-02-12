@@ -45,6 +45,7 @@ namespace Battlezone {
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
 	std::vector<float> enemyShotCooldowns;
+	const float enemyCooldown = 15.0f;
 
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
@@ -254,7 +255,7 @@ namespace Battlezone {
 			else if (enemyType[enemyIndex] == 3) {
 				shot_leonardo(enemy->Transform.position + vec3(0, .6, 0), enemy->Transform.orientation);
 			}
-			enemyShotCooldowns[enemyIndex] = 4.20f;
+			enemyShotCooldowns[enemyIndex] = enemyCooldown;
 		}
 	}
 
@@ -263,7 +264,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(15);
+			enemyShotCooldowns.push_back(enemyCooldown);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "RadarX");
 			radarElements.push_back(rPointer);
@@ -276,7 +277,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(15);
+			enemyShotCooldowns.push_back(enemyCooldown);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleBig), "RadarX");
 			radarElements.push_back(rPointer);
@@ -289,7 +290,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(15);
+			enemyShotCooldowns.push_back(enemyCooldown);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsStar");
 			rPointer->color = vec3(0, 1, 0);
@@ -303,7 +304,7 @@ namespace Battlezone {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			rakiety.push_back(enemy);
 			enemyType.push_back(type);
-			enemyShotCooldowns.push_back(0.0f);
+			enemyShotCooldowns.push_back(enemyCooldown);
 
 			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsShip");
 			rPointer->color = vec3(0, 1, 0);
