@@ -312,13 +312,13 @@ namespace Asteroids {
 	//please ignore how messy this code is, i was tired
 	void death(bool tp = false, vec3 _pos = ship->Transform.position, vec3 _rot = ship->Transform.orientation, bool isShip = true, GameObject* obj = ship, float scale = 5, std::vector<vec2> _vx = {}, std::vector<unsigned int> _ind = {}) {
 		if (isShip) {
-			Gra->PlaySound2d("asteroidsPlayerDeath.wav", false);
+			Gra->PlaySound2d("./sourceFiles/soundFiles/asteroidsPlayerDeath.wav", false);
 
 			isDead = true;
 			ship->MoveTo(vec3(-10000, -10000, 0));
 		}
 		else {
-			Gra->PlaySound2d("asteroidsEnemyDeath.wav", false);
+			Gra->PlaySound2d("./sourceFiles/soundFiles/asteroidsEnemyDeath.wav", false);
 
 			Gra->Destroy(obj);
 		}
@@ -459,7 +459,7 @@ void Game::AsteroidsInit(bool again) {
 			stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.01f), "AsteroidsStar"));
 		}
 
-		PlaySound2d("mus01.mp3", true);
+		PlaySound2d("./sourceFiles/soundFiles/asteroidsBackgroundMusic.mp3", true);
 	}
 
 	std::string scoreStr = std::to_string(score);
@@ -532,7 +532,7 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (!isDead && glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
-		PlaySound2d("asteroidsPlayerTeleport.wav", false);
+		PlaySound2d("./sourceFiles/soundFiles/asteroidsPlayerTeleport.wav", false);
 
 		jumpCooldown = 0.5f;
 
@@ -555,7 +555,7 @@ void Game::Asteroids(float dt) {
 	}
 
 	if (!isDead && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown <= 0) {
-		PlaySound2d("asteroidsPlayerShoot.wav", false);
+		PlaySound2d("./sourceFiles/soundFiles/asteroidsPlayerShoot.wav", false);
 
 		shootCooldown = .5f;
 		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
@@ -609,7 +609,7 @@ void Game::Asteroids(float dt) {
 			}
 			else _angle = rand() % 360;
 
-			PlaySound2d("asteroidsEnemyShoot.wav", false);
+			PlaySound2d("./sourceFiles/soundFiles/asteroidsEnemyShoot.wav", false);
 
 			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, this, type);
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
@@ -812,7 +812,7 @@ void Game::Asteroids(float dt) {
 			if (new_username.length() < 3) {
 				for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
 					if (glfwGetKey(window, key) == GLFW_PRESS && jumpCooldown <= 0) {
-						PlaySound2d("asteroidsInput.wav", false);
+						PlaySound2d("./sourceFiles/soundFiles/asteroidsInput.wav", false);
 
 						jumpCooldown = .25f; //im using this variable on purpose
 						new_username += (char)('A' + (key - GLFW_KEY_A));
@@ -821,7 +821,7 @@ void Game::Asteroids(float dt) {
 					}
 				}
 				if ((glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) && jumpCooldown <= 0){
-					PlaySound2d("asteroidsInputBackspace.wav", false);
+					PlaySound2d("./sourceFiles/soundFiles/asteroidsInputBackspace.wav", false);
 
 					jumpCooldown = .25f;
 					new_username.pop_back();
@@ -871,7 +871,7 @@ void Game::Asteroids(float dt) {
 
 				float coefficient = dt / endingScreenAnimationTime; //probably multiplied the values wrong but still looks cool
 				current->Move(vec3(size * cos(angle) - current->Transform.position.x + animationPos.x, size * sin(angle) - current->Transform.position.y + animationPos.y, 0) * coefficient);
-				ship->RotateTo(vec3(0, 0, -90.0f));
+				ship->RotateTo(vec3(0, 0, 90.0f));
 			}
 		}
 		respawnCooldown -= dt;
