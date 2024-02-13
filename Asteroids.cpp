@@ -18,6 +18,8 @@ namespace Asteroids {
 	Tekst2d* usernameInfo;
 	std::vector<GameObject*> tLives;
 
+	Tekst2d* scoreboard[10];
+
 	bool isDead;
 	bool hasLost;
 	bool endingScreen;
@@ -27,7 +29,7 @@ namespace Asteroids {
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
 	std::vector<float> debrisRotation;
-	float respawnCooldown = 5.0f;
+	float respawnCooldown;
 	const float debrisSpeedMultiplier = 25.0f;
 	const float maxDebrisRotationMultiplier = 25.0f;
 	const float playerDebrisSpeedMultiplier = 10.0f;
@@ -104,7 +106,7 @@ namespace Asteroids {
 	std::vector<float> asteroidRotation;
 	std::vector<float> asteroidRotationMultiplier;
 
-	float maxAsteroidRotationMultiplier = 50.0f;
+	const float maxAsteroidRotationMultiplier = 50.0f;
 
 	const int bounds = 15;
 
@@ -125,7 +127,7 @@ namespace Asteroids {
 
 	const float maxEnemyBulletTime = 2.0f;
 	std::vector<float> enemyShootCooldown;
-	float _enemyShootCooldown[2] = { 3.0f, 5.0f };
+	const float _enemyShootCooldown[2] = { 3.0f, 5.0f };
 	const float enemyShootCooldownRange = .2f;
 
 	const int maxBigEnemyMoves = 5;
@@ -417,7 +419,7 @@ void Game::AsteroidsInit(bool again) {
 
 		_asteroidsNo = 4;
 		score = 0;
-		lives = 4; //becuse i do --lives, so its actually 3 lol
+		lives = 4; //because i do --lives, so its actually 3 lol
 		_return = 0;
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
@@ -673,7 +675,7 @@ void Game::Asteroids(float dt) {
 		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
 			if (!isDead && isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
-       			death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
+				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
 				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
 				enemyShootCooldown.erase(enemyShootCooldown.begin() + j);
@@ -811,12 +813,15 @@ void Game::Asteroids(float dt) {
 			debrisRotation.erase(debrisRotation.begin() + i);
 		}
 	}
+
 	if (isDead) {
+		int n = 0; //i know its ugly, but thats the truth of it
+		std::vector<std::string> usernames;
+		std::vector<int> scores;
+
 		if (hasLost && !endingScreen) {
 			std::ifstream file("_asteroidsscoredata.txt"); // reading the file
 
-			std::vector<std::string> usernames; // char[3] would be enough, but it's not letting me do it
-			std::vector<int> scores;
 			std::string line;
 
 			while (std::getline(file, line)) {
@@ -836,7 +841,7 @@ void Game::Asteroids(float dt) {
 						endingUsername = refreshText(endingUsername, new_username);
 					}
 				}
-				if ((glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) && jumpCooldown <= 0){
+				if ((glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) && jumpCooldown <= 0) {
 					PlaySound2d("./sourceFiles/soundFiles/asteroidsInputBackspace.wav", false);
 
 					jumpCooldown = .25f;
@@ -846,8 +851,7 @@ void Game::Asteroids(float dt) {
 				}
 			}
 			else {
-				int n;
-				for (n = 0; n < scores.size(); n++) {
+				for (n; n < scores.size(); n++) {
 					if (score >= scores[n]) break;
 				}
 
@@ -873,10 +877,10 @@ void Game::Asteroids(float dt) {
 		if (endingScreen && hasLost) {
 			for (int i = 0; i < starsAmount; i++) {
 				GameObject* current = stars[i];
-				float angle = -M_PI/2;
+				float angle = -M_PI / 2;
 				float size = (i % endingScreenIndicatorNumber) * endingScreenAnimationSize / (endingScreenIndicatorNumber * .5) - endingScreenAnimationSize;
 				float scoredAngle = (90.0f - (360.0f * score / bestScore)) * M_PI / 180.0f;
-				
+
 				if (bestScore < score) bestScore = score;
 
 				if (i < endingScreenAnimationNumber) {
@@ -887,7 +891,15 @@ void Game::Asteroids(float dt) {
 
 				float coefficient = dt / endingScreenAnimationTime; //probably multiplied the values wrong but still looks cool
 				current->Move(vec3(size * cos(angle) - current->Transform.position.x + animationPos.x, size * sin(angle) - current->Transform.position.y + animationPos.y, 0) * coefficient);
+			}
+
+			if (!scoreboard[0]) {
+				for (int i = 0; i < 10; i++) {
+					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (std::to_string(i+1) + "" + usernames[i] + "" + std::to_string(scores[i]))); // these "" will be changed to ". " and " " respectively
+				}
+
 				ship->RotateTo(vec3(0, 0, 90.0f));
+				ship->MoveTo(vec3(-animationPos.x * .65, (.35 - (.125 * n)) * camH, -80.0f));
 			}
 		}
 		respawnCooldown -= dt;
