@@ -417,7 +417,7 @@ void Game::AsteroidsInit(bool again) {
 
 		_asteroidsNo = 4;
 		score = 0;
-		lives = 3;
+		lives = 4; //becuse i do --lives, so its actually 3 lol
 		_return = 0;
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
