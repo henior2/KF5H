@@ -368,6 +368,9 @@ namespace Asteroids {
 		text = Gra->CreateTekst(pos, rot, scale, height, spacing, textValue);
 		return text;
 	}
+
+	float escSoundLen;
+	bool hasEscd;
 };
 
 using namespace Asteroids;
@@ -375,6 +378,9 @@ using namespace Asteroids;
 
 void Game::AsteroidsInit(bool again) {
 	if (!again) {
+		escSoundLen = .25f;
+		hasEscd = false;
+		
 		ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
 		modelShipFire = ship->AddStage("AsteroidsShipFire");
 	}
@@ -404,7 +410,6 @@ void Game::AsteroidsInit(bool again) {
 	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 	shootCooldown = .5f;
 
-	lives--;
 	if (!again) {
 		camera->perspective = false;
 		camera->cameraHeight = camH;
@@ -420,11 +425,14 @@ void Game::AsteroidsInit(bool again) {
 		smallEnemyProb = 20.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
-	if (lives <= 0) {
+	if (--lives <= 0) {
 		isDead = true;
 		hasLost = true;
 
 		usernameInfo = CreateTekst(vec2(-.8, .6), 0, vec2(.07), 1, .5, "EnterYourUsername"); //todo: change to "Enter your username:" //todo: add language options (maybe)
+	}
+	else {
+		PlaySound2d("./sourceFiles/soundFiles/asteroidsStart.wav", false);
 	}
 	bigEnemyIterator = 0;
 
@@ -747,8 +755,16 @@ void Game::Asteroids(float dt) {
 		}
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		hasEscd = true;
+		if (escSoundLen == .25f) PlaySound2d("./sourceFiles/soundFiles/asteroidsExit.wav", false);
+	}
+	if (hasEscd) {
+		escSoundLen -= dt;
+	}
+	if (escSoundLen <= 0) {
 		Game::ChangeState(Game_Menu);
+	}
 
 	if (!isDead) checkBounds(ship);
 
