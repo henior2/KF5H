@@ -139,8 +139,8 @@ namespace Asteroids {
 
 	int bigEnemyIterator;
 
-	const int ufoXP[] = { 990,200 }; // small/big
-	const int asteroidsXP[] = { 20,50,100 }; // big/normal/small
+	const int ufoXP[] = { 500,200 }; // small/big
+	const int asteroidsXP[] = { 25,50,100 }; // big/normal/small
 
 	bool checkBounds(GameObject* current, bool stay = false, vec2 bounds = vec2(170, 95)) {
 		bool flag = false;
@@ -229,15 +229,15 @@ namespace Asteroids {
 		}
 	}
 
-	void spawnEnemy(bool type, Game* Gra) {
+	void spawnEnemy(bool type) {
 		vec2 pos;
 		int temp;
 
 		do {
-			temp = rand() % (2 * (camW + bounds) - (camW + bounds));
+			temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
 			pos.x = temp;
 
-			temp = rand() % (2 * (camW + bounds) - (camW + bounds));
+			temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
 			pos.y = temp;
 		} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 
@@ -247,7 +247,7 @@ namespace Asteroids {
 		if (type) eBDPos.push_back(vec3(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
 	}
 
-	void shoot(vec3 _pos, vec3 _rot, bool type, Game* Gra, bool eType = 0) {
+	void shoot(vec3 _pos, vec3 _rot, bool type, bool eType = 0) {
 		float _time;
 		float _scale;
 		std::string _model;
@@ -403,7 +403,7 @@ void Game::AsteroidsInit(bool again) {
 			scoreboard[i] = nullptr;
 		}
 
-		smallEnemyNoise = 25.0f;
+		smallEnemyNoise = 2.5f;
 	}
 	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
@@ -677,7 +677,7 @@ void Game::Asteroids(float dt) {
 
 			PlaySound2d("./sourceFiles/soundFiles/asteroidsEnemyShoot.wav", false);
 
-			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, this, type);
+			shoot(current->Transform.position, vec3(0.0f, 0.0f, _angle), 1, type);
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
 			isBulletPlayers.push_back(false);
 		}
@@ -834,8 +834,8 @@ void Game::Asteroids(float dt) {
 			waveAsteroidsCooldown = 2.5f;
 			hasWaveFinished = false;
 			_return = wave(_asteroidsNo);
-			if (_asteroidsNo <= 9) _asteroidsNo += 2;
-			else _asteroidsNo = 11;
+			if (_asteroidsNo <= 13) _asteroidsNo += 2;
+			else _asteroidsNo = 15;
 
 			tutorialText = refreshText(tutorialText, ("Wave" + std::to_string(wave_num)));
 		}
@@ -844,14 +844,15 @@ void Game::Asteroids(float dt) {
 	if (!isDead && tutorialStep == 4 && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
-			bool type = 0;
-			if (rand() % 100 > smallEnemyProb) type = 1;
-			spawnEnemy(type, this);
+			for (_return; _return >= 0; _return--) {
+				bool type = 0;
+				if (rand() % 100 > smallEnemyProb) type = 1;
+				spawnEnemy(type);
 
-			enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay;
-			enemyProb += enemyProb * enemyDeltaProb;
-			smallEnemyProb += smallEnemyProb * enemyDeltaProb;
-			_return--;
+				enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay; //i dont think this changes anything?
+				enemyProb += enemyProb * enemyDeltaProb;
+				smallEnemyProb += smallEnemyProb * enemyDeltaProb;
+			}
 		}
 	}
 
