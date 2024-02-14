@@ -37,7 +37,7 @@ namespace Asteroids {
 
 	const int camW = 160;
 	const int camH = 90;
-	
+
 	const vec2 animationPos = vec2(80, 0);
 	//const vec2 scoreTablePos = vec2(-80, 0);
 
@@ -112,6 +112,7 @@ namespace Asteroids {
 
 	bool hasWaveFinished;
 	float waveAsteroidsCooldown;
+	int wave_num;
 
 	float enemyProb;
 	float smallEnemyProb;
@@ -140,10 +141,10 @@ namespace Asteroids {
 
 	bool checkBounds(GameObject* current, bool stay = false, vec2 bounds = vec2(170, 95)) {
 		bool flag = false;
-		if (current->Transform.position.y > bounds.y) {if(!stay) {current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0));} flag = true;}
-		if (current->Transform.position.y < -bounds.y) {if(!stay) {current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0));} flag = true;}
-		if (current->Transform.position.x > bounds.x) {if(!stay) {current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0));} flag = true;}
-		if (current->Transform.position.x < -bounds.x) {if(!stay) {current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0));} flag = true;}
+		if (current->Transform.position.y > bounds.y) { if (!stay) { current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0)); } flag = true; }
+		if (current->Transform.position.y < -bounds.y) { if (!stay) { current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0)); } flag = true; }
+		if (current->Transform.position.x > bounds.x) { if (!stay) { current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0)); } flag = true; }
+		if (current->Transform.position.x < -bounds.x) { if (!stay) { current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0)); } flag = true; }
 		return flag;
 	}
 
@@ -270,12 +271,13 @@ namespace Asteroids {
 
 	int wave(int asteroidsNum) {
 		spawnAsteroids(asteroidsNum, 0);
+		wave_num++;
 
 		int temp = 0;
 		float tempProb = enemyProb;
 		while (rand() % 100 <= tempProb)
 			tempProb -= 100;
-			temp += 1;
+		temp += 1;
 		return temp;
 	}
 
@@ -324,13 +326,13 @@ namespace Asteroids {
 
 			Gra->Destroy(obj);
 		}
-		std::vector<vec2> vxs = breakIntoPieces(_ind,_vx);
+		std::vector<vec2> vxs = breakIntoPieces(_ind, _vx);
 		int random = rand() % (int)(vxs.size() * .2);
 		int size = vxs.size();
 		for (int i = 0; i < size / 2; i++) {
 			std::vector<float> vx1;
 			int it = 1;
-			if (rand() % size < random && i<(size/2)-1) it = 2;
+			if (rand() % size < random && i < (size / 2) - 1) it = 2;
 			if (tp) _pos = vec3(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80);
 			for (int k = 0; k < it; k++) {
 				vx1.clear();
@@ -339,7 +341,7 @@ namespace Asteroids {
 					vx1.push_back(1); vx1.push_back(1); vx1.push_back(1);
 				}
 				debris.push_back(Gra->Create(_pos, _rot, vec3(scale), vx1, std::vector<unsigned int>{0, 1}));
-				if (isShip) { debris[debris.size() - 1]->SetColor(vec3(1,0,0)); playersDebris.push_back(debris.size() - 1); }
+				if (isShip) { debris[debris.size() - 1]->SetColor(vec3(1, 0, 0)); playersDebris.push_back(debris.size() - 1); }
 			}
 		}
 		for (int i = 0; i < debris.size(); i++) {
@@ -373,18 +375,25 @@ namespace Asteroids {
 
 	float escSoundLen;
 	bool hasEscd;
+
+	Tekst2d* tutorialText;
+	int tutorialStep;
 };
 
 using namespace Asteroids;
-
 
 void Game::AsteroidsInit(bool again) {
 	if (!again) {
 		escSoundLen = .25f;
 		hasEscd = false;
-		
+
 		ship = Create(vec3(0.0f, 0.0f, -99.0f), vec3(0.0f), vec3(5.0f), "AsteroidsShip");
 		modelShipFire = ship->AddStage("AsteroidsShipFire");
+
+		wave_num = 0;
+
+		tutorialText = CreateTekst(vec2(-.9), 0, vec2(.05), 1, .5, "PressWtomove");
+		tutorialStep = 0;
 	}
 	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
@@ -396,9 +405,9 @@ void Game::AsteroidsInit(bool again) {
 
 	if (!again) {
 		std::ifstream file("_asteroidsscoredata.txt");
-		std::string line; 
+		std::string line;
 		bestScore = -1;
-		if(std::getline(file, line)) bestScore = std::stoi(line.substr(4));
+		if (std::getline(file, line)) bestScore = std::stoi(line.substr(4));
 	}
 
 	velocity = vec2(0.0f);
@@ -423,7 +432,7 @@ void Game::AsteroidsInit(bool again) {
 		_return = 0;
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
-		enemyProb = 20.0f; 
+		enemyProb = 20.0f;
 		smallEnemyProb = 20.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
@@ -442,6 +451,7 @@ void Game::AsteroidsInit(bool again) {
 		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
 
 		_asteroidsNo -= 2;
+		wave_num--;
 	}
 
 	asteroids.clear();
@@ -502,6 +512,12 @@ void Game::Asteroids(float dt) {
 	bigEnemyIterator = 0;
 
 	if (!isDead && (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)) {
+		if (tutorialStep == 0) {
+			tutorialStep++;
+
+			tutorialText = refreshText(tutorialText, "UseAandDtorotate");
+		}
+
 		vec2 shipUp = ship->Up;
 
 		velocity += acceleration * dt * vec2(shipUp.x, shipUp.y);
@@ -534,27 +550,48 @@ void Game::Asteroids(float dt) {
 
 		ship->activeStage = 0;
 	}
-	if (!isDead && (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)) {
+	if (!isDead && tutorialStep > 0 && (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)) {
+		if (tutorialStep == 1) {
+			tutorialStep++;
+
+			tutorialText = refreshText(tutorialText, "PressSPACEtoshoot");
+		}
+
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
 	}
-	if (!isDead && (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)) {
+	if (!isDead && tutorialStep > 0 && (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)) {
+		if (tutorialStep == 1) {
+			tutorialStep++;
+
+			tutorialText = refreshText(tutorialText, "PressSPACEtoshoot");
+		}
+
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
 	}
 
-	if (!isDead && glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+	if (!isDead && tutorialStep > 2 && glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && jumpCooldown <= 0.0f) {
+		bool forceTeleport = false;
+
+		if (tutorialStep == 3) {
+			tutorialStep++;
+
+			tutorialText = refreshText(tutorialText, "Dontusethemtoomuch");
+			forceTeleport = true;
+		}
+
 		PlaySound2d("./sourceFiles/soundFiles/asteroidsPlayerTeleport.wav", false);
 
 		jumpCooldown = 0.5f;
 
 		int random = rand() % 32 - 1;
-		if (random >= 24 && random <= 31) {
+		if (!forceTeleport && random >= 24 && random <= 31) {
 			death(true);
 		}
 		else {
 			random = rand() % 8 - 1;
 			random = (random * 2) + 4;
 
-			if (random < asteroids.size()) {
+			if (!forceTeleport && random < asteroids.size()) {
 				death(true);
 			}
 			else {
@@ -564,7 +601,13 @@ void Game::Asteroids(float dt) {
 		}
 	}
 
-	if (!isDead && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown <= 0) {
+	if (!isDead && tutorialStep > 1 && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shootCooldown <= 0) {
+		if (tutorialStep == 2) {
+			tutorialStep++;
+
+			tutorialText = refreshText(tutorialText, "PressEtoteleport");
+		}
+
 		PlaySound2d("./sourceFiles/soundFiles/asteroidsPlayerShoot.wav", false);
 
 		shootCooldown = .5f;
@@ -610,7 +653,7 @@ void Game::Asteroids(float dt) {
 		float _angle;
 
 		enemyShootCooldown[i] -= dt;
-		if (!isDead && enemyShootCooldown[i] <= 0 && !checkBounds(current, true)) {
+		if (!isDead && tutorialStep == 4 && enemyShootCooldown[i] <= 0 && !checkBounds(current, true)) {
 			if (!type) {
 				enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]);
 
@@ -626,7 +669,7 @@ void Game::Asteroids(float dt) {
 			isBulletPlayers.push_back(false);
 		}
 
-		if (!isDead && type) {
+		if (!isDead && tutorialStep == 4 && type) {
 			if (pos.y <= -camH - bounds && eBDPos[bigEnemyIterator].z <= 0) {
 				Destroy(current);
 				enemies.erase(enemies.begin() + i);
@@ -640,7 +683,7 @@ void Game::Asteroids(float dt) {
 		}
 
 		//collisions - player/enemy
-		if (!isDead && Gra->collisionCircle(pPos, pos)) {
+		if (!isDead && tutorialStep == 4 && Gra->collisionCircle(pPos, pos)) {
 			death();
 		}
 	}
@@ -667,14 +710,14 @@ void Game::Asteroids(float dt) {
 		vec2 currentPos = current->Transform.position;
 
 		//collisions - player/bullets
-		if (!isDead && !isBulletPlayers[i] && Gra->collisionCircle(pPos, current->Transform.position)) {
+		if (!isDead && tutorialStep == 4 && !isBulletPlayers[i] && Gra->collisionCircle(pPos, current->Transform.position)) {
 			death();
 		}
 
 		//collisions - enemy/bullets
 		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
-			if (!isDead && isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
+			if (!isDead && tutorialStep == 4 && isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
 				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
 				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
@@ -694,7 +737,7 @@ void Game::Asteroids(float dt) {
 		//collisions - asteroids/bullets
 		for (int j = asteroids.size() - 1; j >= 0; j--) {
 			GameObject* asteroid = asteroids[j];
-			if (!isDead && Gra->collisionCircle(currentPos, asteroid->Transform.position)) {
+			if (!isDead && tutorialStep == 4 && Gra->collisionCircle(currentPos, asteroid->Transform.position)) {
 				int type = asteroidSize[j];
 				if (type < 2) {
 					float ori = asteroid->Transform.orientation.z;
@@ -717,7 +760,6 @@ void Game::Asteroids(float dt) {
 				tScore = refreshText(tScore, std::to_string(score), true);
 
 				bulletTimeRemain[i] = 0;
-				shouldSkip = true;
 				break;
 			}
 		}
@@ -744,7 +786,7 @@ void Game::Asteroids(float dt) {
 
 		float deg = asteroidRotation[i];
 
-		if (!isDead) {
+		if (!isDead && tutorialStep == 4) {
 			current->Rotate(vec3(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
 			current->MoveGlobal(vec3(cos(deg), sin(deg), 0.0f) * _velocity * dt);
 		}
@@ -752,7 +794,7 @@ void Game::Asteroids(float dt) {
 		checkBounds(current, false, vec2(camera->cameraWidth + bounds, camera->cameraHeight + bounds));
 
 		//collisions - player/asteroid
-		if (!isDead && Gra->collisionCircle(pPos, current->Transform.position)) {
+		if (!isDead && tutorialStep == 4 && Gra->collisionCircle(pPos, current->Transform.position)) {
 			death();
 		}
 	}
@@ -770,9 +812,9 @@ void Game::Asteroids(float dt) {
 
 	if (!isDead) checkBounds(ship);
 
-	if (!isDead && asteroids.empty()) hasWaveFinished = true;
+	if (!isDead && tutorialStep == 4 && asteroids.empty()) hasWaveFinished = true;
 
-	if (!isDead && hasWaveFinished) {
+	if (!isDead && tutorialStep == 4 && hasWaveFinished) {
 		waveAsteroidsCooldown -= dt;
 
 		if (waveAsteroidsCooldown <= 0) {
@@ -781,10 +823,12 @@ void Game::Asteroids(float dt) {
 			_return = wave(_asteroidsNo);
 			if (_asteroidsNo <= 9) _asteroidsNo += 2;
 			else _asteroidsNo = 11;
+
+			tutorialText = refreshText(tutorialText, ("Wave" + std::to_string(wave_num)));
 		}
 	}
 
-	if (!isDead && _return != 0) {
+	if (!isDead && tutorialStep == 4 && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
 			bool type = 0;
@@ -895,7 +939,7 @@ void Game::Asteroids(float dt) {
 
 			if (!scoreboard[0]) {
 				for (int i = 0; i < 10; i++) {
-					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (std::to_string(i+1) + "" + usernames[i] + "" + std::to_string(scores[i]))); // these "" will be changed to ". " and " " respectively
+					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (std::to_string(i + 1) + "" + usernames[i] + "" + std::to_string(scores[i]))); // these "" will be changed to ". " and " " respectively
 				}
 
 				ship->RotateTo(vec3(0, 0, 90.0f));

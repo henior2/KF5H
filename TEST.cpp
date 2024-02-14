@@ -52,6 +52,7 @@ namespace Test {
 		"",
 		"MenuCube",
 		"MenuSquare",
+		"keyIcone",
 		"Arrow0",
 		"Arrow1",
 		"Arrow2",
