@@ -116,7 +116,7 @@ namespace Asteroids {
 
 	float enemyProb;
 	float smallEnemyProb;
-	const float enemyDeltaProb = .2f;
+	const float enemyDeltaProb = .4f;
 	const float enemyMinDelay = 1.5f;
 	const float enemyMaxDelay = 5.0f;
 	float enemyDelay;
@@ -130,6 +130,9 @@ namespace Asteroids {
 	std::vector<float> enemyShootCooldown;
 	const float _enemyShootCooldown[2] = { 3.0f, 5.0f };
 	const float enemyShootCooldownRange = .2f;
+
+	float smallEnemyNoise;
+	const float smallEnemyNoiseDelta = .1f;
 
 	const int maxBigEnemyMoves = 5;
 	std::vector<vec3> eBDPos;
@@ -272,6 +275,7 @@ namespace Asteroids {
 	int wave(int asteroidsNum) {
 		spawnAsteroids(asteroidsNum, 0);
 		wave_num++;
+		smallEnemyNoise *= (1 - smallEnemyNoiseDelta);
 
 		int temp = 0;
 		float tempProb = enemyProb;
@@ -398,6 +402,8 @@ void Game::AsteroidsInit(bool again) {
 		for (int i = 0; i < 10; i++) {
 			scoreboard[i] = nullptr;
 		}
+
+		smallEnemyNoise = 25.0f;
 	}
 	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
@@ -436,8 +442,8 @@ void Game::AsteroidsInit(bool again) {
 		_return = 0;
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
-		enemyProb = 20.0f;
-		smallEnemyProb = 20.0f;
+		enemyProb = 25.0f;
+		smallEnemyProb = 40.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 	}
 	if (--lives <= 0) {
@@ -662,7 +668,10 @@ void Game::Asteroids(float dt) {
 				enemyShootCooldown[i] = (float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]);
 
 				_angle = atan2(sPos.y - pos.y, sPos.x - pos.x);
-				_angle = _angle * 180.0f / M_PI - 90.0f;
+
+				float noise = -smallEnemyNoise + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * smallEnemyNoise)));
+
+				_angle = (_angle + noise) * 180.0f / M_PI - 90.0f;
 			}
 			else _angle = rand() % 360;
 
