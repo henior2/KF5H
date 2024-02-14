@@ -394,6 +394,10 @@ void Game::AsteroidsInit(bool again) {
 
 		tutorialText = CreateTekst(vec2(-.9), 0, vec2(.05), 1, .5, "PressWtomove");
 		tutorialStep = 0;
+
+		for (int i = 0; i < 10; i++) {
+			scoreboard[i] = nullptr;
+		}
 	}
 	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
@@ -864,6 +868,8 @@ void Game::Asteroids(float dt) {
 		std::vector<int> scores;
 
 		if (hasLost && !endingScreen) {
+			tutorialText = refreshText(tutorialText, "");
+
 			std::ifstream file("_asteroidsscoredata.txt"); // reading the file
 
 			std::string line;
