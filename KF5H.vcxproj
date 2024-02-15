@@ -169,6 +169,8 @@
     <Text Include="Arrow2.vx.txt" />
     <Text Include="Arrow3.ind.txt" />
     <Text Include="Arrow3.vx.txt" />
+    <Text Include="AsteroidsShipForKamil.ind.txt" />
+    <Text Include="AsteroidsShipForKamil.vx.txt" />
     <Text Include="BattlezonePlane.ind.txt" />
     <Text Include="BattlezonePlane.vx.txt" />
     <Text Include="Blaster.ind.txt" />

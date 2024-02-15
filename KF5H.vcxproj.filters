@@ -613,6 +613,12 @@
     <Text Include="tempest_ship.vx.txt">
       <Filter>TextFiles\Models</Filter>
     </Text>
+    <Text Include="AsteroidsShipForKamil.vx.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
+    <Text Include="AsteroidsShipForKamil.ind.txt">
+      <Filter>TextFiles\Models</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Media Include="mus01.mp3">
