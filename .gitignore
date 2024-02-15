@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /precent.vx.txt
 /precent.ind.txt
+
+
+# added for KF5H
+_asteroidsscoredata.txt
