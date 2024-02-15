@@ -116,7 +116,7 @@ namespace Asteroids {
 
 	float enemyProb;
 	float smallEnemyProb;
-	const float enemyDeltaProb = .4f;
+	const float enemyDeltaProb = .2f;
 	const float enemyMinDelay = 1.5f;
 	const float enemyMaxDelay = 5.0f;
 	float enemyDelay;
@@ -221,7 +221,7 @@ namespace Asteroids {
 
 					temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
 					pos.y = temp;
-				} while (pos.x > -camW - 15 && pos.x < camW + 15 && pos.y > -camH - 15 && pos.y < camH + 15);
+				} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 			}
 
 			asteroids.push_back(Gra->Create(vec3(pos, -90.0f), vec3(0.0f, 0.0f, rot), vec3(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
@@ -384,12 +384,12 @@ namespace Asteroids {
 	int tutorialStep;
 
 	float spaceshipCooldown;
-	const float maxSpaceshipCooldown = 25.0f;
+	const float maxSpaceshipCooldown = 30.0f;
 
 	GameObject* spaceship;
 	bool isSpaceship;
 
-	const float spaceshipSpeed = 10.0f;
+	const float spaceshipSpeed = 60.0f;
 };
 
 using namespace Asteroids;
@@ -414,9 +414,11 @@ void Game::AsteroidsInit(bool again) {
 		smallEnemyNoise = 2.5f;
 
 		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(2.5), "AsteroidsSpaceship");
-		spaceshipCooldown = 0;
-		isSpaceship = false;
 	}
+	spaceshipCooldown = 0;
+	isSpaceship = false;
+	spaceship->MoveTo(vec3(-1000, -1000, -80));
+
 	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
 	isDead = false;
@@ -473,7 +475,7 @@ void Game::AsteroidsInit(bool again) {
 		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
 
 		_asteroidsNo -= 2;
-		wave_num--;
+		if(--wave_num == -1) wave_num = 0;
 	}
 
 	asteroids.clear();
@@ -896,25 +898,26 @@ void Game::Asteroids(float dt) {
 				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
 				pos.x = temp;
 
-				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+				temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
 				pos.y = temp;
-			} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
-
-			float _angle = atan2(pPos.y - pos.y, pPos.x - pos.x);
-			_angle = _angle * 180 / M_PI - 90;
+			} while (pos.x > -camW && pos.x < camW && pos.y > -camH && pos.y < camH);
 
 			spaceship->MoveTo(vec3(pos, -80));
+			
+			float _angle = atan2(pPos.y - pos.y, pPos.x - pos.x);
+			_angle = _angle * 180 / M_PI - 90;
+			
 			spaceship->RotateTo(vec3(0, 0, _angle));
 
 			isSpaceship = true;
 		}
 		if (isSpaceship) {
-			spaceship->Move(spaceship->Front * spaceshipSpeed * dt);
+			spaceship->Move(vec3(0, 1, 0) * spaceshipSpeed * dt); 
 
-			//collisions spaceship - player
+			//collisions - spaceshipplayer
 			if (collisionCircle(vec2(spaceship->Transform.position), pPos)) death();
 
-			if (checkBounds(spaceship)) {
+			if (checkBounds(spaceship, false, vec2(camW + 2*bounds, camH + 2*bounds))) {
 				spaceship->MoveTo(vec3(-1000, -1000, -80));
 				isSpaceship = false;
 			}
