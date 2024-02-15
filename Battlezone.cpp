@@ -46,12 +46,12 @@ namespace Battlezone {
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
 	std::vector<float> enemyShotCooldowns;
-	const float enemyCooldown = 15.0f;
+	const float enemyCooldown = 8.0f;
 
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
 	std::vector<GameObject*> rakiety;
-	float shot_cool = 2;
+	float shot_cool = 3;
 	float resp_cool = 2;
 	const float fast_tank_speed = 3;
 	const float tank_speed = 2;
