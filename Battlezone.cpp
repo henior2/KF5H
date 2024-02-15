@@ -39,18 +39,19 @@ namespace Battlezone {
 	float waveTime;
 	bool waveFlag;
 	Tekst2d* fala;
+	Tekst2d* display_hp;
 
 	std::string new_username;
 
 	std::vector<float> fastBulletTimeRemain;
 	std::vector<int> enemyType;
 	std::vector<float> enemyShotCooldowns;
-	const float enemyCooldown = 15.0f;
+	const float enemyCooldown = 8.0f;
 
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
 	std::vector<GameObject*> rakiety;
-	float shot_cool = 2;
+	float shot_cool = 3;
 	float resp_cool = 2;
 	const float fast_tank_speed = 3;
 	const float tank_speed = 2;
@@ -143,7 +144,7 @@ namespace Battlezone {
 	const float bulletMaxTime = 4.0f;
 	const float bulletSpeed = 14.0f;
 
-	void destroy_enemy(GameObject*, int i) {
+	void destroy_enemy( int i) {
 		Gra->Destroy(przeciwnicy[i]);
 		przeciwnicy.erase(przeciwnicy.begin() + i);
 		enemyType.erase(enemyType.begin() + i);
@@ -260,6 +261,7 @@ namespace Battlezone {
 	}
 
 	void spawn_enemy(vec3 pos, vec3 rot, int type) {
+		//Normal tank
 		if (type == 1) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Tank");
 			przeciwnicy.push_back(enemy);
@@ -273,6 +275,7 @@ namespace Battlezone {
 			targetPos.push_back(vec3(0.0f));
 			targetOri.push_back(vec3(0.0f));
 		}
+		//Fast tank
 		else if (type == 2) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(2.0f), "FastTank");
 			przeciwnicy.push_back(enemy);
@@ -286,6 +289,7 @@ namespace Battlezone {
 			targetPos.push_back(vec3(0.0f));
 			targetOri.push_back(vec3(0.0f));
 		}
+		//Leonardo tank
 		else if (type == 3) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "LeonardoTank");
 			przeciwnicy.push_back(enemy);
@@ -300,6 +304,7 @@ namespace Battlezone {
 			targetPos.push_back(vec3(0.0f));
 			targetOri.push_back(vec3(0.0f));
 		}
+		//Rocket
 		else if (type == 4) {
 			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
 			rakiety.push_back(enemy);
@@ -388,7 +393,7 @@ namespace Battlezone {
 
 		const int moonPointsNumber = 10;
 		const float moonRadius = 2.5f;
-		const float moonAboveMountains = 5.0f; //how high the moon is above the mountains
+		const float moonAboveMountains = 5.0f; //how high the moon is above the mountains //wtf we got the moon? i thought mateusz stole it
 
 		for (int i = 0; i < mountainNumber; i++) {
 			double angle = 2 * M_PI * i / mountainNumber;
@@ -538,14 +543,14 @@ namespace Battlezone {
 	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time), 5 - boost (no idea for it's purpose)
 
 	const float speedBoost = .05; //[5%]
-	const float healthBoost = 10; //idk maybe will be changed later
+	const float healthBoost = 50; //adds 50 to current haelth/healht/health idk how to write it xD
 	float timeMultiplier;
 	const float timeDecrease = .5; //[50%]
 	const float timeEffectLength = 10; //[10s (NOT real life time)]
 	float timeEffectLeft;
 	float scoreMultiplier;
 	const float scoreMultiplierChange = .1;
-	const float scoreChange = 150; //[150xp]
+	const float scoreChange = 500; //[500xp]
 	bool isMissleSelfTargeting;
 	void createPowerUp(float x, float y, float z, int type) {
 		powerUpInside.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUp" + pUModels[type]));
@@ -613,7 +618,7 @@ namespace Battlezone {
 
 	void insertItem(int item, bool isTheFirstTime = false) {
 		itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
-		itemsPrice[item] = 15; //todo: add proper pricing
+		itemsPrice[item] = 300; //todo: add proper pricing
 		if(!isTheFirstTime) Gra->Destroy(shopDisplayIcons[item]);
 		shopDisplayIcons[item] = Gra->Create(vec3(-shopXPos, shopYPos - item * shopYPos, 0), vec3(0), vec3(shopScale), shopModels[itemsType[item]]);
 		shopDisplayIcons[item]->Stage[0].onTop = true;
@@ -673,6 +678,7 @@ void Game::BattlezoneInit() {
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
+	display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045), 1, .5, std::to_string(100));
 	isDead = false;
 	endingScreen = false;
 
@@ -933,6 +939,8 @@ void Game::Battlezone(float dt) {
 			//Player bullet collsion
 			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z),2,2)) {
 				hp -= 25;
+				DestroyTekst(display_hp);
+				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045), 2, 1, std::to_string(hp));
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
 			}
@@ -976,7 +984,7 @@ void Game::Battlezone(float dt) {
 					pociski_gracza.erase(pociski_gracza.begin() + i);
 					bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 					//Usuwanie przeciwnika
-					destroy_enemy(przeciwnicy[j], j);
+					destroy_enemy(j);
 				}
 			}
 			//Rocket bullet collision
@@ -1000,7 +1008,7 @@ void Game::Battlezone(float dt) {
 
 		}
 	}
-	else if (bulletsFired > 4) {
+	if (bulletsFired > 4) {
 		if (reloadTime > 0) {
 			reloadTime -= dt;
 		}
@@ -1044,6 +1052,8 @@ void Game::Battlezone(float dt) {
 		wave(wavePoints, dt);
 		waveTime = 4.0f;
 	}
+
+	
 
 	//Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
@@ -1128,6 +1138,8 @@ void Game::Battlezone(float dt) {
 				uiElements.erase(uiElements.begin() + i);
 
 				hp -= 50;
+				DestroyTekst(display_hp);
+				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045), 2, 1, std::to_string(hp));
 			}
 		}
 	}
@@ -1282,6 +1294,7 @@ void Game::Battlezone(float dt) {
 		else if (type == 2 && !powerUpInside.empty()) current = powerUpInside[iterator];
 		else if (type == 3 && !rakiety.empty()) current = rakiety[iterator];
 		else throw std::invalid_argument("check deez values mate");
+
 
 		float dx = current->Transform.position.x - pPos.x;
 		float dz = current->Transform.position.z - pPos.z;
