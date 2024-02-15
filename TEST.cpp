@@ -31,7 +31,7 @@ namespace Test {
 		"AsteroidsBullet",
 		"AsteroidsStar",
 		"AsteroidsEnemyBullet",
-		"AsteroidsShipForKamil",
+		"AsteroidsSpaceship",
 		"",
 		"Tank",
 		"FastTank",

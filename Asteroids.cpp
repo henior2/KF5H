@@ -382,6 +382,14 @@ namespace Asteroids {
 
 	Tekst2d* tutorialText;
 	int tutorialStep;
+
+	float spaceshipCooldown;
+	const float maxSpaceshipCooldown = 25.0f;
+
+	GameObject* spaceship;
+	bool isSpaceship;
+
+	const float spaceshipSpeed = 10.0f;
 };
 
 using namespace Asteroids;
@@ -404,6 +412,10 @@ void Game::AsteroidsInit(bool again) {
 		}
 
 		smallEnemyNoise = 2.5f;
+
+		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(2.5), "AsteroidsSpaceship");
+		spaceshipCooldown = 0;
+		isSpaceship = false;
 	}
 	ship->MoveTo(vec3(0, 0, -80));
 	ship->RotateTo(vec3(0));
@@ -585,7 +597,7 @@ void Game::Asteroids(float dt) {
 		if (tutorialStep == 3) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Dontusethemtoomuch");
+			tutorialText = refreshText(tutorialText, "Dontuseittoomuch");
 			forceTeleport = true;
 		}
 
@@ -869,6 +881,42 @@ void Game::Asteroids(float dt) {
 			debris.erase(debris.begin() + i);
 			debrisDirection.erase(debrisDirection.begin() + i);
 			debrisRotation.erase(debrisRotation.begin() + i);
+		}
+	}
+
+	if (!isDead && wave_num >= 5) {
+		if(!isSpaceship) spaceshipCooldown -= dt;
+		if (spaceshipCooldown <= 0) {
+			spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
+
+			vec2 pos;
+			int temp;
+			do {
+				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+				pos.x = temp;
+
+				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+				pos.y = temp;
+			} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
+
+			float _angle = atan2(pPos.y - pos.y, pPos.x - pos.x);
+			_angle = _angle * 180 / M_PI - 90;
+
+			spaceship->MoveTo(vec3(pos, -80));
+			spaceship->RotateTo(vec3(0, 0, _angle));
+
+			isSpaceship = true;
+		}
+		if (isSpaceship) {
+			spaceship->Move(spaceship->Front * spaceshipSpeed * dt);
+
+			//collisions spaceship - player
+			if (collisionCircle(vec2(spaceship->Transform.position), pPos)) death();
+
+			if (checkBounds(spaceship)) {
+				spaceship->MoveTo(vec3(-1000, -1000, -80));
+				isSpaceship = false;
+			}
 		}
 	}
 
