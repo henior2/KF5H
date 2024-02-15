@@ -856,15 +856,16 @@ void Game::Asteroids(float dt) {
 	if (!isDead && tutorialStep == 4 && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
-			for (_return; _return >= 0; _return--) {
+			for (int i = _return; i > 0; i--) {
 				bool type = 0;
 				if (rand() % 100 > smallEnemyProb) type = 1;
 				spawnEnemy(type);
-
-				enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay; //i dont think this changes anything?
-				enemyProb += enemyProb * enemyDeltaProb;
-				smallEnemyProb += smallEnemyProb * enemyDeltaProb;
 			}
+			_return = 0;
+
+			enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) - enemyMinDelay;
+			enemyProb += enemyProb * enemyDeltaProb;
+			smallEnemyProb += smallEnemyProb * enemyDeltaProb;
 		}
 	}
 
@@ -1003,7 +1004,10 @@ void Game::Asteroids(float dt) {
 
 			if (!scoreboard[0]) {
 				for (int i = 0; i < 10; i++) {
-					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (std::to_string(i + 1) + "" + usernames[i] + "" + std::to_string(scores[i]))); // these "" will be changed to ". " and " " respectively
+					std::string place = std::to_string(i + 1);
+					if (i != 9) place = "0" + place;
+
+					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (place + "" + usernames[i] + "" + std::to_string(scores[i]))); // these "" will be changed to ". " and " " respectively
 				}
 
 				ship->RotateTo(vec3(0, 0, 90.0f));
