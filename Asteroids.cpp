@@ -419,6 +419,26 @@ void Game::AsteroidsInit(bool again) {
 		maxSpaceshipCooldown = 60.0f;
 
 		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(10), "AsteroidsSpaceship");
+
+		std::ifstream file("_data.txt");
+		std::vector<std::string> lines;
+		std::string line;
+		while (std::getline(file, line)) {
+			lines.push_back(line);
+		}
+		if ((lines[0][0]) == '0') {
+			tutorialStep = 4;
+			tutorialText = refreshText(tutorialText, "Goodluck");
+		}
+		file.close();
+		lines[0][0] = '0';
+		std::ofstream ofile("_data.txt");
+		for (int i = 0; i < lines.size();i++) {
+			std::string _line = lines[i];
+			if (i != lines.size() - 1) _line += '\n';
+			ofile << _line;
+		}
+		ofile.close();
 	}
 	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
 	isSpaceship = false;
