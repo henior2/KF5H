@@ -58,6 +58,7 @@ namespace Test {
 		"Arrow1",
 		"Arrow2",
 		"Arrow3",
+		"pauseIcone",
 		"",
 		"apostrophe",
 		"colon",
