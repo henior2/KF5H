@@ -273,6 +273,8 @@ namespace Asteroids {
 	}
 
 	int wave(int asteroidsNum) {
+		Gra->PlaySound2d("./sourceFiles/soundFiles/asteroidsNewWave.wav", false);
+
 		spawnAsteroids(asteroidsNum, 0);
 		wave_num++;
 		smallEnemyNoise *= (1 - smallEnemyNoiseDelta);
@@ -384,12 +386,12 @@ namespace Asteroids {
 	int tutorialStep;
 
 	float spaceshipCooldown;
-	const float maxSpaceshipCooldown = 30.0f;
+	const float maxSpaceshipCooldown = 60.0f;
 
 	GameObject* spaceship;
 	bool isSpaceship;
 
-	const float spaceshipSpeed = 60.0f;
+	const float spaceshipSpeed = 50.0f;
 };
 
 using namespace Asteroids;
@@ -413,9 +415,9 @@ void Game::AsteroidsInit(bool again) {
 
 		smallEnemyNoise = 2.5f;
 
-		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(2.5), "AsteroidsSpaceship");
+		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(5), "AsteroidsSpaceship");
 	}
-	spaceshipCooldown = 0;
+	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
 	isSpaceship = false;
 	spaceship->MoveTo(vec3(-1000, -1000, -80));
 
@@ -858,6 +860,8 @@ void Game::Asteroids(float dt) {
 	if (!isDead && tutorialStep == 4 && _return != 0) {
 		enemyDelay -= dt;
 		if (enemyDelay <= 0) {
+			//PlaySound2d("./sourceFiles/soundFiles/asteroidsEnemySpawn.wav", false);
+
 			for (int i = _return; i > 0; i--) {
 				bool type = 0;
 				if (rand() % 100 > smallEnemyProb) type = 1;
@@ -887,7 +891,7 @@ void Game::Asteroids(float dt) {
 		}
 	}
 
-	if (!isDead && wave_num >= 5) {
+	if (!isDead && wave_num >= 3) {
 		if(!isSpaceship) spaceshipCooldown -= dt;
 		if (spaceshipCooldown <= 0) {
 			spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
