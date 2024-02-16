@@ -386,12 +386,13 @@ namespace Asteroids {
 	int tutorialStep;
 
 	float spaceshipCooldown;
-	const float maxSpaceshipCooldown = 60.0f;
+	float maxSpaceshipCooldown;
+	const float spaceshipCooldownDelta = 5.0f; //[%]
 
 	GameObject* spaceship;
 	bool isSpaceship;
 
-	const float spaceshipSpeed = 50.0f;
+	const float spaceshipSpeed = 55.0f;
 };
 
 using namespace Asteroids;
@@ -415,7 +416,9 @@ void Game::AsteroidsInit(bool again) {
 
 		smallEnemyNoise = 2.5f;
 
-		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(5), "AsteroidsSpaceship");
+		maxSpaceshipCooldown = 60.0f;
+
+		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(10), "AsteroidsSpaceship");
 	}
 	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
 	isSpaceship = false;
@@ -914,6 +917,8 @@ void Game::Asteroids(float dt) {
 			spaceship->RotateTo(vec3(0, 0, _angle));
 
 			isSpaceship = true;
+
+			maxSpaceshipCooldown *= (1 - spaceshipCooldownDelta / 100.0f);
 		}
 		if (isSpaceship) {
 			spaceship->Move(vec3(0, 1, 0) * spaceshipSpeed * dt); 
@@ -961,7 +966,7 @@ void Game::Asteroids(float dt) {
 					PlaySound2d("./sourceFiles/soundFiles/asteroidsInputBackspace.wav", false);
 
 					jumpCooldown = .25f;
-					new_username.pop_back();
+					if (new_username.length() != 0) new_username.pop_back();
 
 					endingUsername = refreshText(endingUsername, new_username);
 				}
