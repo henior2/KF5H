@@ -146,6 +146,7 @@ namespace Battlezone {
 
 	void destroy_enemy( int i) {
 		Gra->Destroy(przeciwnicy[i]);
+		Gra->Destroy(radarElements[i]);
 		przeciwnicy.erase(przeciwnicy.begin() + i);
 		enemyType.erase(enemyType.begin() + i);
 		enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
@@ -997,6 +998,7 @@ void Game::Battlezone(float dt) {
 					bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 					//Usuwanie rakiety
 					Destroy(rakiety[j]);
+					Destroy(radarElements[j]);
 					enemyType.erase(enemyType.begin() + j);
 					enemyShotCooldowns.erase(enemyShotCooldowns.begin() + j);
 					rakiety.erase(rakiety.begin() + j);
