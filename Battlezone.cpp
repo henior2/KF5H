@@ -230,7 +230,7 @@ namespace Battlezone {
 
 	Tekst2d* refreshText(Tekst2d* text, int score) {
 		Gra->DestroyTekst(text);
-		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, std::to_string(score));
+		text = Gra->CreateTekst(vec2(-.9, .8), 0, vec2(.045f), 1, .5, std::to_string(score));
 		return text;
 	}
 
@@ -334,9 +334,9 @@ namespace Battlezone {
 
 	void wave(int wavePoints, float dt) {
 		if (wavePoints > 0) {
-			float temp_x = rand() % 51 - 25;
-			float temp_z = rand() % 51 - 25;
-			float temp_y = rand() % 361;
+			float temp_x = (float) (rand() % 51 - 25);
+			float temp_z = (float) (rand() % 51 - 25);
+			float temp_y = (float) (rand() % 361);
 			if (przeciwnicy.empty() && rakiety.empty()){
 				int enemy = rand() % 4 + 1;
 				if (wavePoints - enemy >= 0) {
@@ -400,11 +400,11 @@ namespace Battlezone {
 			double nextAngle = 2 * M_PI * (i + 1) / mountainNumber;
 
 			float yPos = minMountainHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxMountainHeight - minMountainHeight)));
-			push_back3(vx, distance * cos(angle), yPos, distance * sin(angle));
+			push_back3(vx, distance * (float) cos(angle), yPos, distance * (float) sin(angle));
 			push_back3(vx, 0, 1, 0);
 
 			yPos = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / minMountainHeight));
-			float randAngle = angle + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (nextAngle - angle)));
+			float randAngle = static_cast <float> (angle + rand()) / (static_cast <float> (RAND_MAX / (nextAngle - angle)));
 			push_back3(vx, distance * cos(randAngle), yPos, distance * sin(randAngle));
 			push_back3(vx, 0, 1, 0);
 
@@ -418,7 +418,7 @@ namespace Battlezone {
 		for (int i = 0; i < moonPointsNumber; i++) {
 			double angle = 2 * M_PI * i / moonPointsNumber;
 
-			push_back3(vx, moonRadius * cos(angle), moonAboveMountains + maxMountainHeight + moonRadius * sin(angle), distance);
+			push_back3(vx, moonRadius * (float) cos(angle), moonAboveMountains + maxMountainHeight + moonRadius * (float) sin(angle), distance);
 			push_back3(vx, 0, 1, 0);
 
 			push_back2(ind, countingOffset + i, countingOffset + i + 1);
@@ -430,7 +430,7 @@ namespace Battlezone {
 		for (int i = 0; i < mountainNumber * 2; i++) {
 			double angle = M_PI * i / mountainNumber;
 
-			push_back3(vx, distance * cos(angle), 0, distance * sin(angle));
+			push_back3(vx, distance * (float) cos(angle), 0, distance * (float) sin(angle));
 			push_back3(vx, 0, 1, 0);
 
 			push_back2(ind, countingOffset + i, countingOffset + i + 1);
@@ -542,15 +542,15 @@ namespace Battlezone {
 	std::vector<GameObject*> powerUpAnimation;
 	std::vector<int> powerUpType; // 0 - speed, 1 - life, 2 - decrease reload time, 3 - increase score multiplier, 4 - increase score (one-time), 5 - boost (no idea for it's purpose)
 
-	const float speedBoost = .05; //[5%]
-	const float healthBoost = 50; //adds 50 to current haelth/healht/health idk how to write it xD
+	const float speedBoost = .05f; //[5%]
+	const float healthBoost = 50.0f; //adds 50 to current haelth/healht/health idk how to write it xD
 	float timeMultiplier;
-	const float timeDecrease = .5; //[50%]
-	const float timeEffectLength = 10; //[10s (NOT real life time)]
+	const float timeDecrease = .5f; //[50%]
+	const float timeEffectLength = 10.0f; //[10s (NOT real life time)]
 	float timeEffectLeft;
 	float scoreMultiplier;
-	const float scoreMultiplierChange = .1;
-	const float scoreChange = 500; //[500xp]
+	const float scoreMultiplierChange = .1f;
+	const int scoreChange = 500; //[500xp]
 	bool isMissleSelfTargeting;
 	void createPowerUp(float x, float y, float z, int type) {
 		powerUpInside.push_back(Gra->Create(vec3(x, y, z), vec3(0.0f), vec3(pUScale), "PowerUp" + pUModels[type]));
@@ -672,13 +672,13 @@ void Game::BattlezoneInit() {
 	waveFlag = false;
 	waveTime = 4.0f;
 	bulletsFired = 0;
-	fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA1");
+	fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045f), 1, .5, "FALA1");
 	glitchEffectRefreshRate = .1f;
 
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
-	display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045), 1, .5, std::to_string(100));
+	display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045f), 1, .5, std::to_string(100));
 	isDead = false;
 	endingScreen = false;
 
@@ -708,7 +708,7 @@ void Game::BattlezoneInit() {
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
-	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.045), 1, .5, scoreStr);
+	tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.045f), 1, .5, scoreStr);
 
 	//nvm I think it's not here //bro's having a bipolar disorder 💀
 
@@ -716,7 +716,7 @@ void Game::BattlezoneInit() {
 	push_back3(rVx, 0, 1, 0);
 
 	for (int i = 0; i < radarPoints; i++) {
-		float _angle = 2 * M_PI * i / radarPoints;
+		float _angle = (float) (2 * M_PI * i / radarPoints);
 		rVx.push_back(radarRadius * cos(_angle));
 		rVx.push_back(radarRadius * sin(_angle));
 		rVx.push_back(0);
@@ -728,17 +728,17 @@ void Game::BattlezoneInit() {
 	rInd.pop_back();
 	rInd.push_back(1);
 
-	push_back3(rVx, radarRadius * cos(3 * M_PI / 4), radarRadius * sin(3 * M_PI / 4), 0);
+	push_back3(rVx, radarRadius * (float) cos(3 * M_PI / 4), radarRadius * (float) sin(3 * M_PI / 4), 0);
 	push_back3(rVx, 0, 1, 0);
 
-	push_back3(rVx, radarRadius * cos(M_PI / 4), radarRadius * sin(M_PI / 4), 0);
+	push_back3(rVx, radarRadius * (float) cos(M_PI / 4), radarRadius * (float) sin(M_PI / 4), 0);
 	push_back3(rVx, 0, 1, 0);
 
 	push_back2(rInd, 0, radarPoints + 1);
 	push_back2(rInd, 0, radarPoints + 2);
 
 	for (int i = 0; i < 4; i++) {
-		float _angle = M_PI * i / 2;
+		float _angle = (float) (M_PI * i / 2);
 
 		float _x = radarRadius * cos(_angle);
 		float _y = radarRadius * sin(_angle);
@@ -832,7 +832,7 @@ void Game::Battlezone(float dt) {
 	keyCooldown -= dt;
 
 	if (hp <= 0) {
-		CreateTekst(vec2(-.5, 0), 0, vec2(0.05), 2, 1, "Przegrales");
+		CreateTekst(vec2(-.5, 0), 0, vec2(0.05f), 2, 1, "Przegrales");
 		isDead = true; //kinda useless but whatever lmao
 	}
 
@@ -940,7 +940,7 @@ void Game::Battlezone(float dt) {
 			if (collisionCircle(vec2(pPos.x, pPos.z), vec2(current->Transform.position.x, current->Transform.position.z),2,2)) {
 				hp -= 25;
 				DestroyTekst(display_hp);
-				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045), 2, 1, std::to_string(hp));
+				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045f), 2, 1, std::to_string(hp));
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
 			}
@@ -967,15 +967,15 @@ void Game::Battlezone(float dt) {
 				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z), 2, 2)) {
 					switch (enemyType[j]) {
 					case 1:
-						score += 100 * scoreMultiplier;
+						score += 100 * (int) scoreMultiplier;
 						tScore = refreshText(tScore, score);
 						break;
 					case 2:
-						score += 200 * scoreMultiplier;
+						score += 200 * (int) scoreMultiplier;
 						tScore = refreshText(tScore, score);
 						break;
 					case 3:
-						score += 300 * scoreMultiplier;
+						score += 300 * (int) scoreMultiplier;
 						tScore = refreshText(tScore, score);
 						break;
 					}
@@ -990,7 +990,7 @@ void Game::Battlezone(float dt) {
 			//Rocket bullet collision
 			for (int j = 0; j < rakiety.size(); j++) {
 				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(rakiety[j]->Transform.position.x, rakiety[j]->Transform.position.z), 2, 2)) {
-					score += 500 * scoreMultiplier;
+					score += 500 * (int) scoreMultiplier;
 					//Usuwanie pocisku
 					Destroy(current);
 					pociski_gracza.erase(pociski_gracza.begin() + i);
@@ -1020,9 +1020,9 @@ void Game::Battlezone(float dt) {
 	horizon->MoveTo(pPos);
 
 	//spawning the enemies
-	float temp_x = rand() % 51 - 25;
-	float temp_z = rand() % 51 - 25;
-	float temp_y = rand() % 361;
+	float temp_x = (float)( rand() % 51 - 25 );
+	float temp_z = (float)( rand() % 51 - 25 );
+	float temp_y = (float)( rand() % 361 );
 
 	if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS && resp_cool <= 0) {
 		spawn_enemy(player->Transform.position + vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), 1);
@@ -1046,7 +1046,7 @@ void Game::Battlezone(float dt) {
 	else waveTime -= dt;
 	if (waveFlag && przeciwnicy.empty() && rakiety.empty()) {
 		DestroyTekst(fala);
-		fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045), 1, .5, "FALA" + std::to_string(wavePoints));
+		fala = CreateTekst(vec2(-.9, .6), 0, vec2(.045f), 1, .5, "FALA" + std::to_string(wavePoints));
 		wavePoints += 1;
 		waveFlag = false;
 		wave(wavePoints, dt);
@@ -1102,12 +1102,12 @@ void Game::Battlezone(float dt) {
 				current->MoveGlobal(direction * dt * _sM);
 				if (enemyShotCooldowns[i] <= 0) {
 					enemyShoot(current);
-					enemyShotCooldowns[i] = 4.20;
+					enemyShotCooldowns[i] = 4.20f;
 				}
 			}
 			else if (enemyShotCooldowns[i] <= 0 && current->Transform.orientation.y != 0 && current->Transform.orientation.y != 180) {
 				enemyShoot(current);
-				enemyShotCooldowns[i] = 4.20;
+				enemyShotCooldowns[i] = 4.20f;
 			}
 		}
 	}
@@ -1139,7 +1139,7 @@ void Game::Battlezone(float dt) {
 
 				hp -= 50;
 				DestroyTekst(display_hp);
-				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045), 2, 1, std::to_string(hp));
+				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045f), 2, 1, std::to_string(hp));
 			}
 		}
 	}
@@ -1243,7 +1243,7 @@ void Game::Battlezone(float dt) {
 
 		vec2 direction = normalize(dropPos - planeStartCoords);
 		_angle = atan2(direction.x, direction.y);
-		_angle = _angle * 180.0f / M_PI;
+		_angle = _angle * 180.0f / (float) M_PI;
 		plane->RotateTo(vec3(0.0f, _angle, 0.0f));
 
 		isPlane = true;
@@ -1271,20 +1271,17 @@ void Game::Battlezone(float dt) {
 		GameObject* line = spinningLines[i];
 
 		line->Rotate(vec3(0, 0, 360.0f / fullRotationTime * dt));
-		targetOri[i + 1] = line->Transform.orientation * vec3(0, 0, 1);
+		targetOri[(size_t) i + 1] = line->Transform.orientation * vec3(0, 0, 1);
 	}
 
-	//adjusting scanner elements' position... or do we? *vsauce music*
-	//(YES WE NEED TO DO IT SOMEONE PLEASE SEND PROFFESIONAL PSYCHICAL HELP) *intense music*
-	//Profesional help decending from sky
-	//Don't warry, be happy
+	//adjusting scanner elements' position
 
 	const float radarRange = 50.0f; // todo: move it somewhere else
 
-	float angleRad = pOri.y * M_PI / 180.0f;
+	float angleRad = pOri.y * (float) M_PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
 	for (int i = 0; i < radarElements.size(); i++) {
-		int type = radarElementsType[i];
+		int type = (int) radarElementsType[i];
 		unsigned int& iterator = radarElementsIterator[type];
 
 		GameObject* current;
@@ -1319,8 +1316,8 @@ void Game::Battlezone(float dt) {
 		dx = dist * sin(angle);
 		dz = -dist * cos(angle);
 
-		dx *= 0.2;
-		dz *= 0.2;
+		dx *= 0.2f;
+		dz *= 0.2f;
 
 		//todo: add out-of-bounds checking condition
 		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
@@ -1362,34 +1359,34 @@ void Game::Battlezone(float dt) {
 		}
 
 		//shop
-		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && keyCooldown <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(0);
 		}
-		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && keyCooldown <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(1);
 		}
-		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && keyCooldown <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(2);
 		}
 
 		//debug ↓
-		if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS && resp_cool <= 0.0f) {
 			resp_cool = .5f;
-			makeObstacles(rand() % 200 - 100, rand() % 200 - 100, 6);
+			makeObstacles((float) (rand() % 200 - 100), (float) (rand() % 200 - 100), 6);
 		}
-		if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && resp_cool <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && resp_cool <= 0.0f) {
 			resp_cool = .5f;
-			createPowerUp(rand() % 100 - 50, 0, rand() % 100 - 50, rand() % (sizeof(pUModels) / sizeof(std::string)));
+			createPowerUp((float) (rand() % 100 - 50), 0.0f, (float) (rand() % 100 - 50), (int) (rand() % (sizeof(pUModels) / sizeof(std::string))));
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS && resp_cool <= 0.0f) {
 			resp_cool = .1f;
 			camera->Position = vec3(0, planeHeight, 0);
 		}
-		if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS && resp_cool <= 0) {
+		if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS && resp_cool <= 0.0f) {
 			resp_cool = .1f;
 			player->Transform.position = vec3(120, 0, -120);
 			camera->Position = vec3(120, 0, -120);

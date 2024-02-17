@@ -36,16 +36,16 @@ public:
     // Convert Euler angles (in degrees) to quaternion
     static Quaternion fromEulerAngles(float roll, float pitch, float yaw) {
         // Convert degrees to radians
-        roll = roll *   M_PI / 180.0;
-        pitch = pitch * M_PI / 180.0;
-        yaw = yaw * M_PI / 180.0;
+        roll = roll * static_cast<float>(M_PI / 180.0);
+        pitch = pitch * static_cast<float>(M_PI / 180.0);
+        yaw = yaw * static_cast<float>(M_PI / 180.0);
 
-        float cy = std::cos(yaw * 0.5);
-        float sy = std::sin(yaw * 0.5);
-        float cp = std::cos(pitch * 0.5);
-        float sp = std::sin(pitch * 0.5);
-        float cr = std::cos(roll * 0.5);
-        float sr = std::sin(roll * 0.5);
+        float cy = (float) std::cos(yaw * 0.5);
+        float sy = (float) std::sin(yaw * 0.5);
+        float cp = (float) std::cos(pitch * 0.5);
+        float sp = (float) std::sin(pitch * 0.5);
+        float cr = (float) std::cos(roll * 0.5);
+        float sr = (float) std::sin(roll * 0.5);
 
         float qw = cr * cp * cy + sr * sp * sy;
         float qx = sr * cp * cy - cr * sp * sy;

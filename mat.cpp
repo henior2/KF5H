@@ -4,13 +4,13 @@ mat::mat(const float& num, const unsigned int& Size)
 	: size(Size)
 {
 	array = new float* [Size];
-	for (int i = 0; i < Size; i++) {
+	for (unsigned int i = 0; i < Size; i++) {
 		array[i] = new float[Size];
 	}
 
-	for (int i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < size; j++) {
+		for (unsigned int j = 0; j < size; j++) {
 			if (i == j)
 				array[i][j] = num;
 			else
@@ -23,8 +23,8 @@ void mat::operator=(const mat& second) {
 	if (&second == this || second.size != this->size)
 		return;
 
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (unsigned int i = 0; i < size; i++) {
+		for (unsigned int j = 0; j < size; j++) {
 			array[i][j] = second.array[i][j];
 		}
 	}
@@ -36,8 +36,8 @@ mat mat::operator+(const mat& second) const {
 	}
 	mat result(0.0f, size);
 
-	for (int i = 0; i < size; i++){
-		for (int j = 0; j < size; j++) {
+	for (unsigned int i = 0; i < size; i++){
+		for (unsigned int j = 0; j < size; j++) {
 			result.array[i][j] = array[i][j] + second.array[i][j];
 		}
 	}
@@ -51,8 +51,8 @@ mat mat::operator-(const mat& second) const {
 	}
 	mat result(0.0f, size);
 
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (unsigned int i = 0; i < size; i++) {
+		for (unsigned int j = 0; j < size; j++) {
 			result.array[i][j] = array[i][j] - second.array[i][j];
 		}
 	}
@@ -66,9 +66,9 @@ mat mat::operator*(const mat& second) const{
 	}
 	mat result(0.0f, size);
 
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			for (int k = 0; k < size; k++) {
+	for (unsigned int i = 0; i < size; i++) {
+		for (unsigned int j = 0; j < size; j++) {
+			for (unsigned int k = 0; k < size; k++) {
 				result.array[i][j] += this->array[i][k] * second.array[k][j];
 			}
 		}
@@ -82,8 +82,8 @@ mat mat::operator*(const float& second) const {
 
 	result = *this;
 
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (unsigned int i = 0; i < size; i++) {
+		for (unsigned int j = 0; j < size; j++) {
 			result.array[i][j] *= second;
 		}
 	}
@@ -100,7 +100,7 @@ mat mat::operator*(const vec& second) const {
 
 	result = *this;
 
-	for (int i = 0; i < size; i++) {
+	for (unsigned int i = 0; i < size; i++) {
 		result.array[i][i] *= second.array[i];
 	}
 
@@ -115,7 +115,7 @@ mat mat::Translate(vec& translateVec) {
 
 	mat result(1.0f, size);
 
-	for (int i = 0; i < size; i++) {
+	for (unsigned int i = 0; i < size; i++) {
 		result.array[i][size - 1] += translateVec.array[i];
 	}
 
@@ -148,7 +148,7 @@ mat mat::Scale(vec& scaleVec) {
 
 	mat result(1.0f, size);
 
-	for (int i = 0; i < size; i++) {
+	for (unsigned int i = 0; i < size; i++) {
 		result.array[i][i] = scaleVec.array[i];
 	}
 

@@ -36,7 +36,7 @@ struct RenderingTekst
 };*/
 
 struct TekstProperties {
-	float spacing = 0.01;
+	float spacing = 0.01f;
 	float space = 1;
 	float height;
 	float lineWidth = 1.0f;
