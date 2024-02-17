@@ -847,7 +847,10 @@ void Game::Battlezone(float dt) {
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
 		Game::ChangeState(Game_Menu);
+		return;
+	}
 
 	if (isDead) return; //this stops the game after death. anything above still will be executed
 
@@ -1156,6 +1159,7 @@ void Game::Battlezone(float dt) {
 			//Player rocket collision
 			if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(pPos.x, pPos.z), 2, 2)) {
 				Destroy(current);
+				Destroy(radarElements[i]);
 				rakiety.erase(rakiety.begin() + i);
 				enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
 				enemyType.erase(enemyType.begin() + i);
