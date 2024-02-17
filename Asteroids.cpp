@@ -540,7 +540,7 @@ void Game::AsteroidsInit(bool again) {
 			stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.01f), "AsteroidsStar"));
 		}
 
-		PlaySound2d("./sourceFiles/soundFiles/asteroidsBackgroundMusic.mp3", true);
+		PlaySound2d("./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav", true);
 	}
 
 	std::string scoreStr = std::to_string(score);
