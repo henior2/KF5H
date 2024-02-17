@@ -575,7 +575,7 @@ void Game::Asteroids(float dt) {
 		Game::ChangeState(Game_Menu);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && clickCooldown <= 0) {
+	if (!isDead && clickCooldown <= 0 && glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		pauseIcone->MoveTo(vec3(-10) * (float)isPaused); //what this essentially means is go to either (-10,-10) or (0,0)
 		isPaused = !isPaused;
 		clickCooldown = .25f;
@@ -608,7 +608,7 @@ void Game::Asteroids(float dt) {
 	if (isDead) {
 		respawnCooldown -= dt;
 		
-		int n = 0; //i know its ugly, but thats the truth of it
+		int n = 0;
 		std::vector<std::string> usernames;
 		std::vector<int> scores;
 
@@ -627,19 +627,19 @@ void Game::Asteroids(float dt) {
 
 			if (new_username.length() < 3) {
 				for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
-					if (glfwGetKey(window, key) == GLFW_PRESS && jumpCooldown <= 0) {
+					if (glfwGetKey(window, key) == GLFW_PRESS && clickCooldown <= 0) {
 						PlaySound2d("./sourceFiles/soundFiles/asteroidsInput.wav", false);
 
-						jumpCooldown = .25f; //im using this variable on purpose
+						clickCooldown = .25f;
 						new_username += (char)('A' + (key - GLFW_KEY_A));
 
 						endingUsername = refreshText(endingUsername, new_username);
 					}
 				}
-				if ((glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) && jumpCooldown <= 0) {
+				if ((glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) && clickCooldown <= 0) {
 					PlaySound2d("./sourceFiles/soundFiles/asteroidsInputBackspace.wav", false);
 
-					jumpCooldown = .25f;
+					clickCooldown = .25f;
 					if (new_username.length() != 0) new_username.pop_back();
 
 					endingUsername = refreshText(endingUsername, new_username);
