@@ -30,6 +30,8 @@ namespace Battlezone {
 		return signedAngleDeg;
 	}
 
+	bool debugCamera = false;
+
 	bool flag;
 	bool isDead;
 	bool endingScreen;
@@ -354,7 +356,7 @@ namespace Battlezone {
 	}
 
 	const float camFrontOffset = -2.5f;
-	const float camYOffset = 1.75f;
+	const float camYOffset = 2.5f;
 
 	std::vector<GameObject*> enemiesVector;
 	std::vector<GameObject*> objectsVector;
@@ -879,41 +881,64 @@ void Game::Battlezone(float dt) {
 	vec3 pFront = player->Front;
 
 	//moving the camera
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera->RotateCamera(-rotationMultiplier * dt * camSpeed, 0);
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera->RotateCamera(0, -rotationMultiplier * dt * camSpeed);
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) camera->RotateCamera(0, rotationMultiplier * dt * camSpeed);
+	if (debugCamera)
+	{
+		player->Stage[0].opacity = 1.0f;
+		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
+		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera->RotateCamera(-rotationMultiplier * dt * camSpeed, 0);
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera->RotateCamera(0, -rotationMultiplier * dt * camSpeed);
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) camera->RotateCamera(0, rotationMultiplier * dt * camSpeed);
+	
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera->MoveCamera(FORWARD, dt / 2 * camSpeed);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera->MoveCamera(BACKWARD, dt / 2 * camSpeed);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera->MoveCamera(LEFT, dt / 2 * camSpeed);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera->MoveCamera(RIGHT, dt / 2 * camSpeed);
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera->MoveCamera(FORWARD, dt / 2 * camSpeed);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera->MoveCamera(BACKWARD, dt / 2 * camSpeed);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera->MoveCamera(LEFT, dt / 2 * camSpeed);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera->MoveCamera(RIGHT, dt / 2 * camSpeed);
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera->Position.y += 2 * camSpeed * dt;
+		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) camera->Position.y -= 2 * camSpeed * dt;
+		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+			camera->Position = vec3(0.0f, 0.0f, 0.0f);
+			camera->Yaw = -90.0f;
+			camera->Pitch = 0.0f;
+			camera->MoveCamera(FORWARD, 0.0f);
+			camera->RotateCamera(0.0f, 0.0f);
+		}
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera->Position.y += 2 * camSpeed * dt;
-	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) camera->Position.y -= 2 * camSpeed * dt;
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) camSpeed = 2;
+		else camSpeed = 1;
 
-	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-		camera->Position = vec3(0.0f, 0.0f, 0.0f);
-		camera->Yaw = -90.0f;
-		camera->Pitch = 0.0f;
-		camera->MoveCamera(FORWARD, 0.0f);
-		camera->RotateCamera(0.0f, 0.0f);
+		//moving the player
+		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) player->Move(vec3(0, 0, -1) * dt * velocity);
+		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 	}
+	else
+	{
+		player->Stage[0].opacity = 0.0f;
+		//moving the player
+		if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) player->Move(vec3(0, 0, -1) * dt * velocity);
+		if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) player->Move(vec3(0, 0, 1) * dt * velocity);
+		if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
+		if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) camSpeed = 2;
-	else camSpeed = 1;
+		camera->Front = pFront;
+		camera->Position = pPos + vec3(0, camYOffset, 0);
+		camera->Yaw = (pOri.y * -1) + 90.0f;
+		camera->Pitch = 0.0f;
+		camera->RotateCamera(0, 0);
 
-	//moving the player
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) player->Move(vec3(0, 0, -1) * dt * velocity);
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) player->Rotate(vec3(0, 1, 0) * dt * rotationMultiplier1);
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) player->Rotate(vec3(0, -1, 0) * dt * rotationMultiplier1);
+	}
+	
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && keyCooldown <= 0)
+	{
+		keyCooldown = .25f;
+		debugCamera = !debugCamera;
+	}
+	
 
-	//adjusting the cam's pos
-	/*vec3 cPos = normalize(pFront) * camFrontOffset;
-	cPos.y += camYOffset;
+	
 
-	camera->Position = pPos+cPos;*/
-	//todo: make a WORKING cam rot script
+	
 
 	//shooting funtion
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0 && bulletsFired <= 4) {
@@ -1325,7 +1350,6 @@ void Game::Battlezone(float dt) {
 		dx *= 0.2f;
 		dz *= 0.2f;
 
-		//todo: add out-of-bounds checking condition
 		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
 
 		iterator++;
