@@ -393,6 +393,7 @@ namespace Asteroids {
 
 	GameObject* spaceship;
 	bool isSpaceship;
+	bool hasSpaceshipPlayedSound;
 
 	const float spaceshipSpeed = 55.0f;
 
@@ -452,6 +453,7 @@ void Game::AsteroidsInit(bool again) {
 	}
 	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
 	isSpaceship = false;
+	hasSpaceshipPlayedSound = false;
 	spaceship->MoveTo(vec3(-1000, -1000, -80));
 
 	ship->MoveTo(vec3(0, 0, -80));
@@ -732,8 +734,10 @@ void Game::Asteroids(float dt) {
 
 			shipAnimationCooldown2 -= dt;
 			if (shipAnimationCooldown2 <= 0) {
-				shipAnimationCooldown = (rand() % 4) / 2 + 1;
+				shipAnimationCooldown = (rand() % 4) / 2 + 2;
 				shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
+
+				PlaySound2d("./sourceFiles/soundFiles/asteroidsWoosh.wav", false);
 			}
 		}
 
@@ -1065,7 +1069,11 @@ void Game::Asteroids(float dt) {
 		if (isSpaceship) {
 			spaceship->Move(vec3(0, 1, 0) * spaceshipSpeed * dt);
 
-			//collisions - spaceshipplayer
+			//collisions - spaceship/player
+			if (!hasSpaceshipPlayedSound && collisionCircle(vec2(spaceship->Transform.position), pPos, 10.0f, 10.f)) {
+				hasSpaceshipPlayedSound = true;
+				PlaySound2d("./sourceFiles/soundFiles/asteroidsLoudWoosh.wav", false);
+			}
 			if (collisionCircle(vec2(spaceship->Transform.position), pPos)) death();
 
 			if (checkBounds(spaceship, false, vec2(camW + 2 * bounds, camH + 2 * bounds))) {
