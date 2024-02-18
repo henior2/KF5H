@@ -504,6 +504,7 @@ void Game::AsteroidsInit(bool again) {
 		tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
 		endingUsername = CreateTekst(vec2(-.125, .3), 0, vec2(.06), 1, .5, new_username);
 	}
+	endingUsername = refreshText(endingUsername, "");
 
 	if (again) {
 		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
@@ -542,7 +543,7 @@ void Game::AsteroidsInit(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = CreateTekst(vec2(-.9, .6), 0, vec2(.07), 1, .5, "Enter Your Username"); //todo: change to "Enter your username:" //todo: add language options (maybe)
+		usernameInfo = CreateTekst(vec2(-.9, .6), 0, vec2(.065), 1, .5, "Enter Your Username"); //todo: add language options (maybe)
 	}
 	else {
 		PlaySound2d("./sourceFiles/soundFiles/asteroidsStart.wav", false);
@@ -725,9 +726,8 @@ void Game::Asteroids(float dt) {
 						score = std::to_string(scores[i]);
 					}
 
-					while (score.length() < 3 || score.length() < std::to_string(scores[0]).length()) {
-						score = "0" + score;
-					}
+					while (score.length() < 3) { score = "0" + score; }
+					while (score.length() < std::to_string(scores[0]).length()) { score = " " + score; }
 
 					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (place + " " + nick + " " + score)); // these "" will be changed to ". " and " " respectively
 				}
