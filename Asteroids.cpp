@@ -469,6 +469,11 @@ void Game::AsteroidsInit(bool again) {
 		std::ifstream file1("_asteroidsscoredata.txt");
 		bestScore = -1;
 		if (std::getline(file1, line)) bestScore = std::stoi(line.substr(4));
+		file1.close();
+		if (bestScore == -1) {
+			std::ofstream file2("_asteroidsscoredata.txt");
+			file2.close();
+		}
 
 		camera->perspective = false;
 		camera->cameraHeight = camH;
@@ -620,26 +625,24 @@ void Game::Asteroids(float dt) {
 		respawnCooldown -= dt;
 		
 		int n = 0;
-		std::vector<std::string> usernames;
-		std::vector<int> scores;
 
 		if (hasLost && !endingScreen) {
 			if (!engine->isCurrentlyPlaying(backgroundMusic[0].c_str())) { //this happens only once
 				engine->stopAllSounds();
 				PlaySound2d(backgroundMusic[0].c_str(), true);
+				
+				tutorialText = refreshText(tutorialText, "");
+
+				std::ifstream file("_asteroidsscoredata.txt"); // reading the file
+
+				std::string line;
+
+				while (std::getline(file, line)) {
+					usernames.push_back(line.substr(0, 3));
+					scores.push_back(std::stoi(line.substr(4)));
+				}
+				file.close();
 			}
-
-			tutorialText = refreshText(tutorialText, "");
-
-			std::ifstream file("_asteroidsscoredata.txt"); // reading the file
-
-			std::string line;
-
-			while (std::getline(file, line)) {
-				usernames.push_back(line.substr(0, 3));
-				scores.push_back(std::stoi(line.substr(4)));
-			}
-			file.close();
 
 			if (new_username.length() < 3) {
 				for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
@@ -709,7 +712,17 @@ void Game::Asteroids(float dt) {
 					std::string place = std::to_string(i + 1);
 					if (i != 9) place = "0" + place;
 
-					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (place + "" + usernames[i] + "" + std::to_string(scores[i]))); // these "" will be changed to ". " and " " respectively
+					std::string nick = "xxx"; //migh be changed to '-' or unknow character for empty space
+					std::string score = "000";
+
+					if (usernames.size() > i) {
+						nick = usernames[i];
+						score = std::to_string(scores[i]);
+						while (score.length() < 3) {
+							score = "0" + score;
+						}
+					}
+					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (place + "" + nick + "" + score)); // these "" will be changed to ". " and " " respectively
 				}
 
 				ship->RotateTo(vec3(0, 0, 90.0f));
