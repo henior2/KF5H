@@ -404,12 +404,15 @@ namespace Asteroids {
 
 	bool isPaused;
 	float clickCooldown;
+
+	bool isEndScreenMusicPlaying;
 };
 
 using namespace Asteroids;
 
 void Game::AsteroidsInit(bool again) {
 	clickCooldown = .25f;
+	isEndScreenMusicPlaying = false;
 
 	std::string scoreStr = std::to_string(score);
 	while (scoreStr.length() < 3) {
@@ -627,7 +630,9 @@ void Game::Asteroids(float dt) {
 		int n = 0;
 
 		if (hasLost && !endingScreen) {
-			if (!engine->isCurrentlyPlaying(backgroundMusic[0].c_str())) { //this happens only once
+			if (!isEndScreenMusicPlaying) { //this happens only once
+				isEndScreenMusicPlaying = true;
+
 				engine->stopAllSounds();
 				PlaySound2d(backgroundMusic[0].c_str(), true);
 				
