@@ -4,6 +4,8 @@
 using namespace glm;
 
 namespace Asteroids {
+	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.wav","./sourceFiles/soundFiles/Lobby Time.mp3","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
+
 	GameObject* ship;
 	std::vector<GameObject*> enemies;
 	std::vector<GameObject*> asteroids;
@@ -27,6 +29,9 @@ namespace Asteroids {
 	bool endingScreen;
 	std::string new_username;
 	int bestScore;
+
+	std::vector<std::string> usernames;
+	std::vector<int> scores;
 
 	std::vector<GameObject*> debris;
 	std::vector<vec2> debrisDirection;
@@ -395,7 +400,7 @@ namespace Asteroids {
 	bool isSpaceship;
 	bool hasSpaceshipPlayedSound;
 
-	const float spaceshipSpeed = 55.0f;
+	const float spaceshipSpeed = 40.0f;
 
 	bool isPaused;
 	float clickCooldown;
@@ -405,6 +410,9 @@ using namespace Asteroids;
 
 void Game::AsteroidsInit(bool again) {
 	clickCooldown = .25f;
+
+	std::string scoreStr = std::to_string(score);
+
 	if (!again) {
 		escSoundLen = .25f;
 		hasEscd = false;
@@ -450,39 +458,14 @@ void Game::AsteroidsInit(bool again) {
 			ofile << _line;
 		}
 		ofile.close();
-	}
-	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
-	isSpaceship = false;
-	hasSpaceshipPlayedSound = false;
-	spaceship->MoveTo(vec3(-1000, -1000, -80));
 
-	ship->MoveTo(vec3(0, 0, -80));
-	ship->RotateTo(vec3(0));
-	isDead = false;
-	hasLost = false;
-	endingScreen = false;
-	new_username = "";
-	respawnCooldown = 5.0f;
+		usernames.clear();
+		scores.clear();
 
-	if (!again) {
-		std::ifstream file("_asteroidsscoredata.txt");
-		std::string line;
+		std::ifstream file1("_asteroidsscoredata.txt");
 		bestScore = -1;
-		if (std::getline(file, line)) bestScore = std::stoi(line.substr(4));
-	}
+		if (std::getline(file1, line)) bestScore = std::stoi(line.substr(4));
 
-	velocity = vec2(0.0f);
-	speed = 0;
-	velocityd = maxVelocity * maxVelocity;
-
-	posx = posy = 0.0f;
-
-	jumpCooldown = 0.5f;
-	shipAnimationCooldown = (rand() % 4) / 2 + 1;
-	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
-	shootCooldown = .5f;
-
-	if (!again) {
 		camera->perspective = false;
 		camera->cameraHeight = camH;
 		camera->cameraWidth = camW;
@@ -496,7 +479,53 @@ void Game::AsteroidsInit(bool again) {
 		enemyProb = 25.0f;
 		smallEnemyProb = 40.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
+
+		stars.clear();
+		debris.clear();
+
+		for (int i = 0; i < starsAmount; i++) {
+			stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.01f), "AsteroidsStar"));
+		}
+
+		PlaySound2d(backgroundMusic[2].c_str(), true);
+
+		tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
+		endingUsername = CreateTekst(vec2(-.125, .3), 0, vec2(.06), 1, .5, new_username);
 	}
+
+	if (again) {
+		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
+
+		_asteroidsNo -= 2;
+		if (--wave_num == -1) wave_num = 0;
+
+		tScore = refreshText(tScore, scoreStr, true);
+	}
+
+	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
+	isSpaceship = false;
+	hasSpaceshipPlayedSound = false;
+	spaceship->MoveTo(vec3(-1000, -1000, -80));
+
+	ship->MoveTo(vec3(0, 0, -80));
+	ship->RotateTo(vec3(0));
+	isDead = false;
+	hasLost = false;
+	endingScreen = false;
+	new_username = "";
+	respawnCooldown = 5.0f;
+
+	velocity = vec2(0.0f);
+	speed = 0;
+	velocityd = maxVelocity * maxVelocity;
+
+	posx = posy = 0.0f;
+
+	jumpCooldown = 0.5f;
+	shipAnimationCooldown = (rand() % 4) / 2 + 1;
+	shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
+	shootCooldown = .5f;
+
 	if (--lives <= 0) {
 		isDead = true;
 		hasLost = true;
@@ -508,20 +537,9 @@ void Game::AsteroidsInit(bool again) {
 	}
 	bigEnemyIterator = 0;
 
-	if (again) {
-		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
-
-		_asteroidsNo -= 2;
-		if (--wave_num == -1) wave_num = 0;
-	}
-
 	asteroids.clear();
 	enemies.clear();
 	bullets.clear();
-	if (!again) {
-		stars.clear();
-		debris.clear();
-	}
 
 	bulletTimeRemain.clear();
 	isBulletPlayers.clear();
@@ -535,23 +553,9 @@ void Game::AsteroidsInit(bool again) {
 	playersDebris.clear();
 	tLives.clear();
 
-	if (!again) {
-		for (int i = 0; i < starsAmount; i++) {
-			stars.push_back(Create(vec3(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec3(0.0f, 0.0f, rand() % 45), vec3(.01f), "AsteroidsStar"));
-		}
-
-		PlaySound2d("./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav", true);
-	}
-
-	std::string scoreStr = std::to_string(score);
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
-	if (!again) {
-		tScore = CreateTekst(vec2(-.9, .8), 0, vec2(.025), 1, .5, scoreStr);
-		endingUsername = CreateTekst(vec2(-.125, .3), 0, vec2(.06), 1, .5, new_username);
-	}
-	else tScore = refreshText(tScore, scoreStr, true);
 	tScore->SetColor(vec3(1)); //todo: fix
 
 	for (int i = 0; i < lives; i++) {
@@ -579,6 +583,10 @@ void Game::Asteroids(float dt) {
 
 	if (!isDead && clickCooldown <= 0 && glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		pauseIcone->MoveTo(vec3(-10) * (float)isPaused); //what this essentially means is go to either (-10,-10) or (0,0)
+
+		engine->stopAllSounds();
+		PlaySound2d(backgroundMusic[(int)isPaused + 1].c_str(), true);
+
 		isPaused = !isPaused;
 		clickCooldown = .25f;
 	}
@@ -611,21 +619,24 @@ void Game::Asteroids(float dt) {
 		respawnCooldown -= dt;
 		
 		int n = 0;
-		std::vector<std::string> usernames;
-		std::vector<int> scores;
 
 		if (hasLost && !endingScreen) {
-			tutorialText = refreshText(tutorialText, "");
+			if (!engine->isCurrentlyPlaying(backgroundMusic[0].c_str())) { //this happens only once
+				engine->stopAllSounds();
+				PlaySound2d(backgroundMusic[0].c_str(), true);
 
-			std::ifstream file("_asteroidsscoredata.txt"); // reading the file
+				tutorialText = refreshText(tutorialText, "");
+				
+				std::ifstream file("_asteroidsscoredata.txt"); // reading the file
 
-			std::string line;
+				std::string line;
 
-			while (std::getline(file, line)) {
-				usernames.push_back(line.substr(0, 3));
-				scores.push_back(std::stoi(line.substr(4)));
+				while (std::getline(file, line)) {
+					usernames.push_back(line.substr(0, 3));
+					scores.push_back(std::stoi(line.substr(4)));
+				}
+				file.close();
 			}
-			file.close();
 
 			if (new_username.length() < 3) {
 				for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
@@ -647,7 +658,7 @@ void Game::Asteroids(float dt) {
 					endingUsername = refreshText(endingUsername, new_username);
 				}
 			}
-			else {
+			else { //this happens only once
 				for (n; n < scores.size(); n++) {
 					if (score >= scores[n]) break;
 				}
@@ -711,6 +722,81 @@ void Game::Asteroids(float dt) {
 
 	jumpCooldown -= dt;
 	shootCooldown -= dt;
+
+	for (int i = 0; i < bullets.size(); i++) {
+		GameObject* current = bullets[i];
+		bool shouldSkip = false;
+
+		bulletTimeRemain[i] -= dt;
+		if (bulletTimeRemain[i] <= 0) {
+			Destroy(current);
+			bullets.erase(bullets.begin() + i);
+			bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+			isBulletPlayers.erase(isBulletPlayers.begin() + i);
+			i--;
+			continue;
+		}
+		current->Move(vec3(0.0f, 1.0f, 0.0f) * bulletSpeed * dt);
+
+		checkBounds(current);
+
+		vec2 currentPos = current->Transform.position;
+
+		//collisions - player/bullets
+		if (!isBulletPlayers[i] && Gra->collisionCircle(pPos, current->Transform.position)) {
+			death();
+		}
+
+		//collisions - enemy/bullets
+		for (int j = enemies.size() - 1; j >= 0; j--) {
+			GameObject* enemy = enemies[j];
+			if (isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
+				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
+				enemies.erase(enemies.begin() + j);
+				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
+				enemyShootCooldown.erase(enemyShootCooldown.begin() + j);
+
+				score += ufoXP[enemyType[j]];
+				enemyType.erase(enemyType.begin() + j);
+				tScore = refreshText(tScore, std::to_string(score), true);
+
+				bulletTimeRemain[i] = 0;
+				shouldSkip = true;
+				break;
+			}
+		}
+		if (shouldSkip) continue;
+
+		//collisions - asteroids/bullets
+		for (int j = asteroids.size() - 1; j >= 0; j--) {
+			GameObject* asteroid = asteroids[j];
+			if (Gra->collisionCircle(currentPos, asteroid->Transform.position)) {
+				int type = asteroidSize[j];
+				if (type < 2) {
+					float ori = asteroid->Transform.orientation.z;
+					vec3 pos = asteroid->Transform.position;
+					float randomChange = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 45.0f)); // [-45;45]
+
+					spawnAsteroids(1, type + 1, pos.x, pos.y, ori + randomChange);
+					spawnAsteroids(1, type + 1, pos.x, pos.y, ori - randomChange);
+				}
+
+				PlaySound2d("./sourceFiles/soundFiles/asteroidsDestroy.wav", false);
+
+				Destroy(asteroid);
+				asteroids.erase(asteroids.begin() + j);
+				asteroidSize.erase(asteroidSize.begin() + j);
+				asteroidRotation.erase(asteroidRotation.begin() + j);
+				asteroidRotationMultiplier.erase(asteroidRotationMultiplier.begin() + j);
+
+				score += asteroidsXP[type];
+				tScore = refreshText(tScore, std::to_string(score), true);
+
+				bulletTimeRemain[i] = 0;
+				break;
+			}
+		}
+	}
 
 	if ((glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)) {
 		if (tutorialStep == 0) {
@@ -895,81 +981,6 @@ void Game::Asteroids(float dt) {
 		//collisions - player/enemy
 		if (Gra->collisionCircle(pPos, pos)) {
 			death();
-		}
-	}
-
-	for (int i = 0; i < bullets.size(); i++) {
-		GameObject* current = bullets[i];
-		bool shouldSkip = false;
-
-		bulletTimeRemain[i] -= dt;
-		if (bulletTimeRemain[i] <= 0) {
-			Destroy(current);
-			bullets.erase(bullets.begin() + i);
-			bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
-			isBulletPlayers.erase(isBulletPlayers.begin() + i);
-			i--;
-			continue;
-		}
-		current->Move(vec3(0.0f, 1.0f, 0.0f) * bulletSpeed * dt);
-
-		checkBounds(current);
-
-		vec2 currentPos = current->Transform.position;
-
-		//collisions - player/bullets
-		if (!isBulletPlayers[i] && Gra->collisionCircle(pPos, current->Transform.position)) {
-			death();
-		}
-
-		//collisions - enemy/bullets
-		for (int j = enemies.size() - 1; j >= 0; j--) {
-			GameObject* enemy = enemies[j];
-			if (isBulletPlayers[i] && Gra->collisionCircle(currentPos, enemy->Transform.position)) {
-				death(false, enemy->Transform.position, vec3(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
-				enemies.erase(enemies.begin() + j);
-				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
-				enemyShootCooldown.erase(enemyShootCooldown.begin() + j);
-
-				score += ufoXP[enemyType[j]];
-				enemyType.erase(enemyType.begin() + j);
-				tScore = refreshText(tScore, std::to_string(score), true);
-
-				bulletTimeRemain[i] = 0;
-				shouldSkip = true;
-				break;
-			}
-		}
-		if (shouldSkip) continue;
-
-		//collisions - asteroids/bullets
-		for (int j = asteroids.size() - 1; j >= 0; j--) {
-			GameObject* asteroid = asteroids[j];
-			if (Gra->collisionCircle(currentPos, asteroid->Transform.position)) {
-				int type = asteroidSize[j];
-				if (type < 2) {
-					float ori = asteroid->Transform.orientation.z;
-					vec3 pos = asteroid->Transform.position;
-					float randomChange = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 45.0f)); // [-45;45]
-
-					spawnAsteroids(1, type + 1, pos.x, pos.y, ori + randomChange);
-					spawnAsteroids(1, type + 1, pos.x, pos.y, ori - randomChange);
-				}
-
-				PlaySound2d("./sourceFiles/soundFiles/asteroidsDestroy.wav", false);
-
-				Destroy(asteroid);
-				asteroids.erase(asteroids.begin() + j);
-				asteroidSize.erase(asteroidSize.begin() + j);
-				asteroidRotation.erase(asteroidRotation.begin() + j);
-				asteroidRotationMultiplier.erase(asteroidRotationMultiplier.begin() + j);
-
-				score += asteroidsXP[type];
-				tScore = refreshText(tScore, std::to_string(score), true);
-
-				bulletTimeRemain[i] = 0;
-				break;
-			}
 		}
 	}
 
