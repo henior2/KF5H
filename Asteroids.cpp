@@ -412,6 +412,9 @@ void Game::AsteroidsInit(bool again) {
 	clickCooldown = .25f;
 
 	std::string scoreStr = std::to_string(score);
+	while (scoreStr.length() < 3) {
+		scoreStr = "0" + scoreStr;
+	}
 
 	if (!again) {
 		escSoundLen = .25f;
@@ -553,9 +556,6 @@ void Game::AsteroidsInit(bool again) {
 	playersDebris.clear();
 	tLives.clear();
 
-	while (scoreStr.length() < 3) {
-		scoreStr = "0" + scoreStr;
-	}
 	tScore->SetColor(vec3(1)); //todo: fix
 
 	for (int i = 0; i < lives; i++) {
