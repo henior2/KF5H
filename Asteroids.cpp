@@ -4,7 +4,7 @@
 using namespace glm;
 
 namespace Asteroids {
-	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.wav","./sourceFiles/soundFiles/Lobby Time.mp3","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
+	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.mp3","./sourceFiles/soundFiles/Lobby Time.mp3","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
 
 	GameObject* ship;
 	std::vector<GameObject*> enemies;
@@ -436,11 +436,12 @@ void Game::AsteroidsInit(bool again) {
 			scoreboard[i] = nullptr;
 		}
 
-		smallEnemyNoise = 2.5f;
+		smallEnemyNoise = 2.0f;
 
 		maxSpaceshipCooldown = 60.0f;
 
 		spaceship = Create(vec3(-1000, -1000, -80), vec3(0), vec3(10), "AsteroidsSpaceship");
+		spaceship->SetColor(vec3(1, 0, 0));
 
 		std::ifstream file("_data.txt");
 		std::vector<std::string> lines;
@@ -480,7 +481,7 @@ void Game::AsteroidsInit(bool again) {
 		hasWaveFinished = false;
 		waveAsteroidsCooldown = 2.5f;
 		enemyProb = 25.0f;
-		smallEnemyProb = 40.0f;
+		smallEnemyProb = 25.0f;
 		enemyDelay = rand() % (int)(enemyMaxDelay - enemyMinDelay) + enemyMinDelay;
 
 		stars.clear();
@@ -619,24 +620,26 @@ void Game::Asteroids(float dt) {
 		respawnCooldown -= dt;
 		
 		int n = 0;
+		std::vector<std::string> usernames;
+		std::vector<int> scores;
 
 		if (hasLost && !endingScreen) {
 			if (!engine->isCurrentlyPlaying(backgroundMusic[0].c_str())) { //this happens only once
 				engine->stopAllSounds();
 				PlaySound2d(backgroundMusic[0].c_str(), true);
-
-				tutorialText = refreshText(tutorialText, "");
-				
-				std::ifstream file("_asteroidsscoredata.txt"); // reading the file
-
-				std::string line;
-
-				while (std::getline(file, line)) {
-					usernames.push_back(line.substr(0, 3));
-					scores.push_back(std::stoi(line.substr(4)));
-				}
-				file.close();
 			}
+
+			tutorialText = refreshText(tutorialText, "");
+
+			std::ifstream file("_asteroidsscoredata.txt"); // reading the file
+
+			std::string line;
+
+			while (std::getline(file, line)) {
+				usernames.push_back(line.substr(0, 3));
+				scores.push_back(std::stoi(line.substr(4)));
+			}
+			file.close();
 
 			if (new_username.length() < 3) {
 				for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
@@ -1081,7 +1084,7 @@ void Game::Asteroids(float dt) {
 			spaceship->Move(vec3(0, 1, 0) * spaceshipSpeed * dt);
 
 			//collisions - spaceship/player
-			if (!hasSpaceshipPlayedSound && collisionCircle(vec2(spaceship->Transform.position), pPos, 10.0f, 10.f)) {
+			if (!hasSpaceshipPlayedSound && collisionCircle(vec2(spaceship->Transform.position), pPos, 17.5f, 17.5f)) {
 				hasSpaceshipPlayedSound = true;
 				PlaySound2d("./sourceFiles/soundFiles/asteroidsLoudWoosh.wav", false);
 			}

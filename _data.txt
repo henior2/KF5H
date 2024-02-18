@@ -1,4 +1,4 @@
-1 : asteroidsTutorial
+0 : asteroidsTutorial
 
 # the only value
 # that matters is
