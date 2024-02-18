@@ -1,9 +1,0 @@
-1 : asteroidsTutorial
-
-# the only value
-# that matters is
-# the first char
-#
-# everything else
-# (including this)
-# is for clarity
