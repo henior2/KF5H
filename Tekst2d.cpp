@@ -32,7 +32,8 @@ namespace Tekst2d_ {
 		{']', "right-bracket-square"},
 		{'{', "left-bracekt-brace"},
 		{'}', "right-bracket-brace"},
-		{'\'', "apostrophe"}
+		{'\'', "apostrophe"},
+		{' ', "space"}
 	};
 }
 using namespace Tekst2d_;
@@ -57,6 +58,7 @@ Tekst2d::Tekst2d(glm::vec2 pos, float rot, glm::vec2 sc, std::string object, flo
 			if (std::iswlower(check)) upper = false;
 			lett = check;
 		}
+		else if (check == ' ') lett = "space";
 		else {
 			lett = models[check];
 		}

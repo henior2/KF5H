@@ -32,7 +32,7 @@ void Game::MenuInit() {
     esc = false;
     srand(time(NULL));
 
-    tekst.push_back(CreateTekst(vec2(-0.6, 0.5), 0, vec2(0.1), 1, 0.2f, "GryWektorowe"));
+    tekst.push_back(CreateTekst(vec2(-0.75, 0.5), 0, vec2(0.1), 1, 0.2f, "Gry Wektorowe"));
     tekst.push_back(CreateTekst(vec2(-0.225, -0.1), 0, vec2(0.05), 1, 0.2f, "Asteroids"));
     tekst.push_back(CreateTekst(vec2(-0.25, -0.3), 0, vec2(0.05), 1, 0.2f, "Battlezone"));
     tekst.push_back(CreateTekst(vec2(-0.175, -0.5), 0, vec2(0.05), 1, 0.2f, "Tempest"));

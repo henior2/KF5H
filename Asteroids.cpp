@@ -432,7 +432,7 @@ void Game::AsteroidsInit(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = CreateTekst(vec2(-.9), 0, vec2(.05), 1, .5, "PressWtomove");
+		tutorialText = CreateTekst(vec2(-.9), 0, vec2(.05), 1, .5, "Press W to move");
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -454,7 +454,7 @@ void Game::AsteroidsInit(bool again) {
 		}
 		if ((lines[0][0]) == '0') {
 			tutorialStep = 4;
-			tutorialText = refreshText(tutorialText, "Goodluck");
+			tutorialText = refreshText(tutorialText, "Good luck");
 		}
 		file.close();
 		lines[0][0] = '0';
@@ -542,7 +542,7 @@ void Game::AsteroidsInit(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = CreateTekst(vec2(-.8, .6), 0, vec2(.07), 1, .5, "EnterYourUsername"); //todo: change to "Enter your username:" //todo: add language options (maybe)
+		usernameInfo = CreateTekst(vec2(-.9, .6), 0, vec2(.07), 1, .5, "Enter Your Username"); //todo: change to "Enter your username:" //todo: add language options (maybe)
 	}
 	else {
 		PlaySound2d("./sourceFiles/soundFiles/asteroidsStart.wav", false);
@@ -723,15 +723,17 @@ void Game::Asteroids(float dt) {
 					if (usernames.size() > i) {
 						nick = usernames[i];
 						score = std::to_string(scores[i]);
-						while (score.length() < 3) {
-							score = "0" + score;
-						}
 					}
-					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (place + "" + nick + "" + score)); // these "" will be changed to ". " and " " respectively
+
+					while (score.length() < 3 || score.length() < std::to_string(scores[0]).length()) {
+						score = "0" + score;
+					}
+
+					scoreboard[i] = CreateTekst(vec2(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec2(.0215), 1, .5, (place + " " + nick + " " + score)); // these "" will be changed to ". " and " " respectively
 				}
 
 				ship->RotateTo(vec3(0, 0, 90.0f));
-				ship->MoveTo(vec3(-animationPos.x * .65, (.35 - (.125 * n)) * camH, -80.0f));
+				ship->MoveTo(vec3(-animationPos.x * .6, (.35 - (.125 * n)) * camH, -80.0f));
 			}
 		}
 	}
@@ -823,7 +825,7 @@ void Game::Asteroids(float dt) {
 		if (tutorialStep == 0) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "UseAandDtorotate");
+			tutorialText = refreshText(tutorialText, "Use A and D to rotate");
 		}
 
 		vec2 shipUp = ship->Up;
@@ -864,7 +866,7 @@ void Game::Asteroids(float dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "PressSPACEtoshoot");
+			tutorialText = refreshText(tutorialText, "Press SPACE to shoot");
 		}
 
 		ship->Rotate(vec3(0, 0, 1.0f) * rotationMultiplier * dt);
@@ -873,7 +875,7 @@ void Game::Asteroids(float dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "PressSPACEtoshoot");
+			tutorialText = refreshText(tutorialText, "Press SPACE to shoot");
 		}
 
 		ship->Rotate(vec3(0, 0, -1.0f) * rotationMultiplier * dt);
@@ -885,7 +887,7 @@ void Game::Asteroids(float dt) {
 		if (tutorialStep == 3) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Dontuseittoomuch");
+			tutorialText = refreshText(tutorialText, "Dont use it too much");
 			forceTeleport = true;
 		}
 
@@ -915,7 +917,7 @@ void Game::Asteroids(float dt) {
 		if (tutorialStep == 2) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "PressEtoteleport");
+			tutorialText = refreshText(tutorialText, "Press E to teleport");
 		}
 
 		PlaySound2d("./sourceFiles/soundFiles/asteroidsPlayerShoot.wav", false);
@@ -1051,7 +1053,7 @@ void Game::Asteroids(float dt) {
 			if (_asteroidsNo <= 13) _asteroidsNo += 2;
 			else _asteroidsNo = 15;
 
-			tutorialText = refreshText(tutorialText, ("Wave" + std::to_string(wave_num)));
+			tutorialText = refreshText(tutorialText, ("Wave " + std::to_string(wave_num)));
 		}
 	}
 	if (_return != 0) {
