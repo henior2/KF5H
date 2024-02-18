@@ -936,6 +936,10 @@ void Game::Battlezone(float dt) {
 	}
 	
 
+	
+
+	
+
 	//shooting funtion
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && shot_cool <= 0 && bulletsFired <= 4) {
 		shot_cool = 2;
