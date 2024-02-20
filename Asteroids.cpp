@@ -151,10 +151,10 @@ namespace Asteroids {
 
 	bool checkBounds(GameObject* current, bool stay = false, vec2 bounds = vec2(170, 95)) {
 		bool flag = false;
-		if (current->Transform.position.y > bounds.y) { if (!stay) { current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0)); } flag = true; }
-		if (current->Transform.position.y < -bounds.y) { if (!stay) { current->MoveGlobal(vec3(0, bounds.y * 2.0f, 0)); } flag = true; }
-		if (current->Transform.position.x > bounds.x) { if (!stay) { current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0)); } flag = true; }
-		if (current->Transform.position.x < -bounds.x) { if (!stay) { current->MoveGlobal(vec3(bounds.x * 2.0f, 0, 0)); } flag = true; }
+		if (current->Transform.position.y > bounds.y)  { if (!stay) { current->MoveGlobal(vec3(0, -bounds.y * 2.0f, 0)); } flag = true; }
+		if (current->Transform.position.y < -bounds.y) { if (!stay) { current->MoveGlobal(vec3(0,  bounds.y * 2.0f, 0)); } flag = true; }
+		if (current->Transform.position.x > bounds.x)  { if (!stay) { current->MoveGlobal(vec3(-bounds.x * 2.0f, 0, 0)); } flag = true; }
+		if (current->Transform.position.x < -bounds.x) { if (!stay) { current->MoveGlobal(vec3( bounds.x * 2.0f, 0, 0)); } flag = true; }
 		return flag;
 	}
 
@@ -406,6 +406,12 @@ namespace Asteroids {
 	float clickCooldown;
 
 	bool isEndScreenMusicPlaying;
+
+	float haloCoundtown;
+	const int haloVxs = 7;
+	const float haloRadius = 25.0f;
+	const float haloRotation = .25f;
+	GameObject* halo;
 };
 
 using namespace Asteroids;
@@ -414,12 +420,28 @@ void Game::AsteroidsInit(bool again) {
 	clickCooldown = .25f;
 	isEndScreenMusicPlaying = false;
 
+	haloCoundtown = 0;
+
 	std::string scoreStr = std::to_string(score);
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
 
 	if (!again) {
+		std::vector<float> haloVx;
+		std::vector<unsigned int> haloInd;
+		for (int i = 0; i < haloVxs; i++) {
+			float angle = 2 * i * M_PI / haloVxs;
+
+			haloVx.push_back(cos(angle) * haloRadius); haloVx.push_back(sin(angle) * haloRadius); haloVx.push_back(0);
+			haloVx.push_back(0); haloVx.push_back(0); haloVx.push_back(1);
+
+			haloInd.push_back(i); haloInd.push_back(i + 1);
+		}
+		haloInd.pop_back(); haloInd.push_back(0);
+
+		halo = Create(vec3(0, 0, 100), vec3(0, 0, rand() % 360), vec3(1), haloVx, haloInd);
+
 		escSoundLen = .25f;
 		hasEscd = false;
 		isPaused = false;
@@ -538,8 +560,6 @@ void Game::AsteroidsInit(bool again) {
 	velocity = vec2(0.0f);
 	speed = 0;
 	velocityd = maxVelocity * maxVelocity;
-
-	posx = posy = 0.0f;
 
 	jumpCooldown = 0.5f;
 	shipAnimationCooldown = (rand() % 4) / 2 + 1;
@@ -916,6 +936,8 @@ void Game::Asteroids(float dt) {
 			else {
 				ship->MoveTo(vec3(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80));
 				velocity = vec2(0.0f, 0.0f);
+
+				haloCoundtown = 5.0f;
 			}
 		}
 	}
@@ -1124,5 +1146,15 @@ void Game::Asteroids(float dt) {
 				tScore = refreshText(tScore, std::to_string(score));
 			}
 		}
+	}
+
+	if (haloCoundtown <= 0 && haloCoundtown != 5.0f) { //so that it doesnt appear right on
+		halo->Transform.position.z = 100; //hide
+	}
+	else {
+		haloCoundtown -= dt;
+
+		halo->MoveTo(vec3(pPos, -80));
+		halo->Rotate(vec3(0, 0, 1) * dt * speed * haloRotation);
 	}
 }
