@@ -11,14 +11,10 @@ namespace Tempest {
 	int lvlDif;
 	int type;
 	
-	void zapisywanie(int plik, vec3 data) {
+	void zapisywanie(vec3 data) {
 		std::ofstream out;
-		if (plik == 0) {
-			out.open("move_vector.txt", std::ios_base::app);
-		}
-		else if (plik == 1) {
-			out.open("point_vector.txt", std::ios_base::app);
-		}
+		out.open("move_vector.txt", std::ios_base::app);
+		
 		std::string datax = std::to_string(data.x);
 		std::string datay = std::to_string(data.y);
 		std::string dataz = std::to_string(data.z);
@@ -28,8 +24,10 @@ namespace Tempest {
 	}
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
+	std::vector <GameObject*> bulletsofplayer;
 	std::vector <vec3> move;
 	std::vector <vec3> point;
+	vec3 rotation;
 	int position;
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
 		vec.push_back(a1);
@@ -83,17 +81,13 @@ namespace Tempest {
 	}
 	void points_move_list(std::vector <vec3>& move, int type) {
 		move.clear();
-		
 			int sid = findsmallest(point);
 			move.push_back(point[sid]);
-			//zapisywanie(0, point[sid]);
 			for (int i = sid - 1; i >= 0; i--) {
-				move.push_back(point[i]);
-				//zapisywanie(0, point[i]);
+					move.push_back(point[i]);
 			}
 			for (int i = sid + 1; i < point.size(); i++) {
-				move.push_back(point[i]);
-				//zapisywanie(0, point[i]);
+					move.push_back(point[i]);
 			}
 	}
 	void shipspawn(int& position, int type) {
@@ -106,7 +100,7 @@ namespace Tempest {
 			a = move[move.size() - 1], b = move[0];
 			position = move.size() - 1;
 		}
-
+		rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 		blaster = Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), "tempest_ship");
 		//+ .25 so that is't "on top" of the tunnel
 		//2.25 so that is doesn't take up the whole space
@@ -180,7 +174,7 @@ namespace Tempest {
 			}
 			push_back2(id, 0, points.size());
 			break;
-
+			int x;
 		case 1:  // odbicia lustrzane
 			for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 				double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -192,7 +186,9 @@ namespace Tempest {
 				for (int j = 0; j < 2; j++) {
 					for (int i = 0; i < points.size(); i++) {
 						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2); //points
-						if (k == 0) point.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2));
+						if (k == 0)
+							point.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -16.5f * (k + 1) + 2));
+								
 						if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 						else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
 						else push_back3(v, 0, 0, 1); //color (blue)
@@ -268,12 +264,29 @@ namespace Tempest {
 			a = move[position], b = move[position +1];
 		}
 
-
 		blaster->MoveTo(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
 		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
-		blaster->Rotate(vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f));
+		blaster->RotateTo(vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f));
+		rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	}
-	
+	void shooting(vec3 gun_pos, vec3 rotation) {
+		bulletsofplayer.push_back(Gra->Create(gun_pos, vec3(rotation), vec3(0.3), "bulletblaster"));
+	}
+	void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
+		vec3 help;
+		GameObject* xd;
+		for (int i = 0; i < bulletsofplayer.size(); i++) {
+			help = bulletsofplayer[i]->Transform.position;
+			if (help.z > -31)
+				bulletsofplayer[i]->Move(vec3(0, 0, 10)*dt);
+			else {
+				Gra->Destroy(bulletsofplayer[i]);
+				bulletsofplayer.erase(bulletsofplayer.begin() + i);
+				i--;
+			}			
+		}
+
+	}
 }
 using namespace Tempest;
 
@@ -282,8 +295,8 @@ void Game::TempestInit() {
 	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 	tunnel.clear();
+	bulletsofplayer.clear();
 	position = 0;
-
 	tunelspawn(lastTSN, point, type);
 }
 
@@ -305,13 +318,21 @@ void Game::Tempest(float dt) {
 		Game::ChangeState(Game_Menu);
 
 	if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
-		debugCooldown = 0.5f;
+		debugCooldown = 0.3f;
 		shipmovement(false, position);
 	}
 
 	if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
-	debugCooldown = 0.5f;
+	debugCooldown = 0.3f;
 	shipmovement(true, position);
-}
-}
+	}
 
+	if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+		debugCooldown = 0.3f;
+		shooting(blaster->Transform.position, rotation);
+	}
+
+	if (!bulletsofplayer.empty()) {
+		bulletmove(bulletsofplayer, dt);
+	}
+}

@@ -72,6 +72,7 @@ namespace Test {
 		"semi-colon",
 		"question-mark",
 		"",
+		"bulletblaster",
 		"Blaster",
 		"Flipper", 
 		"Tanker",
@@ -79,7 +80,7 @@ namespace Test {
 		"Fuseball",
 		"Pulsar",
 		"tempest_ship",
-		""
+		"",
 	};
 
 	std::vector<GameObject*> objectsVector;
