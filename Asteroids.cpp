@@ -449,6 +449,13 @@ void Game::AsteroidsInit(bool again) {
 		std::ifstream file("_data.txt");
 		std::vector<std::string> lines;
 		std::string line;
+		if (!file.good()) {
+			file.close();
+			std::ofstream file1("_data.txt");
+			file1 << "1";
+			file1.close();
+			file.open("_data.txt");
+		}
 		while (std::getline(file, line)) {
 			lines.push_back(line);
 		}
