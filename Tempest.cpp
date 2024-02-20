@@ -83,17 +83,7 @@ namespace Tempest {
 	}
 	void points_move_list(std::vector <vec3>& move, int type) {
 		move.clear();
-		if (type == 1)
-		{
-			move.push_back(point[point.size() - 1]);
-			for (int i = point.size() / 2; i >= 0; i--) {
-				move.push_back(point[i]);
-			}
-			for (int i = point.size() / 2 + 1; i < point.size() - 1; i) {
-				move.push_back(point[i]);
-			}
-		}
-		else {
+		
 			int sid = findsmallest(point);
 			move.push_back(point[sid]);
 			//zapisywanie(0, point[sid]);
@@ -105,10 +95,18 @@ namespace Tempest {
 				move.push_back(point[i]);
 				//zapisywanie(0, point[i]);
 			}
-		}
 	}
-	void shipspawn() {
-		vec3 a = move[0], b = move[1];
+	void shipspawn(int& position, int type) {
+		vec3 a, b;
+		if (type == 0) { 
+			a = move[0], b = move[1]; 
+			position = 0;
+		}
+		else  {
+			a = move[move.size() - 1], b = move[0];
+			position = move.size() - 1;
+		}
+
 		blaster = Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), "tempest_ship");
 		//+ .25 so that is't "on top" of the tunnel
 		//2.25 so that is doesn't take up the whole space
@@ -246,16 +244,30 @@ namespace Tempest {
 		points_move_list(move, type);
 		lastTSN = tunnelSidesNo;
 		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
-		shipspawn();
+		shipspawn(position, type);
 	}
 
 	void shipmovement(bool right, int& position) {
-		vec3 a = move[position], b;
-		if (right && position == point.size() - 1) position = 0;
-		else if (!right && position == 0) position = point.size() - 1;
-		else if (right) position++;
-		else position--;
-		b = move[position];
+		vec3 a, b;
+		if (right && position == point.size() - 1) { 
+			position = 0;
+			a = move[position], b = move[position + 1];
+		}
+		else if (!right && position == 0) {
+			position = point.size() - 1;
+			a = move[position], b = move[0];
+		}
+		else if (right) { 
+			position++; 
+			a = move[position];
+			if (position == point.size() - 1) b = move[0];
+			else b = move[position + 1];
+		}
+		else {
+			position--;
+			a = move[position], b = move[position +1];
+		}
+
 
 		blaster->MoveTo(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
 		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
@@ -291,4 +303,15 @@ void Game::Tempest(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
+
+	if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+		debugCooldown = 0.5f;
+		shipmovement(false, position);
+	}
+
+	if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+	debugCooldown = 0.5f;
+	shipmovement(true, position);
 }
+}
+
