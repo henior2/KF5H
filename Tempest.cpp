@@ -49,29 +49,6 @@ namespace Tempest {
 		vec.push_back(a1);
 	}
 
-	float signed_angle_between_vectors(const glm::vec3& A, const glm::vec3& B, const glm::vec3& axis) {
-		float dotProduct = glm::dot(A, B);
-		float magnitudeA = glm::length(A);
-		float magnitudeB = glm::length(B);
-
-		float cosTheta = dotProduct / (magnitudeA * magnitudeB);
-		float sinTheta = glm::length(glm::cross(A, B)) / (magnitudeA * magnitudeB);
-
-		// Calculate the signed angle using the arctangent and the dot product with the axis
-		float thetaRad = atan2(sinTheta, cosTheta);
-
-		// Calculate the dot product with the axis to determine the sign
-		float dotWithAxis = glm::dot(glm::cross(A, B), axis);
-
-		// Adjust the sign of the angle based on the axis
-		float signedAngleRad = dotWithAxis >= 0 ? thetaRad : -thetaRad;
-
-		// Convert to degrees and ensure the result is in the range (-180, 180]
-		float signedAngleDeg = glm::degrees(signedAngleRad);
-		signedAngleDeg = fmod(signedAngleDeg + 180.0f, 360.0f) - 180.0f;
-
-		return signedAngleDeg;
-	}
 	int findsmallest(std::vector <vec3> a) {
 		int smallest = 0;
 		for (int i = 0; i < a.size(); i++) {
@@ -100,8 +77,10 @@ namespace Tempest {
 			a = move[move.size() - 1], b = move[0];
 			position = move.size() - 1;
 		}
-		rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
-		blaster = Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), "tempest_ship");
+		if (type==0) rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+		else rotation = vec3(0, 0, 0);
+
+		blaster = Gra->Create(vec3((b.x + a.x) / 2,(b.y + a.y) / 2, (b.z + a.z) / 2 + .25), rotation, vec3(glm::length(b - a) / 2.25), "tempest_ship");
 		//+ .25 so that is't "on top" of the tunnel
 		//2.25 so that is doesn't take up the whole space
 		}
@@ -264,10 +243,12 @@ namespace Tempest {
 			a = move[position], b = move[position +1];
 		}
 
+		if (type == 0) rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+		else rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
+
 		blaster->MoveTo(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
 		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
-		blaster->RotateTo(vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f));
-		rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+		blaster->RotateTo(rotation);
 	}
 	void shooting(vec3 gun_pos, vec3 rotation) {
 		bulletsofplayer.push_back(Gra->Create(gun_pos, vec3(rotation), vec3(0.3), "bulletblaster"));
@@ -292,7 +273,7 @@ using namespace Tempest;
 
 void Game::TempestInit() {
 	debugCooldown = .1f;
-	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
+	lvlDif = 21; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 	tunnel.clear();
 	bulletsofplayer.clear();
@@ -317,12 +298,12 @@ void Game::Tempest(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+	if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
 		debugCooldown = 0.3f;
 		shipmovement(false, position);
 	}
 
-	if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+	if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
 	debugCooldown = 0.3f;
 	shipmovement(true, position);
 	}
