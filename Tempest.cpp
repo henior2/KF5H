@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "string"
 
 using namespace glm;
 
@@ -8,15 +9,17 @@ namespace Tempest {
 	int lastTSN;
 	int lvlDif;
 	int type;
-
+	const std::string enemy_models[] = {
+		"Tanker",
+		"Spiker",
+		"Fuseball",
+		"Flipper"
+	};
 
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
-	std::vector <GameObject*> enemies_tankers;
-	std::vector <GameObject*> enemies_fllipers;
-	std::vector <GameObject*> enemies_spikers;
-	std::vector <GameObject*> enemies_fuseballs;
+	std::vector <GameObject*> enemies [4];
 	std::vector <vec3> move;
 	std::vector <vec3> move2;
 	std::vector <vec3> point;
@@ -50,25 +53,25 @@ namespace Tempest {
 		}
 		return smallest;
 	}
-	void points_move_list(std::vector<vec3>& move, int type, std::vector<vec3> point) {
-		move.clear();
-		int sid = findsmallest(point);
+	void points_move_list(std::vector<vec3>& moving, int type, std::vector<vec3> pointing) {
+		moving.clear();
+		int sid = findsmallest(pointing);
 		bool xd = false;
-		move.push_back(point[sid]);
+		moving.push_back(pointing[sid]);
 		for (int i = sid - 1; i >= 0; i--) {
-			if (!xd && point[i].x == 0) {
+			if (!xd && pointing[i].x == 0) {
 				xd = true;
 			}
 			else {
-				move.push_back(point[i]);
+				moving.push_back(pointing[i]);
 			}
 		}
 		for (int i = sid + 1; i < point.size(); i++) {
-			if (!xd && point[i].x == 0) {
+			if (!xd && pointing[i].x == 0) {
 				xd = true;
 			}
 			else {
-				move.push_back(point[i]);
+				moving.push_back(pointing[i]);
 			}
 		}
 	}
@@ -138,6 +141,7 @@ namespace Tempest {
 
 	void tunelspawn(int& lastTSN, int& type) {
 		point.clear();
+		point2.clear();
 		std::vector<float> v;
 		std::vector<unsigned int> id;
 		std::vector<vec2> points;
@@ -177,7 +181,6 @@ namespace Tempest {
 			help.z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 		} while (help.x == 0 && help.y == 0 && help.z == 0);
 
-		point.clear();
 		switch (type) {
 		case 0:
 			for (int i = 0; i < tunnelSidesNo; i++) {
@@ -271,23 +274,17 @@ namespace Tempest {
 		shipspawn(position, type);
 	}
 
-	void enemies_tankers_spawn() {
+	void enemies_spawn(int type2) {
+		std::string model = enemy_models[type2];
+
 		int spawn = rand() % move2.size();
 		vec3 a = move2[spawn];
 		if (spawn == move2.size() - 1) spawn = 0;
 		else spawn += 1;
 		vec3 b = move2[spawn];
+		vec3 rotenem;
 
-		enemies_tankers.push_back(Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a)/2.25), "Tanker"));
-	}
-	void enemies_spikers_spawn() {
-
-	}
-	void enemies_fuseballs_spawn() {
-
-	}
-	void enemies_fllipers_spawn() {
-
+		enemies[type2].push_back(Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), model));
 	}
 }
 
@@ -354,6 +351,6 @@ void Game::Tempest(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
-		enemies_tankers_spawn();
+		enemies_spawn(1);
 	}
 }
