@@ -59,6 +59,7 @@ namespace Test {
 		"Arrow2",
 		"Arrow3",
 		"pauseIcone",
+		"battlezonePointer",
 		"",
 		"apostrophe",
 		"colon",

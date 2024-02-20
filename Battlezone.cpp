@@ -6,6 +6,8 @@ using namespace glm;
 namespace Battlezone {
 	float keyCooldown;
 
+	GameObject* thePointer;
+
 	float signed_angle_between_vectors(const glm::vec3& A, const glm::vec3& B, const glm::vec3& axis) {
 		float dotProduct = glm::dot(A, B);
 		float magnitudeA = glm::length(A);
@@ -650,6 +652,9 @@ namespace Battlezone {
 using namespace Battlezone;
 
 void Game::BattlezoneInit() {
+	thePointer = Create(vec3(0), vec3(0), vec3(.1), "battlezonePointer");
+	thePointer->Stage[0].onTop = true;
+
 	keyCooldown = .25f;
 	money = 0;
 
@@ -835,7 +840,7 @@ void Game::Battlezone(float dt) {
 	keyCooldown -= dt;
 
 	if (hp <= 0) {
-		CreateTekst(vec2(-.5, 0), 0, vec2(0.05f), 2, 1, "Przegrales");
+		CreateTekst(vec2(-.25, 0), 0, vec2(0.05f), 2, 1, "You died");
 		isDead = true; //kinda useless but whatever lmao
 	}
 
