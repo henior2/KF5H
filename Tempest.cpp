@@ -56,17 +56,29 @@ namespace Tempest {
 		}
 		return smallest;
 	}
-	void points_move_list(std::vector <vec3>& move, int type) {
+	void points_move_list(std::vector<vec3>& move, int type) {
 		move.clear();
-			int sid = findsmallest(point);
-			move.push_back(point[sid]);
-			for (int i = sid - 1; i >= 0; i--) {
+		int sid = findsmallest(point);
+		bool xd = false;
+		move.push_back(point[sid]);
+		for (int i = sid - 1; i >= 0; i--) {
+			if (!xd && point[i].x == 0) {
+				xd = true;
+			}
+			else {
+				move.push_back(point[i]);
+			}
+		}
+		for (int i = sid + 1; i < point.size(); i++) {
+			if (!xd && point[i].x == 0) {
+				xd = true;
+			}
+			else {
 					move.push_back(point[i]);
 			}
-			for (int i = sid + 1; i < point.size(); i++) {
-					move.push_back(point[i]);
-			}
+		}
 	}
+
 	void shipspawn(int& position, int type) {
 		vec3 a, b;
 		if (type == 0) { 
