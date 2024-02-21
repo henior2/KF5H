@@ -18,7 +18,7 @@ namespace Tempest {
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
-	std::vector <GameObject*> enemies [4];
+	std::vector <GameObject*> enemies[4];
 	std::vector <vec3> move;
 	std::vector <vec3> move2;
 	std::vector <vec3> point;
@@ -97,10 +97,7 @@ namespace Tempest {
 		//2.25 so that is doesn't take up the whole space
 	}
 	void shipmovement(bool right, int& position, int type) {
-		if (type == 0) {
-			tunnel[position]->SetColor(vec3(0, 0, 1)); //hope you can fix that :*
-		}
-
+		tunnel[position]->SetColor(vec3(0, 0, 1)); //hope you can fix that :*
 		vec3 a, b;
 		if (right && position == move.size() - 1) {
 			position = 0;
@@ -121,7 +118,7 @@ namespace Tempest {
 			a = move[position]; b = move[position + 1];
 		}
 
-		//XD
+		
 		if (type == 0) rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 		else rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
 
@@ -129,9 +126,7 @@ namespace Tempest {
 		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
 		blaster->RotateTo(rotation);
 
-		if (type == 0) {
-			tunnel[position]->SetColor(vec3(1, 1, 0)); //thats the other part
-		}
+		tunnel[position]->SetColor(vec3(1, 1, 0)); //thats the other part
 	}
 	void shooting(vec3 gun_pos, vec3 rotation) {
 		bulletsofplayer.push_back(Gra->Create(gun_pos, vec3(rotation), vec3(0.2), "bulletblaster"));
@@ -285,8 +280,8 @@ namespace Tempest {
 		points_move_list(move, type, point);
 		points_move_list(move2, type, point2);
 		lastTSN = tunnelSidesNo;
-		
-		if(type==1) tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
+
+		if (type == 1) tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
 		else {
 			std::vector<float> vxVec;
 			std::vector<unsigned int> indVec = { 0,1,1,2,2,3,3,0 }; //connections
@@ -317,8 +312,11 @@ namespace Tempest {
 		else spawn += 1;
 		vec3 b = move2[spawn];
 		vec3 rotenem;
+		if (type2 != 2)
+			enemies[type2].push_back(Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), model));
+		else
+			enemies[type2].push_back(Gra->Create(vec3((b.x) / 2, (b.y) / 2, (b.z) / 2), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), model));
 
-		enemies[type2].push_back(Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), model));
 	}
 }
 
@@ -351,10 +349,10 @@ void Game::Tempest(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	//hope you dont mind me changing your code, but its just a better way of formatting it
+
 	if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
 		debugCooldown = 0.3f;
-		shipmovement(!(type > 0), position, type); //this statement should probably be changed to <=
+		shipmovement(!(type > 0), position, type); 
 	}
 
 	if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
@@ -373,6 +371,18 @@ void Game::Tempest(float dt) {
 
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
+		enemies_spawn(0);
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && debugCooldown <= 0.0f) {
+		debugCooldown = 0.5f;
 		enemies_spawn(1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && debugCooldown <= 0.0f) {
+		debugCooldown = 0.5f;
+		enemies_spawn(2);
+	}
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && debugCooldown <= 0.0f) {
+		debugCooldown = 0.5f;
+		enemies_spawn(3);
 	}
 }
