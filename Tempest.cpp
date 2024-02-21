@@ -99,7 +99,7 @@ namespace Tempest {
 	void shipmovement(bool right, int& position, int type) {
 		int segPos = tunnel.size() - 1 - position;
 
-		if (type == 0) tunnel[segPos]->SetColor(vec3(0, 0, 1)); //Staszek, dont remove the condition, or else it will crash, when the type != 0
+		if (type == 0) tunnel[segPos]->SetColor(vec3(0, 0, 1));
 
 		vec3 a, b;
 		if (right && position == move.size() - 1) {
@@ -316,11 +316,35 @@ namespace Tempest {
 		else spawn += 1;
 		vec3 b = move2[spawn];
 		vec3 rotenem;
-		if (type2 != 2)
-			enemies[type2].push_back(Gra->Create(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), model));
-		else
-			enemies[type2].push_back(Gra->Create(vec3((b.x) / 2, (b.y) / 2, (b.z) / 2), vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f), vec3(glm::length(b - a) / 2.25), model));
 
+		vec3 place;
+		if (type2 == 2)
+			place = vec3((b.x) / 2, (b.y) / 2, -28.45);
+		else if (type2 == 3)
+			place = vec3((b.x + a.x) / 2, (b.y + a.y) / 2, -28.45);
+		else
+			place = vec3((b.x + a.x) / 2, (b.y + a.y) / 2, -28.45);
+
+		vec3 rotation;
+		if (type == 0) rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+		else rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
+
+		enemies[type2].push_back(Gra->Create(place, rotation, vec3(glm::length(b - a) / 2.25), model));
+
+	}
+
+	void tanker(float dt) {
+		vec3 help;
+		for (int i = 0; i < enemies[0].size(); i++) {
+			help = enemies[0][i]->Transform.position;
+			if (help.z < -16)
+				enemies[0][i]->Move(vec3(0, 0, -3) * dt);
+			else {
+				Gra->Destroy(enemies[0][i]);
+				enemies[0].erase(enemies[0].begin() + i);
+				i--;
+			}
+	}
 	}
 }
 
@@ -371,6 +395,9 @@ void Game::Tempest(float dt) {
 
 	if (!bulletsofplayer.empty()) {
 		bulletmove(bulletsofplayer, dt);
+	}
+	if (!enemies[0].empty()) {
+		tanker(dt);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && debugCooldown <= 0.0f) {
