@@ -347,7 +347,33 @@ namespace Tempest {
 	}
 	}
 	void fuseball() {
+	//trzeba zlosowaæ gdzie sie porusza i losowaæ prêdkosæ
+	//u¿ywaæ vectora mve2 do poruszania sie po krawêdziach
 
+		int direction = rand()4 + 1;
+		
+		if (direction == 3 || direction == 4) {
+			vec3 a, b;
+			if (right && position == move2.size() - 1) {
+				position = 0;
+				a = move2[position]; b = move2[position + 1];
+			}
+			else if (!right && position == 0) {
+				position = move2.size() - 1;
+				a = move2[position]; b = move2[0];
+			}
+			else if (right) {
+				position++;
+				a = move2[position];
+				if (position == move2.size() - 1) b = move2[0];
+				else b = move2[position + 1];
+			}
+			else {
+				position--;
+				a = move2[position]; b = move2[position + 1];
+			}
+		}
+		
 
 		for (int i = 0; i < enemies[0].size(); i++) {
 				enemies[0][i]->Move(vec3(0, 0, -3) );
