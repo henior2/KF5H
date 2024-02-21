@@ -97,7 +97,10 @@ namespace Tempest {
 		//2.25 so that is doesn't take up the whole space
 	}
 	void shipmovement(bool right, int& position, int type) {
-		tunnel[position]->SetColor(vec3(0, 0, 1)); //hope you can fix that :*
+		int segPos = tunnel.size() - 1 - position;
+
+		if (type == 0) tunnel[segPos]->SetColor(vec3(0, 0, 1)); //Staszek, dont remove the condition, or else it will crash, when the type != 0
+
 		vec3 a, b;
 		if (right && position == move.size() - 1) {
 			position = 0;
@@ -118,6 +121,7 @@ namespace Tempest {
 			a = move[position]; b = move[position + 1];
 		}
 
+		segPos = tunnel.size() - 1 - position;
 		
 		if (type == 0) rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 		else rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
@@ -126,7 +130,7 @@ namespace Tempest {
 		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
 		blaster->RotateTo(rotation);
 
-		tunnel[position]->SetColor(vec3(1, 1, 0)); //thats the other part
+		if (type == 0) tunnel[segPos]->SetColor(vec3(1, 1, 0));
 	}
 	void shooting(vec3 gun_pos, vec3 rotation) {
 		bulletsofplayer.push_back(Gra->Create(gun_pos, vec3(rotation), vec3(0.2), "bulletblaster"));
