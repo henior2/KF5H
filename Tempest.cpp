@@ -4,7 +4,6 @@
 using namespace glm;
 
 namespace Tempest {
-
 	float debugCooldown = .1f;
 	int lastTSN;
 	int lvlDif;
@@ -44,6 +43,11 @@ namespace Tempest {
 		vec.push_back(a1);
 		vec.push_back(a1);
 		vec.push_back(a1);
+	}
+	void push_back_point(std::vector<float>& vec, int startIndex, std::vector<float>& pointVec) {
+		for (int i = 0; i < 6; i++) {
+			vec.push_back(pointVec[startIndex + i]);
+		}
 	}
 
 	int findsmallest(std::vector <vec3> a) {
@@ -92,15 +96,19 @@ namespace Tempest {
 		//+ .25 so that is't "on top" of the tunnel
 		//2.25 so that is doesn't take up the whole space
 	}
-	void shipmovement(bool right, int& position) {
+	void shipmovement(bool right, int& position, int type) {
+		if (type == 0) {
+			tunnel[position]->SetColor(vec3(0, 0, 1)); //hope you can fix that :*
+		}
+
 		vec3 a, b;
 		if (right && position == move.size() - 1) {
 			position = 0;
-			a = move[position], b = move[position + 1];
+			a = move[position]; b = move[position + 1];
 		}
 		else if (!right && position == 0) {
 			position = move.size() - 1;
-			a = move[position], b = move[0];
+			a = move[position]; b = move[0];
 		}
 		else if (right) {
 			position++;
@@ -110,22 +118,27 @@ namespace Tempest {
 		}
 		else {
 			position--;
-			a = move[position], b = move[position + 1];
+			a = move[position]; b = move[position + 1];
 		}
 
+		//XD
 		if (type == 0) rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 		else rotation = vec3(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
 
 		blaster->MoveTo(vec3((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
 		blaster->ScaleTo(vec3(glm::length(b - a) / 2.25));
 		blaster->RotateTo(rotation);
+
+		if (type == 0) {
+			tunnel[position]->SetColor(vec3(1, 1, 0)); //thats the other part
+		}
 	}
 	void shooting(vec3 gun_pos, vec3 rotation) {
 		bulletsofplayer.push_back(Gra->Create(gun_pos, vec3(rotation), vec3(0.2), "bulletblaster"));
 	}
 	void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 		vec3 help;
-		GameObject* xd;
+		GameObject* xd; //xd
 		for (int i = 0; i < bulletsofplayer.size(); i++) {
 			help = bulletsofplayer[i]->Transform.position;
 			if (help.z > -31)
@@ -197,6 +210,7 @@ namespace Tempest {
 					push_back3(v, points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2); //points
 					if (j == 0) point.push_back(vec3(points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2));
 					else point2.push_back(vec3(points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2));
+
 					if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
 					else push_back3(v, 0, 0, 1); //color (blue)
 				}
@@ -215,10 +229,11 @@ namespace Tempest {
 			}
 			for (int k = 0; k < 2; k++) {
 				for (int j = 0; j < 2; j++) {
-					for (int i = 0; i < points.size(); i++) {
-						push_back3(v, points[i].x * (1 - (2 * j)), points[i].y, -14.5f * (k + 1.1f) + 2); //points
-						if (k == 0) point.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -14.5f * (k + 1.1f) + 2));
-						else point2.push_back(vec3(points[i].x * (1 - (2 * j)), points[i].y, -14.5f * (k + 1.1f) + 2));
+					for (const auto& c_point : points) { //refactored this loop into the for-each loop
+						push_back3(v, c_point.x * (1 - (2 * j)), c_point.y, -14.5f * (k + 1.1f) + 2); //points
+						if (k == 0) point.push_back(vec3(c_point.x * (1 - (2 * j)), c_point.y, -14.5f * (k + 1.1f) + 2));
+						else point2.push_back(vec3(c_point.x * (1 - (2 * j)), c_point.y, -14.5f * (k + 1.1f) + 2));
+
 						if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 						else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
 						else push_back3(v, 0, 0, 1); //color (blue)
@@ -270,7 +285,26 @@ namespace Tempest {
 		points_move_list(move, type, point);
 		points_move_list(move2, type, point2);
 		lastTSN = tunnelSidesNo;
-		tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
+		
+		if(type==1) tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), v, id));
+		else {
+			std::vector<float> vxVec;
+			std::vector<unsigned int> indVec = { 0,1,1,2,2,3,3,0 }; //connections
+			for (int i = 0; i < tunnelSidesNo; i++) {
+				vxVec.clear();
+
+				int tryPush = i + 1;
+				if (i == tunnelSidesNo - 1) tryPush = 0; //so that it loops over
+
+				push_back_point(vxVec, i * 6, v); //point #1 (front)
+				push_back_point(vxVec, tryPush * 6, v); //point #2 (front)
+				push_back_point(vxVec, (tryPush + tunnelSidesNo) * 6, v); //point #3 (aka #2 back)
+				push_back_point(vxVec, (i + tunnelSidesNo) * 6, v); //point #4 (#1 back)
+
+				tunnel.push_back(Gra->Create(vec3(0), vec3(0), vec3(1), vxVec, indVec));
+			}
+		}
+
 		shipspawn(position, type);
 	}
 
@@ -317,27 +351,15 @@ void Game::Tempest(float dt) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		Game::ChangeState(Game_Menu);
 
-	if (type > 0) {
-		if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
-			debugCooldown = 0.3f;
-			shipmovement(false, position);
-		}
-
-		if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
-			debugCooldown = 0.3f;
-			shipmovement(true, position);
-		}
+	//hope you dont mind me changing your code, but its just a better way of formatting it
+	if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+		debugCooldown = 0.3f;
+		shipmovement(!(type > 0), position, type); //this statement should probably be changed to <=
 	}
-	else {
-		if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
-			debugCooldown = 0.3f;
-			shipmovement(false, position);
-		}
 
-		if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && debugCooldown <= 0.0f) {
-			debugCooldown = 0.3f;
-			shipmovement(true, position);
-		}
+	if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && debugCooldown <= 0.0f) {
+		debugCooldown = 0.3f;
+		shipmovement(type > 0, position, type);
 	}
 
 	if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) && debugCooldown <= 0.0f) {
