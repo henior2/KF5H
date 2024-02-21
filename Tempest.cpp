@@ -319,7 +319,7 @@ namespace Tempest {
 
 		vec3 place;
 		if (type2 == 2)
-			place = vec3((b.x) / 2, (b.y) / 2, -28.45);
+			place = vec3((b.x), (b.y), -28.45);
 		else if (type2 == 3)
 			place = vec3((b.x + a.x) / 2, (b.y + a.y) / 2, -28.45);
 		else
@@ -337,7 +337,7 @@ namespace Tempest {
 		vec3 help;
 		for (int i = 0; i < enemies[0].size(); i++) {
 			help = enemies[0][i]->Transform.position;
-			if (help.z < -16)
+			if (help.z < -14.3)
 				enemies[0][i]->Move(vec3(0, 0, -3) * dt);
 			else {
 				Gra->Destroy(enemies[0][i]);
@@ -345,6 +345,13 @@ namespace Tempest {
 				i--;
 			}
 	}
+	}
+	void fuseball() {
+
+
+		for (int i = 0; i < enemies[0].size(); i++) {
+				enemies[0][i]->Move(vec3(0, 0, -3) * dt);
+		}
 	}
 }
 
