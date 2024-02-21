@@ -151,6 +151,7 @@ namespace Battlezone {
 	void destroy_enemy( int i) {
 		Gra->Destroy(przeciwnicy[i]);
 		Gra->Destroy(radarElements[i]);
+		Gra->Destroy(uiElements[i]);
 		przeciwnicy.erase(przeciwnicy.begin() + i);
 		enemyType.erase(enemyType.begin() + i);
 		enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
@@ -965,79 +966,12 @@ void Game::Battlezone(float dt) {
 				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045f), 2, 1, std::to_string(hp));
 				Destroy(current);
 				pociski.erase(pociski.begin() + i);
+				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
 			}
 		}
 	}
 
-	//Moving player bullets
-	if (!pociski_gracza.empty()) {
-		for (int i = 0; i < pociski_gracza.size(); i++) {
-			GameObject* current = pociski_gracza[i];
-
-			bulletTimeRemain[i] -= dt;
-			if (bulletTimeRemain[i] <= 0) {
-				Destroy(current);
-				pociski_gracza.erase(pociski_gracza.begin() + i);
-				bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
-				i--;
-				continue;
-			}
-			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
-
-			//Enemy bullet collision
- 			for (int j = 0; j < przeciwnicy.size(); j++) {
-				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z), 2, 2)) {
-					switch (enemyType[j]) {
-					case 1:
-						score += 100 * (int) scoreMultiplier;
-						tScore = refreshText(tScore, score);
-						break;
-					case 2:
-						score += 200 * (int) scoreMultiplier;
-						tScore = refreshText(tScore, score);
-						break;
-					case 3:
-						score += 300 * (int) scoreMultiplier;
-						tScore = refreshText(tScore, score);
-						break;
-					}
-					//Usuwanie pocisku
-					Destroy(current);
-					pociski_gracza.erase(pociski_gracza.begin() + i);
-					bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
-					//Usuwanie przeciwnika
-					destroy_enemy(j);
-				}
-			}
-			//Rocket bullet collision
-			for (int j = 0; j < rakiety.size(); j++) {
-				if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(rakiety[j]->Transform.position.x, rakiety[j]->Transform.position.z), 2, 2)) {
-					score += 500 * (int) scoreMultiplier;
-					//Usuwanie pocisku
-					Destroy(current);
-					pociski_gracza.erase(pociski_gracza.begin() + i);
-					bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
-					//Usuwanie rakiety
-					Destroy(rakiety[j]);
-					Destroy(radarElements[j]);
-					enemyType.erase(enemyType.begin() + j);
-					enemyShotCooldowns.erase(enemyShotCooldowns.begin() + j);
-					rakiety.erase(rakiety.begin() + j);
-					radarElements.erase(radarElements.begin() + j);
-					radarElementsType.erase(radarElementsType.begin() + j);
-					uiElements.erase(uiElements.begin() + j);
-				}
-			}
-
-		}
-	}
-	if (bulletsFired > 4) {
-		if (reloadTime > 0) {
-			reloadTime -= dt;
-		}
-		else
-			bulletsFired = 0;
-	}
+	
 
 	//moving the forza horizon
 	horizon->MoveTo(pPos);
@@ -1165,6 +1099,86 @@ void Game::Battlezone(float dt) {
 				DestroyTekst(display_hp);
 				display_hp = CreateTekst(vec2(.8, .8), 0, vec2(.045f), 2, 1, std::to_string(hp));
 			}
+		}
+	}
+
+	//Moving player bullets
+
+	if (bulletsFired > 4) {
+		if (reloadTime > 0) {
+			reloadTime -= dt;
+		}
+		else
+			bulletsFired = 0;
+	}
+
+	if (!pociski_gracza.empty()) {
+		for (int i = 0; i < pociski_gracza.size(); i++) {
+			GameObject* current = pociski_gracza[i];
+
+			bulletTimeRemain[i] -= dt;
+			if (bulletTimeRemain[i] <= 0) {
+				Destroy(current);
+				pociski_gracza.erase(pociski_gracza.begin() + i);
+				bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+				i--;
+				continue;
+			}
+			current->Move(vec3(0, 0, -1) * bulletSpeed * dt);
+
+			//Enemy bullet collision
+			if (!przeciwnicy.empty()) {
+				for (int j = 0; j < przeciwnicy.size(); j++) {
+					if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(przeciwnicy[j]->Transform.position.x, przeciwnicy[j]->Transform.position.z), 2, 2)) {
+						switch (enemyType[j]) {
+						case 1:
+							score += 100 * (int)scoreMultiplier;
+							tScore = refreshText(tScore, score);
+							break;
+						case 2:
+							score += 200 * (int)scoreMultiplier;
+							tScore = refreshText(tScore, score);
+							break;
+						case 3:
+							score += 300 * (int)scoreMultiplier;
+							tScore = refreshText(tScore, score);
+							break;
+						default:
+							break;
+						}
+						//Usuwanie pocisku
+						Destroy(current);
+						pociski_gracza.erase(pociski_gracza.begin() + i);
+						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+						//Usuwanie przeciwnika
+						Destroy(przeciwnicy[j]);
+						przeciwnicy.clear();
+						waveFlag = true;
+					}
+				}
+			}
+			//Rocket bullet collision
+			if (!rakiety.empty()) {
+				for (int j = 0; j < rakiety.size(); j++) {
+					if (collisionCircle(vec2(current->Transform.position.x, current->Transform.position.z), vec2(rakiety[j]->Transform.position.x, rakiety[j]->Transform.position.z), 2, 2)) {
+						score += 500 * (int)scoreMultiplier;
+						//Usuwanie pocisku
+						Destroy(current);
+						pociski_gracza.erase(pociski_gracza.begin() + i);
+						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
+						//Usuwanie rakiety
+						Destroy(rakiety[j]);
+						Destroy(radarElements[j]);
+						enemyType.erase(enemyType.begin() + j);
+						enemyShotCooldowns.erase(enemyShotCooldowns.begin() + j);
+						rakiety.erase(rakiety.begin() + j);
+						radarElements.erase(radarElements.begin() + j);
+						radarElementsType.erase(radarElementsType.begin() + j);
+						uiElements.erase(uiElements.begin() + j);
+					}
+				}
+			}
+
 		}
 	}
 
@@ -1304,79 +1318,81 @@ void Game::Battlezone(float dt) {
 
 	float angleRad = pOri.y * (float) M_PI / 180.0f;
 	unsigned int radarElementsIterator[] = { 0,0,0,0 }; // 0 - normal / big / vinci, 1 - obstacle, 2 - boost, 3 - intercontinental ballistic missile (aka rocket)
-	for (int i = 0; i < radarElements.size(); i++) {
-		int type = (int) radarElementsType[i];
-		unsigned int& iterator = radarElementsIterator[type];
+	if(!radarElementsType.empty()){
+		for (int i = 0; i < radarElementsType.size(); i++) {
+			int type = (int)radarElementsType[i];
+			unsigned int& iterator = radarElementsIterator[type];
 
-		GameObject* current;
+			GameObject* current;
 
-		if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
-		else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];      
-		else if (type == 2 && !powerUpInside.empty()) current = powerUpInside[iterator];
-		else if (type == 3 && !rakiety.empty()) current = rakiety[iterator];
-		else throw std::invalid_argument("check deez values mate");
-
-
-		float dx = current->Transform.position.x - pPos.x;
-		float dz = current->Transform.position.z - pPos.z;
+			if (type == 0 && !przeciwnicy.empty()) current = przeciwnicy[iterator];
+			else if (type == 1 && !obstacles.empty()) current = obstacles[iterator];
+			else if (type == 2 && !powerUpInside.empty()) current = powerUpInside[iterator];
+			else if (type == 3 && !rakiety.empty()) current = rakiety[iterator];
+			else current = przeciwnicy[iterator];//throw std::invalid_argument("check deez values mate");
 
 
-		float angle = signed_angle_between_vectors(player->Front, vec3(dx, 0, dz), vec3(0, 1, 0));
+			float dx = current->Transform.position.x - pPos.x;
+			float dz = current->Transform.position.z - pPos.z;
 
-		float dist = dx * dx + dz * dz;
 
-		dist = sqrt(dist) / radarRange;
+			float angle = signed_angle_between_vectors(player->Front, vec3(dx, 0, dz), vec3(0, 1, 0));
 
-		if (dist >= 1) {
-			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
-			iterator++;
-			continue;
-		}
-		else {
-			radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
-		}
+			float dist = dx * dx + dz * dz;
 
-		angle = glm::radians(angle);
-		dx = dist * sin(angle);
-		dz = -dist * cos(angle);
+			dist = sqrt(dist) / radarRange;
 
-		dx *= 0.2f;
-		dz *= 0.2f;
-
-		radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
-
-		iterator++;
-
-		//checking if out of bounds
-		vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z)); // bro really said PP
-		float dOutofbounds;
-		if (absPPos.x > mapSize || absPPos.y > mapSize) {
-			glitchEffectRefreshRate -= dt;
-
-			float isNeg = 1.0f;
-			if (absPPos.x > mapSize) {
-				if (pPos.x < 0) isNeg = -1.0f;
-				dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
-				if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance) * isNeg;
+			if (dist >= 1) {
+				radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
+				iterator++;
+				continue;
 			}
 			else {
-				if (pPos.z < 0) isNeg = -1.0f;
-				dOutofbounds = (absPPos.y - mapSize) / maxOutOfBoundsDistance;
-				if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance) * isNeg;
+				radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
 			}
 
-			if (glitchEffectRefreshRate <= 0) {
-				for (auto& currentLine : __lines) {
-					Destroy(currentLine);
-				}
-				__lines.clear();
+			angle = glm::radians(angle);
+			dx = dist * sin(angle);
+			dz = -dist * cos(angle);
 
-				glitchEffectRefreshRate = .1f;
-				for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
-					GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
-					current->Stage[0].onTop = true;
-					current->MoveTo(vec3(-1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -.1));
-					__lines.push_back(current);
+			dx *= 0.2f;
+			dz *= 0.2f;
+
+			radarElements[iterator]->MoveTo(vec3(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
+
+			iterator++;
+
+			//checking if out of bounds
+			vec2 absPPos = vec2(abs(pPos.x), abs(pPos.z)); // bro really said PP
+			float dOutofbounds;
+			if (absPPos.x > mapSize || absPPos.y > mapSize) {
+				glitchEffectRefreshRate -= dt;
+
+				float isNeg = 1.0f;
+				if (absPPos.x > mapSize) {
+					if (pPos.x < 0) isNeg = -1.0f;
+					dOutofbounds = (absPPos.x - mapSize) / maxOutOfBoundsDistance;
+					if (dOutofbounds > 1.0f) player->Transform.position.x = (mapSize + maxOutOfBoundsDistance) * isNeg;
+				}
+				else {
+					if (pPos.z < 0) isNeg = -1.0f;
+					dOutofbounds = (absPPos.y - mapSize) / maxOutOfBoundsDistance;
+					if (dOutofbounds > 1.0f) player->Transform.position.z = (mapSize + maxOutOfBoundsDistance) * isNeg;
+				}
+
+				if (glitchEffectRefreshRate <= 0) {
+					for (auto& currentLine : __lines) {
+						Destroy(currentLine);
+					}
+					__lines.clear();
+
+					glitchEffectRefreshRate = .1f;
+					for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
+						GameObject* current = Gra->Create(vec3(0), vec3(0), vec3(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+						current->Stage[0].onTop = true;
+						current->MoveTo(vec3(-1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -.1));
+						__lines.push_back(current);
+					}
 				}
 			}
 		}
