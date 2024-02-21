@@ -2,7 +2,7 @@
 #include <math.h>
 
 GameObject::GameObject(vec pos, vec rot, vec sc, std::wstring file, int i)
-	:index(i), DifferentColor(false)
+	:index(i), DifferentColor(true)
 {
 	this->Transform.position = pos;
 	this->Transform.orientation = rot;

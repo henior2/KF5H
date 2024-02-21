@@ -1,11 +1,20 @@
 #pragma once
-#include "Global.h"
+#include "vec.h"
+#include "mat.h"
+#include "Kmath.h"
 
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 25.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
+
+enum Camera_Movement {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT
+};
 
 class Camera
 {

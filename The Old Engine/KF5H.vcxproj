@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{ddd88667-0e44-4a04-9dce-3ec26a4d4db5}</ProjectGuid>
+    <RootNamespace>KF5H</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\includes;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\includes;C:\Users\Kamil\Desktop\lib\includes;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\includes;C:\Users\filip\Desktop\Visual Studio 2022\includes;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\includes;C:\Users\1p1\Desktop\Visual Studio 2022\includes;C:\Users\pawłowski kamil\Desktop\lib\includes;C:\Users\Michalik Krzysztof\Desktop\lib\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\rachtan henryk\Documents\Visual Studio 2022\lib;C:\Users\Admin\Desktop\Liberies\Visual Studio 2022\lib;C:\Users\Kamil\Desktop\lib\lib;D:\Projekty\VisualStudio\KF5H_lib\Visual Studio 2022\lib;C:\Users\filip\Desktop\Visual Studio 2022\lib;C:\Users\Gębala Filip\Desktop\Visual Studio 2022\lib;C:\Users\pawłowski kamil\Desktop\lib\lib;C:\Users\1p1\Desktop\Visual Studio 2022\lib;C:\Users\Michalik Krzysztof\Desktop\lib\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);glfw3.lib;opengl32.lib;irrKlang.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Asteroids.cpp" />
+    <ClCompile Include="Battlezone.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="glad.c" />
+    <ClCompile Include="Init.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mat.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Tekst2d.cpp" />
+    <ClCompile Include="Tempest.cpp" />
+    <ClCompile Include="TEST.cpp" />
+    <ClCompile Include="vec.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="mat.h" />
+    <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Tekst2d.h" />
+    <ClInclude Include="vec.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Arrow0.ind.txt" />
+    <Text Include="Arrow0.vx.txt" />
+    <Text Include="Arrow1.ind.txt" />
+    <Text Include="Arrow1.vx.txt" />
+    <Text Include="Arrow2.ind.txt" />
+    <Text Include="Arrow2.vx.txt" />
+    <Text Include="Arrow3.ind.txt" />
+    <Text Include="Arrow3.vx.txt" />
+    <Text Include="AsteroidsShipForKamil.ind.txt" />
+    <Text Include="AsteroidsShipForKamil.vx.txt" />
+    <Text Include="BattlezonePlane.ind.txt" />
+    <Text Include="BattlezonePlane.vx.txt" />
+    <Text Include="Blaster.ind.txt" />
+    <Text Include="Blaster.vx.txt" />
+    <Text Include="exclamation-mark.ind.txt" />
+    <Text Include="exclamation-mark.vx.txt" />
+    <Text Include="apostrophe.ind.txt" />
+    <Text Include="apostrophe.vx.txt" />
+    <Text Include="Flipper.ind.txt" />
+    <Text Include="Flipper.vx.txt" />
+    <Text Include="Fuseball.ind.txt" />
+    <Text Include="Fuseball.vx.txt" />
+    <Text Include="PowerUpBoost.ind.txt" />
+    <Text Include="PowerUpBoost.vx.txt" />
+    <Text Include="PowerUpBox.ind.txt" />
+    <Text Include="PowerUpBox.vx.txt" />
+    <Text Include="PowerUpHeart.ind.txt" />
+    <Text Include="PowerUpHeart.vx.txt" />
+    <Text Include="PowerUpReload.vx.txt" />
+    <Text Include="PowerUpSpeed.ind.txt" />
+    <Text Include="PowerUpSpeed.vx.txt" />
+    <Text Include="PowerUpStar.ind.txt" />
+    <Text Include="PowerUpStar.vx.txt" />
+    <Text Include="PowerUpXP.ind.txt" />
+    <Text Include="PowerUpXP.vx.txt" />
+    <Text Include="Pulsar.ind.txt" />
+    <Text Include="Pulsar.vx.txt" />
+    <Text Include="RadarT.ind.txt" />
+    <Text Include="RadarT.vx.txt" />
+    <Text Include="RadarX.ind.txt" />
+    <Text Include="semi-colon.ind.txt" />
+    <Text Include="semi-colon.vx.txt" />
+    <Text Include="dot.ind.txt" />
+    <Text Include="dot.vx.txt" />
+    <Text Include="comma.ind.txt" />
+    <Text Include="comma.vx.txt" />
+    <Text Include="0.ind.txt" />
+    <Text Include="0.vx.txt" />
+    <Text Include="1.ind.txt" />
+    <Text Include="1.vx.txt" />
+    <Text Include="2.ind.txt" />
+    <Text Include="2.vx.txt" />
+    <Text Include="3.ind.txt" />
+    <Text Include="3.vx.txt" />
+    <Text Include="4.ind.txt" />
+    <Text Include="4.vx.txt" />
+    <Text Include="5.ind.txt" />
+    <Text Include="5.vx.txt" />
+    <Text Include="6.ind.txt" />
+    <Text Include="6.vx.txt" />
+    <Text Include="7.ind.txt" />
+    <Text Include="7.vx.txt" />
+    <Text Include="8.ind.txt" />
+    <Text Include="8.vx.txt" />
+    <Text Include="9.ind.txt" />
+    <Text Include="9.vx.txt" />
+    <Text Include="AsteroidsBullet.ind.txt" />
+    <Text Include="AsteroidsBullet.vx.txt" />
+    <Text Include="AsteroidsEnemy.ind.txt" />
+    <Text Include="AsteroidsEnemy.vx.txt" />
+    <Text Include="AsteroidsEnemyBullet.ind.txt" />
+    <Text Include="AsteroidsEnemyBullet.vx.txt" />
+    <Text Include="AsteroidsShip.ind.txt" />
+    <Text Include="AsteroidsShip.vx.txt" />
+    <Text Include="AsteroidsShipFire.ind.txt" />
+    <Text Include="AsteroidsShipFire.vx.txt" />
+    <Text Include="AsteroidsStar.ind.txt" />
+    <Text Include="AsteroidsStar.vx.txt" />
+    <Text Include="left-bracket.ind.txt" />
+    <Text Include="left-bracket.vx.txt" />
+    <Text Include="question-mark.ind.txt" />
+    <Text Include="question-mark.vx.txt" />
+    <Text Include="percent.ind.txt" />
+    <Text Include="percent.vx.txt" />
+    <Text Include="dash.ind.txt" />
+    <Text Include="dash.vx.txt" />
+    <Text Include="right-bracket.ind.txt" />
+    <Text Include="right-bracket.vx.txt" />
+    <Text Include="colon.ind.txt" />
+    <Text Include="colon.vx.txt" />
+    <Text Include="FastBullet.ind.txt" />
+    <Text Include="FastBullet.vx.txt" />
+    <Text Include="LeonardoTank.ind.txt" />
+    <Text Include="LeonardoTank.vx.txt" />
+    <Text Include="MenuSquare.ind.txt" />
+    <Text Include="MenuSquare.vx.txt" />
+    <Text Include="Rocket.vx.txt" />
+    <Text Include="Spiker.ind.txt" />
+    <Text Include="Spiker.vx.txt" />
+    <Text Include="Tank.ind.txt" />
+    <Text Include="Tank.vx.txt" />
+    <Text Include="FragmentShader.txt" />
+    <Text Include="MenuCube.ind.txt" />
+    <Text Include="MenuCube.vx.txt" />
+    <Text Include="FastTank.ind.txt" />
+    <Text Include="FastTank.vx.txt" />
+    <Text Include="TankBullet.ind.txt" />
+    <Text Include="TankBullet.vx.txt" />
+    <Text Include="Tanker.ind.txt" />
+    <Text Include="Tanker.vx.txt" />
+    <Text Include="tempest_ship.ind.txt" />
+    <Text Include="tempest_ship.vx.txt" />
+    <Text Include="Ufo.ind.txt" />
+    <Text Include="Ufo.vx.txt" />
+    <Text Include="A.ind.txt" />
+    <Text Include="A.vx.txt" />
+    <Text Include="B.ind.txt" />
+    <Text Include="B.vx.txt" />
+    <Text Include="C.ind.txt" />
+    <Text Include="C.vx.txt" />
+    <Text Include="D.ind.txt" />
+    <Text Include="D.vx.txt" />
+    <Text Include="E.ind.txt" />
+    <Text Include="E.vx.txt" />
+    <Text Include="F.ind.txt" />
+    <Text Include="F.vx.txt" />
+    <Text Include="G.ind.txt" />
+    <Text Include="G.vx.txt" />
+    <Text Include="H.ind.txt" />
+    <Text Include="H.vx.txt" />
+    <Text Include="I.ind.txt" />
+    <Text Include="I.vx.txt" />
+    <Text Include="J.ind.txt" />
+    <Text Include="J.vx.txt" />
+    <Text Include="K.ind.txt" />
+    <Text Include="K.vx.txt" />
+    <Text Include="L.ind.txt" />
+    <Text Include="L.vx.txt" />
+    <Text Include="M.ind.txt" />
+    <Text Include="M.vx.txt" />
+    <Text Include="N.ind.txt" />
+    <Text Include="N.vx.txt" />
+    <Text Include="O.ind.txt" />
+    <Text Include="O.vx.txt" />
+    <Text Include="P.ind.txt" />
+    <Text Include="P.vx.txt" />
+    <Text Include="Q.ind.txt" />
+    <Text Include="Q.vx.txt" />
+    <Text Include="R.ind.txt" />
+    <Text Include="R.vx.txt" />
+    <Text Include="S.ind.txt" />
+    <Text Include="S.vx.txt" />
+    <Text Include="T.ind.txt" />
+    <Text Include="T.vx.txt" />
+    <Text Include="U.ind.txt" />
+    <Text Include="U.vx.txt" />
+    <Text Include="V.ind.txt" />
+    <Text Include="V.vx.txt" />
+    <Text Include="W.ind.txt" />
+    <Text Include="W.vx.txt" />
+    <Text Include="X.ind.txt" />
+    <Text Include="X.vx.txt" />
+    <Text Include="Y.ind.txt" />
+    <Text Include="Y.vx.txt" />
+    <Text Include="Z.ind.txt" />
+    <Text Include="Z.vx.txt" />
+    <Text Include="VertexShader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="mus01.mp3" />
+    <Media Include="mus02.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ikpMP3.dll" />
+    <None Include="irrKlang.dll" />
+    <None Include="PowerUpReload.ind.txt" />
+    <None Include="RadarX.vx.txt" />
+    <None Include="Rocket.ind.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

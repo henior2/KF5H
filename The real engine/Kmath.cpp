@@ -6,6 +6,14 @@ double Kmath::Radians(const double& degrees) {
 	return deg;
 }
 
+vec Kmath::Radians(const vec& degrees) {
+	vec result = vec(0, degrees.size);
+	for (int i = 0; i < degrees.size; i++) {
+		result.array[i] = (M_PI / 180.0) * degrees.array[i];
+	}
+	return result;
+}
+
 mat Kmath::LookAt(const vec& Eye, const vec& Center, const vec& Up) {
 	vec forward(3);
 	vec right(3);
@@ -35,6 +43,23 @@ mat Kmath::LookAt(const vec& Eye, const vec& Center, const vec& Up) {
 	return ViewMatrix;
 }
 
+mat Kmath::Perspective(const float& NearPlane, const float& FarPlane, const float& Right, const float& Left, const float& Top, const float& Bottom) {
+	mat PerspectiveMatrix(4);
+
+	PerspectiveMatrix.array[0][0] = (2 * NearPlane) / (Right - Left);
+	PerspectiveMatrix.array[0][2] = (Right + Left) / (Right - Left);
+
+	PerspectiveMatrix.array[1][1] = (2 * NearPlane) / (Top - Bottom);
+	PerspectiveMatrix.array[1][2] = (Top + Bottom) / (Top - Bottom);
+
+	PerspectiveMatrix.array[2][2] = (NearPlane + FarPlane) / (NearPlane - FarPlane);
+	PerspectiveMatrix.array[2][3] = (2 * NearPlane * FarPlane) / (NearPlane - FarPlane);
+
+	PerspectiveMatrix.array[3][2] = -1.0f;
+
+	return PerspectiveMatrix;
+}
+
 mat Kmath::Perspective(const float& Fov, const float& AspectRatio, const float& NearPlane, const float& FarPlane) {
 	const float f = 1.0f / tan(Fov / 2.0f);
 
@@ -43,14 +68,14 @@ mat Kmath::Perspective(const float& Fov, const float& AspectRatio, const float& 
 	/*PerspectiveMatrix.array[0][0] = f / AspectRatio;
 	PerspectiveMatrix.array[1][1] = f;
 	PerspectiveMatrix.array[2][2] = (FarPlane + NearPlane) / (NearPlane - FarPlane);
-	PerspectiveMatrix.array[2][3] = (2 * FarPlane * NearPlane) / (NearPlane - FarPlane);
+	PerspectiveMatrix.array[2][3] = (2.0f * FarPlane * NearPlane) / (NearPlane - FarPlane);
 	PerspectiveMatrix.array[3][2] = -1.0f;*/
 
 	PerspectiveMatrix.array[0][0] = f / AspectRatio;
 	PerspectiveMatrix.array[1][1] = f;
-	PerspectiveMatrix.array[2][2] = -FarPlane / (FarPlane - NearPlane);
-	PerspectiveMatrix.array[3][2] = -(FarPlane * NearPlane) / (FarPlane - NearPlane);
-	PerspectiveMatrix.array[2][3] = -1.0f;
+	PerspectiveMatrix.array[2][2] = -(FarPlane + NearPlane) / (FarPlane - NearPlane);
+	PerspectiveMatrix.array[2][3] = (-2.0f * FarPlane * NearPlane) / (FarPlane - NearPlane);
+	PerspectiveMatrix.array[3][2] = -1.0f;
 
 	return PerspectiveMatrix;
 }
@@ -60,11 +85,11 @@ mat Kmath::Ortho(const float& Left, const float& Right, const float& Bottom, con
 
 	OrthoMatrix.array[0][0] = 2 / (Right - Left);
 	OrthoMatrix.array[1][1] = 2 / (Top - Bottom);
-	OrthoMatrix.array[2][2] = -2 / (Far - Near);
+	OrthoMatrix.array[2][2] = 2 / (Near - Far);
 
-	OrthoMatrix.array[0][3] = -(Right + Left) / (Right - Left);
-	OrthoMatrix.array[1][3] = -(Top + Bottom) / (Top - Bottom);
-	OrthoMatrix.array[2][3] = -(Far + Near) / (Far - Near);
+	OrthoMatrix.array[0][3] = (Right + Left) / (Right - Left);
+	OrthoMatrix.array[1][3] = (Top + Bottom) / (Top - Bottom);
+	OrthoMatrix.array[2][3] = (Far + Near) / (Far - Near);
 
 	return OrthoMatrix;
 }

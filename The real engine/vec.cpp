@@ -37,7 +37,7 @@ void vec::operator=(const vec& second) {
 		// If sizes are different, adjust the size of the current object
 		if (second.size != this->size) {
 			
-			//delete[] array;
+			delete[] array;
 			size = second.size;
 			array = new float[size];
 			GenerateValues();

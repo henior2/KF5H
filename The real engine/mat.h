@@ -1,6 +1,5 @@
 #pragma once
 #include "vec.h"
-#include "Quaternion.h"
 
 class mat
 {
@@ -20,7 +19,10 @@ public:
 	mat operator+(const mat& second) const;
 	mat operator-(const mat& second) const;
 	mat Translate(const vec& translateVec);
-	mat Rotate(const vec& rotateVec);
+	mat RotateX(const float& rotateValue);
+	mat RotateY(const float& rotateValue);
+	mat RotateZ(const float& rotateValue);
+	void Rotate(const vec& rotateVec);
 	mat Scale(const vec& scaleVec);
 };
 

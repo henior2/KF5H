@@ -13,32 +13,32 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="TextFiles">
-      <UniqueIdentifier>{c22a242d-dea4-433a-88ce-556bb347cb8c}</UniqueIdentifier>
+    <Filter Include="Header Files\The Real Engine">
+      <UniqueIdentifier>{51047927-8121-4fcb-8faf-869289af2f8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="audio">
-      <UniqueIdentifier>{6eb1f2b5-d69e-4797-a4dd-a1f2b1644068}</UniqueIdentifier>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{8817a0a8-d800-4db8-b71c-578e639e5153}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TextFiles\Shaders">
-      <UniqueIdentifier>{3f6a49a1-a66c-4a1c-bcdb-66d34932f0c4}</UniqueIdentifier>
+    <Filter Include="Resource Files\TextFiles">
+      <UniqueIdentifier>{0e177e0c-5774-494b-a436-a19350f9d2df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TextFiles\Models">
-      <UniqueIdentifier>{c613c344-6561-4fc6-a764-b42cc67fe705}</UniqueIdentifier>
+    <Filter Include="Resource Files\TextFiles\Alphabet">
+      <UniqueIdentifier>{a388b475-eb04-4b1b-8a88-a8e6e93e1950}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GameEngine">
-      <UniqueIdentifier>{82730073-5768-488e-95e9-af526721b956}</UniqueIdentifier>
+    <Filter Include="Resource Files\TextFiles\Models">
+      <UniqueIdentifier>{2c40b790-6d77-4a28-abaa-2aed5554e52a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dll">
-      <UniqueIdentifier>{2d6ff736-f827-4531-8543-e879b508507b}</UniqueIdentifier>
+    <Filter Include="Resource Files\TextFiles\Numbers">
+      <UniqueIdentifier>{0f68ccf2-2e8e-4a12-962b-8873562be50e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TextFiles\Alphabet">
-      <UniqueIdentifier>{00da2453-4d46-40ee-ae71-a8c32308fcfa}</UniqueIdentifier>
+    <Filter Include="Resource Files\TextFiles\SpecialCharacters">
+      <UniqueIdentifier>{c49a748d-a800-44b1-8245-4b3416928034}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TextFiles\Numbers">
-      <UniqueIdentifier>{fb5bbf69-0ca7-481b-a03f-468287e8a6e5}</UniqueIdentifier>
+    <Filter Include="Resource Files\Sounds">
+      <UniqueIdentifier>{65461bc5-75ec-4a60-a837-fc506c564ff9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TextFiles\Special characters">
-      <UniqueIdentifier>{c8117744-02a3-44f1-870d-5cd2136e1046}</UniqueIdentifier>
+    <Filter Include="Resource Files\Icon">
+      <UniqueIdentifier>{05b64876-fdd3-4a3e-b2a3-fab0f41c52a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -54,600 +54,593 @@
     <ClCompile Include="Asteroids.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files\GameEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files\GameEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\GameEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files\GameEngine</Filter>
+    <ClCompile Include="Initialization.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TEST.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tekst2d.cpp">
-      <Filter>Source Files\GameEngine</Filter>
+    <ClCompile Include="The Real Engine\Camera.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Init.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="The Real Engine\Game.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>Source Files\GameEngine</Filter>
+    <ClCompile Include="The Real Engine\GameObject.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files\GameEngine</Filter>
+    <ClCompile Include="The Real Engine\Kmath.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="vec.cpp">
-      <Filter>Source Files\GameEngine</Filter>
+    <ClCompile Include="The Real Engine\mat.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="mat.cpp">
-      <Filter>Source Files\GameEngine</Filter>
+    <ClCompile Include="The Real Engine\ModelMenager.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="The Real Engine\Renderer.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="The Real Engine\Main.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="The Real Engine\TextBox.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="The Real Engine\vec.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
+    <ClInclude Include="Battlezone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
+    <ClInclude Include="Tempest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="Asteroids.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tekst2d.h">
+    <ClInclude Include="Initialization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mat.h">
+    <ClInclude Include="TEST.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Quaternion.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="The Real Engine\Camera.h">
+      <Filter>Header Files\The Real Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="The Real Engine\Game.h">
+      <Filter>Header Files\The Real Engine</Filter>
     </ClInclude>
-    <ClInclude Include="vec.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="The Real Engine\GameObject.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\Kmath.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\mat.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\ModelMenager.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\Renderer.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\TextBox.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\The Real Engine.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="The Real Engine\vec.h">
+      <Filter>Header Files\The Real Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="FragmentShader.txt">
-      <Filter>TextFiles\Shaders</Filter>
+    <Text Include="textFiles\alphabet\A.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="VertexShader.txt">
-      <Filter>TextFiles\Shaders</Filter>
+    <Text Include="textFiles\alphabet\A.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="MenuCube.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\B.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="MenuCube.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\B.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="AsteroidsShip.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\C.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="AsteroidsShip.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\C.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="AsteroidsShipFire.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\D.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="AsteroidsShipFire.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\D.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="AsteroidsEnemy.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\E.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="AsteroidsEnemy.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\alphabet\E.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="A.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\F.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="A.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\F.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="B.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\G.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="B.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\G.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="C.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\H.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="C.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\H.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="D.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\I.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="D.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\I.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="E.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\J.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="E.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\J.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="F.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\K.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="F.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\K.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="G.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\L.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="G.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\L.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="H.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\M.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="H.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\M.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="I.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\N.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="I.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\N.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="J.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\O.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="J.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\O.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="K.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\P.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="K.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\P.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="M.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\Q.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="M.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\Q.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="N.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\R.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="N.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\R.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="O.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\S.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="O.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\S.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="P.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\T.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="P.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\T.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="R.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\U.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="R.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\U.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="S.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\V.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="S.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\V.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="T.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\W.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="T.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\W.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="U.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\X.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="U.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\X.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="W.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\Y.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="W.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\Y.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="Y.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\Z.ind.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="Y.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\alphabet\Z.vx.txt">
+      <Filter>Resource Files\TextFiles\Alphabet</Filter>
     </Text>
-    <Text Include="Z.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\Arrow0.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Z.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\Arrow0.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Tank.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Arrow1.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Tank.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Arrow1.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="FastTank.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Arrow2.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="FastTank.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Arrow2.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Ufo.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Arrow3.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Ufo.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Arrow3.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="9.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsBullet.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="0.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsBullet.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="0.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsEnemy.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="1.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsEnemy.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="1.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsEnemyBullet.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="2.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsEnemyBullet.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="2.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsShip.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="3.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsShip.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="3.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsShipFire.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="4.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsShipFire.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="4.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsStar.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="5.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\AsteroidsStar.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="5.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\BattlezonePlane.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="6.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\BattlezonePlane.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="6.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\Blaster.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="7.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\Blaster.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="7.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\FastBullet.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="8.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\FastBullet.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="8.vx.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\FastTank.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="9.ind.txt">
-      <Filter>TextFiles\Numbers</Filter>
+    <Text Include="textFiles\models\FastTank.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Rocket.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Flipper.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="LeonardoTank.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Flipper.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="LeonardoTank.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Fuseball.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsBullet.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\Fuseball.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsBullet.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\LeonardoTank.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="FastBullet.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\LeonardoTank.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="FastBullet.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\MenuCube.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsEnemyBullet.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\MenuCube.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsEnemyBullet.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\MenuSquare.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsStar.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\MenuSquare.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="AsteroidsStar.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\PowerUpBoost.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="MenuSquare.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\PowerUpBoost.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="MenuSquare.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\models\PowerUpBox.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="V.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpBox.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="V.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpHeart.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="X.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpHeart.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="X.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpReload.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Q.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpReload.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="Q.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpSpeed.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="L.vx.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpSpeed.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="L.ind.txt">
-      <Filter>TextFiles\Alphabet</Filter>
+    <Text Include="textFiles\models\PowerUpStar.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="apostrophe.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\PowerUpStar.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="apostrophe.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\PowerUpXP.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="colon.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\PowerUpXP.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="colon.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Pulsar.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="comma.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Pulsar.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="comma.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\RadarT.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="dash.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\RadarT.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="dash.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\RadarX.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="dot.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\RadarX.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="dot.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Rocket.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="exclamation-mark.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Rocket.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="exclamation-mark.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Spiker.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="left-bracket.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Spiker.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="left-bracket.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Tank.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="percent.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Tank.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="percent.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\TankBullet.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="question-mark.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\TankBullet.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="question-mark.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Tanker.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="right-bracket.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Tanker.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="right-bracket.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Ufo.ind.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="semi-colon.ind.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\models\Ufo.vx.txt">
+      <Filter>Resource Files\TextFiles\Models</Filter>
     </Text>
-    <Text Include="semi-colon.vx.txt">
-      <Filter>TextFiles\Special characters</Filter>
+    <Text Include="textFiles\numbers\0.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="TankBullet.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\0.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="TankBullet.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\1.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="BattlezonePlane.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\1.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="BattlezonePlane.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\2.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Tanker.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\2.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Spiker.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\3.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Tanker.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\3.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Spiker.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\4.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="PowerUpSpeed.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\4.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="PowerUpSpeed.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\5.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Flipper.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\5.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Flipper.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\6.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="PowerUpHeart.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\6.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Blaster.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\7.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Blaster.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\7.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="PowerUpHeart.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\8.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Pulsar.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\8.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="Pulsar.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\9.ind.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="RadarX.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\numbers\9.vx.txt">
+      <Filter>Resource Files\TextFiles\Numbers</Filter>
     </Text>
-    <Text Include="RadarT.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\apostrophe.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="RadarT.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\apostrophe.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Fuseball.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\colon.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Fuseball.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\colon.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpBox.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\comma.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpBox.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\comma.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpReload.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\dash.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow0.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\dash.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow0.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\dot.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow1.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\dot.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow1.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\exclamation-mark.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow2.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\exclamation-mark.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow2.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\left-bracket.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow3.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\left-bracket.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="Arrow3.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\percent.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpStar.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\percent.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpStar.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\question-mark.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpBoost.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\question-mark.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpBoost.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\right-bracket.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpXP.vx.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\right-bracket.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="PowerUpXP.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\semi-colon.ind.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
-    <Text Include="tempest_ship.ind.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
-    <Text Include="tempest_ship.vx.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
-    <Text Include="AsteroidsShipForKamil.vx.txt">
-      <Filter>TextFiles\Models</Filter>
-    </Text>
-    <Text Include="AsteroidsShipForKamil.ind.txt">
-      <Filter>TextFiles\Models</Filter>
+    <Text Include="textFiles\specialCharacters\semi-colon.vx.txt">
+      <Filter>Resource Files\TextFiles\SpecialCharacters</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="mus01.mp3">
-      <Filter>audio</Filter>
-    </Media>
-    <Media Include="mus02.mp3">
-      <Filter>audio</Filter>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ikpMP3.dll">
-      <Filter>dll</Filter>
-    </None>
-    <None Include="irrKlang.dll">
-      <Filter>dll</Filter>
-    </None>
-    <None Include="Rocket.ind.txt">
-      <Filter>TextFiles\Models</Filter>
-    </None>
-    <None Include="RadarX.vx.txt">
-      <Filter>TextFiles\Models</Filter>
-    </None>
-    <None Include="PowerUpReload.ind.txt">
-      <Filter>TextFiles\Models</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Resources\Icon\icon.ico">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Resources\Icon\icon.png">
+      <Filter>Resource Files\Icon</Filter>
     </Image>
   </ItemGroup>
 </Project>

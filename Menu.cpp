@@ -1,103 +1,42 @@
-#include "Game.h"
+#include "Menu.h"
+#include "The Real Engine/The Real Engine.h"
 
-using namespace glm;
+void Menu::Init() {
+		for (int i = 0; i < 1500; i++) {
+			float x = ((float)(rand() % 100) - 50.0f);
+			float y = ((float)(rand() % 100) - 50.0f);
+			float z = ((float)(rand() % 150) - 100.0f);
+			float scale = (float)(rand() % 100) / 100.0f + 0.5f;
+			obiekty.push_back(Game::Create(vec(x, y, z), vec(rand() % 360, rand() % 360, rand() % 360), vec(scale, 3), L"MenuCube"));
+			obiekty[i]->SetColor(vec(0, 1, 0));
+		}
+		for (int i = 0; i < 5; i++) {
+			float x = 0;
+			float y = 0;
+			float z = ((float)(rand() % 150) - 100.0f);
+			float scale = (float)(rand() % 100) / 100.0f + 0.5f;
+			obiekty.push_back(Game::Create(vec(x, y, z), vec(rand() % 360, rand() % 360, rand() % 360), vec(scale, 3), L"MenuCube"));
+			obiekty[i + 1500]->SetColor(vec(0, 1, 0));
+		}
+		Texts.push_back(Game::AddText(-1, 1, 0.9, 0.8, 0.1f, true));
+		Texts[0]->Color = vec(0.5, 0.5, 0.5);
+		Texts[0]->Boldicity = 15;
+		Texts[0]->Write("Gry Wektorowe");
+		Game::Sound(L"mus01", true);
+	}
 
-namespace Menu {
-    GameObject* pointer;
+void Menu::Update(const float& dt) {
+		for (int i = 0; i < obiekty.size() - 1; i++) {
+			obiekty[i]->MoveGlobal(vec(0, 0, 3.0f * dt));
+			vec pos = obiekty[i]->Transform.position;
+			obiekty[i]->SetColor(vec(0, 1.0f + pos.z / 101.0f, 0));
+			obiekty[i]->Stage[obiekty[i]->activeStage].lineWidth = (1.0f + pos.z / 101.0f) * 5.0f;
+			if (pos.z > 1) {
+				float z = ((float)(rand() % 100) + 101.0f);
+				obiekty[i]->MoveTo(vec(pos.x, pos.y, -z));
+			}
+		}
 
-    std::vector<GameObject*> obiekty;
-    std::vector<Tekst2d*> tekst;
-
-    const std::string modele[] = { "MenuCube","MenuSquare" };
-    const std::string rareModels[] = { "AsteroidsShip","AsteroidsShipFire","AsteroidsEnemy","Tank","FastTank","Ufo","FastBullet","Blaster","Flipper","exclamation-mark","question-mark","RadarT","PowerUpBox","PowerUpHeart" };
-
-    bool esc = false;
-
-    const float pointerPosition[] = { -.05,-.25,-.45 };
-    const GameState gameStates[] = { Game_Asteroids,Game_Battlezone,Game_Tempest };
-    int pointerState;
-
-    float clickCooldown;
-}
-using namespace Menu;
-
-void Game::MenuInit() {
-    pointer = Create(vec3(-.325,-.05,0), vec3(0, 0, -90), vec3(.1), "AsteroidsBullet");
-    pointer->color = vec3(0, 1, 0);
-    pointer->Stage[0].onTop = true;
-    pointerState = 0;
-
-    obiekty.clear();
-    tekst.clear();
-    esc = false;
-    srand(time(NULL));
-
-    tekst.push_back(CreateTekst(vec2(-0.75, 0.5), 0, vec2(0.1), 1, 0.2f, "Gry Wektorowe"));
-    tekst.push_back(CreateTekst(vec2(-0.225, -0.1), 0, vec2(0.05), 1, 0.2f, "Asteroids"));
-    tekst.push_back(CreateTekst(vec2(-0.25, -0.3), 0, vec2(0.05), 1, 0.2f, "Battlezone"));
-    tekst.push_back(CreateTekst(vec2(-0.175, -0.5), 0, vec2(0.05), 1, 0.2f, "Tempest"));
-    
-    for (int i = 0; i < 1500; i++) {
-        float x = ((float)(rand() % 100) - 50.0f);
-        float y = ((float)(rand() % 100) - 50.0f);
-        float z = ((float)(rand() % 150) - 100.0f);
-        vec3 rot((float)(rand() % 360), (float)(rand() % 360), (float)(rand() % 360));
-
-        std::string model;
-        if (rand() % 10 == 0) {
-            int temp = rand() % 3;
-            if (temp == 0) model = rareModels[rand() % (sizeof(rareModels) / sizeof(std::string))];
-            else if (temp == 1) model = "Upper" + (char)(rand() % 26 + 65);
-            else model = std::to_string(rand() % 10);
-        }
-        else model = modele[rand() % 2];
-
-        obiekty.push_back(Create(vec3(x, y, z), rot, vec3(1.0f), model));
-        obiekty[i]->SetColor(vec3((float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f))));
-    }
-
-    camera->RotateCamera(0.0f, 90.0f);
-
-    clickCooldown = .25;
-
-    PlaySound2d("mus02.mp3", true);
-}
-
-void Game::Menu(float dt) {
-    clickCooldown -= dt;
-
-    for (int i = 0; i < obiekty.size(); i++) {
-        obiekty[i]->MoveGlobal(vec3(0.0f, 0.0f, 3 * dt));
-        vec3 pos = obiekty[i]->Transform.position;
-        obiekty[i]->Stage[Objects[i]->activeStage].lineWidth = ((obiekty[i]->Transform.position.z / 10.0f) + 10.0f) / 3.0f;
-        if (pos.z > 10) {
-            float z = ((float)(rand() % 100) + 101.0f);
-            obiekty[i]->SetColor(vec3((float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f)), (float)(rand()) / ((float)(RAND_MAX / 1.0f))));
-            obiekty[i]->MoveTo(vec3(pos.x, pos.y, -z));
-        }
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) ChangeState(Game_TEST);
-
-    if (clickCooldown<=0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { 
-        clickCooldown = .25;
-        if (++pointerState > 2) pointerState = 0;
-        pointer->Transform.position.y = pointerPosition[pointerState];
-    }
-    if (clickCooldown<=0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        clickCooldown = .25;
-        if (--pointerState < 0) pointerState = 2;
-        pointer->Transform.position.y = pointerPosition[pointerState];
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
-        ChangeState(gameStates[pointerState]);
-    }
-
-    // gdy klikniety esc to wywolaj zamkniecie okna
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && esc)
-        glfwSetWindowShouldClose(window, true);
-
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_RELEASE)
-        esc = true;
-}
+		if (Game::KeysPresed['A'])
+			Game::ChangeState(Game_Asteroids);
+	}

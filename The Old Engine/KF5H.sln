@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34009.444
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KF5H", "KF5H.vcxproj", "{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Debug|x64.ActiveCfg = Debug|x64
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Debug|x64.Build.0 = Debug|x64
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Debug|x86.ActiveCfg = Debug|Win32
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Debug|x86.Build.0 = Debug|Win32
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Release|x64.ActiveCfg = Release|x64
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Release|x64.Build.0 = Release|x64
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Release|x86.ActiveCfg = Release|Win32
+		{DDD88667-0E44-4A04-9DCE-3EC26A4D4DB5}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F71EA97-5581-42A8-B041-90F5BD767E28}
+	EndGlobalSection
+EndGlobal

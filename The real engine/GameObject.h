@@ -46,7 +46,7 @@ public:
 	int index = 0;
 
 	bool DifferentColor;
-	vec color = vec(0, 3);
+	vec color = vec(1, 3);
 
 	vec Front = vec(0, 3);
 	vec Up = vec(0, 3);

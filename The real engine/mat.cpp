@@ -115,26 +115,51 @@ mat mat::Translate(const vec& translateVec) {
 
 	return result;
 }
-mat mat::Rotate(const vec& rotateVec) {
 
-	if (rotateVec.size != 3)
-		return *this;
-
+mat mat::RotateX(const float& rotateValue) {
 	mat result(1.0f, size);
 
-	Quaternion quaternion = Quaternion::fromEulerAngles(rotateVec.z, rotateVec.x, rotateVec.y);
-	quaternion.normalize();
-	float matrix[3][3];
-	quaternion.toMatrix(matrix);
-
-	for (int i = 0; i < size - 1; i++)
-		for (int j = 0; j < size - 1; j++)
-			result.array[i][j] = matrix[i][j];
+	result.array[1][1] = cos(rotateValue);
+	result.array[1][2] = -sin(rotateValue);
+	result.array[2][1] = sin(rotateValue);
+	result.array[2][2] = cos(rotateValue);
 
 	return result;
 }
+
+mat mat::RotateY(const float& rotateValue) {
+	mat result(1.0f, size);
+
+	result.array[0][0] = cos(rotateValue);
+	result.array[0][2] = sin(rotateValue);
+	result.array[2][0] = -sin(rotateValue);
+	result.array[2][2] = cos(rotateValue);
+
+	return result;
+}
+
+mat mat::RotateZ(const float& rotateValue) {
+	mat result(1.0f, size);
+
+	result.array[0][0] = cos(rotateValue);
+	result.array[0][1] = -sin(rotateValue);
+	result.array[1][0] = sin(rotateValue);
+	result.array[1][1] = cos(rotateValue);
+
+	return result;
+}
+
+void mat::Rotate(const vec& rotateVec) {
+
+	if (rotateVec.size != 3)
+		return;
+
+	*this = *this * RotateX(rotateVec.x);
+	*this = *this * RotateY(rotateVec.y);
+	*this = *this * RotateZ(rotateVec.z);
+}
 mat mat::Scale(const vec& scaleVec) {
-	if (scaleVec.size != 3)
+	if (scaleVec.size != size-1)
 		return *this;
 
 	mat result(1.0f, size);
