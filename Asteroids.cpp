@@ -4,7 +4,7 @@
 using namespace glm;
 
 namespace Asteroids {
-	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.mp3","./sourceFiles/soundFiles/Lobby Time.mp3","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
+	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.wav","./sourceFiles/soundFiles/Lobby-Time.wav","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
 
 	GameObject* ship;
 	std::vector<GameObject*> enemies;
@@ -570,7 +570,7 @@ void Game::AsteroidsInit(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = CreateTekst(vec2(-.9, .6), 0, vec2(.065), 1, .5, "Enter Your Username"); //todo: add language options (maybe)
+		usernameInfo = CreateTekst(vec2(-.9, .6), 0, vec2(.065), 1, .5, "Enter Your Username"); 
 	}
 	else {
 		PlaySound2d("./sourceFiles/soundFiles/asteroidsStart.wav", false);
@@ -593,7 +593,7 @@ void Game::AsteroidsInit(bool again) {
 	playersDebris.clear();
 	tLives.clear();
 
-	tScore->SetColor(vec3(1)); //todo: fix
+	tScore->SetColor(vec3(1));
 
 	for (int i = 0; i < lives; i++) {
 		std::string modelName = "AsteroidsShip";
