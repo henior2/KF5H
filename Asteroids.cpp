@@ -4,7 +4,7 @@
 using namespace glm;
 
 namespace Asteroids {
-	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.mp3","./sourceFiles/soundFiles/Lobby Time.mp3","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
+	const std::string backgroundMusic[] = { "./sourceFiles/soundFiles/asteroidsEndScreenMusic.wav","./sourceFiles/soundFiles/Lobby-Time.wav","./sourceFiles/soundFiles/asteroidsBackgroundMusic.wav"}; // end-screen / pause / normal - live with that
 
 	GameObject* ship;
 	std::vector<GameObject*> enemies;
