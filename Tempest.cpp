@@ -350,7 +350,7 @@ namespace Tempest {
 
 
 		for (int i = 0; i < enemies[0].size(); i++) {
-				enemies[0][i]->Move(vec3(0, 0, -3) * dt);
+				enemies[0][i]->Move(vec3(0, 0, -3) );
 		}
 	}
 }
