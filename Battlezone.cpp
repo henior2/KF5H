@@ -180,55 +180,36 @@ namespace Battlezone {
 	void shot_leonardo(vec3 pos, vec3 rot) {
 		int temp = rand() % 8 + 1;
 		GameObject* bullet;
+
+		fastBulletTimeRemain.push_back(bulletMaxTime);
+		bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
+		pociski.push_back(bullet);
+		bullet->Move(vec3(0, 0, -1));
+
 		switch (temp)
 		{
-			case 1:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot, vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
-				break;
 			case 2:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 180, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 180, 0));
 				break;
 			case 3:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 90, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 90, 0));
 				break;
 			case 4:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 270, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 270, 0));
 				break;
 			case 5:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 45, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 45, 0));
 				break;
 			case 6:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 225, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 225, 0));
 				break;
 			case 7:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 135, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 135, 0));
 				break;
 			case 8:
-				fastBulletTimeRemain.push_back(bulletMaxTime);
-				bullet = Gra->Create(pos, rot - vec3(0, 315, 0), vec3(1.0f), "TankBullet");
-				pociski.push_back(bullet);
-				bullet->Move(vec3(0, 0, -1));
+				bullet->RotateTo(rot - vec3(0, 315, 0));
+				break;
+			default:
 				break;
 		}
 	}
@@ -448,6 +429,9 @@ namespace Battlezone {
 
 	//where is radar? //no idea, mate. try using ctrl+f
 
+	const int totalObstacles = 100;
+	const float maxObstacleHeight = 7.0f;
+	const float minObstacleHeight = 5.0f;
 	void makeObstacles(float x, float z, float height) {
 		std::vector<float> vx;
 		std::vector<unsigned int> ind;
@@ -834,6 +818,14 @@ void Game::BattlezoneInit() {
 	randomActionTimeCooldown.clear();
 	randomActionType.clear();
 	makeHorizon();
+
+	//creating obstacles
+	for (int i = 0; i < totalObstacles; i++) {
+		makeObstacles(-mapSize + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * mapSize))), -mapSize + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * mapSize))), minObstacleHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxObstacleHeight - minObstacleHeight))));
+		// x = [-125 ; 125] 
+		// z = [-125 ; 125]
+		// h = [  5  ;  7 ]
+	}
 }
 
 void Game::Battlezone(float dt) {
