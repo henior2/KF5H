@@ -59,6 +59,8 @@ public:
 	
 	static void ChangeState(const GameState& state);
 
+	static bool collisionCircle(vec pos1, vec pos2, float r1 = 5.0f, float r2 = 5.0f);
+
 private:
 	static void DeleteGame();
 };

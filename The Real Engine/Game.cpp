@@ -107,6 +107,10 @@ void Game::StopSounds() {
 	PlaySound(NULL, NULL, SND_PURGE);
 }
 
+bool Game::collisionCircle(vec pos1, vec pos2, float r1, float r2) {
+	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
+}
+
 
 void Game::DeleteGame() {
 	for (int i = 0; i < Game::Objects.size(); i++) {
