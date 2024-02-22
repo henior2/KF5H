@@ -44,4 +44,9 @@ void Menu::Update(const float& dt) {
 			Game::ChangeState(Game_Asteroids);
 		else if (Game::KeysPresed['T'])
 			Game::ChangeState(Game_Tempest);
+		else if (Game::KeysPresed['B'])
+			Game::ChangeState(Game_Battlezone);
+		
+		if (Game::KeysPresed[VK_ESCAPE])
+			PostQuitMessage(0);
 	}
