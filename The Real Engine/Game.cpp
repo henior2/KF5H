@@ -110,7 +110,7 @@ void Game::StopSounds() {
 bool Game::collisionCircle(vec pos1, vec pos2, float r1, float r2) {
 	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
 }
-std::string formatText(std::string text, bool type, int length) {
+std::string Game::formatText(std::string text, bool type, int length) {
 	char f = ' ';
 	if (type) f = '0';
 	while (text.length() < length) {
@@ -121,17 +121,32 @@ std::string formatText(std::string text, bool type, int length) {
 
 
 void Game::DeleteGame() {
-	for (int i = 0; i < Game::Objects.size(); i++) {
-		delete Objects[i];
-	}
-
 	for (int i = 0; i < Game::Texts.size(); i++) {
 		delete Texts[i];
+	}
+
+	for (int i = 0; i < Game::Objects.size(); i++) {
+		delete Objects[i];
 	}
 
 	Texts.clear();
 	Objects.clear();
 	if (State == Game_Menu) {
 		delete games.menu;
+	}
+	else if (State == Game_Init) {
+		delete games.Init;
+	}
+	else if (State == Game_TEST) {
+		delete games.test;
+	}
+	else if (State == Game_Asteroids) {
+		delete games.asteroids;
+	}
+	else if (State == Game_Battlezone) {
+		delete games.battlezone;
+	}
+	else if (State == Game_Tempest) {
+		delete games.tempest;
 	}
 }

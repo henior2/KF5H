@@ -16,9 +16,8 @@ GameObject::GameObject(vec pos, vec rot, vec sc, std::wstring file, int i)
 }
 
 GameObject::GameObject(vec pos, vec rot, vec sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i)
-	:index(i), DifferentColor(false), Object(Stage[0])
+	:index(i), DifferentColor(false)
 {
-	Object.doVerex = true;
 	this->Transform.position = pos;
 	this->Transform.orientation = rot;
 	this->Transform.scale = sc;
@@ -26,6 +25,36 @@ GameObject::GameObject(vec pos, vec rot, vec sc, std::vector<float> vertecies, s
 	UpdateVectors();
 
 	activeStage = AddStage(vertecies, indecies);
+
+	Object = Stage[activeStage];
+	Object.doVerex = true;
+}
+
+GameObject::GameObject(const GameObject* second)
+	:index(second->index), DifferentColor(second->DifferentColor), Transform(second->Transform), color(second->color), Front(second->Front), Up(second->Up), Right(second->Right), activeStage(second->activeStage)
+{
+	for (int i = 0; i < second->Stage.size(); i++) {
+		VertexData nowy;
+		nowy.iNum = second->Stage[i].verticies.iNum;
+		nowy.vNum = second->Stage[i].verticies.vNum;
+		if (nowy.iNum > 0 && nowy.vNum > 0) {
+			nowy.vertecies = new float[nowy.vNum];
+			nowy.indecies = new unsigned int[nowy.iNum * 2];
+		}
+
+		for (int j = 0; j < nowy.vNum; j++) {
+			nowy.vertecies[j] = second->Stage[i].verticies.vertecies[j];
+		}
+
+		for (int j = 0; j < nowy.iNum * 2; j++) {
+			nowy.indecies[j] = second->Stage[i].verticies.indecies[j];
+		}
+
+		Rendering n = second->Stage[i];
+		n.verticies = nowy;
+		Stage.push_back(n);
+	}
+	Object = Stage[activeStage];
 }
 
 GameObject::~GameObject() {
@@ -72,9 +101,9 @@ void GameObject::ScaleTo(vec scale) {
 }
 
 
-void GameObject::SetColor(vec(color)) {
+void GameObject::SetColor(vec color3) {
 	DifferentColor = true;
-	this->color = color;
+	this->color = color3;
 }
 
 void GameObject::UnColor() {
@@ -108,7 +137,7 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 	VertexData d;
 	d.vertecies = vertexy;
 	d.indecies = indexy;
-	d.iNum = iNum;
+	d.iNum = iNum / 2;
 	d.vNum = vNum;
 
 	Rendering NEW;

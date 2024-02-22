@@ -34,6 +34,7 @@ struct Rendering
 	int pointsNum = 0;
 	int lines = 0;
 
+	
 };
 
 
@@ -58,6 +59,7 @@ public:
 
 	GameObject(vec pos3, vec rot3, vec sc3, std::wstring object, int i);
 	GameObject(vec pos3, vec rot3, vec sc3, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i);
+	GameObject(const GameObject* second);
 	~GameObject();
 
 	void Move(vec pos3);

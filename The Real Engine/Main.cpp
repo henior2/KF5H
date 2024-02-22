@@ -157,7 +157,11 @@ void CALLBACK TimerCallback(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
 			{
 				std::lock_guard<std::mutex> lock(ObjMutex);
 
-				PaintObj = Game::Objects;
+				PaintObj.clear();
+				for (int i = 0; i < Game::Objects.size(); i++) {
+					GameObject* now = new GameObject(Game::Objects[i]);
+					PaintObj.push_back(now);
+				}
 				ViewMatrix = Game::camera->GetViewMatrix();
 				ProjectonMatrix = Game::camera->GetProjectionMatrix();
 			}
@@ -196,7 +200,11 @@ void Drawing(HWND& hwnd, int width, int height) {
 			{
 				std::lock_guard<std::mutex> lock(ObjMutex);
 
-				Objects = PaintObj;
+				Objects.clear();
+				for (int i = 0; i < PaintObj.size(); i++) {
+					GameObject* now = new GameObject(PaintObj[i]);
+					Objects.push_back(now);
+				}
 
 				Projection = ProjectonMatrix;
 				View = ViewMatrix;

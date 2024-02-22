@@ -17,11 +17,11 @@ private:
 	int lvlDif;
 	int type;
 
-	const std::string enemy_models[] = {
-		"Tanker",
-		"Spiker",
-		"Fuseball",
-		"Flipper"
+	const std::vector<std::wstring> enemy_models = {
+		L"Tanker",
+		L"Spiker",
+		L"Fuseball",
+		L"Flipper"
 	};
 
 	std::vector <GameObject*> tunnel;

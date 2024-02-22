@@ -23,17 +23,17 @@ void Asteroids::Init(bool again) {
 		}
 		haloInd.pop_back(); haloInd.push_back(0);
 
-		halo = Game::Create(vec(0, 0, 100), vec(0, 0, rand() % 360), vec(1), haloVx, haloInd);
+		halo = Game::Create(vec(0, 0, 100), vec(0, 0, rand() % 360), vec(1, 3), haloVx, haloInd);
 
 		escSoundLen = .25f;
 		hasEscd = false;
 		isPaused = false;
 
-		pauseIcone = Game::Create(vec(-10), vec(0), vec(.1, .125, 1), L"pauseIcone");
+		pauseIcone = Game::Create(vec(-10, 3), vec(0, 3), vec(.1, .125, 1), L"pauseIcone");
 		pauseIcone->Stage[0].onTop = true;
 
-		ship = Game::Create(vec(0.0f, 0.0f, -99.0f), vec(0.0f), vec(5.0f), L"AsteroidsShip");
-		modelShipFire = ship->AddStage("AsteroidsShipFire");
+		ship = Game::Create(vec(0.0f, 0.0f, -99.0f), vec(0.0f, 3), vec(5.0f, 3), L"AsteroidsShip");
+		modelShipFire = ship->AddStage(L"AsteroidsShipFire");
 
 		wave_num = 0;
 
@@ -49,7 +49,7 @@ void Asteroids::Init(bool again) {
 
 		maxSpaceshipCooldown = 60.0f;
 
-		spaceship = Game::Create(vec(-1000, -1000, -80), vec(0), vec(10), L"AsteroidsSpaceship");
+		spaceship = Game::Create(vec(-1000, -1000, -80), vec(0, 3), vec(10, 3), L"AsteroidsSpaceship");
 		spaceship->SetColor(vec(1, 0, 0));
 
 		std::ifstream file("_data.txt");
@@ -109,7 +109,7 @@ void Asteroids::Init(bool again) {
 		debris.clear();
 
 		for (int i = 0; i < starsAmount; i++) {
-			stars.push_back(Game::Create(vec(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec(0.0f, 0.0f, rand() % 45), vec(.01f), L"AsteroidsStar"));
+			stars.push_back(Game::Create(vec(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec(0.0f, 0.0f, rand() % 45), vec(.01f, 3), L"AsteroidsStar"));
 		}
 
 		Game::Sound(backgroundMusic[2], true);
@@ -138,14 +138,14 @@ void Asteroids::Init(bool again) {
 	spaceship->MoveTo(vec(-1000, -1000, -80));
 
 	ship->MoveTo(vec(0, 0, -80));
-	ship->RotateTo(vec(0));
+	ship->RotateTo(vec(0, 3));
 	isDead = false;
 	hasLost = false;
 	endingScreen = false;
 	new_username = "";
 	respawnCooldown = 5.0f;
 
-	velocity = vec(0.0f);
+	velocity = vec(0.0f, 3);
 	speed = 0;
 	velocityd = maxVelocity * maxVelocity;
 
@@ -184,9 +184,9 @@ void Asteroids::Init(bool again) {
 	tScore->Color = vec(1, 1, 1);
 
 	for (int i = 0; i < lives; i++) {
-		wchar_t* modelName = L"AsteroidsShip";
+		const wchar_t* modelName = L"AsteroidsShip";
 		if (i == lives - 1) modelName = L"AsteroidsShipFire";
-		GameObject* current = Game::Create(vec(-.9 + .012 + .035 * i, .7, 0), vec(0), vec(.04), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
+		GameObject* current = Game::Create(vec(-.9 + .012 + .035 * i, .7, 0), vec(0, 3), vec(.04, 3), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
 		current->Stage[0].onTop = true;
 		tLives.push_back(current);
 	}
@@ -197,7 +197,7 @@ void Asteroids::Update(const float& dt) {
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
 		hasEscd = true;
-		if (escSoundLen == .25f) Game::Sound(L"asteroidsExit.wav", false);
+		if (escSoundLen == .25f) Game::Sound(L"asteroidsExit.wav");
 	}
 	if (hasEscd) {
 		escSoundLen -= dt;
@@ -207,7 +207,7 @@ void Asteroids::Update(const float& dt) {
 	}
 
 	if (!isDead && clickCooldown <= 0 && Game::KeysPresed['P']) {
-		pauseIcone->MoveTo(vec(-10) * (float)isPaused); //what this essentially means is go to either (-10,-10) or (0,0)
+		pauseIcone->MoveTo(vec(-10, 3) * (float)isPaused); //what this essentially means is go to either (-10,-10) or (0,0)
 
 		Game::StopSounds();
 		Game::Sound(backgroundMusic[(int)isPaused + 1], true);
@@ -382,14 +382,14 @@ void Asteroids::Update(const float& dt) {
 
 		//collisions - player/bullets
 		if (!isBulletPlayers[i] && Game::collisionCircle(pPos, current->Transform.position)) {
-			death();
+			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 
 		//collisions - enemy/bullets
 		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
 			if (isBulletPlayers[i] && Game::collisionCircle(currentPos, enemy->Transform.position)) {
-				death(false, enemy->Transform.position, vec(0), false, enemy, enemySizes[0], __enemyVx, __enemyInd);
+				death(enemy->Transform.position, vec(0, 3), enemy, false, false, enemySizes[0], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
 				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
 				enemyShootCooldown.erase(enemyShootCooldown.begin() + j);
@@ -449,9 +449,9 @@ void Asteroids::Update(const float& dt) {
 
 		vec shipUp = ship->Up;
 
-		velocity += acceleration * dt * vec(shipUp.x, shipUp.y);
+		velocity += vec(shipUp.x, shipUp.y, 0) * acceleration * dt;
 		speed = velocity.x * velocity.x + velocity.y * velocity.y;
-		if (speed > velocityd) velocity *= velocityd / speed;
+		if (speed > velocityd) velocity = velocity * (velocityd / speed);
 		ship->MoveGlobal(vec(velocity.x * dt, velocity.y * dt, 0));
 
 		ship->activeStage = modelShipFire;
@@ -471,7 +471,7 @@ void Asteroids::Update(const float& dt) {
 
 		for (auto& star : stars) {
 			star->MoveGlobal(vec(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
-			checkBounds(star, false, vec(160, 90));
+			checkBounds(star, false, vec(160, 90, 0));
 		}
 	}
 	else {
@@ -516,18 +516,18 @@ void Asteroids::Update(const float& dt) {
 
 		int random = rand() % 32 - 1;
 		if (!forceTeleport && random >= 24 && random <= 31) {
-			death(true);
+			death(ship->Transform.position,ship->Transform.orientation,ship,true);
 		}
 		else {
 			random = rand() % 8 - 1;
 			random = (random * 2) + 4;
 
 			if (!forceTeleport && random < asteroids.size()) {
-				death(true);
+				death(ship->Transform.position, ship->Transform.orientation, ship, true);
 			}
 			else {
 				ship->MoveTo(vec(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80));
-				velocity = vec(0.0f, 0.0f);
+				velocity = vec(0.0f, 3);
 
 				haloCoundtown = 5.0f;
 			}
@@ -558,11 +558,11 @@ void Asteroids::Update(const float& dt) {
 
 		vec sPos;
 
-		vec pos = vec(current->Transform.position.x, current->Transform.position.y);
+		vec pos = vec(current->Transform.position.x, current->Transform.position.y, 0);
 
-		if (!type) sPos = vec(ship->Transform.position.x, ship->Transform.position.y);
+		if (!type) sPos = vec(ship->Transform.position.x, ship->Transform.position.y, 0);
 		else {
-			sPos = vec(eBDPos[bigEnemyIterator].x, eBDPos[bigEnemyIterator].y);
+			sPos = vec(eBDPos[bigEnemyIterator].x, eBDPos[bigEnemyIterator].y, 0);
 			eBDPos[bigEnemyIterator].z--;
 		}
 
@@ -577,7 +577,7 @@ void Asteroids::Update(const float& dt) {
 			}
 		}
 
-		vec dMov = vec(sPos.x - pos.x, sPos.y - pos.y);
+		vec dMov = vec(sPos.x - pos.x, sPos.y - pos.y, 0);
 
 		if (dMov.x > maxEnemyVelocity) dMov.x = maxEnemyVelocity;
 		else if (dMov.x < -maxEnemyVelocity) dMov.x = -maxEnemyVelocity;
@@ -624,7 +624,7 @@ void Asteroids::Update(const float& dt) {
 
 		//collisions - player/enemy
 		if (Game::collisionCircle(pPos, pos)) {
-			death();
+			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
 
@@ -652,11 +652,11 @@ void Asteroids::Update(const float& dt) {
 		current->Rotate(vec(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
 		current->MoveGlobal(vec(cos(deg), sin(deg), 0.0f) * _velocity * dt);
 
-		checkBounds(current, false, vec(Game::camera->cameraWidth + bounds, Game::camera->cameraHeight + bounds));
+		checkBounds(current, false, vec(Game::camera->cameraWidth + bounds, Game::camera->cameraHeight + bounds, 0));
 
 		//collisions - player/asteroid
 		if (Game::collisionCircle(pPos, current->Transform.position)) {
-			death();
+			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
 
@@ -729,9 +729,9 @@ void Asteroids::Update(const float& dt) {
 				hasSpaceshipPlayedSound = true;
 				Game::Sound(L"asteroidsLoudWoosh.wav", false);
 			}
-			if (Game::collisionCircle(vec(spaceship->Transform.position), pPos)) death();
+			if (Game::collisionCircle(vec(spaceship->Transform.position), pPos)) death(ship->Transform.position, ship->Transform.orientation, ship);
 
-			if (checkBounds(spaceship, false, vec(camW + 2 * bounds, camH + 2 * bounds))) {
+			if (checkBounds(spaceship, false, vec(camW + 2 * bounds, camH + 2 * bounds, 0))) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
 				isSpaceship = false;
 				score += 10;
@@ -748,5 +748,223 @@ void Asteroids::Update(const float& dt) {
 
 		halo->MoveTo(vec(pPos.x, pPos.y, -80));
 		halo->Rotate(vec(0, 0, 1) * dt * speed * haloRotation);
+	}
+}
+
+bool Asteroids::checkBounds(GameObject* current, bool stay, vec bounds) {
+	bool flag = false;
+	if (current->Transform.position.y > bounds.y) { if (!stay) { current->MoveGlobal(vec(0, -bounds.y * 2.0f, 0)); } flag = true; }
+	if (current->Transform.position.y < -bounds.y) { if (!stay) { current->MoveGlobal(vec(0, bounds.y * 2.0f, 0)); } flag = true; }
+	if (current->Transform.position.x > bounds.x) { if (!stay) { current->MoveGlobal(vec(-bounds.x * 2.0f, 0, 0)); } flag = true; }
+	if (current->Transform.position.x < -bounds.x) { if (!stay) { current->MoveGlobal(vec(bounds.x * 2.0f, 0, 0)); } flag = true; }
+	return flag;
+}
+
+void Asteroids::spawnAsteroids(int asteroidsNum, unsigned int type, float _posX, float _posY, float rot) {
+	float minAsteroidsSize;
+	float maxAsteroidsSize;
+
+	for (int i = 0; i < asteroidsNum; i++) {
+		std::vector<float> v;
+		std::vector<unsigned int> id;
+		std::vector<vec> points;
+
+		asteroidSidesNo = rand() % (maxAsteroidsSidesNo - minAsteroidsSidesno) + minAsteroidsSidesno;
+
+		for (int i = 0; i < asteroidSidesNo; ++i) {
+			float angle = 2 * M_PI * i / asteroidSidesNo;
+			float radiusModifier = (rand() / (double)RAND_MAX) * 2 * asteroidRadius * asteroidsVertexOffset - asteroidRadius * asteroidsVertexOffset;
+			float modifiedRadius = asteroidRadius + radiusModifier;
+
+			vec vertex = { modifiedRadius * cos(angle), modifiedRadius * sin(angle), 0 };
+			points.push_back(vertex);
+		}
+
+		for (int i = 0; i < points.size(); i++) {
+			v.push_back(points[i].x);
+			v.push_back(points[i].y);
+			v.push_back(0);
+			v.push_back(1);
+			v.push_back(1);
+			v.push_back(1);
+		}
+
+		for (int i = 1; i < asteroidSidesNo; i++) {
+			id.push_back(i - 1);
+			id.push_back(i);
+		}
+		id.push_back(asteroidSidesNo - 1);
+		id.push_back(0);
+
+		switch (type)
+		{
+		case 0:
+			minAsteroidsSize = bigAsteroidSize - bigAsteroidSize * asteroidSizeRange;
+			maxAsteroidsSize = bigAsteroidSize + bigAsteroidSize * asteroidSizeRange;
+			break;
+		case 1:
+			minAsteroidsSize = mediumAsteroidSize - mediumAsteroidSize * asteroidSizeRange;
+			maxAsteroidsSize = mediumAsteroidSize + mediumAsteroidSize * asteroidSizeRange;
+			break;
+		case 2:
+			minAsteroidsSize = smallAsteroidSize - smallAsteroidSize * asteroidSizeRange;
+			maxAsteroidsSize = smallAsteroidSize + smallAsteroidSize * asteroidSizeRange;
+			break;
+		default:
+			throw std::invalid_argument("nuh uh");
+			break;
+		}
+
+		asteroidRotation.push_back(rot * M_PI / 180.0f);
+
+		float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
+		asteroidRotationMultiplier.push_back(rotM);
+
+		int temp;
+
+		vec pos = vec(_posX, _posY, 0);
+		if (_posX == -10000 || _posY == -10000) {
+			do {
+				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+				pos.x = temp;
+
+				temp = rand() % (2 * (camH + bounds)) - (camH + bounds);
+				pos.y = temp;
+			} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
+		}
+
+		asteroids.push_back(Game::Create(vec(pos.x, pos.y, -90.0f), vec(0.0f, 0.0f, rot), vec(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize))), 3), v, id));
+		asteroidSize.push_back(type);
+	}
+}
+
+void Asteroids::spawnEnemy(bool type) {
+	vec pos;
+	int temp;
+
+	do {
+		temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+		pos.x = temp;
+
+		temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
+		pos.y = temp;
+	} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
+
+	enemies.push_back(Game::Create(vec(pos.x, pos.y, -75.0f), vec(0.0f, 3), vec(enemySizes[(int)type], 3), L"AsteroidsEnemy"));
+	enemyType.push_back(type);
+	enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
+	if (type) eBDPos.push_back(vec(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
+}
+
+void Asteroids::shoot(vec _pos, vec _rot, bool type, bool eType) {
+	float _time;
+	float _scale;
+	const wchar_t* _model;
+	float _offset;
+
+	if (!type) {
+		_time = bulletMaxTime;
+		_scale = 2.5f;
+		_model = L"AsteroidsBullet";
+		_offset = 6.25f;
+	}
+	else {
+		_time = maxEnemyBulletTime;
+		_scale = 1.75f;
+		_model = L"AsteroidsEnemyBullet";
+		_offset = enemySizes[(int)eType] / 2;
+	}
+
+	bulletTimeRemain.push_back(_time);
+	GameObject* bullet = Game::Create(_pos, _rot, vec(_scale, 3), _model);
+	bullets.push_back(bullet);
+	bullet->Move(vec(0.0f, _offset, 0.0f));
+}
+
+int Asteroids::wave(int asteroidsNum) {
+	Game::Sound(L"asteroidsNewWave.wav", false);
+
+	spawnAsteroids(asteroidsNum, 0);
+	wave_num++;
+	smallEnemyNoise *= (1 - smallEnemyNoiseDelta);
+
+	int temp = 0;
+	float tempProb = enemyProb;
+	while (rand() % 100 <= tempProb)
+		tempProb -= 100;
+	temp += 1;
+	return temp;
+}
+
+std::vector<vec> Asteroids::breakIntoPieces(std::vector<unsigned int> ind, std::vector<vec> vx) {
+	float line[2][2];
+	std::vector<vec> newVx;
+
+	if (ind.size() == 1) {
+		int n = ind[0];
+		ind.push_back(0);
+		for (int i = 0; i < n; i++) {
+			ind.push_back(i); ind.push_back(i + 1);
+		}
+	}
+	else if (vx.empty() || ind.empty()) {
+		vx = { vec(0.0, 1.25, 0), vec(-.3, -.15, 0), vec(0.3, -.15, 0), vec(-.25, 0.0, 0), vec(0.25, 0.0, 0) }; //defaults to AsteroidsShip
+		ind = { 0,1,0,2,3,4 }; //same as above
+	}
+
+	for (int i = 0; i < ind.size() / 2; i++) {
+		line[0][0] = vx[ind[i * 2]].x;      line[0][1] = vx[ind[i * 2]].y;
+		line[1][0] = vx[ind[i * 2 + 1]].x;  line[1][1] = vx[ind[i * 2 + 1]].y;
+
+		newVx.push_back(vec(line[0][0], line[0][1], 0));
+
+		float t = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		newVx.push_back(vec((1 - t) * line[0][0] + t * line[1][0], (1 - t) * line[0][1] + t * line[1][1], 0));
+
+		newVx.push_back(vec(line[1][0], line[1][1], 0));
+	}
+
+	return newVx;
+}
+
+void Asteroids::death(vec _pos, vec _rot, GameObject* obj, bool tp, bool isShip, float scale, std::vector<vec> _vx, std::vector<unsigned int> _ind) {
+	if (isShip) {
+		Game::Game::Sound(L"asteroidsPlayerDeath.wav", false);
+
+		isDead = true;
+		ship->MoveTo(vec(-10000, -10000, 0));
+	}
+	else {
+		Game::Game::Sound(L"asteroidsEnemyDeath.wav", false);
+
+		Game::Destroy(obj);
+	}
+	std::vector<vec> vxs = breakIntoPieces(_ind, _vx);
+	int random = rand() % (int)(vxs.size() * .2);
+	int size = vxs.size();
+	for (int i = 0; i < size / 2; i++) {
+		std::vector<float> vx1;
+		int it = 1;
+		if (rand() % size < random && i < (size / 2) - 1) it = 2;
+		if (tp) _pos = vec(rand() % (160 - jumpMargin) * 2 - 160 - jumpMargin, rand() % (90 - jumpMargin) * 2 - 90 - jumpMargin, -80);
+		for (int k = 0; k < it; k++) {
+			vx1.clear();
+			for (int j = 0; j < 2; j++) {
+				vx1.push_back(vxs[i * 2 + j + k].x); vx1.push_back(vxs[i * 2 + j + k].y); vx1.push_back(0);
+				vx1.push_back(1); vx1.push_back(1); vx1.push_back(1);
+			}
+			debris.push_back(Game::Create(_pos, _rot, vec(scale, 3), vx1, std::vector<unsigned int>{0, 1}));
+			if (isShip) { debris[debris.size() - 1]->SetColor(vec(1, 0, 0)); playersDebris.push_back(debris.size() - 1); }
+		}
+	}
+	for (int i = 0; i < debris.size(); i++) {
+		debrisDirection.push_back(vec(-1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))), -1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2))), 0)); //x∈Q:[-1;1]
+		debrisRotation.push_back((-maxDebrisRotationMultiplier + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * maxDebrisRotationMultiplier)))));
+	}
+}
+
+void Asteroids::clearVec(std::vector<GameObject*>& vec) {
+	for (auto& obj : vec) {
+		Game::Destroy(obj);
 	}
 }

@@ -23,6 +23,9 @@ void Menu::Init() {
 		Texts[0]->Boldicity = 15;
 		Texts[0]->Write("Gry Wektorowe");
 		Game::Sound(L"mus01", true);
+		Game::camera->perspective = true;
+		Game::camera->cameraWidth = 16;
+		Game::camera->cameraHeight = 9;
 	}
 
 void Menu::Update(const float& dt) {
@@ -39,4 +42,6 @@ void Menu::Update(const float& dt) {
 
 		if (Game::KeysPresed['A'])
 			Game::ChangeState(Game_Asteroids);
+		else if (Game::KeysPresed['T'])
+			Game::ChangeState(Game_Tempest);
 	}

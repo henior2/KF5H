@@ -1,7 +1,7 @@
 #include "vec.h"
 
 vec::vec()
-	:size(0), array(new float[size]), x(*array), y(*(array + 1)), z(*(array + 2)), w(*(array + 3))
+	:size(3), array(new float[size]), x(*array), y(*(array + 1)), z(*(array + 2)), w(*(array + 3))
 {}
 
 vec::vec(const unsigned int& Size) 
@@ -30,6 +30,10 @@ vec::vec(const float& valueX, const float& valueY, const float& valueZ)
 	array[2] = valueZ;
 
 //	GenerateValues();
+}
+
+vec::~vec() {
+//	delete array;
 }
 
 void vec::operator=(const vec& second) {

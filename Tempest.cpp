@@ -68,38 +68,38 @@ void Tempest::Update(const float& dt) {
 	}
 };
 
-void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2) {
-	vec.push_back(a1);
-	vec.push_back(a2);
+void Tempest::push_back2(std::vector<unsigned int>& Vec, unsigned int a1, unsigned int a2) {
+	Vec.push_back(a1);
+	Vec.push_back(a2);
 }
-void push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
-	vec.push_back(a1);
-	vec.push_back(a1);
+void Tempest::push_back2(std::vector<unsigned int>& Vec, unsigned int a1) {
+	Vec.push_back(a1);
+	Vec.push_back(a1);
 }
-void push_back3(std::vector<float>& vec, float a1, float a2, float a3) {
-	vec.push_back(a1);
-	vec.push_back(a2);
-	vec.push_back(a3);
+void Tempest::push_back3(std::vector<float>& Vec, float a1, float a2, float a3) {
+	Vec.push_back(a1);
+	Vec.push_back(a2);
+	Vec.push_back(a3);
 }
-void push_back3(std::vector<float>& vec, float a1) {
-	vec.push_back(a1);
-	vec.push_back(a1);
-	vec.push_back(a1);
+void Tempest::push_back3(std::vector<float>& Vec, float a1) {
+	Vec.push_back(a1);
+	Vec.push_back(a1);
+	Vec.push_back(a1);
 }
-void push_back_point(std::vector<float>& vec, int startIndex, std::vector<float>& pointVec) {
+void Tempest::push_back_point(std::vector<float>& Vec, int startIndex, std::vector<float>& pointVec) {
 	for (int i = 0; i < 6; i++) {
-		vec.push_back(pointVec[startIndex + i]);
+		Vec.push_back(pointVec[startIndex + i]);
 	}
 }
 
-int findsmallest(std::vector <vec> a) {
+int Tempest::findsmallest(std::vector <vec> a) {
 	int smallest = 0;
 	for (int i = 0; i < a.size(); i++) {
 		if (a[smallest].y > a[i].y) smallest = i;
 	}
 	return smallest;
 }
-void points_move_list(std::vector<vec>& moving, int type, std::vector<vec> pointing) {
+void Tempest::points_move_list(std::vector<vec>& moving, int type, std::vector<vec> pointing) {
 	moving.clear();
 	int sid = findsmallest(pointing);
 	bool xd = false;
@@ -122,7 +122,7 @@ void points_move_list(std::vector<vec>& moving, int type, std::vector<vec> point
 	}
 }
 
-void shipspawn(int& position, int type) {
+void Tempest::shipspawn(int& position, int type) {
 	vec a, b;
 	if (type == 0) {
 		a = move[0], b = move[1];
@@ -134,11 +134,11 @@ void shipspawn(int& position, int type) {
 	}
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, 0);
-	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), rotation, vec(glm::length(b - a) / 2.25), L"tempest_ship");
+	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), rotation, vec((b - a).Length() / 2.25), L"tempest_ship");
 	//+ .25 so that is't "on top" of the tunne
 	//2.25 so that is doesn't take up the whole space
 }
-void shipmovement(bool right, int& position, int type) {
+void Tempest::shipmovement(bool right, int& position, int type) {
 	int segPos = tunnel.size() - 1 - position;
 
 	if (type == 0) tunnel[segPos]->SetColor(vec(0, 0, 1));
@@ -169,15 +169,15 @@ void shipmovement(bool right, int& position, int type) {
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
 
 	blaster->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
-	blaster->ScaleTo(vec(glm::length(b - a) / 2.25));
+	blaster->ScaleTo(vec((b - a).Length() / 2.25));
 	blaster->RotateTo(rotation);
 
 	if (type == 0) tunnel[segPos]->SetColor(vec(1, 1, 0));
 }
-void shooting(vec gun_pos, vec rotation) {
-	bulletsofplayer.push_back(Game::Create(gun_pos, vec(rotation), vec(0.2), L"bulletblaster"));
+void Tempest::shooting(vec gun_pos, vec rotation) {
+	bulletsofplayer.push_back(Game::Create(gun_pos, vec(rotation), vec(0.2, 3), L"bulletblaster"));
 }
-void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
+void Tempest::bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 	vec help;
 	GameObject* xd; //xd
 	for (int i = 0; i < bulletsofplayer.size(); i++) {
@@ -193,7 +193,7 @@ void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 
 }
 
-void tunelspawn(int& lastTSN, int& type) {
+void Tempest::tunelspawn(int& lastTSN, int& type) {
 	point.clear();
 	point2.clear();
 	std::vector<float> v;
@@ -266,7 +266,7 @@ void tunelspawn(int& lastTSN, int& type) {
 			double angle = 2 * M_PI * i / tunnelSidesNo;
 			float radius = tunnelRadius * (1 + minOffset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxOffset - minOffset))));
 
-			points.push_back(vec(radius * sin(angle), radius * cos(angle)));
+			points.push_back(vec(radius * sin(angle), radius * cos(angle), 0));
 		}
 		for (int k = 0; k < 2; k++) {
 			for (int j = 0; j < 2; j++) {
@@ -327,7 +327,7 @@ void tunelspawn(int& lastTSN, int& type) {
 	points_move_list(move2, type, point2);
 	lastTSN = tunnelSidesNo;
 
-	if (type == 1) tunnel.push_back(Game::Create(vec(0), vec(0), vec(1), v, id));
+	if (type == 1) tunnel.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), v, id));
 	else {
 		std::vector<float> vxVec;
 		std::vector<unsigned int> indVec = { 0,1,1,2,2,3,3,0 }; //connections
@@ -342,15 +342,15 @@ void tunelspawn(int& lastTSN, int& type) {
 			push_back_point(vxVec, (tryPush + tunnelSidesNo) * 6, v); //point #3 (aka #2 back)
 			push_back_point(vxVec, (i + tunnelSidesNo) * 6, v); //point #4 (#1 back)
 
-			tunnel.push_back(Game::Create(vec(0), vec(0), vec(1), vxVec, indVec));
+			tunnel.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), vxVec, indVec));
 		}
 	}
 
 	shipspawn(position, type);
 }
 
-void enemies_spawn(int type2) {
-	std::string model = enemy_models[type2];
+void Tempest::enemies_spawn(int type2) {
+	std::wstring model = enemy_models[type2];
 
 	int spawn = rand() % move2.size();
 	vec a = move2[spawn];
@@ -371,11 +371,11 @@ void enemies_spawn(int type2) {
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
 
-	enemies[type2].push_back(Game::Create(place, rotation, vec(glm::length(b - a) / 2.25), model));
+	enemies[type2].push_back(Game::Create(place, rotation, vec((b - a).Length() / 2.25, 3), model));
 
 }
 
-void tanker(float dt) {
+void Tempest::tanker(float dt) {
 	vec help;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
@@ -388,7 +388,7 @@ void tanker(float dt) {
 		}
 	}
 }
-void fuseball() {
+/*void Tempest::fuseball() {
 	//trzeba zlosowaæ gdzie sie porusza i losowaæ prêdkosæ
 	//u¿ywaæ vectora mve2 do poruszania sie po krawêdziach
 
@@ -420,5 +420,4 @@ void fuseball() {
 	for (int i = 0; i < enemies[0].size(); i++) {
 		enemies[0][i]->Move(vec(0, 0, -3));
 	}
-}
-}
+}*/

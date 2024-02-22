@@ -85,11 +85,11 @@ mat Kmath::Ortho(const float& Left, const float& Right, const float& Bottom, con
 
 	OrthoMatrix.array[0][0] = 2 / (Right - Left);
 	OrthoMatrix.array[1][1] = 2 / (Top - Bottom);
-	OrthoMatrix.array[2][2] = 2 / (Near - Far);
+	OrthoMatrix.array[2][2] = -2 / (Far - Near);
 
-	OrthoMatrix.array[0][3] = (Right + Left) / (Right - Left);
-	OrthoMatrix.array[1][3] = (Top + Bottom) / (Top - Bottom);
-	OrthoMatrix.array[2][3] = (Far + Near) / (Far - Near);
+	OrthoMatrix.array[0][3] = -(Right + Left) / (Right - Left);
+	OrthoMatrix.array[1][3] = -(Top + Bottom) / (Top - Bottom);
+	OrthoMatrix.array[2][3] = -(Far + Near) / (Far - Near);
 
 	return OrthoMatrix;
 }
