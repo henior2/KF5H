@@ -110,6 +110,14 @@ void Game::StopSounds() {
 bool Game::collisionCircle(vec pos1, vec pos2, float r1, float r2) {
 	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
 }
+std::string formatText(std::string text, bool type, int length) {
+	char f = ' ';
+	if (type) f = '0';
+	while (text.length() < length) {
+		text = f + text;
+	}
+	return text;
+}
 
 
 void Game::DeleteGame() {

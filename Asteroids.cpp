@@ -8,9 +8,7 @@ void Asteroids::Init(bool again) {
 	haloCoundtown = 0;
 
 	std::string scoreStr = std::to_string(score);
-	while (scoreStr.length() < 3) {
-		scoreStr = "0" + scoreStr;
-	}
+	scoreStr = Game::formatText(scoreStr, 1);
 
 	if (!again) {
 		std::vector<float> haloVx;
@@ -39,7 +37,8 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = CreateTekst(vec(-.9), 0, vec(.05), 1, .5, "Press W to move");
+		tutorialText = Game::AddText(-.9, 0, -.6, .9, .5, 0);
+		tutorialText->ChangeText("Press W to move");
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -68,7 +67,7 @@ void Asteroids::Init(bool again) {
 		}
 		if ((lines[0][0]) == '0') {
 			tutorialStep = 4;
-			tutorialText = refreshText(tutorialText, "Good luck");
+			tutorialText->ChangeText("Good luck");
 		}
 		file.close();
 		lines[0][0] = '0';
@@ -92,9 +91,9 @@ void Asteroids::Init(bool again) {
 			file2.close();
 		}
 
-		camera->perspective = false;
-		camera->cameraHeight = camH;
-		camera->cameraWidth = camW;
+		Game::camera->perspective = false;
+		Game::camera->cameraHeight = camH;
+		Game::camera->cameraWidth = camW;
 
 		_asteroidsNo = 4;
 		score = 0;
@@ -115,10 +114,13 @@ void Asteroids::Init(bool again) {
 
 		Game::Sound(backgroundMusic[2], true);
 
-		tScore = CreateTekst(vec(-.9, .8), 0, vec(.025), 1, .5, scoreStr);
-		endingUsername = CreateTekst(vec(-.125, .3), 0, vec(.06), 1, .5, new_username);
+		tScore = Game::AddText(-.9, .9, .8, .7, 1, false);
+		tScore->ChangeText(scoreStr);
+
+		endingUsername = Game::AddText(-.125, .125, .7, .5, 1, true);
+		endingUsername->ChangeText(new_username);
 	}
-	endingUsername = refreshText(endingUsername, "");
+	endingUsername->ChangeText("");
 
 	if (again) {
 		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
@@ -126,7 +128,8 @@ void Asteroids::Init(bool again) {
 		_asteroidsNo -= 2;
 		if (--wave_num == -1) wave_num = 0;
 
-		tScore = refreshText(tScore, scoreStr, true);
+		scoreStr = Game::formatText(scoreStr, 1);
+		tScore->ChangeText(scoreStr);
 	}
 
 	spaceshipCooldown = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxSpaceshipCooldown));
@@ -155,7 +158,7 @@ void Asteroids::Init(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = CreateTekst(vec(-.9, .6), 0, vec(.065), 1, .5, "Enter Your Username");
+		usernameInfo = Game::AddText(-.9, .9, .6, .5, 1, true);
 	}
 	else {
 		Game::Sound(L"asteroidsStart.wav", false);
@@ -178,7 +181,7 @@ void Asteroids::Init(bool again) {
 	playersDebris.clear();
 	tLives.clear();
 
-	tScore->SetColor(vec(1));
+	tScore->Color = vec(1, 1, 1);
 
 	for (int i = 0; i < lives; i++) {
 		wchar_t* modelName = L"AsteroidsShip";
@@ -192,7 +195,7 @@ void Asteroids::Init(bool again) {
 void Asteroids::Update(const float& dt) {
 	clickCooldown -= dt;
 
-	if (Game::KeysPresed['Esc']) {
+	if (Game::KeysPresed[VK_ESCAPE]) {
 		hasEscd = true;
 		if (escSoundLen == .25f) Game::Sound(L"asteroidsExit.wav", false);
 	}
@@ -206,8 +209,8 @@ void Asteroids::Update(const float& dt) {
 	if (!isDead && clickCooldown <= 0 && Game::KeysPresed['P']) {
 		pauseIcone->MoveTo(vec(-10) * (float)isPaused); //what this essentially means is go to either (-10,-10) or (0,0)
 
-		Game::engine->stopAllSounds();
-		Game::Sound(backgroundMusic[(int)isPaused + 1].c_str(), true);
+		Game::StopSounds();
+		Game::Sound(backgroundMusic[(int)isPaused + 1], true);
 
 		isPaused = !isPaused;
 		clickCooldown = .25f;
@@ -220,7 +223,7 @@ void Asteroids::Update(const float& dt) {
 		float multiplier = debrisSpeedMultiplier;
 		bool isPlayers = false;
 		if (std::find(playersDebris.begin(), playersDebris.end(), i) != playersDebris.end()) { multiplier = playerDebrisSpeedMultiplier; isPlayers = true; }
-		current->MoveGlobal(vec(debrisDirection[i], 0) * dt * multiplier);
+		current->MoveGlobal(vec(debrisDirection[i].x, debrisDirection[i].y, 0) * dt * multiplier);
 		current->Rotate(vec(0, 0, 1) * debrisRotation[i] * dt);
 
 		if (checkBounds(current) && !isPlayers) {
@@ -246,10 +249,10 @@ void Asteroids::Update(const float& dt) {
 			if (!isEndScreenMusicPlaying) { //this happens only once
 				isEndScreenMusicPlaying = true;
 
-				Game::engine->stopAllSounds();
-				Game::Sound(backgroundMusic[0].c_str(), true);
+				Game::StopSounds();
+				Game::Sound(backgroundMusic[0], true);
 
-				tutorialText = refreshText(tutorialText, "");
+				tutorialText->ChangeText("");
 
 				std::ifstream file("_asteroidsscoredata.txt"); // reading the file
 
@@ -270,16 +273,16 @@ void Asteroids::Update(const float& dt) {
 						clickCooldown = .25f;
 						new_username += (char)('A' + (key - 'A'));
 
-						endingUsername = refreshText(endingUsername, new_username);
+						endingUsername->ChangeText(new_username);
 					}
 				}
-				if ((Game::KeysPresed['Back'] || Game::KeysPresed['Del']) && clickCooldown <= 0) {
+				if ((Game::KeysPresed[VK_BACK] || Game::KeysPresed[VK_DELETE]) && clickCooldown <= 0) {
 					Game::Sound(L"asteroidsInputBackspace.wav", false);
 
 					clickCooldown = .25f;
 					if (new_username.length() != 0) new_username.pop_back();
 
-					endingUsername = refreshText(endingUsername, new_username);
+					endingUsername->ChangeText(new_username);
 				}
 			}
 			else { //this happens only once
@@ -338,10 +341,10 @@ void Asteroids::Update(const float& dt) {
 						score = std::to_string(scores[i]);
 					}
 
-					while (score.length() < 3) { score = "0" + score; }
-					while (score.length() < std::to_string(scores[0]).length()) { score = " " + score; }
+					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::CreateTekst(vec(-animationPos.x * 1.5 / camW, .35 - (.125 * i)), 0, vec(.0215), 1, .5, (place + " " + nick + " " + score)); // these "" will be changed to ". " and " " respectively
+					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + 1)) - .05f, .5f, false);
+					scoreboard[i]->ChangeText(place + " " + nick + " " + score);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
@@ -393,7 +396,9 @@ void Asteroids::Update(const float& dt) {
 
 				score += ufoXP[enemyType[j]];
 				enemyType.erase(enemyType.begin() + j);
-				tScore = refreshText(tScore, std::to_string(score), true);
+				
+				std::string temp = Game::formatText(std::to_string(score), 1);
+				tScore->ChangeText(temp);
 
 				bulletTimeRemain[i] = 0;
 				shouldSkip = true;
@@ -425,7 +430,9 @@ void Asteroids::Update(const float& dt) {
 				asteroidRotationMultiplier.erase(asteroidRotationMultiplier.begin() + j);
 
 				score += asteroidsXP[type];
-				tScore = refreshText(tScore, std::to_string(score), true);
+
+				std::string temp = Game::formatText(std::to_string(score), 1);
+				tScore->ChangeText(temp);
 
 				bulletTimeRemain[i] = 0;
 				break;
@@ -437,7 +444,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 0) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Use A and D to rotate");
+			tutorialText->ChangeText("Use A and D to rotate");
 		}
 
 		vec shipUp = ship->Up;
@@ -478,7 +485,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Press SPACE to shoot");
+			tutorialText->ChangeText("Use SPACE to shoot");
 		}
 
 		ship->Rotate(vec(0, 0, 1.0f) * rotationMultiplier * dt);
@@ -487,7 +494,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Press SPACE to shoot");
+			tutorialText->ChangeText("Use SPACE to shoot");
 		}
 
 		ship->Rotate(vec(0, 0, -1.0f) * rotationMultiplier * dt);
@@ -499,7 +506,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 3) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Dont use it too much");
+			tutorialText->ChangeText("Don't use it too much");
 			forceTeleport = true;
 		}
 
@@ -527,11 +534,11 @@ void Asteroids::Update(const float& dt) {
 		}
 	}
 
-	if (tutorialStep > 1 && Game::KeysPresed['Spc'] && shootCooldown <= 0) {
+	if (tutorialStep > 1 && Game::KeysPresed[VK_SPACE] && shootCooldown <= 0) {
 		if (tutorialStep == 2) {
 			tutorialStep++;
 
-			tutorialText = refreshText(tutorialText, "Press E to teleport");
+			tutorialText->ChangeText("Press E to teleport");
 		}
 
 		Game::Sound(L"asteroidsPlayerShoot.wav", false);
@@ -578,7 +585,7 @@ void Asteroids::Update(const float& dt) {
 		if (dMov.y > maxEnemyVelocity) dMov.y = maxEnemyVelocity;
 		else if (dMov.y < -maxEnemyVelocity) dMov.y = -maxEnemyVelocity;
 
-		current->MoveGlobal(vec(dMov, 0.0f) * dt);
+		current->MoveGlobal(vec(dMov.x, dMov.y, 0.0f) * dt);
 
 		float _angle;
 
@@ -645,7 +652,7 @@ void Asteroids::Update(const float& dt) {
 		current->Rotate(vec(0.0f, 0.0f, asteroidRotationMultiplier[i]) * dt);
 		current->MoveGlobal(vec(cos(deg), sin(deg), 0.0f) * _velocity * dt);
 
-		checkBounds(current, false, vec(camera->cameraWidth + bounds, camera->cameraHeight + bounds));
+		checkBounds(current, false, vec(Game::camera->cameraWidth + bounds, Game::camera->cameraHeight + bounds));
 
 		//collisions - player/asteroid
 		if (Game::collisionCircle(pPos, current->Transform.position)) {
@@ -667,7 +674,7 @@ void Asteroids::Update(const float& dt) {
 			if (_asteroidsNo <= 13) _asteroidsNo += 2;
 			else _asteroidsNo = 15;
 
-			tutorialText = refreshText(tutorialText, ("Wave " + std::to_string(wave_num)));
+			tutorialText->ChangeText("Wave "+std::to_string(wave_num));
 		}
 	}
 	if (_return != 0) {
@@ -703,7 +710,7 @@ void Asteroids::Update(const float& dt) {
 				pos.y = temp;
 			} while (pos.x > -camW && pos.x < camW && pos.y > -camH && pos.y < camH);
 
-			spaceship->MoveTo(vec(pos, -80));
+			spaceship->MoveTo(vec(pos.x, pos.y, -80));
 
 			float _angle = atan2(pPos.y - pos.y, pPos.x - pos.x);
 			_angle = _angle * 180 / M_PI - 90;
@@ -728,7 +735,7 @@ void Asteroids::Update(const float& dt) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
 				isSpaceship = false;
 				score += 10;
-				tScore = refreshText(tScore, std::to_string(score));
+				tScore->ChangeText(std::to_string(score));
 			}
 		}
 	}
@@ -739,7 +746,7 @@ void Asteroids::Update(const float& dt) {
 	else {
 		haloCoundtown -= dt;
 
-		halo->MoveTo(vec(pPos, -80));
+		halo->MoveTo(vec(pPos.x, pPos.y, -80));
 		halo->Rotate(vec(0, 0, 1) * dt * speed * haloRotation);
 	}
 }

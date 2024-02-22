@@ -241,7 +241,7 @@ private:
 				} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 			}
 
-			asteroids.push_back(Game::Create(vec(pos, -90.0f), vec(0.0f, 0.0f, rot), vec(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
+			asteroids.push_back(Game::Create(vec(pos.x, pos.y, -90.0f), vec(0.0f, 0.0f, rot), vec(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize)))), v, id));
 			asteroidSize.push_back(type);
 		}
 	}
@@ -258,7 +258,7 @@ private:
 			pos.y = temp;
 		} while (pos.x > -camW - bounds && pos.x < camW + bounds && pos.y > -camH - bounds && pos.y < camH + bounds);
 
-		enemies.push_back(Game::Create(vec(pos, -75.0f), vec(0.0f), vec(enemySizes[(int)type]), L"AsteroidsEnemy"));
+		enemies.push_back(Game::Create(vec(pos.x, pos.y, -75.0f), vec(0.0f), vec(enemySizes[(int)type]), L"AsteroidsEnemy"));
 		enemyType.push_back(type);
 		enemyShootCooldown.push_back((float)((rand() % (int)(2 * enemyShootCooldownRange * 100)) / 100 - enemyShootCooldownRange + _enemyShootCooldown[(int)type]));
 		if (type) eBDPos.push_back(vec(rand() % (2 * (camW - bounds)) - (camW + bounds), rand() % (2 * (camH - bounds)) - (camH + bounds), rand() % maxBigEnemyMoves + 1));
@@ -304,7 +304,7 @@ private:
 		return temp;
 	}
 
-	std::vector<vec> breakIntoPieces(std::vector<unsigned int> ind = std::vector<unsigned int>{}, std::vector<glm::vec> vx = std::vector<glm::vec>{}) {
+	std::vector<vec> breakIntoPieces(std::vector<unsigned int> ind = std::vector<unsigned int>{}, std::vector<vec> vx = std::vector<vec>{}) {
 		float line[2][2];
 		std::vector<vec> newVx;
 
@@ -377,23 +377,6 @@ private:
 		for (auto& obj : vec) {
 			Game::Destroy(obj);
 		}
-	}
-
-	TextBox* refreshText(TextBox* text, std::string str, bool format = false) {
-		vec pos = text->Transform.position;
-		float rot = text->Transform.orientation;
-		vec scale = text->Transform.scale;
-		float height = text->properties.height;
-		float spacing = text->properties.spacing;
-		Game::DestroyTekst(text);
-		std::string textValue = str;
-		if (format) {
-			while (textValue.length() < 3) {
-				textValue = "0" + textValue;
-			}
-		}
-		text = Game::CreateTekst(pos, rot, scale, height, spacing, textValue);
-		return text;
 	}
 
 	float escSoundLen;
