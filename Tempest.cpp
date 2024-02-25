@@ -25,8 +25,8 @@ void Tempest::Update(const float& dt) {
 		tunelspawn(lastTSN, type);
 	}
 
-	//if (Game::KeysPresed[//escape])
-		//Game::ChangeState(Game_Menu);
+	if (Game::KeysPresed[VK_ESCAPE])
+		Game::ChangeState(Game_Menu);
 
 
 	if (Game::KeysPresed['A'] && debugCooldown <= 0.0f) {
@@ -49,6 +49,9 @@ void Tempest::Update(const float& dt) {
 	}
 	if (!enemies[0].empty()) {
 		tanker(dt);
+	}
+	if (!enemies[2].empty()) {
+		fuseball(dt);
 	}
 
 	if (Game::KeysPresed['2'] && debugCooldown <= 0.0f) {
@@ -451,13 +454,13 @@ void Tempest::fuseball(float dt) {
 		else {
 			speed = rand() % 7 + 1;
 			if((direction == 2 && help.z - static_cast<float>(speed) < -28.45) || direction == 1){
-				enemies[2][1]->Move(vec(0, 0, -speed) * dt);
+				enemies[2][i]->Move(vec(0, 0, -speed) * dt);
 			}
 			else if ((direction == 1 && help.z + static_cast<float>(speed) > -14.3) || direction == 2) {
-				enemies[2][1]->Move(vec(0, 0, speed) * dt);
+				enemies[2][i]->Move(vec(0, 0, speed) * dt);
 			}
 		}
-		enemies_position[2][i] == pos;
+		enemies_position[2][i] = pos;
 	}
 	
 }
