@@ -142,6 +142,7 @@ void Tempest::shipspawn(int& position, int type) {
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, 0);
 	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
+	blaster->SetColor(vec(1, 1, 0));
 	//+ .25 so that is't "on top" of the tunne
 	//2.25 so that is doesn't take up the whole space
 }
