@@ -22,7 +22,7 @@ private:
 	std::vector<GameObject*> bullets;
 	std::vector<GameObject*> stars;
 
-	const std::vector<vec> __enemyVx = { vec(-1.0, 0.0), vec(1.0, 0.0), vec(-0.6, -0.3), vec(0.6, -0.3), vec(-0.6, 0.3), vec(0.6, 0.3), vec(-0.5, 0.7), vec(0.5, 0.7) };
+	const std::vector<vec> __enemyVx = { vec(-1.0, 0.0, 0.0), vec(1.0, 0.0, 0.0), vec(-0.6, -0.3, 0.0), vec(0.6, -0.3, 0.0), vec(-0.6, 0.3, 0.0), vec(0.6, 0.3, 0.0), vec(-0.5, 0.7, 0.0), vec(0.5, 0.7, 0.0) };
 	const std::vector<unsigned int> __enemyInd = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 2, 1, 3, 0, 4, 1, 5, 4, 6, 5, 7 };
 
 	TextBox* tScore;
@@ -55,7 +55,7 @@ private:
 	const int camW = 160;
 	const int camH = 90;
 
-	const vec animationPos = vec(80, 0);
+	const vec animationPos = vec(80, 0, 0);
 	//const vec scoreTablePos = vec(-80, 0);
 
 	int modelShipFire;
