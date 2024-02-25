@@ -51,7 +51,7 @@ void Tempest::Update(const float& dt) {
 		tanker(dt);
 	}
 	if (!enemies[2].empty()) {
-		//fuseball(dt);
+		fuseball(dt);
 	}
 
 	if (Game::KeysPresed['2'] && debugCooldown <= 0.0f) {
@@ -271,8 +271,8 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 				push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
 				push_back3(v, points[i].x, points[i].y, -25 * j - 8); //points
-				if (j == 0) point.push_back(vec(points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2));
-				else point2.push_back(vec(points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2));
+				if (j == 0) point.push_back(vec(points[i].x, points[i].y, -25 * j - 8));
+				else point2.push_back(vec(points[i].x, points[i].y, -25 * j - 8));
 
 				if (lvlDif > 71) push_back3(v, help.x, help.y, help.z);
 				else push_back3(v, 0, 0, 1); //color (blue)
@@ -293,9 +293,9 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 		for (int k = 0; k < 2; k++) {
 			for (int j = 0; j < 2; j++) {
 				for (const auto& c_point : points) { //refactored this loop into the for-each loop
-					push_back3(v, c_point.x * (1 - (2 * j)), c_point.y, -14.5f * (k + 1.1f) + 2); //points
-					if (k == 0) point.push_back(vec(c_point.x * (1 - (2 * j)), c_point.y, -14.5f * (k + 1.1f) + 2));
-					else point2.push_back(vec(c_point.x * (1 - (2 * j)), c_point.y, -14.5f * (k + 1.1f) + 2));
+					push_back3(v, c_point.x * (1 - (2 * j)), c_point.y, -25 * k - 8); //points
+					if (k == 0) point.push_back(vec(c_point.x * (1 - (2 * j)), c_point.y, -25 * k - 8));
+					else point2.push_back(vec(c_point.x * (1 - (2 * j)), c_point.y, -25 * k - 8));
 
 					if (lvlDif > 89 && lvlDif < 100) push_back3(v, 0, 0, 0); //color (black) - be carefull!!!
 					else if (lvlDif > 71) push_back3(v, help.x, help.y, help.z); // color (random)
@@ -382,21 +382,21 @@ void Tempest::enemies_spawn(int type2) {
 	if (spawn1 == move2.size() - 1) spawn2 = 0;
 	else spawn2 = spawn1 + 1;
 	vec b = move2[spawn2];
-	vec rotenem;
 
 	vec place;
 	if (type2 == 2)
-		place = vec(b.x, b.y, -58);
+		place = vec(b.x, b.y, b.z);
+
 	else if (type2 == 3)
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, -58);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
 	else
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, -58);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
 
 	vec rotation;
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
 
-	enemies[type2].push_back(Game::Create(place, rotation, vec((b - a).Length() / 2.25, 3), model));
+	enemies[type2].push_back(Game::Create(place, rotation, vec((b - a).Length() / 1.5, 3), model));
 	enemies_position[type2].push_back(spawn1);
 
 }
@@ -405,7 +405,7 @@ void Tempest::tanker(float dt) {
 	vec help;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
-		if (help.z < -14.3)
+		if (help.z < -8.0)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
 		else {
 			Game::Destroy(enemies[0][i]);
@@ -454,10 +454,10 @@ void Tempest::fuseball(float dt) {
 		}
 		else {
 			speed = rand() % 7 + 1;
-			if((direction == 2 && help.z - static_cast<float>(speed) < -28.45) || direction == 1){
+			if((direction == 2 && help.z - static_cast<float>(speed) < -58) || direction == 1){
 				enemies[2][i]->Move(vec(0, 0, -speed) * dt);
 			}
-			else if ((direction == 1 && help.z + static_cast<float>(speed) > -14.3) || direction == 2) {
+			else if ((direction == 1 && help.z + static_cast<float>(speed) > -8.0) || direction == 2) {
 				enemies[2][i]->Move(vec(0, 0, speed) * dt);
 			}
 		}
