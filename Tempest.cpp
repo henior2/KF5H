@@ -141,7 +141,7 @@ void Tempest::shipspawn(int& position, int type) {
 	}
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, 0);
-	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
+	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
 	blaster->SetColor(vec(1, 1, 0));
 	//+ .25 so that is't "on top" of the tunne
 	//2.25 so that is doesn't take up the whole space
@@ -176,7 +176,7 @@ void Tempest::shipmovement(bool right, int& position, int type) {
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
 
-	blaster->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2 + .25));
+	blaster->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)));
 	blaster->ScaleTo(vec((b - a).Length() / 2.25, 3));
 	blaster->RotateTo(rotation);
 
@@ -271,7 +271,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 				if (j) push_back2(id, i, i + points.size()); //connections
 				push_back2(id, i + points.size() * j, i + points.size() * j + 1); //ring
 
-				push_back3(v, points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2); //points
+				push_back3(v, points[i].x, points[i].y, -25 * j - 8); //points
 				if (j == 0) point.push_back(vec(points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2));
 				else point2.push_back(vec(points[i].x, points[i].y, -14.5f * (j + 1.1f) + 2));
 
