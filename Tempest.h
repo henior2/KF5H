@@ -16,6 +16,7 @@ private:
 	int lastTSN;
 	int lvlDif;
 	int type;
+	int superzapper_counting;
 
 	const std::vector<std::wstring> enemy_models = {
 		L"Tanker",
@@ -49,11 +50,13 @@ private:
 	void shipmovement(bool right, int& position, int type);
 	void shooting(vec gun_pos, vec rotation);
 	void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt);
+	void superzapper();
 
 	void tunelspawn(int& lastTSN, int& type);
 
 	void enemies_spawn(int type2);
 	void tanker(float dt);
 	void fuseball(float dt);
+	void spiker(float dt);
 };
 
