@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Game.h"
 #include "../resource.h"
+#include <time.h>
 
 #define TIMER_ID 1
 #define TIMER_TIME 1
@@ -35,6 +36,8 @@ int WinMain(HINSTANCE hInstance,
 	const wchar_t Name[] = L"KF5H";
 
 	//todo: load icon;
+
+	srand(time(NULL));
 
 	HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	//HICON hIcon = (HICON)LoadImage(NULL, L"Resources\Icon\icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);

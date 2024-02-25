@@ -61,8 +61,9 @@ public:
 
 	static bool collisionCircle(vec pos1, vec pos2, float r1 = 5.0f, float r2 = 5.0f);
 	static std::string formatText(std::string text, bool type, int length = 3);
-
 private:
 	static void DeleteGame();
+
+	static HMODULE hMod;
 };
 

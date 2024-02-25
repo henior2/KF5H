@@ -159,7 +159,7 @@ private:
 	const int ufoXP[2] = { 500,200 }; // small/big
 	const int asteroidsXP[3] = { 25,50,100 }; // big/normal/small
 
-	bool checkBounds(GameObject* current, bool stay = false, vec bounds = vec(170, 95));
+	bool checkBounds(GameObject* current, bool stay = false, vec bounds = vec(170, 95, 0));
 
 	void spawnAsteroids(int asteroidsNum, unsigned int type, float _posX = -10000, float _posY = -10000, float rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 360.0f)));
 

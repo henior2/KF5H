@@ -11,6 +11,8 @@ GameState Game::State;
 
 POINT Game::MousePosition;
 
+HMODULE Game::hMod = GetModuleHandle(NULL);
+
 void Game::ChangeState(const GameState& state) {
 	StopSounds();
 	DeleteGame();
@@ -99,13 +101,13 @@ void Game::Sound(const std::wstring& SoundFile, const bool& PlayInLoop) {
 	LPCWSTR lpcstr = sound.c_str();
 
 	if (PlayInLoop)
-		PlaySound(lpcstr, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+		PlaySoundW(lpcstr, hMod, SND_FILENAME | SND_ASYNC | SND_LOOP);
 	else
-		PlaySound(lpcstr, NULL, SND_FILENAME | SND_ASYNC);
+		PlaySoundW(lpcstr, hMod, SND_FILENAME | SND_ASYNC);
 
 }
 void Game::StopSounds() {
-	PlaySound(NULL, NULL, SND_PURGE);
+	PlaySoundW(NULL, hMod, SND_PURGE);
 }
 
 bool Game::collisionCircle(vec pos1, vec pos2, float r1, float r2) {

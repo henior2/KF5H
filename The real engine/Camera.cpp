@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera(const vec& position3, const vec& up, const float& yaw, const float& pitch)
-	: Front(vec(0, 0, -1)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), perspective(true), cameraWidth(800), cameraHeight(600), Position(position3), WorldUp(up), Yaw(yaw), Pitch(pitch)
+	: Front(vec(0, 0, -1)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), perspective(true), cameraWidth(160), cameraHeight(90), Position(position3), WorldUp(up), Yaw(yaw), Pitch(pitch)
 {
 	UpdateCameraVectors();
 }

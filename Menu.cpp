@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include "The Real Engine/The Real Engine.h"
+#include <thread>
 
 void Menu::Init() {
 		for (int i = 0; i < 1500; i++) {
@@ -46,6 +47,9 @@ void Menu::Update(const float& dt) {
 			Game::ChangeState(Game_Tempest);
 		else if (Game::KeysPresed['B'])
 			Game::ChangeState(Game_Battlezone);
+		else if (Game::KeysPresed['Q']) {
+			//std::thread S(Game::Sound, std::ref());
+		}
 		
 		if (Game::KeysPresed[VK_ESCAPE])
 			PostQuitMessage(0);
