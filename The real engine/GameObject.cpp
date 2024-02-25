@@ -170,7 +170,7 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 	Right = Right.Normalize();
 
 	Up = -vec::Cross(Front, Right).Normalize();
-}*/
+}
 
 void GameObject::UpdateVectors() {
 	vec front(0, 3);
@@ -184,4 +184,19 @@ void GameObject::UpdateVectors() {
 	Right = vec::Cross(Front, Up).Normalize();
 
 	Up.Normalize();
+}*/
+
+void GameObject::UpdateVectors() {
+	vec front(0, 3);
+	front.x = -cos(Kmath::Radians(this->Transform.orientation.y - 90.0f)) * cos(Kmath::Radians(this->Transform.orientation.x));
+	front.y = sin(Kmath::Radians(this->Transform.orientation.x));
+	front.z = sin(Kmath::Radians(this->Transform.orientation.y - 90.0f)) * cos(Kmath::Radians(this->Transform.orientation.x));
+	Front = front.Normalize();
+
+	Right.x = cos(Kmath::Radians(this->Transform.orientation.z));
+	Right.y = sin(Kmath::Radians(this->Transform.orientation.z));
+	Right.z = 0.0f;
+	Right = Right.Normalize();
+
+	Up = -vec::Cross(Front, Right).Normalize();
 }
