@@ -387,11 +387,11 @@ void Tempest::enemies_spawn(int type2) {
 
 	vec place;
 	if (type2 == 2)
-		place = vec(b.x, b.y, b.z);
+		place = vec(b.x, b.y, -58);
 	else if (type2 == 3)
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, -58);
 	else
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, -58);
 
 	vec rotation;
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
