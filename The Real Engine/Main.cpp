@@ -7,10 +7,10 @@
 #include "ModelMenager.h"
 #include "Camera.h"
 #include "Game.h"
+#include "../resource.h"
 
 #define TIMER_ID 1
 #define TIMER_TIME 1
-#define ICON_ID 101
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -36,13 +36,13 @@ int WinMain(HINSTANCE hInstance,
 
 	//todo: load icon;
 
-	//HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(ICON_ID));
+	HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	//HICON hIcon = (HICON)LoadImage(NULL, L"Resources\Icon\icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 
 	WNDCLASS Window = {};
 	Window.lpfnWndProc = WindowProc;
 	Window.hInstance = hInstance;
-	//Window.hIcon = hIcon;
+	Window.hIcon = hIcon;
 	Window.lpszClassName = Name;
 
 	RegisterClass(&Window);
@@ -72,8 +72,8 @@ int WinMain(HINSTANCE hInstance,
 
 	ShowWindow(hwnd, nShowCmd);
 
-	//SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-	//SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+	SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
 	ModelMenager::LoadModels(L".\\textFiles");
 	std::thread Draw(Drawing, std::ref(hwnd), std::ref(screenWidth), std::ref(screenHeight));
@@ -109,7 +109,7 @@ int WinMain(HINSTANCE hInstance,
 
 	Draw.join();
 
-	//DestroyIcon(hIcon);
+	DestroyIcon(hIcon);
 
 	return 0;
 }

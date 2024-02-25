@@ -391,7 +391,7 @@ void Tempest::tanker(float dt) {
 		}
 	}
 }
-void Tempest::fuseball(float dt) {
+/*void Tempest::fuseball(float dt) {
 	//trzeba losowaæ prêdkosæ
 	//u¿ywaæ vectora mve2 do poruszania sie po krawêdziach
 
@@ -424,4 +424,4 @@ void Tempest::fuseball(float dt) {
 		enemies[0][i]->Move(vec(0, 0, -3) * dt);
 	}
 	
-}
+}*/

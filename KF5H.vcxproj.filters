@@ -140,6 +140,9 @@
     <ClInclude Include="The Real Engine\vec.h">
       <Filter>Header Files\The Real Engine</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\The Real Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="textFiles\alphabet\A.ind.txt">
@@ -642,5 +645,66 @@
     <Image Include="Resources\Icon\icon.png">
       <Filter>Resource Files\Icon</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sounds\asteroidsBackgroundMusic.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsDestroy.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsEndScreenMusic.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsEnemyDeath.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsEnemyShoot.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsEnemySpawn.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsExit.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsInput.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsInputBackspace.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsLoudWoosh.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsNewWave.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsPlayerDeath.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsPlayerShoot.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsPlayerTeleport.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsStart.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\asteroidsWoosh.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\Lobby-Time.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\mus01.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

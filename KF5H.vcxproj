@@ -41,6 +41,7 @@
     <ClInclude Include="Battlezone.h" />
     <ClInclude Include="Initialization.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Tempest.h" />
     <ClInclude Include="TEST.h" />
     <ClInclude Include="The Real Engine\Camera.h" />
@@ -223,6 +224,29 @@
   <ItemGroup>
     <Image Include="Resources\Icon\icon.ico" />
     <Image Include="Resources\Icon\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sounds\asteroidsBackgroundMusic.wav" />
+    <Media Include="Sounds\asteroidsDestroy.wav" />
+    <Media Include="Sounds\asteroidsEndScreenMusic.wav" />
+    <Media Include="Sounds\asteroidsEnemyDeath.wav" />
+    <Media Include="Sounds\asteroidsEnemyShoot.wav" />
+    <Media Include="Sounds\asteroidsEnemySpawn.wav" />
+    <Media Include="Sounds\asteroidsExit.wav" />
+    <Media Include="Sounds\asteroidsInput.wav" />
+    <Media Include="Sounds\asteroidsInputBackspace.wav" />
+    <Media Include="Sounds\asteroidsLoudWoosh.wav" />
+    <Media Include="Sounds\asteroidsNewWave.wav" />
+    <Media Include="Sounds\asteroidsPlayerDeath.wav" />
+    <Media Include="Sounds\asteroidsPlayerShoot.wav" />
+    <Media Include="Sounds\asteroidsPlayerTeleport.wav" />
+    <Media Include="Sounds\asteroidsStart.wav" />
+    <Media Include="Sounds\asteroidsWoosh.wav" />
+    <Media Include="Sounds\Lobby-Time.wav" />
+    <Media Include="Sounds\mus01.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
