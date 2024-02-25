@@ -207,9 +207,10 @@ void Tempest::superzapper() {
 				for (int j = 0; j < enemies[i].size(); j++) {
 					Game::Destroy(enemies[i][j]);
 				}
+				enemies[i].clear();
+				enemies_position[i].clear();
 			}
-			enemies[i].clear();
-			enemies_position[i].clear();
+			
 		}
 		superzapper_counting++;
 	}
@@ -386,11 +387,11 @@ void Tempest::enemies_spawn(int type2) {
 
 	vec place;
 	if (type2 == 2)
-		place = vec((b.x), (b.y), -28.45);
+		place = vec(b.x, b.y, b.z);
 	else if (type2 == 3)
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, -28.45);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2);
 	else
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, -28.45);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2);
 
 	vec rotation;
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
