@@ -28,6 +28,7 @@ private:
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
 	std::vector <GameObject*> enemies[4];
+	std::vector <int> enemies_position[4];
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
@@ -53,6 +54,6 @@ private:
 
 	void enemies_spawn(int type2);
 	void tanker(float dt);
-	void fuseball();
+	void fuseball(float dt);
 };
 

@@ -352,11 +352,13 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 void Tempest::enemies_spawn(int type2) {
 	std::wstring model = enemy_models[type2];
 
-	int spawn = rand() % move2.size();
-	vec a = move2[spawn];
-	if (spawn == move2.size() - 1) spawn = 0;
-	else spawn += 1;
-	vec b = move2[spawn];
+	int spawn1 = rand() % move2.size();
+	int spawn2;
+
+	vec a = move2[spawn1];
+	if (spawn1 == move2.size() - 1) spawn2 = 0;
+	else spawn2 = spawn1 + 1;
+	vec b = move2[spawn2];
 	vec rotenem;
 
 	vec place;
@@ -372,6 +374,7 @@ void Tempest::enemies_spawn(int type2) {
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
 
 	enemies[type2].push_back(Game::Create(place, rotation, vec((b - a).Length() / 2.25, 3), model));
+	enemies_position[type2].push_back(spawn1);
 
 }
 
@@ -388,11 +391,11 @@ void Tempest::tanker(float dt) {
 		}
 	}
 }
-/*void Tempest::fuseball() {
-	//trzeba zlosowaæ gdzie sie porusza i losowaæ prêdkosæ
+void Tempest::fuseball(float dt) {
+	//trzeba losowaæ prêdkosæ
 	//u¿ywaæ vectora mve2 do poruszania sie po krawêdziach
 
-	int direction = rand()4 + 1;
+	int direction = rand()%4 + 1;
 
 	if (direction == 3 || direction == 4) {
 		vec a, b;
@@ -416,8 +419,9 @@ void Tempest::tanker(float dt) {
 		}
 	}
 
-
-	for (int i = 0; i < enemies[0].size(); i++) {
-		enemies[0][i]->Move(vec(0, 0, -3));
+	for (int i = 0; i < enemies[2].size(); i++) {
+		enemies[0][i]->Rotate(vec(0, 0, 3) * dt);
+		enemies[0][i]->Move(vec(0, 0, -3) * dt);
 	}
-}*/
+	
+}
