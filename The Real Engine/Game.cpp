@@ -12,6 +12,7 @@ GameState Game::State;
 POINT Game::MousePosition;
 
 void Game::ChangeState(const GameState& state) {
+	StopSounds();
 	DeleteGame();
 	State = state;
 	if (state == Game_Menu) {
