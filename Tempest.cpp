@@ -51,7 +51,7 @@ void Tempest::Update(const float& dt) {
 		tanker(dt);
 	}
 	if (!enemies[2].empty()) {
-		fuseball(dt);
+		//fuseball(dt);
 	}
 
 	if (Game::KeysPresed['2'] && debugCooldown <= 0.0f) {
@@ -187,7 +187,6 @@ void Tempest::shooting(vec gun_pos, vec rotation) {
 }
 void Tempest::bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 	vec help;
-	GameObject* xd; //xd
 	for (int i = 0; i < bulletsofplayer.size(); i++) {
 		help = bulletsofplayer[i]->Transform.position;
 		if (help.z > -31)
