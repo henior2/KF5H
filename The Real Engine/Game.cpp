@@ -114,21 +114,22 @@ void Game::StopSounds() {
 	PlaySoundW(NULL, hMod, SND_PURGE);
 }
 
-bool Game::collisionCircle(GameObject* obj1, GameObject* obj2, vec collisionAxis) {
+bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec collisionAxis) {
 	vec pos1, pos2;
 	float r1, r2;
 
 	pos1 = obj1->Transform.position & collisionAxis;
 	pos2 = obj2->Transform.position & collisionAxis;
 
-	
+	r1 = obj1->Object.verticies.Colision.farthestVertex;
+	r2 = obj2->Object.verticies.Colision.farthestVertex;
 
-	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
+	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) + (pos2.z - pos1.z) * (pos2.z - pos1.z) <= (r1 + r2) * (r1 + r2));
 }
-bool Game::collsionSAT(GameObject* obj1, GameObject* obj2, vec collisionAxis, bool simplify) {
+bool Game::collsionSAT(const GameObject* obj1, const GameObject* obj2, const vec collisionAxis, const bool simplify) {
 	return false;
 }
-bool Game::checkCollisions(GameObject* obj1, GameObject* obj2, vec collisionAxis, bool simplify) {
+bool Game::checkCollisions(const GameObject* obj1, const GameObject* obj2, const vec collisionAxis, const bool simplify) {
 	return Game::collisionCircle(obj1, obj2, collisionAxis) && Game::collsionSAT(obj1, obj2, collisionAxis, simplify);
 }
 
