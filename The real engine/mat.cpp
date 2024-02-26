@@ -24,6 +24,22 @@ mat::mat(const unsigned int& Size)
 			array[i][j] = 0;
 }
 
+mat::~mat() {
+	for (int i = 0; i < size; i++) {
+		try {
+//			delete[] array[i];
+		}
+		catch(...){
+		}
+	}
+	try {
+//		delete[] array;
+	}
+	catch (...) {
+
+	}
+}
+
 void mat::operator=(const mat& second) {
 	if (&second == this || second.size != this->size)
 		return;

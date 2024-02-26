@@ -6,9 +6,11 @@ class mat
 public:
 	unsigned int size;
 
-	float** array;
+	float** array = nullptr;
 	mat(const float& num, const unsigned int& Size);
 	mat(const unsigned int& Size);
+
+	~mat();
 
 	void operator=(const mat& second);
 	

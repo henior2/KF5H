@@ -16,11 +16,64 @@ struct Transformations {
 	vec scale = vec(1, 3);
 };
 
+struct ColisionMesh {
+	float farthestVertex = 0;
+	unsigned int edgeSidesNumber = 0;
+	unsigned int* Sides = nullptr;
+
+	~ColisionMesh() {
+		try {
+//			delete[] Sides;
+		}
+		catch (...) {}
+	}
+};
+
 struct VertexData {
-	float* vertecies;
-	unsigned int* indecies;
+	ColisionMesh Colision;
+	float* vertecies = nullptr;
+	unsigned int* indecies = nullptr;
 	int vNum;
 	int iNum;
+
+	VertexData(int vNum2, int iNum2) {
+		vertecies = new float[vNum2];
+		indecies = new unsigned int[iNum2 * 2];
+		vNum = vNum2;
+		iNum = iNum2;
+	};
+
+	VertexData() {};
+
+	~VertexData() {
+		try {
+//			delete[] vertecies;
+//			delete[] indecies;
+		}
+		catch (...) {}
+	}
+
+	VertexData(const VertexData& sec) {
+		vertecies = new float[sec.vNum];
+		indecies = new unsigned int[sec.iNum * 2];
+		iNum = sec.iNum;
+		vNum = sec.vNum;
+		for (int i = 0; i < vNum; i++) {
+			vertecies[i] = sec.vertecies[i];
+		}
+		for (int i = 0; i < iNum * 2; i++) {
+			indecies[i] = sec.indecies[i];
+		}
+	};
+
+	void CreateCollision() {
+		for (int i = 0; i < vNum; i += 6) {
+			float length = sqrt(vertecies[i] + vertecies[i + 1] + vertecies[i + 2]);
+			if (Colision.farthestVertex < length) {
+				Colision.farthestVertex = length;
+			}
+		}
+	}
 };
 
 struct Rendering
@@ -33,8 +86,19 @@ struct Rendering
 	float opacity = 1.0;
 	int pointsNum = 0;
 	int lines = 0;
+	bool DifferentColor;
+	vec color = vec(1, 3);
 
-	
+	Rendering() {};
+
+	Rendering(const Rendering& sec): doVerex(sec.doVerex), name(sec.name), lineWidth(sec.lineWidth), onTop(sec.onTop), opacity(sec.opacity), pointsNum(sec.pointsNum), lines(sec.lines), DifferentColor(sec.DifferentColor)
+	{
+		color = sec.color;
+		if (doVerex) {
+			VertexData n(sec.verticies);
+			verticies = n;
+		}
+	}
 };
 
 
@@ -46,9 +110,6 @@ public:
 
 	int index = 0;
 
-	bool DifferentColor;
-	vec color = vec(1, 3);
-
 	vec Front = vec(0, 3);
 	vec Up = vec(0, 3);
 	vec Right = vec(0, 3);
@@ -58,7 +119,7 @@ public:
 	std::vector<Rendering> Stage;
 
 	GameObject(vec pos3, vec rot3, vec sc3, std::wstring object, int i);
-	GameObject(vec pos3, vec rot3, vec sc3, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i);
+	GameObject(vec pos3, vec rot3, vec sc3, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i, bool CreateCollisionMesh = false, std::vector<unsigned int> CollisionMesh = {});
 	GameObject(const GameObject* second);
 	~GameObject();
 
@@ -77,7 +138,7 @@ public:
 	void UnColor();
 
 	int AddStage(std::wstring file);
-	int AddStage(std::vector<float> vertecies, std::vector<unsigned int> indecies);
+	int AddStage(std::vector<float> vertecies, std::vector<unsigned int> indecies, bool AddCollision, std::vector<unsigned int> CollisionMesh);
 private:
 	void UpdateVectors();
 };

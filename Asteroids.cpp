@@ -37,7 +37,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, 0, -.6, .9, .5, 0);
+		tutorialText = Game::AddText(-.9, 0, -.8, -.9, .05, 0);
 		tutorialText->ChangeText("Press W to move");
 		tutorialStep = 0;
 
@@ -116,10 +116,10 @@ void Asteroids::Init(bool again) {
 
 		Game::Sound(backgroundMusic[2], true);
 
-		tScore = Game::AddText(-.9, .9, .8, .7, 1, false);
+		tScore = Game::AddText(-.9, .9, .85, .8, .02, false);
 		tScore->ChangeText(scoreStr);
 
-		endingUsername = Game::AddText(-.125, .125, .7, .5, 1, true);
+		endingUsername = Game::AddText(-.125, .125, .7, .5, .1, true);
 		endingUsername->ChangeText(new_username);
 	}
 	endingUsername->ChangeText("");
@@ -160,7 +160,7 @@ void Asteroids::Init(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = Game::AddText(-.9, .9, .6, .5, 1, true);
+		usernameInfo = Game::AddText(-.9, .9, .6, .5, .1, true);
 	}
 	else {
 		Game::Sound(L"asteroidsStart", false);
@@ -345,7 +345,7 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + 1)) - .05f, .5f, false);
+					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, .1f, false);
 					scoreboard[i]->ChangeText(place + " " + nick + " " + score);
 				}
 

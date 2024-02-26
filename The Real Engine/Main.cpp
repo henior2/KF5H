@@ -9,18 +9,20 @@
 #include "Game.h"
 #include "../resource.h"
 #include <time.h>
+#include <utility>
 
 #define TIMER_ID 1
 #define TIMER_TIME 1
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-std::vector<GameObject*> PaintObj;
+std::vector<std::pair<Rendering, Transformations>> PaintObj;
 mat ProjectonMatrix(4);
 mat ViewMatrix(4);
 std::mutex ObjMutex;
 bool ChangeToObj = false;
 std::mutex BoolObjMutex;
+
 
 bool EndProgram = false;
 std::mutex EndProgramMutex;
@@ -35,12 +37,9 @@ int WinMain(HINSTANCE hInstance,
 
 	const wchar_t Name[] = L"KF5H";
 
-	//todo: load icon;
-
 	srand(time(NULL));
 
 	HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
-	//HICON hIcon = (HICON)LoadImage(NULL, L"Resources\Icon\icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 
 	WNDCLASS Window = {};
 	Window.lpfnWndProc = WindowProc;
@@ -71,9 +70,8 @@ int WinMain(HINSTANCE hInstance,
 
 	if (hwnd == 0) {
 		MessageBoxW(NULL, L"Nast¹pi³ nieoczekiwany b³¹d!", L"B³¹d", MB_OK);
-	}
-
-	ShowWindow(hwnd, nShowCmd);
+	}else
+		ShowWindow(hwnd, nShowCmd);
 
 	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
 	SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
@@ -146,8 +144,8 @@ void CALLBACK TimerCallback(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
 	if (!running) {
 
 		running = true;
-		static long long lastTime = GetTickCount();
-		long long newTime = GetTickCount();
+		static long long lastTime = GetTickCount64();
+		long long newTime = GetTickCount64();
 		double dt = newTime - lastTime;
 		lastTime = newTime;
 
@@ -162,8 +160,9 @@ void CALLBACK TimerCallback(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
 
 				PaintObj.clear();
 				for (int i = 0; i < Game::Objects.size(); i++) {
-					GameObject* now = new GameObject(Game::Objects[i]);
-					PaintObj.push_back(now);
+					Rendering now(Game::Objects[i]->Stage[Game::Objects[i]->activeStage]);
+					Transformations now2 = Game::Objects[i]->Transform;
+					PaintObj.push_back({now, now2});
 				}
 				ViewMatrix = Game::camera->GetViewMatrix();
 				ProjectonMatrix = Game::camera->GetProjectionMatrix();
@@ -177,11 +176,11 @@ void CALLBACK TimerCallback(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
 }
 
 void Drawing(HWND& hwnd, int width, int height) {
-	long long lastTime = GetTickCount();
+	long long lastTime = GetTickCount64();
 
 	double dts[10];
 	bool CanCopy;
-	std::vector<GameObject*> Objects;
+	std::vector<std::pair<Rendering, Transformations>> Objects;
 	mat Projection(4);
 	mat View(4);
 	HDC hdc, hdcBuffer;
@@ -200,19 +199,20 @@ void Drawing(HWND& hwnd, int width, int height) {
 		}
 
 		if (CanCopy) {
+			long long e = GetTickCount64();
 			{
 				std::lock_guard<std::mutex> lock(ObjMutex);
 
 				Objects.clear();
 				for (int i = 0; i < PaintObj.size(); i++) {
-					GameObject* now = new GameObject(PaintObj[i]);
-					Objects.push_back(now);
+					Rendering now(PaintObj[i].first);
+					Transformations now2 = PaintObj[i].second;
+					Objects.push_back({ now, now2 });
 				}
 
 				Projection = ProjectonMatrix;
 				View = ViewMatrix;
 			}
-			long long e = GetTickCount();
 			//InvalidateRect(hwnd, NULL, true);
 			hdc = GetDC(hwnd);
 			hdcBuffer = CreateCompatibleDC(hdc);					//
@@ -224,11 +224,11 @@ void Drawing(HWND& hwnd, int width, int height) {
 			HBRUSH white = CreateSolidBrush(RGB(0, 0, 0));
 			FillRect(hdcBuffer, &rect, white);
 
-			long long eee = GetTickCount();
+			long long eee = GetTickCount64();
 			Renderer::DrawGame(Objects, hdcBuffer, Projection, View, width / 2.0f, height / 2.0f);
-			long long ee = GetTickCount();
+			long long ee = GetTickCount64();
 
-			long long newTime = GetTickCount();
+			long long newTime = GetTickCount64();
 			double dt = newTime - lastTime;
 			double allDt = dt;
 			for (int i = 1; i < 10; i++) {
@@ -253,7 +253,7 @@ void Drawing(HWND& hwnd, int width, int height) {
 			SetBkColor(hdcBuffer, RGB(255, 255, 0));
 
 			// Draw the text
-			std::wstring dtString = std::to_wstring(slep) + L", " + std::to_wstring(allDt) + L", " + std::to_wstring(ee - e) + L", " + std::to_wstring(ee - eee);
+			std::wstring dtString = std::to_wstring(slep) + L", " + std::to_wstring(allDt) + L", " + std::to_wstring(eee - e) + L", " + std::to_wstring(ee - eee);
 			TextOut(hdcBuffer, 10, 10, dtString.c_str()/*std::to_wstring(Objects.size()).c_str()*/, static_cast<int>(dtString.length()));
 
 			BitBlt(hdc, 0, 0, width, height, hdcBuffer, 0, 0, SRCCOPY);
