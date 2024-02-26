@@ -3,24 +3,23 @@
 #include<string>
 #include"GameObject.h"
 #include <Windows.h>
+#include <utility>
 
 class ModelMenager {
 public:
 
 	static std::map<std::wstring, VertexData> ObjectsDatas;
 
-	static void ReadIndexFile(std::wifstream file, std::wstring Name) {
+	static std::pair<unsigned int*, int> ReadUnsignedIntFile(std::wifstream file, std::wstring Name) {
 		std::vector<unsigned int> indicies;
 
 		unsigned int index = 0;
-		bool minus = false;
 
 		std::wstring line;
 		while (std::getline(file, line)) {
 			for (int i = 0; i < line.length(); i++) {
 				if (line[i] == ' ' || line[i] == '\n' || line[i] == '\0') {
 					indicies.push_back(index);
-					minus = false;
 					index = 0;
 				}
 				else if (line[i] == '/') {
@@ -36,7 +35,6 @@ public:
 				}
 			}
 			indicies.push_back(index);
-			minus = false;
 			index = 0;
 		}
 
@@ -50,12 +48,11 @@ public:
 			indicies2[i] = indicies[i];
 			iNum++;
 		}
-		
-		ObjectsDatas[Name].indecies = indicies2;
-		ObjectsDatas[Name].iNum = iNum / 2;
+
+		return {indicies2, iNum / 2};
 	}
 
-	static void ReadVertexFile(std::wifstream file, std::wstring Name) {
+		static void ReadVertexFile(std::wifstream file, std::wstring Name) {
 		std::vector<float> vertecies;
 
 		float vertex = 0.0f;
@@ -126,6 +123,20 @@ public:
 		ObjectsDatas[Name].vNum = vNum;
 	}
 
+	static void ReadIndexFile(std::wifstream file, std::wstring Name) {
+		std::pair<unsigned int*, int> Ind = ReadUnsignedIntFile(std::move(file), Name);
+		
+		ObjectsDatas[Name].indecies = Ind.first;
+		ObjectsDatas[Name].iNum = Ind.second;
+	}
+
+	static void ReadMeshFile(std::wifstream file, std::wstring Name) {
+		std::pair<unsigned int*, int> Mesh = ReadUnsignedIntFile(std::move(file), Name);
+
+		ObjectsDatas[Name].Colision.Sides = Mesh.first;
+		ObjectsDatas[Name].Colision.edgeSidesNumber = Mesh.second;
+		ObjectsDatas[Name].CreateCollision();
+	}
 
 	static void LoadModels(std::wstring folder) {
 		WIN32_FIND_DATA findFileData;
@@ -140,8 +151,6 @@ public:
 			const std::wstring fileName = findFileData.cFileName;
 
 			if (fileName != L"." && fileName != L"..") {
-				// Print the file or folder name
-				std::wcout << L"Name: " << fileName << std::endl;
 
 				if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 					// It's a directory, so call the function recursively
@@ -168,8 +177,11 @@ public:
 						if (extension == L".vx") {
 							ReadVertexFile(std::move(File), fileNameWithoutExtension);
 						}
-						else {
+						else if(extension == L".ind") {
 							ReadIndexFile(std::move(File), fileNameWithoutExtension);
+						}
+						else {
+							ReadMeshFile(std::move(File), fileNameWithoutExtension);
 						}
 
 						File.close();

@@ -14,6 +14,10 @@ POINT Game::MousePosition;
 HMODULE Game::hMod = GetModuleHandle(NULL);
 
 void Game::ChangeState(const GameState& state) {
+	camera->Position = vec(0, 3);
+	camera->Yaw = YAW;
+	camera->Pitch = PITCH;
+	camera->RotateCamera(0, 0);
 	StopSounds();
 	DeleteGame();
 	State = state;
@@ -77,7 +81,7 @@ void Game::Destroy(GameObject* Object) {
 		Objects[i]->index--;
 	}
 	Objects.erase(Objects.begin() + Object->index);
-	delete Object;
+		delete Object;
 }
 
 TextBox* Game::AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const float& spacing, const bool& AlignCenterHorizontaly) {
@@ -88,7 +92,7 @@ TextBox* Game::AddText(const float& Left, const float Right, const float& Top, c
 
 void Game::DestroyText(TextBox* Text) {
 	int i = Text->Index;
-	delete Text;
+		delete Text;
 	Texts.erase(Texts.begin() + i);
 
 	for (int j = i; j < Texts.size(); j++) {
@@ -125,31 +129,31 @@ std::string Game::formatText(std::string text, bool type, int length) {
 
 void Game::DeleteGame() {
 	for (int i = 0; i < Game::Texts.size(); i++) {
-		delete Texts[i];
+			delete Texts[i];
 	}
 
 	for (int i = 0; i < Game::Objects.size(); i++) {
-		delete Objects[i];
+			delete Objects[i];
 	}
 
 	Texts.clear();
 	Objects.clear();
-	if (State == Game_Menu) {
-		delete games.menu;
-	}
-	else if (State == Game_Init) {
-		delete games.Init;
-	}
-	else if (State == Game_TEST) {
-		delete games.test;
-	}
-	else if (State == Game_Asteroids) {
-		delete games.asteroids;
-	}
-	else if (State == Game_Battlezone) {
-		delete games.battlezone;
-	}
-	else if (State == Game_Tempest) {
-		delete games.tempest;
-	}
+		if (State == Game_Menu) {
+			delete games.menu;
+		}
+		else if (State == Game_Init) {
+			delete games.Init;
+		}
+		else if (State == Game_TEST) {
+			delete games.test;
+		}
+		else if (State == Game_Asteroids) {
+			delete games.asteroids;
+		}
+		else if (State == Game_Battlezone) {
+			delete games.battlezone;
+		}
+		else if (State == Game_Tempest) {
+			delete games.tempest;
+		}
 }

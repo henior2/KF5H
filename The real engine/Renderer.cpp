@@ -1,15 +1,17 @@
 #include "Renderer.h"
 
-void Renderer::DrawGame(std::vector<GameObject*>& GameObjects, HDC& hdc, const mat& ProjectionMatrix, const mat& ViewMatrix, const float& width, const float& height) {
+void Renderer::DrawGame(std::vector<std::pair<Rendering, Transformations>>& GameObjects, HDC& hdc, const mat& ProjectionMatrix, const mat& ViewMatrix, const float& width, const float& height) {
 	//HPEN hPen = CreatePen(PS_SOLID, 3, RGB(0, 255, 0)); // Green color pen
 	//HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
 	mat Pro = ProjectionMatrix * ViewMatrix;
-	for (GameObject* i : GameObjects) {
-		if (i->Stage[i->activeStage].doVerex) {
-			DrawObject(i->Stage[i->activeStage].verticies, hdc, i->Transform, /*ProjectionMatrix, ViewMatrix*/ Pro, width, height, i->color, i->Stage[i->activeStage].lineWidth, !i->DifferentColor, i->Stage[i->activeStage].onTop);
+	for (std::pair<Rendering, Transformations> i : GameObjects) {
+
+		if (i.first.doVerex) {
+			DrawObject(i.first.verticies, hdc, i.second, /*ProjectionMatrix, ViewMatrix*/ Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
 		}
 		else {
-			DrawObject(ModelMenager::ObjectsDatas[i->Stage[i->activeStage].name], hdc, i->Transform, /*ProjectionMatrix, ViewMatrix*/Pro, width, height, i->color, i->Stage[i->activeStage].lineWidth, !i->DifferentColor, i->Stage[i->activeStage].onTop);
+			VertexData a = ModelMenager::ObjectsDatas[i.first.name];
+			DrawObject(a, hdc, i.second, /*ProjectionMatrix, ViewMatrix*/Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
 		}
 	}
 	//SelectObject(hdc, hOldPen);
@@ -18,18 +20,20 @@ void Renderer::DrawGame(std::vector<GameObject*>& GameObjects, HDC& hdc, const m
 
 void Renderer::DrawObject(VertexData Data, HDC& hdc, Transformations Model, /*const mat& ProjectionMatrix, const mat& ViewMatrix*/const mat& Pro, const float& width, const float& height, const vec& color, const int& LineWidth, const bool& UseVertexColor, const bool& onTop) {
 
-	HPEN hPen = CreatePen(PS_SOLID, LineWidth, RGB(color.x * 255, color.y * 255, color.z * 255)); // Green color pen
+	HPEN hPen = CreatePen(PS_SOLID, LineWidth, RGB(color.x * 255, color.y * 255, color.z * 255));
 	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
 
 	mat ModelMatrix = mat(1, 4);
-	ModelMatrix = ModelMatrix * ModelMatrix.Translate(Model.position);
+	mat Translate = ModelMatrix.Translate(Model.position);
+	ModelMatrix = ModelMatrix * Translate;
 	//ModelMatrix = ModelMatrix * ModelMatrix.Rotate(vec(1, 0, 0) * Kmath::Radians(Model.orientation.x));
 	//ModelMatrix = ModelMatrix * ModelMatrix.Rotate(vec(0, 1, 0) * Kmath::Radians(Model.orientation.y));																								AD ROTATE USING NORMAL MATRIX, NOT QUATERNIONS
 	//ModelMatrix = ModelMatrix * ModelMatrix.Rotate(vec(0, 0, 1) * Kmath::Radians(Model.orientation.z));
 	//ModelMatrix = ModelMatrix * ModelMatrix.Rotate(vec(Kmath::Radians(Model.orientation.x), Kmath::Radians(Model.orientation.y), Kmath::Radians(Model.orientation.z)));
 
 	ModelMatrix.Rotate(Kmath::Radians(Model.orientation));
-	ModelMatrix = ModelMatrix * ModelMatrix.Scale(Model.scale);
+	mat Scale = ModelMatrix.Scale(Model.scale);
+	ModelMatrix = ModelMatrix * Scale;
 	mat Mat(4);
 	if (!onTop)
 		Mat = Pro * ModelMatrix;

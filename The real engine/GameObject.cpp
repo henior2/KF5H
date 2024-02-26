@@ -2,7 +2,7 @@
 #include <math.h>
 
 GameObject::GameObject(vec pos, vec rot, vec sc, std::wstring file, int i)
-	:index(i), DifferentColor(true)
+	:index(i)
 {
 	this->Transform.position = pos;
 	this->Transform.orientation = rot;
@@ -13,10 +13,12 @@ GameObject::GameObject(vec pos, vec rot, vec sc, std::wstring file, int i)
 	activeStage = AddStage(file);
 
 	Object = Stage[activeStage];
+
+	Stage[activeStage].DifferentColor = false;
 }
 
-GameObject::GameObject(vec pos, vec rot, vec sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i)
-	:index(i), DifferentColor(false)
+GameObject::GameObject(vec pos, vec rot, vec sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i, bool CreateCollisionMesh, std::vector<unsigned int> CollisionMesh)
+	:index(i)
 {
 	this->Transform.position = pos;
 	this->Transform.orientation = rot;
@@ -24,14 +26,15 @@ GameObject::GameObject(vec pos, vec rot, vec sc, std::vector<float> vertecies, s
 
 	UpdateVectors();
 
-	activeStage = AddStage(vertecies, indecies);
+	activeStage = AddStage(vertecies, indecies, CreateCollisionMesh, CollisionMesh);
 
 	Object = Stage[activeStage];
 	Object.doVerex = true;
+	Stage[activeStage].DifferentColor = false;
 }
 
 GameObject::GameObject(const GameObject* second)
-	:index(second->index), DifferentColor(second->DifferentColor), Transform(second->Transform), color(second->color), Front(second->Front), Up(second->Up), Right(second->Right), activeStage(second->activeStage)
+	:index(second->index), Transform(second->Transform), Front(second->Front), Up(second->Up), Right(second->Right), activeStage(second->activeStage)
 {
 	for (int i = 0; i < second->Stage.size(); i++) {
 		VertexData nowy;
@@ -54,6 +57,8 @@ GameObject::GameObject(const GameObject* second)
 		n.verticies = nowy;
 		Stage.push_back(n);
 	}
+	Stage[activeStage].DifferentColor = second->Stage[second->activeStage].DifferentColor;
+	Stage[activeStage].color = second->Stage[second->activeStage].color;
 	Object = Stage[activeStage];
 }
 
@@ -102,12 +107,12 @@ void GameObject::ScaleTo(vec scale) {
 
 
 void GameObject::SetColor(vec color3) {
-	DifferentColor = true;
-	this->color = color3;
+	Stage[activeStage].DifferentColor = true;
+	Stage[activeStage].color = color3;
 }
 
 void GameObject::UnColor() {
-	this->DifferentColor = false;
+	Stage[activeStage].DifferentColor = false;
 }
 
 int GameObject::AddStage(std::wstring file) {
@@ -120,7 +125,7 @@ int GameObject::AddStage(std::wstring file) {
 	return Stage.size() - 1;
 }
 
-int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> indecies) {
+int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> indecies, bool AddCollision, std::vector<unsigned int> CollisionMesh) {
 	int vNum = verticies.size();
 	int iNum = indecies.size();
 
@@ -140,11 +145,36 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 	d.iNum = iNum / 2;
 	d.vNum = vNum;
 
+	if (AddCollision) {
+		int mNum = CollisionMesh.size();
+
+		unsigned int* Mesh = new unsigned int[mNum];
+
+		for (int i = 0; i < mNum; i++) {
+			Mesh[i] = CollisionMesh[i];
+		}
+
+		d.Colision.edgeSidesNumber = mNum;
+		d.Colision.Sides = Mesh;
+		d.CreateCollision();
+
+		try {
+			delete[] Mesh;
+		}
+		catch (...) {}
+	}
+
 	Rendering NEW;
 	NEW.doVerex = true;
 	NEW.verticies = d;
 
 	Stage.push_back(NEW);
+
+	try {
+		delete[] vertexy;
+		delete[] indexy;
+	}
+	catch (...) {}
 
 	return Stage.size() - 1;
 }

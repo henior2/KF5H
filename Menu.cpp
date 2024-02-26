@@ -47,9 +47,6 @@ void Menu::Update(const float& dt) {
 			Game::ChangeState(Game_Tempest);
 		else if (Game::KeysPresed['B'])
 			Game::ChangeState(Game_Battlezone);
-		else if (Game::KeysPresed['Q']) {
-			//std::thread S(Game::Sound, std::ref());
-		}
 		
 		if (Game::KeysPresed[VK_ESCAPE])
 			PostQuitMessage(0);

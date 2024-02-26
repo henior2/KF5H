@@ -1,4 +1,5 @@
 #include "vec.h"
+#include <stdexcept>
 
 vec::vec()
 	:size(3), array(new float[size]), x(*array), y(*(array + 1)), z(*(array + 2)), w(*(array + 3))
@@ -33,15 +34,17 @@ vec::vec(const float& valueX, const float& valueY, const float& valueZ)
 }
 
 vec::~vec() {
-//	delete array;
+
 }
 
 void vec::operator=(const vec& second) {
 	if (&second != this) {
 		// If sizes are different, adjust the size of the current object
 		if (second.size != this->size) {
-			
-			delete[] array;
+			try {
+//				delete[] array;
+			}
+			catch (...) {}
 			size = second.size;
 			array = new float[size];
 			GenerateValues();
