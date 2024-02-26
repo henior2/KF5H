@@ -110,9 +110,24 @@ void Game::StopSounds() {
 	PlaySoundW(NULL, hMod, SND_PURGE);
 }
 
-bool Game::collisionCircle(vec pos1, vec pos2, float r1, float r2) {
+bool Game::collisionCircle(GameObject* obj1, GameObject* obj2, vec collisionAxis) {
+	vec pos1, pos2;
+	float r1, r2;
+
+	pos1 = obj1->Transform.position & collisionAxis;
+	pos2 = obj2->Transform.position & collisionAxis;
+
+	
+
 	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) <= (r1 + r2) * (r1 + r2));
 }
+bool Game::collsionSAT(GameObject* obj1, GameObject* obj2, vec collisionAxis, bool simplify) {
+	return false;
+}
+bool Game::checkCollisions(GameObject* obj1, GameObject* obj2, vec collisionAxis, bool simplify) {
+	return Game::collisionCircle(obj1, obj2, collisionAxis) && Game::collsionSAT(obj1, obj2, collisionAxis, simplify);
+}
+
 std::string Game::formatText(std::string text, bool type, int length) {
 	char f = ' ';
 	if (type) f = '0';
@@ -121,7 +136,6 @@ std::string Game::formatText(std::string text, bool type, int length) {
 	}
 	return text;
 }
-
 
 void Game::DeleteGame() {
 	for (int i = 0; i < Game::Texts.size(); i++) {

@@ -124,6 +124,10 @@ void vec::operator-=(const vec& second) {
 	*this = *this - second;
 }
 
+vec vec::operator&(const vec& second) const {
+	return vec(this->x * second.x, this->y * second.y, this->z * second.z);
+}
+
 vec vec::Normalize() const {
 	vec result(0, size);
 	result = *this;

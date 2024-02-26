@@ -33,6 +33,9 @@ public:
 	void operator +=(const vec& second);
 	void operator -=(const vec& second);
 
+	//did bro just multiply vecotrs (FBI's coming for him) (he has no idea)
+	vec operator&(const vec& second) const;
+
 	float Length() const;
 	vec Normalize() const;
 	static float Dot(const vec& A, const vec& B);

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Camera.h"
 #include <map>
 #include <vector>
@@ -59,7 +59,16 @@ public:
 	
 	static void ChangeState(const GameState& state);
 
-	static bool collisionCircle(vec pos1, vec pos2, float r1 = 5.0f, float r2 = 5.0f);
+	static bool collisionCircle(GameObject* obj1, GameObject* obj2, vec collisionAxis);
+	static bool collsionSAT(GameObject* obj1, GameObject* obj2, vec collisionAxis, bool simplify = false);
+
+	// `obj1` and `obj2` are colliding objects
+	// \n
+	// `collisionAxis` is an axis, from which we chceck for collisions (eg. `vec(1,1,0)` - "2D" collisions (XY plane) are being checked for)
+	// \n
+	// if `simplify` is set to `true`, the second object will be treated as a circle with no details
+	static bool checkCollisions(GameObject* obj1, GameObject* obj2, vec collisionAxis, bool simplify = false);
+
 	static std::string formatText(std::string text, bool type, int length = 3);
 private:
 	static void DeleteGame();
