@@ -29,7 +29,7 @@ void Asteroids::Init(bool again) {
 		hasEscd = false;
 		isPaused = false;
 
-		pauseIcone = Game::Create(vec(-10, 3), vec(0, 3), vec(.1, .125, 1), L"pauseIcone");
+		pauseIcone = Game::Create(vec(-10, 0, .1), vec(0, 3), vec(.1, .125, 1), L"pauseIcone");
 		pauseIcone->Stage[0].onTop = true;
 
 		ship = Game::Create(vec(0.0f, 0.0f, -99.0f), vec(0.0f, 3), vec(5.0f, 3), L"AsteroidsShip");
@@ -109,7 +109,9 @@ void Asteroids::Init(bool again) {
 		debris.clear();
 
 		for (int i = 0; i < starsAmount; i++) {
-			stars.push_back(Game::Create(vec(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec(0.0f, 0.0f, rand() % 45), vec(.01f, 3), L"AsteroidsStar"));
+			GameObject* star = Game::Create(vec(rand() % 320 - 160, rand() % 180 - 90, -99.999f), vec(0.0f, 0.0f, rand() % 45), vec(.25f, 3), L"AsteroidsStar");
+			star->SetColor(vec(1, 3));
+			stars.push_back(star);
 		}
 
 		Game::Sound(backgroundMusic[2], true);
@@ -207,7 +209,7 @@ void Asteroids::Update(const float& dt) {
 	}
 
 	if (!isDead && clickCooldown <= 0 && Game::KeysPresed['P']) {
-		pauseIcone->MoveTo(vec(-10, 3) * (float)isPaused); //what this essentially means is go to either (-10,-10) or (0,0)
+		pauseIcone->MoveTo(vec(-10 * (float)isPaused, 0, .1)); //what this essentially means is go to either (-10,-10) or (0,0)
 
 		Game::StopSounds();
 		Game::Sound(backgroundMusic[(int)isPaused + 1], true);
@@ -470,7 +472,7 @@ void Asteroids::Update(const float& dt) {
 		}
 
 		for (auto& star : stars) {
-			star->MoveGlobal(vec(shipUp.x * -starsSpeedMultiplier, shipUp.y * -starsSpeedMultiplier, 0) * dt);
+			star->MoveGlobal(vec(shipUp.x, shipUp.y, 0) * -starsSpeedMultiplier * dt);
 			checkBounds(star, false, vec(160, 90, 0));
 		}
 	}
