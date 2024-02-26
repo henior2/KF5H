@@ -15,7 +15,7 @@ mat Camera::GetProjectionMatrix() const {
 		return Kmath::Perspective(Kmath::Radians(90.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 		//return Kmath::Perspective(0.01f, 100.0f, 1.6f, -1.6f, 0.9f, -0.9f);
 	else
-		Kmath::Ortho(-cameraWidth, cameraWidth, -cameraHeight, cameraHeight, 0.1f, 100.0f);
+		return Kmath::Ortho(-cameraWidth, cameraWidth, -cameraHeight, cameraHeight, 0.1f, 100.0f);
 }
 
 void Camera::MoveCamera(const Camera_Movement& direction, const float& dt) {
