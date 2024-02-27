@@ -25,6 +25,7 @@ private:
 		L"Flipper"
 	};
 
+	std::vector <unsigned int> ind_spikes { 0,1 };
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
@@ -32,6 +33,9 @@ private:
 	std::vector <int> enemies_position[4];
 	std::vector <bool> enemies_bool[4];
 	std::vector <int> spikers_max;
+	std::vector <std::vector<float>> vx_spike;
+	std::vector <GameObject*> spike;
+	std::vector <float> help;
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
