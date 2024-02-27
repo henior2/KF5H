@@ -180,7 +180,7 @@ public:
 						else if(extension == L".ind") {
 							ReadIndexFile(std::move(File), fileNameWithoutExtension);
 						}
-						else {
+						else if(extension == L".mesh") {
 							ReadMeshFile(std::move(File), fileNameWithoutExtension);
 						}
 
