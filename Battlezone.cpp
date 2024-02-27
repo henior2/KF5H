@@ -1202,7 +1202,9 @@ void Battlezone::collectPowerUp(GameObject* _inside, GameObject* _box, unsigned 
 
 void Battlezone::insertItem(int item, bool isTheFirstTime) {
 	itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
-	itemsPrice[item] = 300; //todo: add proper pricing
+	itemsPrice[0] = 500;
+	itemsPrice[1] = 100;
+	itemsPrice[2] = 300;
 	if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
 	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale), shopModels[itemsType[item]]);
 	shopDisplayIcons[item]->Stage[0].onTop = true;
@@ -1215,8 +1217,12 @@ void Battlezone::buyItem(int type, int cost, int item) {
 	case 0:
 		if (hp < 100) hp = 100;
 		else hp += 25;
-
 		break;
+	case 1:
+		bulletsFired = 0;
+		break;
+	case 2:
+		velocity += 0.3f;
 	default:
 		throw std::invalid_argument("the shop is out of stock");
 	}
