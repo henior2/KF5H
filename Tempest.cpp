@@ -7,6 +7,10 @@ void Tempest::Init() {
 	lastTSN = 0;
 	tunnel.clear();
 	bulletsofplayer.clear();
+	enemies[0].clear();
+	enemies[1].clear();
+	enemies[2].clear();
+	enemies[3].clear();
 	position = 0;
 	superzapper_counting = -1;
 	tunelspawn(lastTSN, type);
@@ -407,19 +411,60 @@ void Tempest::enemies_spawn(int type2) {
 	enemies[type2].push_back(Game::Create(place, rotation, scale, model));
 	enemies_position[type2].push_back(spawn1);
 	enemies_bool[type2].push_back(false);
+	if(type2 == 1) spikers_max.push_back(rand() % 5 - 14);
+}
+
+void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z) {
+	std::wstring model = enemy_models[type2];
+
+	int spawn1 = enemies_position[typeofspawner][positionofshipinvec];
+	int spawn2;
+
+	vec a = move2[spawn1];
+	if (spawn1 == move2.size() - 1) spawn2 = 0;
+	else spawn2 = spawn1 + 1;
+	vec b = move2[spawn2];
+
+	vec place;
+	vec scale((b - a).Length() / 1.5, 3);
+	if (type2 == 2)
+		place = vec(a.x, a.y, z);
+	else if (type2 == 3) {
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
+		scale.x /= 1.3;
+		scale.y /= 1.3;
+		scale.z /= 1.3;
+	}
+	else {
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
+		scale.x /= 1.85;
+		scale.y /= 1.85;
+		scale.z /= 1.85;
+	}
+
+	vec rotation;
+	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
+
+	enemies[type2].push_back(Game::Create(place, rotation, scale, model));
+	enemies_position[type2].push_back(spawn1);
+	enemies_bool[type2].push_back(false);
 
 }
 
 void Tempest::tanker(float dt) {
-	vec help;
+	vec help, xd;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
 		if (help.z < -7.5)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
 		else {
+			xd = enemies[0][i]->Transform.position;
 			Game::Destroy(enemies[0][i]);
+			enemies_spawn(3, i, 0, xd.z);
 			enemies[0].erase(enemies[0].begin() + i);
 			enemies_position[0].erase(enemies_position[0].begin() + i);
+			enemies_bool[0].erase(enemies_bool[0].begin() + i);
 			i--;
 		}
 	}
@@ -431,12 +476,12 @@ void Tempest::fuseball(float dt) {
 
 	for (int i = 0; i < enemies[2].size(); i++) {
 
-		direction = rand() % 1 + 1; //do przodu, do ty³u, w prawo, w lewo
+		direction = rand() % 3 + 1; //do przodu, do ty³u, w prawo, w lewo
 		pos = enemies_position[2][i];
 		help = enemies[2][i]->Transform.position;
 
 		if (direction == 3 || direction == 4) {
-			vec b, a = move[pos];
+			vec b, a = move2[pos];
 			if (direction == 3 && pos == move2.size() - 1) {
 				pos = 0;
 				b = move2[pos];
@@ -460,20 +505,26 @@ void Tempest::fuseball(float dt) {
 				enemies[2][i]->MoveTo(delta_of_moving);
 				enemies[2][i]->Rotate(vec(0, 0, 1) * dt);
 			}
+			enemies_position[2][i] = pos;
 		}
 		else {
 			speed = rand() % 7 + 1;
-			if((direction == 2 && help.z - static_cast<float>(speed) < -58) || direction == 1){
+			if( direction == 1){ //(direction == 2 && help.z - static_cast<float>(speed) < -58.0) ||
 				enemies[2][i]->Move(vec(0, 0, -speed) * dt);
+				enemies[2][i]->Rotate(vec(0, 0, 3) * dt);
 			}
-			else if ((direction == 1 && help.z + static_cast<float>(speed) > -8.0) || direction == 2) {
+			else if ( direction == 2) {//(direction == 1 && help.z + static_cast<float>(speed) > -7.5) ||
 				enemies[2][i]->Move(vec(0, 0, speed) * dt);
+				enemies[2][i]->Rotate(vec(0, 0, 3) * dt);
 			}
 		}
-		enemies_position[2][i] = pos;
+		
 	}
 	
 }
 void Tempest::spiker(float dt) {
-
+	int maxz;
+	for (int i = 0; i < enemies[1].size(); i++) {
+		
+	}
 }

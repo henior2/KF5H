@@ -31,6 +31,7 @@ private:
 	std::vector <GameObject*> enemies[4];
 	std::vector <int> enemies_position[4];
 	std::vector <bool> enemies_bool[4];
+	std::vector <int> spikers_max;
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
@@ -56,6 +57,7 @@ private:
 	void tunelspawn(int& lastTSN, int& type);
 
 	void enemies_spawn(int type2);
+	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z);
 	void tanker(float dt);
 	void fuseball(float dt);
 	void spiker(float dt);
