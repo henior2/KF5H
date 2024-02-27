@@ -121,6 +121,7 @@ public:
 
 		ObjectsDatas[Name].vertecies = verecies2;
 		ObjectsDatas[Name].vNum = vNum;
+		ObjectsDatas[Name].CreateCollision();
 	}
 
 	static void ReadIndexFile(std::wifstream file, std::wstring Name) {
@@ -135,7 +136,6 @@ public:
 
 		ObjectsDatas[Name].Colision.Sides = Mesh.first;
 		ObjectsDatas[Name].Colision.edgeSidesNumber = Mesh.second;
-		ObjectsDatas[Name].CreateCollision();
 	}
 
 	static void LoadModels(std::wstring folder) {

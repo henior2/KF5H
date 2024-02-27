@@ -135,19 +135,24 @@ vec Game::CalculateBetterVec(const vec& vector, const Transformations& trans) {
 
 	return r;
 }
-
 void Game::FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify) {
 	if (!simplify) {
 		unsigned int edges = (obj->Object.doVerex) ? obj->Object.verticies.Colision.edgeSidesNumber : ModelMenager::ObjectsDatas[obj->Object.name].Colision.edgeSidesNumber;
 		if (edges == 0) {
 			for (int i = 0; i < obj->Object.verticies.iNum; i++) {
-				vec Pos = CalculateBetterVec(vec(obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 0], obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 1], obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 2]), obj->Transform);
+				float x = (obj->Object.doVerex) ? obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 0] : ModelMenager::ObjectsDatas[obj->Object.name].vertecies[obj->Object.verticies.indecies[i] * 6 + 0];
+				float y = (obj->Object.doVerex) ? obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 1] : ModelMenager::ObjectsDatas[obj->Object.name].vertecies[obj->Object.verticies.indecies[i] * 6 + 1];
+				float z = (obj->Object.doVerex) ? obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 2] : ModelMenager::ObjectsDatas[obj->Object.name].vertecies[obj->Object.verticies.indecies[i] * 6 + 2];
+				vec Pos = CalculateBetterVec(vec(x, y, z), obj->Transform);
 				mesh.emplace_back(Pos);
 			}
 		}
 		else {
 			for (int i = 0; i < edges; i++) {
-				vec Pos = CalculateBetterVec(vec(obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 0], obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 1], obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 2]), obj->Transform);
+				float x = (obj->Object.doVerex) ? obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 0] : ModelMenager::ObjectsDatas[obj->Object.name].vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 0];
+				float y = (obj->Object.doVerex) ? obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 1] : ModelMenager::ObjectsDatas[obj->Object.name].vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 1];
+				float z = (obj->Object.doVerex) ? obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 2] : ModelMenager::ObjectsDatas[obj->Object.name].vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 2];
+				vec Pos = CalculateBetterVec(vec(x,y,z),obj->Transform);
 				mesh.emplace_back(Pos);
 			}
 		}
@@ -217,11 +222,12 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 	FillMesh(mesh1, obj1, false);
 	FillMesh(mesh2, obj2, simplify);
 
+	float f2 = (obj2->Object.doVerex) ? obj2->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj2->Object.name].Colision.farthestVertex;
 	for (int i = 0; i < mesh1.size() / 2; i++) {
 		vec d = mesh1[i * 2] - mesh1[i * 2 + 1];
 		vec axis = CalculateAxis(d, collisionAxis);
 
-		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
+		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, f2 * obj2->Transform.scale.x)) {
 			return false;
 		}
 	}
@@ -231,7 +237,7 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 			vec d = mesh2[i * 2] - mesh2[i * 2 + 1];
 			vec axis = CalculateAxis(d, collisionAxis);
 
-			if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
+			if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, f2 * obj2->Transform.scale.x)) {
 				return false;
 			}
 		}
@@ -250,7 +256,7 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 
 		vec axis = CalculateAxis(d, collisionAxis);
 
-		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
+		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, f2 * obj2->Transform.scale.x)) {
 			return false;
 		}
 	}
@@ -272,31 +278,31 @@ std::string Game::formatText(std::string text, bool type, int length) {
 
 void Game::DeleteGame() {
 	for (int i = 0; i < Game::Texts.size(); i++) {
-			delete Texts[i];
+		delete Texts[i];
 	}
 
 	for (int i = 0; i < Game::Objects.size(); i++) {
-			delete Objects[i];
+		delete Objects[i];
 	}
 
 	Texts.clear();
 	Objects.clear();
-		if (State == Game_Menu) {
-			delete games.menu;
-		}
-		else if (State == Game_Init) {
-			delete games.Init;
-		}
-		else if (State == Game_TEST) {
-			delete games.test;
-		}
-		else if (State == Game_Asteroids) {
-			delete games.asteroids;
-		}
-		else if (State == Game_Battlezone) {
-			delete games.battlezone;
-		}
-		else if (State == Game_Tempest) {
-			delete games.tempest;
-		}
+	if (State == Game_Menu) {
+		delete games.menu;
+	}
+	else if (State == Game_Init) {
+		delete games.Init;
+	}
+	else if (State == Game_TEST) {
+		delete games.test;
+	}
+	else if (State == Game_Asteroids) {
+		delete games.asteroids;
+	}
+	else if (State == Game_Battlezone) {
+		delete games.battlezone;
+	}
+	else if (State == Game_Tempest) {
+		delete games.tempest;
+	}
 }
