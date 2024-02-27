@@ -358,7 +358,8 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	points_move_list(move, type, point);
 	points_move_list(move2, type, point2);
 	lastTSN = tunnelSidesNo;
-
+	zhelp = move2[0].z;
+		
 	if (type == 1) tunnel.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), v, id));
 	else {
 		std::vector<float> vxVec;
@@ -554,6 +555,25 @@ void Tempest::spiker(float dt) {
 			spike[i]->Object.verticies.vertecies[6] = help.x;
 			spike[i]->Object.verticies.vertecies[7] = help.y;
 			spike[i]->Object.verticies.vertecies[8] = help.z;	
+		}
+		else if (enemies_bool[1][i] == false) {
+			enemies_bool[1][i] = true;
+		}
+
+		else if (help.z > zhelp ) {
+			enemies[1][i]->Move(vec(0, 0, 3) * dt);
+			enemies[1][i]->Rotate(vec(0, 0, -2));
+		} 
+		else {
+			Game::Destroy(enemies[1][i]);
+			enemies_spawn(0, i, 1, help.z);
+			enemies[1].erase(enemies[1].begin() + i);
+			enemies_position[1].erase(enemies_position[1].begin() + i);
+			enemies_bool[1].erase(enemies_bool[1].begin() + i);
+			spikers_max.erase(spikers_max.begin() + i);
+			spike.erase(spike.begin() + i);
+			vx_spike.erase(vx_spike.begin() + i);
+
 		}
 	}
 }
