@@ -201,7 +201,7 @@ private:
 	void collectPowerUp(GameObject* _inside, GameObject* _box, unsigned int _type);
 
 	int money;
-	const std::wstring shopModels[1] = { L"PowerUpHeart" };
+	const std::wstring shopModels[3] = { L"PowerUpHeart" };
 	int itemsPrice[3];
 	int itemsType[3];
 	GameObject* shopDisplayIcons[3];
