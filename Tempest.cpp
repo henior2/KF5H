@@ -384,20 +384,29 @@ void Tempest::enemies_spawn(int type2) {
 	vec b = move2[spawn2];
 
 	vec place;
-	if (type2 == 2)
-		place = vec(b.x, b.y, b.z);
-
-	else if (type2 == 3)
+	vec scale((b - a).Length() / 1.5, 3);
+	if (type2 == 2) 
+		place = vec(a.x, a.y, a.z);
+	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
-	else
+		scale.x /= 1.3;
+		scale.y /= 1.3;
+		scale.z /= 1.3;
+	}
+	else {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
+		scale.x /= 1.85;
+		scale.y /= 1.85;
+		scale.z /= 1.85;
+	}
 
 	vec rotation;
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
 
-	enemies[type2].push_back(Game::Create(place, rotation, vec((b - a).Length() / 1.5, 3), model));
+	enemies[type2].push_back(Game::Create(place, rotation, scale, model));
 	enemies_position[type2].push_back(spawn1);
+	enemies_bool[type2].push_back(false);
 
 }
 
@@ -405,7 +414,7 @@ void Tempest::tanker(float dt) {
 	vec help;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
-		if (help.z < -8.0)
+		if (help.z < -7.5)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
 		else {
 			Game::Destroy(enemies[0][i]);
@@ -422,7 +431,7 @@ void Tempest::fuseball(float dt) {
 
 	for (int i = 0; i < enemies[2].size(); i++) {
 
-		direction = rand() % 4 + 1; //do przodu, do ty³u, w prawo, w lewo
+		direction = rand() % 1 + 1; //do przodu, do ty³u, w prawo, w lewo
 		pos = enemies_position[2][i];
 		help = enemies[2][i]->Transform.position;
 

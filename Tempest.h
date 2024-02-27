@@ -30,6 +30,7 @@ private:
 	std::vector <GameObject*> bulletsofplayer;
 	std::vector <GameObject*> enemies[4];
 	std::vector <int> enemies_position[4];
+	std::vector <bool> enemies_bool[4];
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;

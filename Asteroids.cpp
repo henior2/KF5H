@@ -2,6 +2,7 @@
 #include "The real engine/The Real Engine.h"
 
 void Asteroids::Init(bool again) {
+	/*
 	clickCooldown = .25f;
 	isEndScreenMusicPlaying = false;
 
@@ -192,9 +193,11 @@ void Asteroids::Init(bool again) {
 		current->Stage[0].onTop = true;
 		tLives.push_back(current);
 	}
+	*/
 }
 
-void Asteroids::Update(const float& dt) {
+void Asteroids::Update(const float& dt) { 
+	/*
 	clickCooldown -= dt;
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
@@ -751,6 +754,7 @@ void Asteroids::Update(const float& dt) {
 		halo->MoveTo(vec(pPos.x, pPos.y, -80));
 		halo->Rotate(vec(0, 0, 1) * dt * speed * haloRotation);
 	}
+	*/
 }
 
 bool Asteroids::checkBounds(GameObject* current, bool stay, vec bounds) {
