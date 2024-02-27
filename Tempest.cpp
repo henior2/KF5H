@@ -414,12 +414,12 @@ void Tempest::enemies_spawn(int type2) {
 	if(type2 == 1) spikers_max.push_back(rand() % 5 - 14);
 }
 
-void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawner) {
+void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z) {
 	std::wstring model = enemy_models[type2];
 
 	int spawn1 = enemies_position[typeofspawner][positionofshipinvec];
 	int spawn2;
-	vec help = enemies[typeofspawner][positionofshipinvec]->Transform.position;
+
 	vec a = move2[spawn1];
 	if (spawn1 == move2.size() - 1) spawn2 = 0;
 	else spawn2 = spawn1 + 1;
@@ -428,15 +428,15 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 	vec place;
 	vec scale((b - a).Length() / 1.5, 3);
 	if (type2 == 2)
-		place = vec(a.x, a.y, help.z);
+		place = vec(a.x, a.y, z);
 	else if (type2 == 3) {
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, help.z);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
 		scale.x /= 1.3;
 		scale.y /= 1.3;
 		scale.z /= 1.3;
 	}
 	else {
-		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, help.z);
+		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
 		scale.x /= 1.85;
 		scale.y /= 1.85;
 		scale.z /= 1.85;
@@ -453,14 +453,15 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 }
 
 void Tempest::tanker(float dt) {
-	vec help;
+	vec help, xd;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
 		if (help.z < -7.5)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
 		else {
+			xd = enemies[0][i]->Transform.position;
 			Game::Destroy(enemies[0][i]);
-			enemies_spawn(3, i, 0);
+			enemies_spawn(3, i, 0, xd.z);
 			enemies[0].erase(enemies[0].begin() + i);
 			enemies_position[0].erase(enemies_position[0].begin() + i);
 			enemies_bool[0].erase(enemies_bool[0].begin() + i);

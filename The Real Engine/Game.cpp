@@ -143,7 +143,7 @@ vec Game::CalculateAxis(const vec& d, const vec& collisionAxis) {
 }
 void Game::ProjectMesh(const std::vector<vec>& mesh, const vec& axis, float& min, float& max) {
 	min = INFINITE;
-	max = -INFINITE;
+	max = INFINITE;
 	for (size_t i = 0; i < mesh.size(); i += 6) {
 		vec p(mesh[i]);
 		float product = vec::Dot(p, axis);
