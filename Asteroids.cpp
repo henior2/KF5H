@@ -2,7 +2,6 @@
 #include "The real engine/The Real Engine.h"
 
 void Asteroids::Init(bool again) {
-	/*
 	clickCooldown = .25f;
 	isEndScreenMusicPlaying = false;
 
@@ -193,11 +192,9 @@ void Asteroids::Init(bool again) {
 		current->Stage[0].onTop = true;
 		tLives.push_back(current);
 	}
-	*/
 }
 
 void Asteroids::Update(const float& dt) { 
-	/*
 	clickCooldown -= dt;
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
@@ -386,14 +383,14 @@ void Asteroids::Update(const float& dt) {
 		vec currentPos = current->Transform.position;
 
 		//collisions - player/bullets
-		if (!isBulletPlayers[i] && Game::collisionCircle(pPos, current->Transform.position)) {
+		if (!isBulletPlayers[i] && Game::collisionCircle(ship, current, vec(1,1,0))) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 
 		//collisions - enemy/bullets
 		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
-			if (isBulletPlayers[i] && Game::collisionCircle(currentPos, enemy->Transform.position)) {
+			if (isBulletPlayers[i] && Game::collisionCircle(current, enemy, vec(1, 1, 0))) {
 				death(enemy->Transform.position, vec(0, 3), enemy, false, false, enemySizes[0], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
 				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
@@ -415,7 +412,7 @@ void Asteroids::Update(const float& dt) {
 		//collisions - asteroids/bullets
 		for (int j = asteroids.size() - 1; j >= 0; j--) {
 			GameObject* asteroid = asteroids[j];
-			if (Game::collisionCircle(currentPos, asteroid->Transform.position)) {
+			if (Game::checkCollisions(asteroid, current, vec(1,1,0), true)) {
 				int type = asteroidSize[j];
 				if (type < 2) {
 					float ori = asteroid->Transform.orientation.z;
@@ -628,7 +625,7 @@ void Asteroids::Update(const float& dt) {
 		}
 
 		//collisions - player/enemy
-		if (Game::collisionCircle(pPos, pos)) {
+		if (Game::checkCollisions(current,ship, vec(1, 1, 0), true)) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
@@ -660,7 +657,7 @@ void Asteroids::Update(const float& dt) {
 		checkBounds(current, false, vec(Game::camera->cameraWidth + bounds, Game::camera->cameraHeight + bounds, 0));
 
 		//collisions - player/asteroid
-		if (Game::collisionCircle(pPos, current->Transform.position)) {
+		if (Game::checkCollisions(current,ship, vec(1, 1, 0),true)) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
@@ -730,11 +727,11 @@ void Asteroids::Update(const float& dt) {
 			spaceship->Move(vec(0, 1, 0) * spaceshipSpeed * dt);
 
 			//collisions - spaceship/player
-			if (!hasSpaceshipPlayedSound && Game::collisionCircle(vec(spaceship->Transform.position), pPos, 17.5f, 17.5f)) {
+			if (!hasSpaceshipPlayedSound && Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) {
 				hasSpaceshipPlayedSound = true;
 				Game::Sound(L"asteroidsLoudWoosh", false);
 			}
-			if (Game::collisionCircle(vec(spaceship->Transform.position), pPos)) death(ship->Transform.position, ship->Transform.orientation, ship);
+			if (Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) death(ship->Transform.position, ship->Transform.orientation, ship);
 
 			if (checkBounds(spaceship, false, vec(camW + 2 * bounds, camH + 2 * bounds, 0))) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
@@ -754,7 +751,6 @@ void Asteroids::Update(const float& dt) {
 		halo->MoveTo(vec(pPos.x, pPos.y, -80));
 		halo->Rotate(vec(0, 0, 1) * dt * speed * haloRotation);
 	}
-	*/
 }
 
 bool Asteroids::checkBounds(GameObject* current, bool stay, vec bounds) {
