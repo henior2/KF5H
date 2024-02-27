@@ -11,7 +11,7 @@
 #include "..\Initialization.h"
 #include "..\TEST.h"
 #include "TextBox.h"
-
+#include <stdexcept>
 
 struct Games {
 	Menu* menu = new Menu();
@@ -59,15 +59,19 @@ public:
 	
 	static void ChangeState(const GameState& state);
 
-	static bool collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec collisionAxis);
-	static bool collsionSAT(const GameObject* obj1, const GameObject* obj2, const vec collisionAxis, const bool simplify = false);
+	static void FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify = false);
+	static vec CalculateAxis(const vec& d, const vec& collisionAxis);
+	static void ProjectMesh(const std::vector<vec>& mesh, const vec& axis, float& min, float& max);
+
+	static bool collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis);
+	static bool collsionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
 	// `obj1` and `obj2` are colliding objects
 	// \n
 	// `collisionAxis` is an axis, from which we chceck for collisions (eg. `vec(1,1,0)` - "2D" collisions (XY plane) are being checked for)
 	// \n
 	// if `simplify` is set to `true`, the second object will be treated as a circle with no details
-	static bool checkCollisions(const GameObject* obj1, const GameObject* obj2, const vec collisionAxis, const bool simplify = false);
+	static bool checkCollisions(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
 	static std::string formatText(std::string text, bool type, int length = 3);
 private:

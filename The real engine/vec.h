@@ -33,6 +33,8 @@ public:
 	void operator +=(const vec& second);
 	void operator -=(const vec& second);
 
+	bool operator ==(const vec& second) const;
+
 	//did bro just multiply vecotrs (FBI's coming for him) (he has no idea)
 	vec operator&(const vec& second) const;
 
