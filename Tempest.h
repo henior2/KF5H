@@ -66,5 +66,6 @@ private:
 	void tanker(float dt);
 	void fuseball(float dt);
 	void spiker(float dt);
+	void flipper(float dt);
 };
 

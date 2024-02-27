@@ -577,3 +577,6 @@ void Tempest::spiker(float dt) {
 		}
 	}
 }
+void Tempest::flipper(float dt) {
+
+}
