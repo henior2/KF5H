@@ -61,10 +61,12 @@ public:
 
 	static void FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify = false);
 	static vec CalculateAxis(const vec& d, const vec& collisionAxis);
-	static void ProjectMesh(const std::vector<vec>& mesh, const vec& axis, float& min, float& max);
+	static void ProjectMesh(const vec& pos, const std::vector<vec>& mesh, const vec& axis, float& min, float& max);
+	static void ProjectCircle(const vec& pos, float radius, const vec& axis, float& min, float& max);
+	static bool CheckOverlapAndProject(const vec& position1, const std::vector<vec>& mesh1, const vec& position2, const std::vector<vec>& mesh2, const vec& axis, bool simplify = false, float radius = 0.0f);
 
 	static bool collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis);
-	static bool collsionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
+	static bool collisionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
 	// `obj1` and `obj2` are colliding objects
 	// \n

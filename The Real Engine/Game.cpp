@@ -136,20 +136,35 @@ void Game::FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify
 	}
 }
 vec Game::CalculateAxis(const vec& d, const vec& collisionAxis) {
-	if (collisionAxis == vec(1, 1, 0)) return vec(-d.y, d.x, 0);
-	else if (collisionAxis == vec(1, 0, 1)) return vec(-d.z, 0, d.x);
-	else if (collisionAxis == vec(0, 1, 1)) return vec(0, -d.z, d.y);
+	if		(collisionAxis == vec(1, 1, 0)) return vec(-d.y,  d.x,   0);
+	else if (collisionAxis == vec(1, 0, 1)) return vec(-d.z,    0, d.x);
+	else if (collisionAxis == vec(0, 1, 1)) return vec(   0, -d.z, d.y);
 	throw std::invalid_argument("'const vec& collisionAxis' should to be either 'vec(1,1,0)', 'vec(1,0,1)' or 'vec(0,1,1)'");
 }
-void Game::ProjectMesh(const std::vector<vec>& mesh, const vec& axis, float& min, float& max) {
+void Game::ProjectMesh(const vec& pos, const std::vector<vec>& mesh, const vec& axis, float& min, float& max) {
 	min = INFINITE;
 	max = -INFINITE;
 	for (size_t i = 0; i < mesh.size(); i += 6) {
-		vec p(mesh[i]);
+		vec p(mesh[i] + pos);
 		float product = vec::Dot(p, axis);
 		if (product < min) min = product;
 		if (product > max) max = product;
 	}
+}
+void Game::ProjectCircle(const vec& pos, float radius, const vec& axis, float& min, float& max) {
+	float centerProjection = vec::Dot(pos, axis);
+	min = centerProjection - radius;
+	max = centerProjection + radius;
+}
+bool Game::CheckOverlapAndProject(const vec& position1, const std::vector<vec>& mesh1, const vec& position2, const std::vector<vec>& mesh2, const vec& axis, bool simplify, float radius) {
+	float min1, max1, min2, max2;
+
+	ProjectMesh(position1, mesh1, axis, min1, max1);
+
+	if (!simplify) ProjectMesh(position2, mesh2, axis, min2, max2);
+	else ProjectCircle(position2, radius, axis, min2, max2);
+
+	return !(min1 > max2 || min2 > max1);
 }
 
 bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis) {
@@ -164,28 +179,54 @@ bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const
 
 	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) + (pos2.z - pos1.z) * (pos2.z - pos1.z) <= (r1 + r2) * (r1 + r2));
 }
-bool Game::collsionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify) {
+bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify) {
 	std::vector<vec> mesh1, mesh2;
 
-	FillMesh(mesh1, obj1, false); // Always fill mesh1
-	FillMesh(mesh2, obj2, simplify); // Conditionally fill mesh2 based on simplify
+	FillMesh(mesh1, obj1, false);
+	FillMesh(mesh2, obj2, simplify);
 
-	for (size_t i = 0; i < mesh1.size() / 2; i++) {
+	for (int i = 0; i < mesh1.size() / 2; i++) {
 		vec d(mesh1[i * 2] - mesh1[i * 2 + 1]);
 		vec axis = CalculateAxis(d, collisionAxis);
 
-		float min1, max1, min2, max2;
-		ProjectMesh(mesh1, axis, min1, max1);
-		if (!simplify) {
-			ProjectMesh(mesh2, axis, min2, max2);
-			if (min1 - max2 > 0 || min2 - max1 > 0) return false;
+		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
+			return false;
+		}
+	}
+
+	if (!simplify) {
+		for (int i = 0; i < mesh2.size() / 2; i++) {
+			vec d(mesh2[i * 2] - mesh2[i * 2 + 1]);
+			vec axis = CalculateAxis(d, collisionAxis);
+
+			if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
+				return false;
+			}
+		}
+	}
+	else {
+		float minLen = INFINITE;
+		vec d;
+
+		for (int i = 0; i < mesh1.size(); i++) {
+			vec len(obj2->Transform.position - (obj1->Transform.position + mesh1[i]));
+			if (len.Length() < minLen) {
+				minLen = len.Length();
+				d = len;
+			}
+		}
+
+		vec axis = CalculateAxis(d, collisionAxis);
+
+		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
+			return false;
 		}
 	}
 
 	return true;
 }
 bool Game::checkCollisions(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify) {
-	return Game::collisionCircle(obj1, obj2, collisionAxis) && Game::collsionSAT(obj1, obj2, collisionAxis, simplify);
+	return Game::collisionCircle(obj1, obj2, collisionAxis) && Game::collisionSAT(obj1, obj2, collisionAxis, simplify);
 }
 
 std::string Game::formatText(std::string text, bool type, int length) {
