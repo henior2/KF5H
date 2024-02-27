@@ -56,9 +56,9 @@ void Battlezone::Init() {
 	isPlane = false;
 	planeStartCoords = vec(-1000, 0, -1000);
 
-	player = Game::Create(vec(0.0f), vec(0.0f), vec(1.0f), L"Tank");
-	ufo = Game::Create(vec(-1000.0f), vec(0.0f), vec(1.0f), L"Ufo");
-	plane = Game::Create(vec(-1000.0f, 1000, -1000.0f), vec(0.0f), vec(1.0f), L"BattlezonePlane");
+	player = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(1.0f,3), L"Tank");
+	ufo = Game::Create(vec(-1000.0f,3), vec(0.0f,3), vec(1.0f,3), L"Ufo");
+	plane = Game::Create(vec(-1000.0f, 1000, -1000.0f), vec(0.0f,3), vec(1.0f,3), L"BattlezonePlane");
 
 	//making radar , oh I found it
 	std::vector<float> rVx;
@@ -203,7 +203,7 @@ void Battlezone::Update(float dt) {
 
 	if (hp <= 0) {
 		
-		display_hp->Write("You died");
+		display_hp->ChangeText("You died");
 		isDead = true; //kinda useless but whatever lmao
 	}
 
@@ -329,7 +329,7 @@ void Battlezone::Update(float dt) {
 			if (Game::checkCollisions(player,current,vec(1,0,1))) {
 				hp -= 25;
 				Game::DestroyText(display_hp);
-				display_hp->Write(std::to_string(hp));
+				display_hp->ChangeText(std::to_string(hp));
 				Game::Destroy(current);
 				pociski.erase(pociski.begin() + i);
 				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
@@ -352,8 +352,8 @@ void Battlezone::Update(float dt) {
 	else waveTime -= dt;
 	if (waveFlag && przeciwnicy.empty() && rakiety.empty()) {
 		Game::DestroyText(fala);
-		fala->Write("FALA" + wavePoints);
-		wavePoints += 1;
+		fala->ChangeText("WAVE" + std::to_string(wavePoints));
+		wavePoints += 1; 
 		waveFlag = false;
 		wave(wavePoints, dt);
 		waveTime = 4.0f;
@@ -446,7 +446,7 @@ void Battlezone::Update(float dt) {
 
 				hp -= 50;
 				Game::DestroyText(display_hp);
-				display_hp->Write(std::to_string(hp));
+				display_hp->ChangeText(std::to_string(hp));
 			}
 		}
 	}
