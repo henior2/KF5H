@@ -118,9 +118,9 @@ void Game::FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify
 	if (!simplify) {
 		if (obj->Object.verticies.Colision.edgeSidesNumber == 0) {
 			for (int i = 0; i < obj->Object.verticies.iNum; i++) {
-				mesh.emplace_back(	obj->Object.verticies.vertecies[i * 6 + 0],
-									obj->Object.verticies.vertecies[i * 6 + 1],
-									obj->Object.verticies.vertecies[i * 6 + 2]);
+				mesh.emplace_back(	obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 0],
+									obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 1],
+									obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 2]);
 			}
 		}
 		else {
@@ -173,6 +173,14 @@ bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const
 
 	pos1 = obj1->Transform.position & collisionAxis;
 	pos2 = obj2->Transform.position & collisionAxis;
+
+	if (obj1->Object.verticies.Colision.farthestVertex == 0) {
+		obj1->Object.verticies.CreateCollision();
+	}
+
+	if (obj2->Object.verticies.Colision.farthestVertex == 0) {
+		obj2->Object.verticies.CreateCollision();
+	}
 
 	r1 = obj1->Object.verticies.Colision.farthestVertex;
 	r2 = obj2->Object.verticies.Colision.farthestVertex;
