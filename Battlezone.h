@@ -3,12 +3,12 @@
 class Battlezone
 {
 public:
-    void Init();
-    void Update( float& dt);
+	void Init();
+	void Update(float& dt);
 private:
-    float keyCooldown;
-    GameObject* thePointer;
-    float signed_angle_between_vectors(const vec& A, const vec& B, const vec& axis);
+	float keyCooldown;
+	GameObject* thePointer;
+	float signed_angle_between_vectors(const vec& A, const vec& B, const vec& axis);
 	bool debugCamera = false;
 	bool flag;
 	bool isDead;
@@ -230,7 +230,7 @@ private:
 
 	void shot_fast(vec pos, vec rot) {
 		fastBulletTimeRemain.push_back(bulletMaxTime);
-		GameObject* bullet = Game::Create(pos, rot, vec(1.0f), L"FastBullet");
+		GameObject* bullet = Game::Create(pos, rot, vec(1.0f,3), L"FastBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec(0, 0, -1));
 	}
@@ -239,7 +239,7 @@ private:
 	void shot(vec pos, vec rot, bool isPlayer = false) {
 		if (isPlayer)bulletTimeRemain.push_back(bulletMaxTime);
 		else fastBulletTimeRemain.push_back(bulletMaxTime);
-		GameObject* bullet = Game::Create(pos, rot, vec(1.0f), L"TankBullet");
+		GameObject* bullet = Game::Create(pos, rot, vec(1.0f,3), L"TankBullet");
 		if (!isPlayer)pociski.push_back(bullet);
 		else pociski_gracza.push_back(bullet);
 		//if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
@@ -251,7 +251,7 @@ private:
 		GameObject* bullet;
 
 		fastBulletTimeRemain.push_back(bulletMaxTime);
-		bullet = Game::Create(pos, rot, vec(1.0f), L"TankBullet");
+		bullet = Game::Create(pos, rot, vec(1.0f,3), L"TankBullet");
 		pociski.push_back(bullet);
 		bullet->Move(vec(0, 0, -1));
 
@@ -312,69 +312,69 @@ private:
 	void spawn_enemy(vec pos, vec rot, int type) {
 		//Normal tank
 		if (type == 1) {
-			GameObject* enemy = Game::Create(pos, rot, vec(1.0f), L"Tank");
+			GameObject* enemy = Game::Create(pos, rot, vec(1.0f,3), L"Tank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(enemyCooldown);
 
-			GameObject* rPointer = Game::Create(vec(0.0f), vec(0.0f), vec(rPointerScaleDefault), L"RadarX");
+			GameObject* rPointer = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(rPointerScaleDefault), L"RadarX");
 			radarElements.push_back(rPointer);
 			radarElementsType.push_back(0);
 			uiElements.push_back(rPointer);
-			targetPos.push_back(vec(0.0f));
-			targetOri.push_back(vec(0.0f));
+			targetPos.push_back(vec(0.0f,3));
+			targetOri.push_back(vec(0.0f,3));
 		}
 		//Fast tank
 		else if (type == 2) {
-			GameObject* enemy = Game::Create(pos, rot, vec(2.0f), L"FastTank");
+			GameObject* enemy = Game::Create(pos, rot, vec(2.0f,3), L"FastTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(enemyCooldown);
 
-			GameObject* rPointer = Game::Create(vec(0.0f), vec(0.0f), vec(rPointerScaleBig), L"RadarX");
+			GameObject* rPointer = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(rPointerScaleBig), L"RadarX");
 			radarElements.push_back(rPointer);
 			radarElementsType.push_back(0);
 			uiElements.push_back(rPointer);
-			targetPos.push_back(vec(0.0f));
-			targetOri.push_back(vec(0.0f));
+			targetPos.push_back(vec(0.0f,3));
+			targetOri.push_back(vec(0.0f,3));
 		}
 		//Leonardo tank
 		else if (type == 3) {
-			GameObject* enemy = Game::Create(pos, rot, vec(1.0f), L"LeonardoTank");
+			GameObject* enemy = Game::Create(pos, rot, vec(1.0f,3), L"LeonardoTank");
 			przeciwnicy.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(enemyCooldown);
 
-			GameObject* rPointer = Game::Create(vec(0.0f), vec(0.0f), vec(rPointerScaleDefault), L"AsteroidsStar");
-			rPointer->color = vec3(0, 1, 0);
+			GameObject* rPointer = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(rPointerScaleDefault), L"AsteroidsStar");
+			rPointer->SetColor(vec(0, 1, 0));
 			radarElements.push_back(rPointer);
 			radarElementsType.push_back(0);
 			uiElements.push_back(rPointer);
-			targetPos.push_back(vec3(0.0f));
-			targetOri.push_back(vec3(0.0f));
+			targetPos.push_back(vec(0.0f, 3));
+			targetOri.push_back(vec(0.0f, 3));
 		}
 		//Rocket
 		else if (type == 4) {
-			GameObject* enemy = Gra->Create(pos, rot, vec3(1.0f), "Rocket");
+			GameObject* enemy = Game::Create(pos, rot, vec(1.0f,3), L"Rocket");
 			rakiety.push_back(enemy);
 			enemyType.push_back(type);
 			enemyShotCooldowns.push_back(enemyCooldown);
 
-			GameObject* rPointer = Gra->Create(vec3(0.0f), vec3(0.0f), vec3(rPointerScaleDefault), "AsteroidsShip");
-			rPointer->color = vec3(0, 1, 0);
+			GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"AsteroidsShip");
+			rPointer->SetColor(vec(0, 1, 0));
 			radarElements.push_back(rPointer);
 			radarElementsType.push_back(3);
 			uiElements.push_back(rPointer);
-			targetPos.push_back(vec3(0.0f));
-			targetOri.push_back(vec3(0.0f));
+			targetPos.push_back(vec(0.0f, 3));
+			targetOri.push_back(vec(0.0f, 3));
 		}
 
 		// kamil forgor 💀 //stfu
 		auto* current = radarElements.back();
 		current->Stage[0].onTop = true;
-		current->ScaleTo(vec3(uiScale * 9, uiScale * 16, 0));
-		current->MoveTo(vec3(0, uiYOffset, 0));
-		current->Rotate(vec3(0, 180, 0));
+		current->ScaleTo(vec(uiScale * 9, uiScale * 16, 0));
+		current->MoveTo(vec(0, uiYOffset, 0));
+		current->Rotate(vec(0, 180, 0));
 
 		randomActionTimeLimit.push_back(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionLimit))); //x∈Q: [0;mRAL]
 		randomActionTimeCooldown.push_back(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxRandomActionCooldown))); //x∈Q: [0;mRAC]
@@ -389,7 +389,7 @@ private:
 			if (przeciwnicy.empty() && rakiety.empty()) {
 				int enemy = rand() % 4 + 1;
 				if (wavePoints - enemy >= 0) {
-					spawn_enemy(vec3(temp_x, 0, temp_z), vec3(0, temp_y, 0), enemy);
+					spawn_enemy(vec(temp_x, 0, temp_z), vec(0, temp_y, 0), enemy);
 					wavePoints -= enemy;
 				}
 			}
@@ -400,6 +400,234 @@ private:
 			}
 		}
 	}
+	void makeHorizon() {
+		std::vector<float> vx;
+		std::vector<unsigned int> ind;
 
+		const float distance = 60.0f;
+		const float maxMountainHeight = 12.5f;
+		const float minMountainHeight = 5.0f;
+		const int mountainNumber = 15;
+
+		const int moonPointsNumber = 10;
+		const float moonRadius = 2.5f;
+		const float moonAboveMountains = 5.0f; //how high the moon is above the mountains //wtf we got the moon? i thought mateusz stole it
+
+		for (int i = 0; i < mountainNumber; i++) {
+			double angle = 2 * M_PI * i / mountainNumber;
+			double nextAngle = 2 * M_PI * (i + 1) / mountainNumber;
+
+			float yPos = minMountainHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxMountainHeight - minMountainHeight)));
+			push_back3(vx, distance * (float)cos(angle), yPos, distance * (float)sin(angle));
+			push_back3(vx, 0, 1, 0);
+
+			yPos = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / minMountainHeight));
+			float randAngle = static_cast <float> (angle + rand()) / (static_cast <float> (RAND_MAX / (nextAngle - angle)));
+			push_back3(vx, distance * cos(randAngle), yPos, distance * sin(randAngle));
+			push_back3(vx, 0, 1, 0);
+
+			push_back2(ind, 2 * i, 2 * i + 1);
+			push_back2(ind, 2 * i + 1, 2 * i + 2);
+		}
+		ind.pop_back();
+		ind.push_back(0);
+
+		int countingOffset = mountainNumber * 2;
+		for (int i = 0; i < moonPointsNumber; i++) {
+			double angle = 2 * M_PI * i / moonPointsNumber;
+
+			push_back3(vx, moonRadius * (float)cos(angle), moonAboveMountains + maxMountainHeight + moonRadius * (float)sin(angle), distance);
+			push_back3(vx, 0, 1, 0);
+
+			push_back2(ind, countingOffset + i, countingOffset + i + 1);
+		}
+		ind.pop_back();
+		ind.push_back(countingOffset);
+
+		countingOffset += moonPointsNumber;
+		for (int i = 0; i < mountainNumber * 2; i++) {
+			double angle = M_PI * i / mountainNumber;
+
+			push_back3(vx, distance * (float)cos(angle), 0, distance * (float)sin(angle));
+			push_back3(vx, 0, 1, 0);
+
+			push_back2(ind, countingOffset + i, countingOffset + i + 1);
+		}
+		ind.pop_back();
+		ind.push_back(countingOffset);
+
+		horizon = Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), vx, ind);
+	}
+
+	//where is radar? //no idea, mate. try using ctrl+f
+
+
+	void makeObstacles(float x, float z, float height) {
+		std::vector<float> vx;
+		std::vector<unsigned int> ind;
+
+		std::vector<vec> points;
+
+		int lv = rand() % (maxLevels - minLevels) + minLevels;
+
+		float lHeight = height / lv;
+
+		int ver = rand() % (maxBaseVerticies - minBaseVerticies) + minBaseVerticies;
+		float radius = minRadius + (float)(rand()) / ((float)(RAND_MAX / (maxRadius - minRadius)));
+
+		for (int i = 0; i < lv - 1; i++) {
+			int noVxLvBw = i * ver;
+
+			float yModifier = (float)(rand()) / (static_cast <float> (RAND_MAX / levelMaxYOffset));
+			if (rand() % 2) yModifier *= -1;
+
+			if (i != 0) radius -= (minLevelRadiusDecrease + (float)(rand()) / ((float)(RAND_MAX / (maxLevelRadiusDecrease - minLevelRadiusDecrease))));
+			if (radius < minRadius) radius = minRadius;
+
+			for (int j = 0; j < ver; j++) {
+				double angle = 2 * M_PI * j / ver;
+
+				float mxvtr = maxVertexOffset * radius;
+				float radiusModifier = -mxvtr + (float)(rand()) / ((float)(RAND_MAX / (mxvtr + mxvtr))); //i must have been high when i wrote this lmao
+
+				float tempRadius = radius + radiusModifier;
+
+				vec point = vec(tempRadius * cos(angle), (i * lHeight) + yModifier, tempRadius * sin(angle));
+				points.push_back(point);
+
+				//last layer => topmost vertex
+				if (i == lv - 2) {
+					ind.push_back(j + noVxLvBw);
+					ind.push_back((lv - 1) * ver);
+				}
+
+				//every layer before => layer above
+				if (i < lv - 2) {
+					ind.push_back(j + noVxLvBw);
+
+					int nextVx = j + noVxLvBw + ver;
+
+					ind.push_back(nextVx);
+
+					if (rand() % 100 < backConnChance * 100) {
+						ind.push_back(j + noVxLvBw);
+						int _rand = rand() % 2;
+						if (_rand && --nextVx < 0) nextVx = 2;
+						else if (!_rand && ++nextVx > (lv - 1) * ver) nextVx = (lv - 1) * ver - 3;
+						ind.push_back(nextVx);
+					}
+				}
+
+				//every vertex in any given layer => vertex next to
+				ind.push_back(j + noVxLvBw);
+				ind.push_back(j + noVxLvBw + 1);
+			}
+			ind.pop_back();
+			ind.push_back(noVxLvBw);
+		}
+		points.push_back(vec(0.0f, lv * lHeight, 0.0f));
+
+		for (auto const& point : points) {
+			vx.push_back(point.x);
+			vx.push_back(point.y);
+			vx.push_back(point.z);
+
+			vx.push_back(0);
+			vx.push_back(1);
+			vx.push_back(0);
+		}
+
+		obstacles.push_back(Game::Create(vec(x, 0.0f, z), vec(0.0f, rand() % 360, 0.0f), vec(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
+
+		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"RadarT");
+		radarElements.push_back(rPointer);
+		radarElementsType.push_back(1);
+		uiElements.push_back(rPointer);
+		targetPos.push_back(vec(0.0f,3));
+		targetOri.push_back(vec(0.0f,3));
+	}
+
+
+	void createPowerUp(float x, float y, float z, int type) {
+		powerUpInside.push_back(Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale), L"PowerUp" + pUModels[type]));
+		powerUpBox.push_back(Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale), L"PowerUpBox"));
+		powerUpType.push_back(type);
+
+		if (type == 2) {
+			GameObject* obj = Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale), L"Arrow0");
+			obj->AddStage("Arrow1");
+			obj->AddStage("Arrow2");
+			obj->AddStage("Arrow3");
+			powerUpAnimation.push_back(obj);
+		}
+
+		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"MenuSquare");
+		radarElements.push_back(rPointer);
+		radarElementsType.push_back(2);
+		uiElements.push_back(rPointer);
+		targetPos.push_back(vec(0.0f, 3));
+		targetOri.push_back(vec(0.0f, 3));
+	}
+
+
+	void collectPowerUp(GameObject* _inside, GameObject* _box, unsigned int _type) {
+		Game::Destroy(_inside);
+		Game::Destroy(_box);
+
+		switch (_type) {
+		case 0:
+			velocity *= (1 + speedBoost);
+			break;
+		case 1:
+			hp += healthBoost;
+			break;
+		case 2:
+			timeMultiplier *= (1 - timeDecrease);
+			timeEffectLeft = timeEffectLength;
+			break;
+		case 3:
+			scoreMultiplier *= (1 + scoreMultiplierChange);
+			break;
+		case 4:
+			score += scoreChange;
+			break;
+		case 5:
+			isMissleSelfTargeting = true;
+			break;
+		default:
+			throw std::invalid_argument("You might have forgotten to code what happens after collecting the PU. Chceck the `colleckPowerUp()` function.");
+		}
+	}
+
+
+
+	void insertItem(int item, bool isTheFirstTime = false) {
+		itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
+		itemsPrice[item] = 300; //todo: add proper pricing
+		if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
+		shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale), shopModels[itemsType[item]]);
+		shopDisplayIcons[item]->Stage[0].onTop = true;
+	}
+
+	void buyItem(int type, int cost, int item) {
+		money -= cost;
+
+		switch (type) {
+		case 0:
+			if (hp < 100) hp = 100;
+			else hp += 25;
+
+			break;
+		default:
+			throw std::invalid_argument("the shop is out of stock");
+		}
+
+		insertItem(item);
+	}
+
+	void shopAction(int item, bool isForced = false) {
+		if (money >= itemsPrice[item] || isForced) buyItem(itemsType[item], itemsPrice[item], item);
+
+
+	}
 };
-
