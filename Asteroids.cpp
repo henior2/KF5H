@@ -412,6 +412,11 @@ void Asteroids::Update(const float& dt) {
 		//collisions - asteroids/bullets
 		for (int j = asteroids.size() - 1; j >= 0; j--) {
 			GameObject* asteroid = asteroids[j];
+			if (Game::collisionCircle(asteroid, current, vec(1, 1, 0)))
+			{
+				current->SetColor(vec(1, 0, 0));
+				asteroid->SetColor(vec(1 / asteroid->Object.verticies.Colision.farthestVertex, 0, 0));
+			}
 			if (Game::checkCollisions(asteroid, current, vec(1,1,0), true)) {
 				int type = asteroidSize[j];
 				if (type < 2) {
@@ -611,6 +616,11 @@ void Asteroids::Update(const float& dt) {
 			isBulletPlayers.push_back(false);
 		}
 
+		//collisions - player/enemy
+		if (Game::checkCollisions(current,ship, vec(1, 1, 0), true)) {
+			death(ship->Transform.position, ship->Transform.orientation, ship);
+		}
+
 		if (type) {
 			if (pos.y <= -camH - bounds && eBDPos[bigEnemyIterator].z <= 0) {
 				Game::Destroy(current);
@@ -622,11 +632,6 @@ void Asteroids::Update(const float& dt) {
 				bigEnemyIterator--; i--;
 			}
 			bigEnemyIterator++;
-		}
-
-		//collisions - player/enemy
-		if (Game::checkCollisions(current,ship, vec(1, 1, 0), true)) {
-			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
 

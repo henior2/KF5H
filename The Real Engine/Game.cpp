@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <windows.h>
+#include "ModelMenager.h"
 
 std::map<UINT, bool> Game::KeysPresed;
 std::vector<GameObject*> Game::Objects;
@@ -114,20 +115,39 @@ void Game::StopSounds() {
 	PlaySoundW(NULL, hMod, SND_PURGE);
 }
 
+vec Game::CalculateBetterVec(const vec& vector, const Transformations& trans) {
+	mat ModelMatrix = mat(1, 4);
+	mat Tra = ModelMatrix.Translate(trans.position);
+	ModelMatrix = ModelMatrix * Tra;
+	ModelMatrix.Rotate(Kmath::Radians(trans.orientation));
+	mat Sc = ModelMatrix.Scale(trans.scale);
+	ModelMatrix = ModelMatrix * Sc;
+
+	vec result(4);
+	result = ModelMatrix * vector;
+
+	vec r;
+
+	for (int j = 0; j < 3; j++) {
+		r.array[j] /= result.array[3];
+		r.array[j] /= result.array[3];
+	}
+
+	return r;
+}
+
 void Game::FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify) {
 	if (!simplify) {
 		if (obj->Object.verticies.Colision.edgeSidesNumber == 0) {
 			for (int i = 0; i < obj->Object.verticies.iNum; i++) {
-				mesh.emplace_back(	obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 0],
-									obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 1],
-									obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 2]);
+				vec Pos = CalculateBetterVec(vec(obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 0], obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 1], obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 2]), obj->Transform);
+				mesh.emplace_back(Pos);
 			}
 		}
 		else {
 			for (int i = 0; i < obj->Object.verticies.Colision.edgeSidesNumber; i++) {
-				mesh.emplace_back(	obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 0],
-									obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 1],
-									obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 2]);
+				vec Pos = CalculateBetterVec(vec(obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 0], obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 1], obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 2]), obj->Transform);
+				mesh.emplace_back(Pos);
 			}
 		}
 	}
@@ -145,7 +165,7 @@ void Game::ProjectMesh(const vec& pos, const std::vector<vec>& mesh, const vec& 
 	min = INFINITE;
 	max = INFINITE;
 	for (size_t i = 0; i < mesh.size(); i += 6) {
-		vec p(mesh[i] + pos);
+		vec p = mesh[i];
 		float product = vec::Dot(p, axis);
 		if (product < min) min = product;
 		if (product > max) max = product;
@@ -174,6 +194,8 @@ bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const
 	pos1 = obj1->Transform.position & collisionAxis;
 	pos2 = obj2->Transform.position & collisionAxis;
 
+	float f1 = (obj1->Object.doVerex) ? obj1->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj1->Object.name].Colision.farthestVertex;
+
 	if (obj1->Object.verticies.Colision.farthestVertex == 0) {
 		obj1->Object.verticies.CreateCollision();
 	}
@@ -182,8 +204,8 @@ bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const
 		obj2->Object.verticies.CreateCollision();
 	}
 
-	r1 = obj1->Object.verticies.Colision.farthestVertex;
-	r2 = obj2->Object.verticies.Colision.farthestVertex;
+	r1 = obj1->Object.verticies.Colision.farthestVertex * obj1->Transform.scale.x;
+	r2 = obj2->Object.verticies.Colision.farthestVertex * obj2->Transform.scale.x;
 
 	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) + (pos2.z - pos1.z) * (pos2.z - pos1.z) <= (r1 + r2) * (r1 + r2));
 }
@@ -194,7 +216,7 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 	FillMesh(mesh2, obj2, simplify);
 
 	for (int i = 0; i < mesh1.size() / 2; i++) {
-		vec d(mesh1[i * 2] - mesh1[i * 2 + 1]);
+		vec d = mesh1[i * 2] - mesh1[i * 2 + 1];
 		vec axis = CalculateAxis(d, collisionAxis);
 
 		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
@@ -204,7 +226,7 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 
 	if (!simplify) {
 		for (int i = 0; i < mesh2.size() / 2; i++) {
-			vec d(mesh2[i * 2] - mesh2[i * 2 + 1]);
+			vec d = mesh2[i * 2] - mesh2[i * 2 + 1];
 			vec axis = CalculateAxis(d, collisionAxis);
 
 			if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, obj2->Object.verticies.Colision.farthestVertex)) {
@@ -217,7 +239,7 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 		vec d;
 
 		for (int i = 0; i < mesh1.size(); i++) {
-			vec len(obj2->Transform.position - (obj1->Transform.position + mesh1[i]));
+			vec len = obj2->Transform.position - (obj1->Transform.position + mesh1[i]);
 			if (len.Length() < minLen) {
 				minLen = len.Length();
 				d = len;

@@ -68,6 +68,8 @@ public:
 	static bool collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis);
 	static bool collisionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
+	static vec CalculateBetterVec(const vec& vec, const Transformations& trans);
+
 	// `obj1` and `obj2` are colliding objects
 	// \n
 	// `collisionAxis` is an axis, from which we chceck for collisions (eg. `vec(1,1,0)` - "2D" collisions (XY plane) are being checked for)
