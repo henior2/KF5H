@@ -628,7 +628,7 @@ void Battlezone::Update(float& dt) {
 
 		dropPos = vec(-dropRadius + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * dropRadius))), -dropRadius + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * dropRadius))),0) + vec(pPos.x,0, pPos.z);
 
-		vec direction = (dropPos.x - planeStartCoords.x,0,dropPos.z - planeStartCoords.z).Normalize();
+		vec direction = vec(dropPos.x - planeStartCoords.x,0,dropPos.z - planeStartCoords.z).Normalize();
 		_angle = atan2(direction.x, direction.y);
 		_angle = _angle * 180.0f / (float)M_PI;
 		plane->RotateTo(vec(0.0f, _angle, 0.0f));
@@ -658,7 +658,7 @@ void Battlezone::Update(float& dt) {
 		GameObject* line = spinningLines[i];
 
 		line->Rotate(vec(0, 0, 360.0f / fullRotationTime * dt));
-		targetOri[(size_t)i + 1] = line->Transform.orientation * vec(0, 0, 1);
+		targetOri[(size_t)i + 1] = line->Transform.orientation & vec(0, 0, 1);
 	}
 
 	//adjusting scanner elements' position
@@ -770,19 +770,19 @@ float signed_angle_between_vectors(const vec& A, const vec& B, const vec& axis) 
 	float magnitudeB = B.Length();
 
 	float cosTheta = dotProduct / (magnitudeA * magnitudeB);
-	float sinTheta = glm::length(glm::cross(A, B)) / (magnitudeA * magnitudeB);
+	float sinTheta = (vec::Cross(A, B).Length()) / (magnitudeA * magnitudeB);
 
 	// Calculate the signed angle using the arctangent and the dot product with the axis
 	float thetaRad = atan2(sinTheta, cosTheta);
 
 	// Calculate the dot product with the axis to determine the sign
-	float dotWithAxis = glm::dot(glm::cross(A, B), axis);
+	float dotWithAxis = vec::Dot(vec::Cross(A, B), axis);
 
 	// Adjust the sign of the angle based on the axis
 	float signedAngleRad = dotWithAxis >= 0 ? thetaRad : -thetaRad;
 
 	// Convert to degrees and ensure the result is in the range (-180, 180]
-	float signedAngleDeg = glm::degrees(signedAngleRad);
+	float signedAngleDeg = (signedAngleRad) * 180.0f / M_PI;
 	signedAngleDeg = fmod(signedAngleDeg + 180.0f, 360.0f) - 180.0f;
 
 	return signedAngleDeg;
