@@ -138,14 +138,15 @@ vec Game::CalculateBetterVec(const vec& vector, const Transformations& trans) {
 
 void Game::FillMesh(std::vector<vec>& mesh, const GameObject* obj, bool simplify) {
 	if (!simplify) {
-		if (obj->Object.verticies.Colision.edgeSidesNumber == 0) {
+		unsigned int edges = (obj->Object.doVerex) ? obj->Object.verticies.Colision.edgeSidesNumber : ModelMenager::ObjectsDatas[obj->Object.name].Colision.edgeSidesNumber;
+		if (edges == 0) {
 			for (int i = 0; i < obj->Object.verticies.iNum; i++) {
 				vec Pos = CalculateBetterVec(vec(obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 0], obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 1], obj->Object.verticies.vertecies[obj->Object.verticies.indecies[i] * 6 + 2]), obj->Transform);
 				mesh.emplace_back(Pos);
 			}
 		}
 		else {
-			for (int i = 0; i < obj->Object.verticies.Colision.edgeSidesNumber; i++) {
+			for (int i = 0; i < edges; i++) {
 				vec Pos = CalculateBetterVec(vec(obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 0], obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 1], obj->Object.verticies.vertecies[obj->Object.verticies.Colision.Sides[i] * 6 + 2]), obj->Transform);
 				mesh.emplace_back(Pos);
 			}
@@ -163,7 +164,7 @@ vec Game::CalculateAxis(const vec& d, const vec& collisionAxis) {
 }
 void Game::ProjectMesh(const vec& pos, const std::vector<vec>& mesh, const vec& axis, float& min, float& max) {
 	min = INFINITE;
-	max = INFINITE;
+	max = -min;
 	for (size_t i = 0; i < mesh.size(); i += 6) {
 		vec p = mesh[i];
 		float product = vec::Dot(p, axis);
@@ -195,17 +196,18 @@ bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const
 	pos2 = obj2->Transform.position & collisionAxis;
 
 	float f1 = (obj1->Object.doVerex) ? obj1->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj1->Object.name].Colision.farthestVertex;
+	float f2 = (obj2->Object.doVerex) ? obj2->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj2->Object.name].Colision.farthestVertex;
 
-	if (obj1->Object.verticies.Colision.farthestVertex == 0) {
+	if (f1 == 0) {
 		obj1->Object.verticies.CreateCollision();
 	}
 
-	if (obj2->Object.verticies.Colision.farthestVertex == 0) {
+	if (f2 == 0) {
 		obj2->Object.verticies.CreateCollision();
 	}
 
-	r1 = obj1->Object.verticies.Colision.farthestVertex * obj1->Transform.scale.x;
-	r2 = obj2->Object.verticies.Colision.farthestVertex * obj2->Transform.scale.x;
+	r1 = f1 * obj1->Transform.scale.x;
+	r2 = f2 * obj2->Transform.scale.x;
 
 	return ((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y) + (pos2.z - pos1.z) * (pos2.z - pos1.z) <= (r1 + r2) * (r1 + r2));
 }
