@@ -524,17 +524,9 @@ void Tempest::fuseball(float dt) {
 			}
 			 enemies_position[2][i] = pos;
 
-			 vec delta_of_moving[7];
-			 delta_of_moving[0]=(vec(b.x,b.y, help.z));
-			 delta_of_moving[1]=(vec(b.x/4,b.y/4, help.z));
-			 delta_of_moving[2]=(vec(b.x/2,b.y/2, help.z));
-			 delta_of_moving[3]=(vec(b.x,b.y, help.z));
-			 delta_of_moving[4]=(vec(b.x,b.y, help.z));
-			 delta_of_moving[5]=(vec(b.x,b.y, help.z));
+			vec delta_of_moving(vec(b.x,b.y, help.z));
 
-			for (int i = 0; i < 7; i++) {
-
-				}
+				enemies[2][i]->MoveTo(delta_of_moving*dt);
 			
 		}	
 		else {
