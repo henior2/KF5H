@@ -16,6 +16,7 @@ public:
 	vec(const unsigned int& Size);
 	vec(const float& value, const unsigned int& Size);
 	vec(const float& valueX, const float& valueY, const float& valueZ);
+	vec(const vec& sec);
 	~vec();
 
 	void operator=(const vec& second);
@@ -32,6 +33,11 @@ public:
 
 	void operator +=(const vec& second);
 	void operator -=(const vec& second);
+
+	bool operator ==(const vec& second) const;
+
+	//did bro just multiply vecotrs (FBI's coming for him) (he has no idea)
+	vec operator&(const vec& second) const;
 
 	float Length() const;
 	vec Normalize() const;

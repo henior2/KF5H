@@ -239,6 +239,7 @@ void Drawing(HWND& hwnd, int width, int height) {
 			RECT rect;
 			GetClientRect(hwnd, &rect);
 			HBRUSH white = CreateSolidBrush(RGB(0, 0, 0));
+			
 			FillRect(hdcBuffer, &rect, white);
 
 			long long eee = GetTickCount64();

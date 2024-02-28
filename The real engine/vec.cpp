@@ -33,8 +33,14 @@ vec::vec(const float& valueX, const float& valueY, const float& valueZ)
 //	GenerateValues();
 }
 
-vec::~vec() {
+vec::vec(const vec& sec) 
+	:size(sec.size), array(new float[size]), x(*array), y(*(array + 1)), z(*(array + 2)), w(*(array + 3))
+{
+	*this = sec;
+}
 
+vec::~vec() {
+	delete[] this->array;
 }
 
 void vec::operator=(const vec& second) {
@@ -42,7 +48,7 @@ void vec::operator=(const vec& second) {
 		// If sizes are different, adjust the size of the current object
 		if (second.size != this->size) {
 			try {
-//				delete[] array;
+				delete[] array;
 			}
 			catch (...) {}
 			size = second.size;
@@ -125,6 +131,14 @@ void vec::operator+=(const vec& second) {
 
 void vec::operator-=(const vec& second) {
 	*this = *this - second;
+}
+
+bool vec::operator==(const vec& second) const {
+	return this->x == second.x && this->y == second.y && this->z == second.z;
+}
+
+vec vec::operator&(const vec& second) const {
+	return vec(this->x * second.x, this->y * second.y, this->z * second.z);
 }
 
 vec vec::Normalize() const {

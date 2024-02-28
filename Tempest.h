@@ -13,10 +13,10 @@ public:
     void Update(const float& dt);
 private:
 	float debugCooldown = .1f;
-	int lastTSN;
-	int lvlDif;
+	int lastTSN = 0;
+	int lvlDif = 0;
 	int type;
-	int superzapper_counting;
+	bool superzapperActive = true;
 
 	const std::vector<std::wstring> enemy_models = {
 		L"Tanker",
@@ -25,17 +25,24 @@ private:
 		L"Flipper"
 	};
 
+	std::vector <unsigned int> ind_spikes { 0,1 };
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
 	std::vector <GameObject*> enemies[4];
 	std::vector <int> enemies_position[4];
+	std::vector <bool> enemies_bool[4];
+	std::vector <int> spikers_max;
+	std::vector <std::vector<float>> vx_spike;
+	std::vector <GameObject*> spike;
+	std::vector <float> help;
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
 	std::vector <vec> point2;
 	vec rotation;
 	int position;
+	float zhelp;
 
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2);
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1);
@@ -55,8 +62,10 @@ private:
 	void tunelspawn(int& lastTSN, int& type);
 
 	void enemies_spawn(int type2);
+	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z);
 	void tanker(float dt);
 	void fuseball(float dt);
 	void spiker(float dt);
+	void flipper(float dt);
 };
 

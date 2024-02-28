@@ -19,7 +19,9 @@ void Menu::Init() {
 			float y = ((float)(rand() % 100) - 50.0f);
 			float z = ((float)(rand() % 150) - 100.0f);
 			float scale = (float)(rand() % 100) / 100.0f + 0.5f;
-			obiekty.push_back(Game::Create(vec(x, y, z), vec(rand() % 360, rand() % 360, rand() % 360), vec(scale, 3), L"MenuCube"));
+			obiekty.push_back(Game::Create(vec(x, y, z), 
+				vec(rand() % 360, rand() % 360, rand() % 360), 
+				vec(scale, 3), L"MenuCube"));
 			obiekty[i]->SetColor(vec(0, 1, 0));
 		}
 		for (int i = 0; i < 5; i++) {

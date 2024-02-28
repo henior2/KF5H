@@ -121,6 +121,7 @@ public:
 
 		ObjectsDatas[Name].vertecies = verecies2;
 		ObjectsDatas[Name].vNum = vNum;
+		ObjectsDatas[Name].CreateCollision();
 	}
 
 	static void ReadIndexFile(std::wifstream file, std::wstring Name) {
@@ -133,9 +134,11 @@ public:
 	static void ReadMeshFile(std::wifstream file, std::wstring Name) {
 		std::pair<unsigned int*, int> Mesh = ReadUnsignedIntFile(std::move(file), Name);
 
-		ObjectsDatas[Name].Colision.Sides = Mesh.first;
-		ObjectsDatas[Name].Colision.edgeSidesNumber = Mesh.second;
-		ObjectsDatas[Name].CreateCollision();
+		ColisionMesh m;
+		m.Sides = Mesh.first;
+		m.edgeSidesNumber = Mesh.second;
+		m.farthestVertex = ObjectsDatas[Name].Colision.farthestVertex;
+		ObjectsDatas[Name].Colision = m;
 	}
 
 	static void LoadModels(std::wstring folder) {
@@ -180,7 +183,7 @@ public:
 						else if(extension == L".ind") {
 							ReadIndexFile(std::move(File), fileNameWithoutExtension);
 						}
-						else {
+						else if(extension == L".mesh") {
 							ReadMeshFile(std::move(File), fileNameWithoutExtension);
 						}
 

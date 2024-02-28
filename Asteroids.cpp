@@ -194,7 +194,7 @@ void Asteroids::Init(bool again) {
 	}
 }
 
-void Asteroids::Update(const float& dt) {
+void Asteroids::Update(const float& dt) { 
 	clickCooldown -= dt;
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
@@ -382,14 +382,14 @@ void Asteroids::Update(const float& dt) {
 		vec currentPos = current->Transform.position;
 
 		//collisions - player/bullets
-		if (!isBulletPlayers[i] && Game::collisionCircle(pPos, current->Transform.position)) {
+		if (!isBulletPlayers[i] && Game::collisionCircle(ship, current, vec(1,1,0))) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 
 		//collisions - enemy/bullets
 		for (int j = enemies.size() - 1; j >= 0; j--) {
 			GameObject* enemy = enemies[j];
-			if (isBulletPlayers[i] && Game::collisionCircle(currentPos, enemy->Transform.position)) {
+			if (isBulletPlayers[i] && Game::collisionCircle(current, enemy, vec(1, 1, 0))) {
 				death(enemy->Transform.position, vec(0, 3), enemy, false, false, enemySizes[0], __enemyVx, __enemyInd);
 				enemies.erase(enemies.begin() + j);
 				if (enemyType[j]) eBDPos.erase(eBDPos.begin() + j);
@@ -411,7 +411,11 @@ void Asteroids::Update(const float& dt) {
 		//collisions - asteroids/bullets
 		for (int j = asteroids.size() - 1; j >= 0; j--) {
 			GameObject* asteroid = asteroids[j];
-			if (Game::collisionCircle(currentPos, asteroid->Transform.position)) {
+			if (Game::collisionCircle(asteroid, current, vec(1, 1, 0)))
+			{
+				current->SetColor(vec(1, 0, 0));
+			}
+			if (Game::checkCollisions(asteroid, current, vec(1,1,0), true)) {
 				int type = asteroidSize[j];
 				if (type < 2) {
 					float ori = asteroid->Transform.orientation.z;
@@ -610,6 +614,11 @@ void Asteroids::Update(const float& dt) {
 			isBulletPlayers.push_back(false);
 		}
 
+		//collisions - player/enemy
+		if (Game::checkCollisions(current,ship, vec(1, 1, 0), true)) {
+			death(ship->Transform.position, ship->Transform.orientation, ship);
+		}
+
 		if (type) {
 			if (pos.y <= -camH - bounds && eBDPos[bigEnemyIterator].z <= 0) {
 				Game::Destroy(current);
@@ -621,11 +630,6 @@ void Asteroids::Update(const float& dt) {
 				bigEnemyIterator--; i--;
 			}
 			bigEnemyIterator++;
-		}
-
-		//collisions - player/enemy
-		if (Game::collisionCircle(pPos, pos)) {
-			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
 
@@ -656,7 +660,7 @@ void Asteroids::Update(const float& dt) {
 		checkBounds(current, false, vec(Game::camera->cameraWidth + bounds, Game::camera->cameraHeight + bounds, 0));
 
 		//collisions - player/asteroid
-		if (Game::collisionCircle(pPos, current->Transform.position)) {
+		if (Game::checkCollisions(current,ship, vec(1, 1, 0),true)) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
@@ -726,11 +730,11 @@ void Asteroids::Update(const float& dt) {
 			spaceship->Move(vec(0, 1, 0) * spaceshipSpeed * dt);
 
 			//collisions - spaceship/player
-			if (!hasSpaceshipPlayedSound && Game::collisionCircle(vec(spaceship->Transform.position), pPos, 17.5f, 17.5f)) {
+			if (!hasSpaceshipPlayedSound && Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) {
 				hasSpaceshipPlayedSound = true;
 				Game::Sound(L"asteroidsLoudWoosh", false);
 			}
-			if (Game::collisionCircle(vec(spaceship->Transform.position), pPos)) death(ship->Transform.position, ship->Transform.orientation, ship);
+			if (Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) death(ship->Transform.position, ship->Transform.orientation, ship);
 
 			if (checkBounds(spaceship, false, vec(camW + 2 * bounds, camH + 2 * bounds, 0))) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
@@ -823,7 +827,7 @@ void Asteroids::spawnAsteroids(int asteroidsNum, unsigned int type, float _posX,
 
 		int temp;
 
-		vec pos = vec(_posX, _posY, 0);
+		vec pos = vec(_posX, _posY, -10);
 		if (_posX == -10000 || _posY == -10000) {
 			do {
 				temp = rand() % (2 * (camW + bounds)) - (camW + bounds);
@@ -835,6 +839,7 @@ void Asteroids::spawnAsteroids(int asteroidsNum, unsigned int type, float _posX,
 		}
 
 		asteroids.push_back(Game::Create(vec(pos.x, pos.y, -90.0f), vec(0.0f, 0.0f, rot), vec(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize))), 3), v, id));
+		//asteroids[asteroids.size() - 1]->SetColor(vec(1, 1, 1));
 		asteroidSize.push_back(type);
 	}
 }

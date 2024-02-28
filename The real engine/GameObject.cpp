@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include <math.h>
 
-GameObject::GameObject(vec pos, vec rot, vec sc, std::wstring file, int i)
+GameObject::GameObject(const vec& pos, const vec& rot, const vec& sc, std::wstring file, int i)
 	:index(i)
 {
 	this->Transform.position = pos;
@@ -17,7 +17,7 @@ GameObject::GameObject(vec pos, vec rot, vec sc, std::wstring file, int i)
 	Stage[activeStage].DifferentColor = false;
 }
 
-GameObject::GameObject(vec pos, vec rot, vec sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i, bool CreateCollisionMesh, std::vector<unsigned int> CollisionMesh)
+GameObject::GameObject(const vec& pos,const vec& rot,const vec& sc, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i, bool CreateCollisionMesh, std::vector<unsigned int> CollisionMesh)
 	:index(i)
 {
 	this->Transform.position = pos;
@@ -66,47 +66,47 @@ GameObject::~GameObject() {
 
 }
 
-void GameObject::Move(vec pos) {
+void GameObject::Move(const vec& pos) {
 	this->Transform.position += Right * pos.x;
 	this->Transform.position += Up * pos.y;
 	this->Transform.position += Front * pos.z;
 }
 
-void GameObject::MoveGlobal(vec pos) {
+void GameObject::MoveGlobal(const vec& pos) {
 	this->Transform.position += pos;
 }
 
-void GameObject::MoveTo(vec pos) {
+void GameObject::MoveTo(const vec& pos) {
 	this->Transform.position = pos;
 }
 
-void GameObject::Rotate(vec rot, float degries) {
+void GameObject::Rotate(const vec& rot, float degries) {
 	this->Transform.orientation += rot * degries;
 	this->Transform.orientation = vec(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
 	UpdateVectors();
 }
 
-void GameObject::Rotate(vec degries) {
+void GameObject::Rotate(const vec& degries) {
 	this->Transform.orientation += degries;
 	this->Transform.orientation = vec(std::fmod(this->Transform.orientation.x, 360.0f), std::fmod(this->Transform.orientation.y, 360.0f), std::fmod(this->Transform.orientation.z, 360.0f));
 	UpdateVectors();
 }
 
-void GameObject::RotateTo(vec rot) {
+void GameObject::RotateTo(const vec& rot) {
 	this->Transform.orientation = vec(std::fmod(rot.x, 360.0f), std::fmod(rot.y, 360.0f), std::fmod(rot.z, 360.0f));
 	UpdateVectors();
 }
 
-void GameObject::Scale(vec scale) {
+void GameObject::Scale(const vec& scale) {
 	this->Transform.scale = vec(this->Transform.scale.x * scale.x, this->Transform.scale.y * scale.y, this->Transform.scale.z * scale.z);
 }
 
-void GameObject::ScaleTo(vec scale) {
+void GameObject::ScaleTo(const vec& scale) {
 	this->Transform.scale = scale;
 }
 
 
-void GameObject::SetColor(vec color3) {
+void GameObject::SetColor(const vec& color3) {
 	Stage[activeStage].DifferentColor = true;
 	Stage[activeStage].color = color3;
 }
@@ -157,24 +157,13 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 		d.Colision.edgeSidesNumber = mNum;
 		d.Colision.Sides = Mesh;
 		d.CreateCollision();
-
-		try {
-			delete[] Mesh;
-		}
-		catch (...) {}
 	}
 
 	Rendering NEW;
 	NEW.doVerex = true;
 	NEW.verticies = d;
 
-	Stage.push_back(NEW);
-
-	try {
-		delete[] vertexy;
-		delete[] indexy;
-	}
-	catch (...) {}
+	Stage.push_back(Rendering(NEW));
 
 	return Stage.size() - 1;
 }
