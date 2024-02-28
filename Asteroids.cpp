@@ -10,7 +10,7 @@ void Asteroids::Init(bool again) {
 
 	haloCoundtown = 0;
 
-	std::string scoreStr = std::to_string(score);
+	std::wstring scoreStr = std::to_wstring(score);
 	scoreStr = Game::formatText(scoreStr, 1);
 
 	if (!again) {
@@ -40,7 +40,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, 0, -.8, -.9, "Press W to move", .05, 0);
+		tutorialText = Game::AddText(-.9, 0, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -69,7 +69,7 @@ void Asteroids::Init(bool again) {
 		}
 		if ((lines[0][0]) == '0') {
 			tutorialStep = 4;
-			tutorialText->ChangeText("Good luck");
+			tutorialText->ChangeText(L"Powodzenia!");
 		}
 		file.close();
 		lines[0][0] = '0';
@@ -122,7 +122,7 @@ void Asteroids::Init(bool again) {
 
 		endingUsername = Game::AddText(-.125, .125, .7, .5, new_username,.1, true);
 	}
-	endingUsername->ChangeText("");
+	endingUsername->ChangeText(L"");
 
 	if (again) {
 		clearVec(asteroids); clearVec(bullets); clearVec(enemies); clearVec(tLives);
@@ -144,7 +144,7 @@ void Asteroids::Init(bool again) {
 	isDead = false;
 	hasLost = false;
 	endingScreen = false;
-	new_username = "";
+	new_username = L"";
 	respawnCooldown = 5.0f;
 
 	velocity = vec(0.0f, 3);
@@ -160,7 +160,7 @@ void Asteroids::Init(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = Game::AddText(-.9, .9, .6, .5, "", .1, true);
+		usernameInfo = Game::AddText(-.9, .9, .6, .5, L"", .1, true);
 	}
 	else {
 		Game::Sound(L"asteroidsStart", false);
@@ -254,14 +254,14 @@ void Asteroids::Update(const float& dt) {
 				Game::StopSounds();
 				Game::Sound(backgroundMusic[0], true);
 
-				tutorialText->ChangeText("");
+				tutorialText->ChangeText(L"");
 
-				std::ifstream file("_asteroidsscoredata.txt"); // reading the file
+				std::wifstream file("_asteroidsscoredata.txt"); // reading the file
 
-				std::string line;
+				std::wstring line;
 
 				while (std::getline(file, line)) {
-					usernames.push_back(line.substr(0, 3));
+					usernames.push_back((line.substr(0, 3)));
 					scores.push_back(std::stoi(line.substr(4)));
 				}
 				file.close();
@@ -300,10 +300,10 @@ void Asteroids::Update(const float& dt) {
 					scores.pop_back(); // and score (there can only be <= 10)
 				}
 
-				std::ofstream file_out("_asteroidsscoredata.txt"); // opening the file
+				std::wofstream file_out("_asteroidsscoredata.txt"); // opening the file
 
 				for (int i = 0; i < usernames.size(); i++) {
-					file_out << (usernames[i] + " " + std::to_string(scores[i]) + "\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
+					file_out << (usernames[i] + L" " + std::to_wstring(scores[i]) + L"\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
 				}
 
 				file_out.close(); // closing the file
@@ -332,20 +332,20 @@ void Asteroids::Update(const float& dt) {
 
 			if (!scoreboard[0]) {
 				for (int i = 0; i < 10; i++) {
-					std::string place = std::to_string(i + 1);
-					if (i != 9) place = "0" + place;
+					std::wstring place = std::to_wstring(i + 1);
+					if (i != 9) place = L"0" + place;
 
-					std::string nick = "xxx"; //migh be changed to '-' or unknow character for empty space
-					std::string score = "000";
+					std::wstring nick = L"xxx"; //migh be changed to '-' or unknow character for empty space
+					std::wstring score = L"000";
 
 					if (usernames.size() > i) {
 						nick = usernames[i];
-						score = std::to_string(scores[i]);
+						score = std::to_wstring(scores[i]);
 					}
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + " " + nick + " " + score,.1f, false);
+					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score,.1f, false);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
@@ -398,7 +398,7 @@ void Asteroids::Update(const float& dt) {
 				score += ufoXP[enemyType[j]];
 				enemyType.erase(enemyType.begin() + j);
 
-				std::string temp = Game::formatText(std::to_string(score), 1);
+				std::wstring temp = Game::formatText(std::to_wstring(score), 1);
 				tScore->ChangeText(temp);
 
 				bulletTimeRemain[i] = 0;
@@ -436,7 +436,7 @@ void Asteroids::Update(const float& dt) {
 
 				score += asteroidsXP[type];
 
-				std::string temp = Game::formatText(std::to_string(score), 1);
+				std::wstring temp = Game::formatText(std::to_wstring(score), 1);
 				tScore->ChangeText(temp);
 
 				bulletTimeRemain[i] = 0;
@@ -449,7 +449,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 0) {
 			tutorialStep++;
 
-			tutorialText->ChangeText("Use A and D to rotate");
+			tutorialText->ChangeText(L"Użyj A i D, aby się obracać");
 		}
 
 		vec shipUp = ship->Up;
@@ -490,7 +490,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText->ChangeText("Use SPACE to shoot");
+			tutorialText->ChangeText(L"Kliknij SPACA, aby strzelać");
 		}
 
 		ship->Rotate(vec(0, 0, 1.0f) * rotationMultiplier * dt);
@@ -499,7 +499,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText->ChangeText("Use SPACE to shoot");
+			tutorialText->ChangeText(L"Kliknij SPACA, aby strzelać");
 		}
 
 		ship->Rotate(vec(0, 0, -1.0f) * rotationMultiplier * dt);
@@ -511,7 +511,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 3) {
 			tutorialStep++;
 
-			tutorialText->ChangeText("Don't use it too much");
+			tutorialText->ChangeText(L"Uważaj! To może być niebezpieczne!");
 			forceTeleport = true;
 		}
 
@@ -543,7 +543,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 2) {
 			tutorialStep++;
 
-			tutorialText->ChangeText("Press E to teleport");
+			tutorialText->ChangeText(L"Kliknij E, żeby się teleportować");
 		}
 
 		Game::Sound(L"asteroidsPlayerShoot", false);
@@ -679,7 +679,7 @@ void Asteroids::Update(const float& dt) {
 			if (_asteroidsNo <= 13) _asteroidsNo += 2;
 			else _asteroidsNo = 15;
 
-			tutorialText->ChangeText("Wave " + std::to_string(wave_num));
+			tutorialText->ChangeText(L"Poziom " + std::to_wstring(wave_num));
 		}
 	}
 	if (_return != 0) {
@@ -740,7 +740,7 @@ void Asteroids::Update(const float& dt) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
 				isSpaceship = false;
 				score += 10;
-				tScore->ChangeText(std::to_string(score));
+				tScore->ChangeText(std::to_wstring(score));
 			}
 		}
 	}
