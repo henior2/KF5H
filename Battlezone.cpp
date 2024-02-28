@@ -39,7 +39,7 @@ void Battlezone::Init() {
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
-	TextBox* display_hp = Game::AddText(0.6f, 0, 1.0f, 0.9f, std::to_string(hp),0.1f);
+	TextBox* display_hp = Game::AddText(0.6f, 0, 1.0f, 0.9f, std::to_wstring(hp),0.1f);
 	isDead = false;
 	endingScreen = false;
 
@@ -305,7 +305,7 @@ void Battlezone::Update(float dt) {
 			//Player bullet collsion
 			if (Game::checkCollisions(player,current,vec(1,0,1))) {
 				hp -= 25;
-				display_hp->ChangeText(std::to_string(hp));
+				display_hp->ChangeText(std::to_wstring(hp));
 				Game::Destroy(current);
 				pociski.erase(pociski.begin() + i);
 				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
@@ -420,7 +420,7 @@ void Battlezone::Update(float dt) {
 				uiElements.erase(uiElements.begin() + i);
 
 				hp -= 50;
-				display_hp->ChangeText(std::to_string(hp));
+				display_hp->ChangeText(std::to_wstring(hp));
 			}
 		}
 	}
@@ -781,7 +781,7 @@ void Battlezone::push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
 
 
 TextBox* Battlezone::refreshText(TextBox* text, int score) {
-	text->ChangeText(std::to_string(score));
+	text->ChangeText(std::to_wstring(score));
 	return text;
 }
 
