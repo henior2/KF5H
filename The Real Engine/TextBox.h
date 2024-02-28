@@ -37,7 +37,7 @@ private:
 		{',', L"comma"},
 		{';', L"semi-colon"},
 		{':', L"colon"},
-		{'!', L"exlamation-mark"},
+		{'!', L"exclamation-mark"},
 		{'?', L"question-mark"},
 		{'/', L"slash"},
 		{'#', L"hash"},

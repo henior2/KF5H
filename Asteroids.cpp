@@ -410,10 +410,6 @@ void Asteroids::Update(const float& dt) {
 		//collisions - asteroids/bullets
 		for (int j = asteroids.size() - 1; j >= 0; j--) {
 			GameObject* asteroid = asteroids[j];
-			if (Game::collisionCircle(asteroid, current, vec(1, 1, 0)))
-			{
-				current->SetColor(vec(1, 0, 0));
-			}
 			if (Game::checkCollisions(asteroid, current, vec(1,1,0), true)) {
 				int type = asteroidSize[j];
 				if (type < 2) {
