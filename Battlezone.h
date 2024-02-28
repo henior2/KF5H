@@ -18,7 +18,7 @@ private:
 	bool flag;
 	bool isDead;
 	bool endingScreen;
-	float hp;
+	int hp;
 	int score;
 	int wavePoints;
 	float waveTime;
