@@ -9,6 +9,7 @@ public:
 	float** array = nullptr;
 	mat(const float& num, const unsigned int& Size);
 	mat(const unsigned int& Size);
+	mat(const mat& sex); //lmao
 
 	~mat();
 
@@ -26,5 +27,6 @@ public:
 	mat RotateZ(const float& rotateValue);
 	void Rotate(const vec& rotateVec);
 	mat Scale(const vec& scaleVec);
+
 };
 

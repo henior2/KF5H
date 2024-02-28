@@ -118,23 +118,23 @@ public:
 	int activeStage;
 	std::vector<Rendering> Stage;
 
-	GameObject(vec pos3, vec rot3, vec sc3, std::wstring object, int i);
-	GameObject(vec pos3, vec rot3, vec sc3, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i, bool CreateCollisionMesh = false, std::vector<unsigned int> CollisionMesh = {});
+	GameObject(const vec& pos, const vec& rot, const vec& sc, std::wstring object, int i);
+	GameObject(const vec& pos3, const vec& rot3, const vec& sc3, std::vector<float> vertecies, std::vector<unsigned int> indecies, int i, bool CreateCollisionMesh = false, std::vector<unsigned int> CollisionMesh = {});
 	GameObject(const GameObject* second);
 	~GameObject();
 
-	void Move(vec pos3);
-	void MoveGlobal(vec pos3);
-	void MoveTo(vec pos3);
+	void Move(const vec& pos3);
+	void MoveGlobal(const vec& pos3);
+	void MoveTo(const vec& pos3);
 
-	void Rotate(vec rot3, float degries);
-	void Rotate(vec degries3);
-	void RotateTo(vec rot3);
+	void Rotate(const vec& rot3, float degries);
+	void Rotate(const vec& degries3);
+	void RotateTo(const vec& rot3);
 
-	void Scale(vec scale3);
-	void ScaleTo(vec scale3);
+	void Scale(const vec& scale3);
+	void ScaleTo(const vec& scale3);
 
-	void SetColor(vec color3);
+	void SetColor(const vec& color3);
 	void UnColor();
 
 	int AddStage(std::wstring file);

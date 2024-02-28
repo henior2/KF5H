@@ -24,20 +24,23 @@ mat::mat(const unsigned int& Size)
 			array[i][j] = 0;
 }
 
+mat::mat(const mat& sec) 
+	: size(sec.size)
+{
+	array = new float* [size];
+
+	for (int i = 0; i < size; i++)
+		array[i] = new float[size];
+
+	*this = sec;
+}
+
 mat::~mat() {
 	for (int i = 0; i < size; i++) {
-		try {
-			delete[] array[i];
-		}
-		catch(...){
-		}
-	}
-	try {
-		delete[] array;
-	}
-	catch (...) {
+		delete[] array[i];
 
 	}
+	delete[] array;
 }
 
 void mat::operator=(const mat& second) {
