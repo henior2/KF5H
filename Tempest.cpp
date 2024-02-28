@@ -62,7 +62,6 @@ void Tempest::Update(const float& dt) {
 		spiker(dt);
 	}
 	if (!enemies[2].empty()) {
-		debugCooldown = 0.5f;
 		fuseball(dt);
 	}
 
@@ -131,7 +130,7 @@ void Tempest::points_move_list(std::vector<vec>& moving, int type, std::vector<v
 			moving.push_back(pointing[i]);
 		}
 	}
-	for (int i = sid + 1; i < point.size(); i++) {
+	for (int i = point.size()-1; i > sid; i--) {
 		if (!xd && pointing[i].x == 0) {
 			xd = true;
 		}
@@ -244,7 +243,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	std::vector<unsigned int> id;
 	std::vector<vec> points;
 
-	int tunnelSidesNo;
+	int tunnelSidesNo ;
 	do {
 		tunnelSidesNo = rand() % 5 + 5;
 	} while (tunnelSidesNo == lastTSN);
@@ -407,8 +406,14 @@ void Tempest::enemies_spawn(int type2) {
 
 	vec place;
 	vec scale((b - a).Length() / 1.5, 3);
-	if (type2 == 2) 
+	if (type2 == 2) {
 		place = a;
+		fusbal_time.push_back(4.0f);
+		fmove.push_back(vec(0,3));
+		fwhere.push_back(vec(0, 3));
+		cooldown.push_back(0);
+	}
+		
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
 		scale.x /= 1.3;
@@ -442,6 +447,7 @@ void Tempest::enemies_spawn(int type2) {
 
 		spike.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), vx_spike[vx_spike.size() - 1], ind_spikes));
 	}
+
 }
 
 void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z) {
@@ -500,81 +506,110 @@ void Tempest::tanker(float dt) {
 	}
 }
 void Tempest::fuseball(float dt) {
-	
 	vec help;
 	int direction, pos, speed;
 
 	for (int i = 0; i < enemies[2].size(); i++) {
-
-		direction = rand() % 41 + 1; //1 20 do przodu,  21 30 do ty³u, 31 35 w prawo, 36 40 w lewo 
 		help = enemies[2][i]->Transform.position;
 
-		if ((direction >= 31 && direction <= 35) || (direction >= 36 && direction <= 40)) {
-			pos = enemies_position[2][i];
-			vec b, a = move[pos];
-		
-			 if (direction >= 31 && direction <= 35) {
-				if (pos == move2.size() - 1)  pos = 0;
-				else pos++;
-				b = move2[pos];
-			}
-			else if ((direction >= 36 && direction <= 40)){
-				if(pos == 0) pos = move2.size() - 1;
-				else pos--;
-				b = move2[pos];
-			}
-			 enemies_position[2][i] = pos;
 
-			 std::vector <vec> delta_of_moving;
-
-			 for (int k = 1000; k > 1; k--) {
-				 delta_of_moving.push_back(vec(b.x / k, b.y / k, help.z));
-			 }
-
-			 for (int k = 3; k < 1001; k++) {
-				 delta_of_moving.push_back(vec(b.x / k * (k-1), b.y /k * (k-1), help.z));
-			 }
-
-			 delta_of_moving.push_back(vec(b.x, b.y, help.z));
-
-			for (int j = 0; j < delta_of_moving.size(); j++) {
-				enemies[2][i]->MoveTo(delta_of_moving[j]);
-			}
-			
-		}	
-		else {
-
-			if(help.z < -7.5 && !enemies_bool[2][i]) {
-				speed = -1;
-			}
-			else if (help.z >= -7.5 && !enemies_bool[2][i]) {
-				enemies_bool[2][i] = true;
-				speed = 1;
-			}
-			else if (help.z > zhelp && enemies_bool[2][i]){
-				speed = 1;
-			}	
-			else if (help.z <= -7.5 && enemies_bool[2][i]) {
-				enemies_bool[2][i] = false;
-				speed = -1;
-			}
-
-			
-			if(direction >= 1 && direction <= 20){
-				speed *= rand() % 5 + 1;
-				enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
-			}
-			else if (direction >= 21 && direction <= 30) {
-				speed *= rand() % 10 + 1;
-				enemies[2][i]->Move(vec(0, 0, speed) * dt);
-				
-			}
-
-			enemies[2][i]->Rotate(vec(0, 0, 2));
+		if (help.z < -7.5 && !enemies_bool[2][i]) {
+			speed = -1;
 		}
-		
+		else if (help.z >= -7.5 && !enemies_bool[2][i]) {
+			enemies_bool[2][i] = true;
+			speed = 1;
+		}
+		else if (help.z > zhelp && enemies_bool[2][i]) {
+			speed = 1;
+		}
+		else if (help.z <= -7.5 && enemies_bool[2][i]) {
+			enemies_bool[2][i] = false;
+			speed = -1;
+		}
+
+
+		if (fusbal_time[i] == 4.0f) {
+			direction = rand() % 41 + 1; //1 20 do przodu,  21 30 do ty³u, 31 35 w prawo, 36 40 w lewo 
+			if (cooldown[i] <= 0) {
+				if ((direction >= 31 && direction <= 35) || (direction >= 36 && direction <= 40)) {
+					pos = enemies_position[2][i];
+					vec b, a = move[pos];
+
+					if (direction >= 31 && direction <= 35) {
+						if (pos == move2.size() - 1)  pos = 0;
+						else pos++;
+						b = move2[pos];
+					}
+					else if ((direction >= 36 && direction <= 40)) {
+						if (pos == 0) pos = move2.size() - 1;
+						else pos--;
+						b = move2[pos];
+					}
+					enemies_position[2][i] = pos;
+
+					fmove[i] = b - a;
+					fwhere[i] = b;
+					fusbal_time[i] -= dt;
+					cooldown[i] = 10.0f;
+
+				}
+				else {
+
+					if (direction >= 1 && direction <= 20) {
+						speed = speed * (rand() % 6 + 15);
+						enemies[2][i]->Move(vec(0, 0, speed) * dt);
+
+					}
+					else if (direction >= 21 && direction <= 30) {
+						speed = speed * (rand() % 20 + 35);
+						enemies[2][i]->Move(vec(0, 0, speed) * dt);
+
+					}
+					speed = rand() % 3 - 1;
+					enemies[2][i]->Rotate(vec(0, 0, speed));
+				}
+			}
+			else {
+
+				if (direction >= 1 && direction <= 20) {
+					speed = speed * (rand() % 6 + 15);
+					enemies[2][i]->Move(vec(0, 0, speed) * dt);
+
+				}
+				else if (direction >= 21 && direction <= 30) {
+					speed = speed * (rand() % 20 + 35);
+					enemies[2][i]->Move(vec(0, 0, speed) * dt);
+
+				}
+				speed = rand() % 3 - 1;
+				enemies[2][i]->Rotate(vec(0, 0, speed));
+				cooldown[i]--;
+
+			}
+		}
+		else if (fusbal_time[i] > 0.0f) {
+			fusbal_time[i] -= dt;
+			direction = 4 / dt;
+			enemies[2][i]->MoveGlobal(vec(fmove[i].x / direction, fmove[i].y / direction, 0));
+			vec xd = fmove[i] & (fwhere[i] - enemies[2][i]->Transform.position);
+			if (xd.x <= 0 && xd.y <= 0 && xd.z <= 0) {
+				enemies[2][i]->MoveTo(fwhere[i]);
+				speed = speed * (rand() % 10 + 15);
+				enemies[2][i]->Move(vec(0, 0, speed) * dt);
+			}
+			speed = rand() % 3 - 1;
+			enemies[2][i]->Rotate(vec(0, 0, speed));
+		}
+		else {
+			fusbal_time[i] = 4.0f;
+			speed = speed * (rand() % 10 + 15);
+			enemies[2][i]->Move(vec(0, 0, speed) * dt);
+			cooldown[i] = 5;
+		}
+
 	}
+	
 	
 	
 }
@@ -616,5 +651,7 @@ void Tempest::spiker(float dt) {
 	}
 }
 void Tempest::flipper(float dt) {
+	for (int i = 0; i < enemies[3].size(); i++) {
 
+	}
 }

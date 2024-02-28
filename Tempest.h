@@ -33,6 +33,10 @@ private:
 	std::vector <int> enemies_position[4];
 	std::vector <bool> enemies_bool[4];
 	std::vector <int> spikers_max;
+	std::vector <float> fusbal_time;
+	std::vector <vec> fmove;
+	std::vector <vec> fwhere;
+	std::vector <float> cooldown;
 	std::vector <std::vector<float>> vx_spike;
 	std::vector <GameObject*> spike;
 	std::vector <float> help;
