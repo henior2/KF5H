@@ -446,6 +446,7 @@ void Tempest::enemies_spawn(int type2) {
 		vx_spike.push_back(help);
 
 		spike.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), vx_spike[vx_spike.size() - 1], ind_spikes));
+		spike[spike.size() - 1]->SetColor(vec(0, 1, 0));
 	}
 
 }
@@ -613,6 +614,7 @@ void Tempest::fuseball(float dt) {
 	
 	
 }
+
 void Tempest::spiker(float dt) {
 
 	for (int i = 0; i < enemies[1].size(); i++) {
@@ -627,7 +629,7 @@ void Tempest::spiker(float dt) {
 			help = enemies[1][i]->Transform.position;
 			spike[i]->Object.verticies.vertecies[6] = help.x;
 			spike[i]->Object.verticies.vertecies[7] = help.y;
-			spike[i]->Object.verticies.vertecies[8] = help.z;	
+			spike[i]->Object.verticies.vertecies[8] = help.z; 
 		}
 		else if (enemies_bool[1][i] == false) {
 			enemies_bool[1][i] = true;
@@ -650,6 +652,7 @@ void Tempest::spiker(float dt) {
 		}
 	}
 }
+
 void Tempest::flipper(float dt) {
 	for (int i = 0; i < enemies[3].size(); i++) {
 
