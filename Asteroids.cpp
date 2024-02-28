@@ -37,7 +37,7 @@ void Asteroids::Init(bool again) {
 		ship = Game::Create(vec(0.0f, 0.0f, -99.0f), vec(0.0f, 3), vec(5.0f, 3), L"AsteroidsShip");
 		modelShipFire = ship->AddStage(L"AsteroidsShipFire");
 
-		wave_num = 0;
+		wave_num = 10;
 
 		tutorialText = Game::AddText(-.9, 0, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
 		tutorialStep = 0;
@@ -671,8 +671,8 @@ void Asteroids::Update(const float& dt) {
 			waveAsteroidsCooldown = 2.5f;
 			hasWaveFinished = false;
 			_return = wave(_asteroidsNo);
-			if (_asteroidsNo <= 13) _asteroidsNo += 2;
-			else _asteroidsNo = 15;
+			if (_asteroidsNo <= 42) _asteroidsNo += (rand() % 3) + 1;
+			else _asteroidsNo = 45;
 
 			tutorialText->ChangeText(L"Poziom " + std::to_wstring(wave_num));
 		}
@@ -885,8 +885,17 @@ void Asteroids::shoot(vec _pos, vec _rot, bool type, bool eType) {
 int Asteroids::wave(int asteroidsNum) {
 	Game::Sound("asteroidsNewWave", false);
 
-	spawnAsteroids(asteroidsNum, 0);
+	int asteroidsNumCopy = asteroidsNum;
 	wave_num++;
+	int Type3AsteroidsNum = (rand() % wave_num) % (asteroidsNumCopy / 3);
+	asteroidsNumCopy -= Type3AsteroidsNum * 3;
+
+	int Type2AsteroidsNum = (rand() % wave_num * 4) % (asteroidsNumCopy / 2);
+	asteroidsNumCopy -= Type2AsteroidsNum * 2;
+
+	spawnAsteroids(Type3AsteroidsNum, 0);
+	spawnAsteroids(Type2AsteroidsNum, 1);
+	spawnAsteroids(asteroidsNumCopy * wave_num, 2);
 	smallEnemyNoise *= (1 - smallEnemyNoiseDelta);
 
 	int temp = 0;
