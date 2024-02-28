@@ -509,7 +509,7 @@ void Tempest::fuseball(float dt) {
 		direction = rand() % 5 + 1; //do przodu, do ty³u, w prawo, w lewo
 		help = enemies[2][i]->Transform.position;
 
-t		if (direction == 3 || direction == 4) {
+		if (direction == 3 || direction == 4) {
 			pos = enemies_position[2][i];
 			vec b, a = move[pos];
 			
