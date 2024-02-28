@@ -13,10 +13,10 @@ public:
     void Update(const float& dt);
 private:
 	float debugCooldown = .1f;
-	int lastTSN;
-	int lvlDif;
+	int lastTSN = 0;
+	int lvlDif = 0;
 	int type;
-	int superzapper_counting;
+	bool superzapperActive = true;
 
 	const std::vector<std::wstring> enemy_models = {
 		L"Tanker",
