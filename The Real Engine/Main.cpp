@@ -76,6 +76,8 @@ int WinMain(HINSTANCE hInstance,
 
 	if (hwnd == 0) {
 		MessageBoxW(NULL, L"Nast¹pi³ nieoczekiwany b³¹d!", L"B³¹d", MB_OK);
+		PostQuitMessage(1);
+		return 1;
 	}else
 		ShowWindow(hwnd, nShowCmd);
 
@@ -284,7 +286,13 @@ void Drawing(HWND& hwnd, int width, int height) {
 			TextOut(hdcBuffer, 10, 10, dtString.c_str()/*std::to_wstring(Objects.size()).c_str()*/, static_cast<int>(dtString.length()));
 
 			BitBlt(hdc, 0, 0, width, height, hdcBuffer, 0, 0, SRCCOPY);
-
+			if (white == NULL) {
+				MessageBox(hwnd, L"Some colors ain't right", L"Check deez colors", MB_OK);
+				DWORD errorCode = GetLastError();
+    				errorCode = errorCode;
+			}
+			SelectObject(hdcBuffer, hOldFont);
+			DeleteObject(hFont);
 			SelectObject(hdcBuffer, hOldBitmap);//
 			DeleteObject(hBitmap);//
 			DeleteDC(hdcBuffer);//
