@@ -61,6 +61,7 @@ void Tempest::Update(const float& dt) {
 		spiker(dt);
 	}
 	if (!enemies[2].empty()) {
+		debugCooldown = 0.5f;
 		fuseball(dt);
 	}
 
@@ -302,7 +303,6 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 		}
 		push_back2(id, 0, points.size());
 		break;
-		int x;
 	case 1:  // odbicia lustrzane
 		for (int i = 0; i < ceil((float)tunnelSidesNo / 2.0f); i++) {
 			double angle = 2 * M_PI * i / tunnelSidesNo;
@@ -505,19 +505,19 @@ void Tempest::fuseball(float dt) {
 
 	for (int i = 0; i < enemies[2].size(); i++) {
 
-		direction = rand() % 5 + 1; //do przodu, do ty³u, w prawo, w lewo
+		direction = rand() % 41 + 1; //1 20 do przodu,  21 30 do ty³u, 31 35 w prawo, 36 40 w lewo 
 		help = enemies[2][i]->Transform.position;
 
-t		if (direction == 3 || direction == 4) {
+		if ((direction >= 31 && direction <= 35) || (direction >= 36 && direction <= 40)) {
 			pos = enemies_position[2][i];
 			vec b, a = move[pos];
-			
-			 if (direction == 3) {
+		
+			 if (direction >= 31 && direction <= 35) {
 				if (pos == move2.size() - 1)  pos = 0;
 				else pos++;
 				b = move2[pos];
 			}
-			else if (direction == 4){
+			else if ((direction >= 36 && direction <= 40)){
 				if(pos == 0) pos = move2.size() - 1;
 				else pos--;
 				b = move2[pos];
@@ -529,11 +529,12 @@ t		if (direction == 3 || direction == 4) {
 			 for (int k = 1000; k > 1; k--) {
 				 delta_of_moving.push_back(vec(b.x / k, b.y / k, help.z));
 			 }
-			 delta_of_moving.push_back(vec(b.x, b.y, help.z));
 
-			 for (int k = 1000; k > 1; k--) {
+			 for (int k = 3; k < 1001; k++) {
 				 delta_of_moving.push_back(vec(b.x / k * (k-1), b.y /k * (k-1), help.z));
 			 }
+
+			 delta_of_moving.push_back(vec(b.x, b.y, help.z));
 
 			for (int j = 0; j < delta_of_moving.size(); j++) {
 				enemies[2][i]->MoveTo(delta_of_moving[j]);
@@ -558,14 +559,15 @@ t		if (direction == 3 || direction == 4) {
 			}
 
 			
-			if( direction == 1){
-				speed *= rand() % 40 + 1;
+			if(direction >= 1 && direction <= 20){
+				speed *= rand() % 5 + 1;
 				enemies[2][i]->Move(vec(0, 0, speed) * dt);
 
 			}
-			else if ( direction == 2) {
-				speed *= rand() % 15 + 1;
+			else if (direction >= 21 && direction <= 30) {
+				speed *= rand() % 10 + 1;
 				enemies[2][i]->Move(vec(0, 0, speed) * dt);
+				
 			}
 
 			enemies[2][i]->Rotate(vec(0, 0, 2));
