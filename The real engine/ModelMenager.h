@@ -122,8 +122,6 @@ public:
 		ObjectsDatas[Name].vertecies = verecies2;
 		ObjectsDatas[Name].vNum = vNum;
 		ObjectsDatas[Name].CreateCollision();
-		float ffffff = ObjectsDatas[Name].Colision.farthestVertex;
-		ffffff = ffffff;
 	}
 
 	static void ReadIndexFile(std::wifstream file, std::wstring Name) {
