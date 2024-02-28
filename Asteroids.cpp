@@ -2,7 +2,6 @@
 #include "The real engine/The Real Engine.h"
 
 void Asteroids::Init(bool again) {
-
 	SetCursor(NULL);
 
 	clickCooldown = .25f;
@@ -584,11 +583,11 @@ void Asteroids::Update(const float& dt) {
 
 		vec dMov = vec(sPos.x - pos.x, sPos.y - pos.y, 0);
 
-		if (dMov.x > maxEnemyVelocity) dMov.x = maxEnemyVelocity;
-		else if (dMov.x < -maxEnemyVelocity) dMov.x = -maxEnemyVelocity;
+		if (dMov.x > _mEV) dMov.x = _mEV;
+		else if (dMov.x < -_mEV) dMov.x = -_mEV;
 
-		if (dMov.y > maxEnemyVelocity) dMov.y = maxEnemyVelocity;
-		else if (dMov.y < -maxEnemyVelocity) dMov.y = -maxEnemyVelocity;
+		if (dMov.y > _mEV) dMov.y = _mEV;
+		else if (dMov.y < -_mEV) dMov.y = -_mEV;
 
 		current->MoveGlobal(vec(dMov.x, dMov.y, 0.0f) * dt);
 
@@ -899,6 +898,8 @@ int Asteroids::wave(int asteroidsNum) {
 	while (rand() % 100 <= tempProb)
 		tempProb -= 100;
 	temp += 1;
+
+	_mEV = maxEnemyVelocity * (1.0f + wave_num * enemyLvlSpeedMultiplier);
 	return temp;
 }
 

@@ -142,6 +142,8 @@ private:
 	std::vector<bool> enemyType;
 
 	const float maxEnemyVelocity = 10.0f;
+	const float enemyLvlSpeedMultiplier = .01f;
+	float _mEV;
 
 	const float maxEnemyBulletTime = 2.0f;
 	std::vector<float> enemyShootCooldown;
