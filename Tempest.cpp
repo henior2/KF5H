@@ -658,6 +658,8 @@ void Tempest::spiker(float dt) {
 
 void Tempest::flipper(float dt) {
 	bool d;
+	int pos;
+	vec rotation;
 	for (int i = 0; i < enemies[3].size(); i++) {
 		vec help = enemies[3][i]->Transform.position;
 		if (help.z < zhelp2) {
@@ -665,88 +667,34 @@ void Tempest::flipper(float dt) {
 		}
 		else {
 			d = rand() % 2 + 1;
-
-			/*
-			* if (ftime[i] == 4.0f) {
-				direction = rand() % 41 + 1; //1 20 do przodu,  21 30 do ty³u, 31 35 w prawo, 36 40 w lewo
-				if (cooldown[i] <= 0) {
-					if ((direction >= 31 && direction <= 35) || (direction >= 36 && direction <= 40)) {
-						pos = enemies_position[2][i];
-						vec b, a = move[pos];
-
-						if (direction >= 31 && direction <= 35) {
-							if (pos == move2.size() - 1)  pos = 0;
-							else pos++;
-							b = move2[pos];
-						}
-						else if ((direction >= 36 && direction <= 40)) {
-							if (pos == 0) pos = move2.size() - 1;
-							else pos--;
-							b = move2[pos];
-						}
-						enemies_position[2][i] = pos;
-
-						fmove[i] = b - a;
-						fwhere[i] = b;
-						fusbal_time[i] -= dt;
-						cooldown[i] = 10.0f;
-
-					}
-					else {
-
-						if (direction >= 1 && direction <= 20) {
-							speed = speed * (rand() % 6 + 15);
-							enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
-						}
-						else if (direction >= 21 && direction <= 30) {
-							speed = speed * (rand() % 20 + 35);
-							enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
-						}
-						speed = rand() % 3 - 1;
-						enemies[2][i]->Rotate(vec(0, 0, speed));
-					}
-				}
-				else {
-
-					if (direction >= 1 && direction <= 20) {
-						speed = speed * (rand() % 6 + 15);
-						enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
-					}
-					else if (direction >= 21 && direction <= 30) {
-						speed = speed * (rand() % 20 + 35);
-						enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
-					}
-					speed = rand() % 3 - 1;
-					enemies[2][i]->Rotate(vec(0, 0, speed));
-					cooldown[i]--;
-
-				}
+			pos = enemies_position[3][i];
+			vec a, b;
+			if (d==1 && pos == move2.size() - 1) {
+				position = 0;
+				a = move2[pos]; b = move2[pos + 1];
 			}
-			else if (fusbal_time[i] > 0.0f) {
-				fusbal_time[i] -= dt;
-				direction = 4 / dt;
-				enemies[2][i]->MoveGlobal(vec(fmove[i].x / direction, fmove[i].y / direction, 0));
-				vec xd = fmove[i] & (fwhere[i] - enemies[2][i]->Transform.position);
-				if (xd.x <= 0 && xd.y <= 0 && xd.z <= 0) {
-					enemies[2][i]->MoveTo(fwhere[i]);
-					speed = speed * (rand() % 10 + 15);
-					enemies[2][i]->Move(vec(0, 0, speed) * dt);
-				}
-				speed = rand() % 3 - 1;
-				enemies[2][i]->Rotate(vec(0, 0, speed));
+			else if (d==0 && pos == 0) {
+				pos = move.size() - 1;
+				a = move2[pos]; b = move2[0];
+			}
+			else if (d==1) {
+				pos++;
+				a = move2[pos];
+				if (pos == move.size() - 1) b = move[0];
+				else b = move2[pos + 1];
 			}
 			else {
-				fusbal_time[i] = 4.0f;
-				speed = speed * (rand() % 10 + 15);
-				enemies[2][i]->Move(vec(0, 0, speed) * dt);
-				cooldown[i] = 5;
+				pos--;
+				a = move2[pos]; b = move2[pos + 1];
 			}
+			enemies_position[3][i] = pos;
 
-			*/
+			rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+			
+
+			enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, zhelp2));
+			enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
+			enemies[3][i]->RotateTo(rotation);
 		}
 	}
 }
