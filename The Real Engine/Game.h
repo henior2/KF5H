@@ -84,6 +84,8 @@ public:
 	static bool checkCollisions(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
 	static std::wstring formatText(std::wstring text, bool type, int length = 3);
+
+	static std::map<wchar_t, wchar_t> accents;
 private:
 	static void DeleteGame();
 

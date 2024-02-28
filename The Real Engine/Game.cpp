@@ -315,3 +315,15 @@ void Game::DeleteGame() {
 		delete games.tempest;
 	}
 }
+
+std::map<wchar_t, wchar_t> Game::accents{
+	{ L'A',L'•' },
+	{ L'C',L'∆' },
+	{ L'E',L' ' },
+	{ L'L',L'£' },
+	{ L'N',L'—' },
+	{ L'O',L'”' },
+	{ L'S',L'å' },
+	{ L'X',L'è' },
+	{ L'Z',L'Ø' }
+};

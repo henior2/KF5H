@@ -255,7 +255,7 @@ void Asteroids::Update(const float& dt) {
 
 				tutorialText->ChangeText(L"");
 
-				std::wifstream file("_asteroidsscoredata.txt"); // reading the file
+				std::wifstream file(L"_asteroidsscoredata.txt"); // reading the file
 
 				std::wstring line;
 
@@ -272,7 +272,11 @@ void Asteroids::Update(const float& dt) {
 						Game::Sound("asteroidsInput", false);
 
 						clickCooldown = .25f;
-						new_username += (char)('A' + (key - 'A'));
+						wchar_t input = ('A' + (key - 'A'));
+						//doesnt work
+						//if (Game::KeysPresed[VK_SPACE] && Game::accents.find(input) != Game::accents.end()) input = Game::accents[(wchar_t)input];	
+
+						new_username += input;
 
 						endingUsername->ChangeText(new_username);
 					}
@@ -299,7 +303,7 @@ void Asteroids::Update(const float& dt) {
 					scores.pop_back(); // and score (there can only be <= 10)
 				}
 
-				std::wofstream file_out("_asteroidsscoredata.txt"); // opening the file
+				std::wofstream file_out(L"_asteroidsscoredata.txt"); // opening the file
 
 				for (int i = 0; i < usernames.size(); i++) {
 					file_out << (usernames[i] + L" " + std::to_wstring(scores[i]) + L"\n"); // writing the scores ('ABC1234', where 'ABC' is the username, and '1234' is the score)
