@@ -14,7 +14,7 @@ public:
 	void Update(const float& dt);
 
 private:
-	const wchar_t* backgroundMusic[3] = { L"asteroidsEndScreenMusic",L"Lobby-Time",L"asteroidsBackgroundMusic" }; // end-screen / pause / normal - live with that
+	const char* backgroundMusic[3] = { "asteroidsEndScreenMusic","Lobby-Time","asteroidsBackgroundMusic" }; // end-screen / pause / normal - live with that
 
 	GameObject* ship;
 	std::vector<GameObject*> enemies;

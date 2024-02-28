@@ -47,7 +47,6 @@ struct ColisionMesh {
 
 		for (int i = 0; i < edgeSidesNumber * 2; i++) {
 			Sides[i] = sec.Sides[i];
-			Sides[i + 1] = sec.Sides[i + 1];
 		}
 	}
 };

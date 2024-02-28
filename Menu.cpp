@@ -14,11 +14,11 @@ void Menu::Init() {
 		Buttons = { PlayButton, ExitButton, AsteroidsButton, BattlezoneButton, TempestButton, BackButton };
 		//Pointer = Game::Create(vec3(-.325, -.05, 0), vec3(0, 0, -90), vec3(.1), "AsteroidsBullet");
 		//Pointer = Game::Create()
-		for (int i = 0; i < 1500; i++) {
+		for (int i = 0; i < 500; i++) {
 			float x = ((float)(rand() % 100) - 50.0f);
 			float y = ((float)(rand() % 100) - 50.0f);
 			float z = ((float)(rand() % 150) - 100.0f);
-			float scale = (float)(rand() % 100) / 100.0f + 0.5f;
+			float scale = (float)(rand() % 300) / 100.0f + 0.5f;
 			obiekty.push_back(Game::Create(vec(x, y, z), 
 				vec(rand() % 360, rand() % 360, rand() % 360), 
 				vec(scale, 3), L"MenuCube"));
@@ -28,11 +28,11 @@ void Menu::Init() {
 			float x = 0;
 			float y = 0;
 			float z = ((float)(rand() % 150) - 100.0f);
-			float scale = (float)(rand() % 100) / 100.0f + 0.5f;
+			float scale = (float)(rand() % 300) / 100.0f + 0.5f;
 			obiekty.push_back(Game::Create(vec(x, y, z), vec(rand() % 360, rand() % 360, rand() % 360), vec(scale, 3), L"MenuCube"));
-			obiekty[i + 1500]->SetColor(vec(0, 1, 0));
+			obiekty[i + 500]->SetColor(vec(0, 1, 0));
 		}
-		Game::Sound(L"mus01", true);
+		Game::Sound("mus01", true);
 		Game::camera->perspective = true;
 		Game::camera->cameraWidth = 16;
 		Game::camera->cameraHeight = 9;
@@ -42,7 +42,7 @@ void Menu::Update(const float& dt) {
 		for (int i = 0; i < obiekty.size(); i++) {
 			obiekty[i]->MoveGlobal(vec(0, 0, 3.0f * dt));
 			vec pos = obiekty[i]->Transform.position;
-			obiekty[i]->SetColor(vec(0, 1.0f + pos.z / 101.0f, 0));
+			obiekty[i]->SetColor(vec(0, 1.0f + pos.z / 105.0f, 0));
 			obiekty[i]->Stage[obiekty[i]->activeStage].lineWidth = (1.0f + pos.z / 101.0f) * 5.0f;
 			if (pos.z > 1) {
 				float z = ((float)(rand() % 100) + 101.0f);

@@ -35,6 +35,9 @@ int WinMain(HINSTANCE hInstance,
 	LPSTR     lpCmdLine,
 	int       nShowCmd) {
 
+	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+	Game::SoundEngine = SoundEngine;
+
 	const wchar_t Name[] = L"KF5H";
 
 	srand(time(NULL));
@@ -119,6 +122,12 @@ int WinMain(HINSTANCE hInstance,
 
 		EndProgram = true;
 	}
+
+	KillTimer(hwnd,TIMER_ID);
+
+	Game::ChangeState(Quit_Message);
+
+	SoundEngine->drop();
 
 	Draw.join();
 

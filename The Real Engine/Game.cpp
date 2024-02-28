@@ -15,6 +15,8 @@ POINT Game::ScreenSize;
 
 HMODULE Game::hMod = GetModuleHandle(NULL);
 
+irrklang::ISoundEngine* Game::SoundEngine;
+
 void Game::ChangeState(const GameState& state) {
 	camera->Position = vec(0, 3);
 	camera->Yaw = YAW;
@@ -47,6 +49,9 @@ void Game::ChangeState(const GameState& state) {
 		games.tempest = new Tempest();
 		games.tempest->Init();
 	}
+	else {
+		return;
+	}
 }
 
 void Game::Update(const float& dt) {
@@ -62,6 +67,9 @@ void Game::Update(const float& dt) {
 		games.battlezone->Update(dt);
 	}else if (State == Game_Tempest) {
 		games.tempest->Update(dt);
+	}
+	else {
+		return;
 	}
 }
 
@@ -104,18 +112,15 @@ void Game::DestroyText(TextBox* Text) {
 	}
 }
 
-void Game::Sound(const std::wstring& SoundFile, const bool& PlayInLoop) {
-	std::wstring sound = L"Sounds\\" + SoundFile + L".wav";
-	LPCWSTR lpcstr = sound.c_str();
+void Game::Sound(const std::string& SoundFile, const bool& PlayInLoop) {
+	std::string sound = "Sounds\\" + SoundFile + ".wav";
+	const char *lpcstr = sound.c_str();
 
-	if (PlayInLoop)
-		PlaySoundW(lpcstr, hMod, SND_FILENAME | SND_ASYNC | SND_LOOP);
-	else
-		PlaySoundW(lpcstr, hMod, SND_FILENAME | SND_ASYNC);
+	SoundEngine->play2D(lpcstr, PlayInLoop);
 
 }
 void Game::StopSounds() {
-	PlaySoundW(NULL, hMod, SND_PURGE);
+	SoundEngine->stopAllSounds();
 }
 
 vec Game::CalculateBetterVec(const vec& vector, const Transformations& trans) {

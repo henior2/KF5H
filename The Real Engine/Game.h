@@ -13,6 +13,8 @@
 #include "TextBox.h"
 #include <stdexcept>
 
+#include "..\irrKlang\irrKlang.h"
+
 struct Games {
 	Menu* menu = new Menu();
 	Initialization* Init = new Initialization();
@@ -29,7 +31,8 @@ enum GameState {
 	Game_Asteroids,
 	Game_Battlezone,
 	Game_Tempest,
-	Game_TEST
+	Game_TEST,
+	Quit_Message
 };
 
 class Game
@@ -46,6 +49,8 @@ public:
 	static POINT MousePosition;
 	static POINT ScreenSize;
 
+	static irrklang::ISoundEngine* SoundEngine;
+
 	static void Update(const float& dt);
 
 	static GameObject* Create(const vec& pos, const vec& rot, const vec& scale, const std::wstring& object);
@@ -55,7 +60,7 @@ public:
 	static TextBox* AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const std::string& BaseText, const float& spacing = 0.1f, const bool& AlignCenterHorizontaly = false, const vec& Color = vec(1, 1, 1), const unsigned int& Boldicity = 0.1f);
 	static void DestroyText(TextBox* Text);
 
-	static void Sound(const std::wstring& SoundFile, const bool& PlayInLoop = false);
+	static void Sound(const std::string& SoundFile, const bool& PlayInLoop = false);
 	static void StopSounds();
 	
 	static void ChangeState(const GameState& state);

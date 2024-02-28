@@ -163,7 +163,7 @@ void Asteroids::Init(bool again) {
 		usernameInfo = Game::AddText(-.9, .9, .6, .5, "", .1, true);
 	}
 	else {
-		Game::Sound(L"asteroidsStart", false);
+		Game::Sound("asteroidsStart", false);
 	}
 	bigEnemyIterator = 0;
 
@@ -199,7 +199,7 @@ void Asteroids::Update(const float& dt) {
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
 		hasEscd = true;
-		if (escSoundLen == .25f) Game::Sound(L"asteroidsExit");
+		if (escSoundLen == .25f) Game::Sound("asteroidsExit");
 	}
 	if (hasEscd) {
 		escSoundLen -= dt;
@@ -270,7 +270,7 @@ void Asteroids::Update(const float& dt) {
 			if (new_username.length() < 3) {
 				for (int key = 'A'; key <= 'Z'; key++) {
 					if (Game::KeysPresed[key] && clickCooldown <= 0) {
-						Game::Sound(L"asteroidsInput", false);
+						Game::Sound("asteroidsInput", false);
 
 						clickCooldown = .25f;
 						new_username += (char)('A' + (key - 'A'));
@@ -279,7 +279,7 @@ void Asteroids::Update(const float& dt) {
 					}
 				}
 				if ((Game::KeysPresed[VK_BACK] || Game::KeysPresed[VK_DELETE]) && clickCooldown <= 0) {
-					Game::Sound(L"asteroidsInputBackspace", false);
+					Game::Sound("asteroidsInputBackspace", false);
 
 					clickCooldown = .25f;
 					if (new_username.length() != 0) new_username.pop_back();
@@ -426,7 +426,7 @@ void Asteroids::Update(const float& dt) {
 					spawnAsteroids(1, type + 1, pos.x, pos.y, ori - randomChange);
 				}
 
-				Game::Sound(L"asteroidsDestroy", false);
+				Game::Sound("asteroidsDestroy", false);
 
 				Game::Destroy(asteroid);
 				asteroids.erase(asteroids.begin() + j);
@@ -470,7 +470,7 @@ void Asteroids::Update(const float& dt) {
 				shipAnimationCooldown = (rand() % 4) / 2 + 2;
 				shipAnimationCooldown2 = (rand() % 2) / 2 + 0.25;
 
-				Game::Sound(L"asteroidsWoosh", false);
+				Game::Sound("asteroidsWoosh", false);
 			}
 		}
 
@@ -515,7 +515,7 @@ void Asteroids::Update(const float& dt) {
 			forceTeleport = true;
 		}
 
-		Game::Sound(L"asteroidsPlayerTeleport", false);
+		Game::Sound("asteroidsPlayerTeleport", false);
 
 		jumpCooldown = 0.5f;
 
@@ -546,7 +546,7 @@ void Asteroids::Update(const float& dt) {
 			tutorialText->ChangeText("Press E to teleport");
 		}
 
-		Game::Sound(L"asteroidsPlayerShoot", false);
+		Game::Sound("asteroidsPlayerShoot", false);
 
 		shootCooldown = .5f;
 		shoot(ship->Transform.position, ship->Transform.orientation, 0, this);
@@ -607,7 +607,7 @@ void Asteroids::Update(const float& dt) {
 			}
 			else _angle = rand() % 360;
 
-			Game::Sound(L"asteroidsEnemyShoot", false);
+			Game::Sound("asteroidsEnemyShoot", false);
 
 			shoot(current->Transform.position, vec(0.0f, 0.0f, _angle), 1, type);
 			enemyShootCooldown[i] = _enemyShootCooldown[(int)type];
@@ -732,7 +732,7 @@ void Asteroids::Update(const float& dt) {
 			//collisions - spaceship/player
 			if (!hasSpaceshipPlayedSound && Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) {
 				hasSpaceshipPlayedSound = true;
-				Game::Sound(L"asteroidsLoudWoosh", false);
+				Game::Sound("asteroidsLoudWoosh", false);
 			}
 			if (Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) death(ship->Transform.position, ship->Transform.orientation, ship);
 
@@ -888,7 +888,7 @@ void Asteroids::shoot(vec _pos, vec _rot, bool type, bool eType) {
 }
 
 int Asteroids::wave(int asteroidsNum) {
-	Game::Sound(L"asteroidsNewWave", false);
+	Game::Sound("asteroidsNewWave", false);
 
 	spawnAsteroids(asteroidsNum, 0);
 	wave_num++;
@@ -935,13 +935,13 @@ std::vector<vec> Asteroids::breakIntoPieces(std::vector<unsigned int> ind, std::
 
 void Asteroids::death(vec _pos, vec _rot, GameObject* obj, bool tp, bool isShip, float scale, std::vector<vec> _vx, std::vector<unsigned int> _ind) {
 	if (isShip) {
-		Game::Game::Sound(L"asteroidsPlayerDeath", false);
+		Game::Game::Sound("asteroidsPlayerDeath", false);
 
 		isDead = true;
 		ship->MoveTo(vec(-10000, -10000, 0));
 	}
 	else {
-		Game::Game::Sound(L"asteroidsEnemyDeath", false);
+		Game::Game::Sound("asteroidsEnemyDeath", false);
 
 		Game::Destroy(obj);
 	}
