@@ -16,6 +16,7 @@ public:
 	vec(const unsigned int& Size);
 	vec(const float& value, const unsigned int& Size);
 	vec(const float& valueX, const float& valueY, const float& valueZ);
+	vec(const vec& sec);
 	~vec();
 
 	void operator=(const vec& second);

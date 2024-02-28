@@ -33,8 +33,14 @@ vec::vec(const float& valueX, const float& valueY, const float& valueZ)
 //	GenerateValues();
 }
 
-vec::~vec() {
+vec::vec(const vec& sec) 
+	:size(sec.size), array(new float[size]), x(*array), y(*(array + 1)), z(*(array + 2)), w(*(array + 3))
+{
+	*this = sec;
+}
 
+vec::~vec() {
+	delete[] this->array;
 }
 
 void vec::operator=(const vec& second) {

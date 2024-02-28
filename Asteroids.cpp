@@ -841,6 +841,7 @@ void Asteroids::spawnAsteroids(int asteroidsNum, unsigned int type, float _posX,
 		}
 
 		asteroids.push_back(Game::Create(vec(pos.x, pos.y, -90.0f), vec(0.0f, 0.0f, rot), vec(minAsteroidsSize + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidsSize - minAsteroidsSize))), 3), v, id));
+		asteroids[asteroids.size() - 1]->SetColor(vec(1, 1, 1));
 		asteroidSize.push_back(type);
 	}
 }
