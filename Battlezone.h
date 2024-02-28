@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "The Real Engine/TextBox.h"
+#include "The Real Engine/GameObject.h"
+#include <vector>
+#include <string>
+#include <fstream>
+
 class Battlezone
 {
 public:
@@ -214,7 +219,5 @@ private:
 
 	void buyItem(int type, int cost, int item);
 
-	void shopAction(int item, bool isForced = false);
-
-	
+	void shopAction(int item, bool isForced = false);	
 };

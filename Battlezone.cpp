@@ -198,7 +198,6 @@ void Battlezone::Init() {
 	}
 
 
-	makeHorizon();
 
 	//creating obstacles
 	for (int i = 0; i < totalObstacles; i++) {
@@ -222,7 +221,7 @@ void Battlezone::Update(float dt) {
 	if (hp <= 0) {
 		
 		display_hp->ChangeText("You died");
-		isDead = true; //kinda useless but whatever lmao
+		isDead = true;
 	}
 
 	if (isDead && !endingScreen) {
@@ -357,7 +356,7 @@ void Battlezone::Update(float dt) {
 
 
 	//moving the forza horizon
-	horizon->MoveTo(pPos);
+
 
 	//spawning the enemies
 	float temp_x = (float)(rand() % 51);
