@@ -22,7 +22,7 @@ public:
 	unsigned int Index;
 	bool AlignH;
 	vec Color = vec(1, 3);
-	std::string Word;
+	std::wstring Word;
 	TextBox(const float& Left, const float Right, const float& Top, const float& Bottom, const float& spacing, const bool& AlignCenterHorizontaly, const unsigned int& index);
 	~TextBox();
 

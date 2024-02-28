@@ -53,7 +53,7 @@ void TextBox::ChangeText(std::wstring Word, const unsigned int& BoldicityChange,
 		Game::Destroy(Letters[i]);
 	}
 	Letters.clear();
-	this->Word = "";
+	this->Word = L"";
 	Spaces = 0;
 
 	if(BoldicityChange != 0 && sizeChange != 0)
