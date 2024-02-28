@@ -40,12 +40,7 @@ mat::~mat() {
 		delete[] array[i];
 
 	}
-	try {
-		delete[] array;
-	}
-	catch (...) {
-
-	}
+	delete[] array;
 }
 
 void mat::operator=(const mat& second) {
