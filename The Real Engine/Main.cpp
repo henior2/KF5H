@@ -55,6 +55,9 @@ int WinMain(HINSTANCE hInstance,
 	// Get the screen height
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
+	Game::ScreenSize.x = screenWidth;
+	Game::ScreenSize.y = screenHeight;
+
 	HWND hwnd = CreateWindowEx(
 		0,
 		Name,
@@ -83,12 +86,11 @@ int WinMain(HINSTANCE hInstance,
 
 	Game::ChangeState(Game_Menu);
 
-	SetCursor(NULL);
-
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 
+		POINT m;
 		switch (msg.message)
 		{
 		case WM_KEYDOWN:
@@ -96,6 +98,16 @@ int WinMain(HINSTANCE hInstance,
 			break;
 		case WM_KEYUP:
 			Game::KeysPresed[msg.wParam] = false;
+			break;
+		case WM_MOUSEMOVE:
+			GetCursorPos(&m);
+			Game::MousePosition = m;
+			break;
+		case WM_LBUTTONDOWN:
+			Game::KeysPresed[VK_LBUTTON] = true;
+			break;
+		case WM_LBUTTONUP:
+			Game::KeysPresed[VK_LBUTTON] = false;
 			break;
 		default:
 			break;
@@ -159,11 +171,16 @@ void CALLBACK TimerCallback(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
 				std::lock_guard<std::mutex> lock(ObjMutex);
 
 				PaintObj.clear();
+				std::vector<std::pair<Rendering, Transformations>> ObjectsOnTop;
 				for (int i = 0; i < Game::Objects.size(); i++) {
 					Rendering now(Game::Objects[i]->Stage[Game::Objects[i]->activeStage]);
 					Transformations now2 = Game::Objects[i]->Transform;
-					PaintObj.push_back({now, now2});
+					if (Game::Objects[i]->Stage[Game::Objects[i]->activeStage].onTop)
+						ObjectsOnTop.push_back({ now, now2 });
+					else
+						PaintObj.push_back({now, now2});
 				}
+				PaintObj.insert(PaintObj.end(), ObjectsOnTop.begin(), ObjectsOnTop.end());
 				ViewMatrix = Game::camera->GetViewMatrix();
 				ProjectonMatrix = Game::camera->GetProjectionMatrix();
 			}

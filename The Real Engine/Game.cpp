@@ -11,6 +11,7 @@ Games Game::games;
 GameState Game::State;
 
 POINT Game::MousePosition;
+POINT Game::ScreenSize;
 
 HMODULE Game::hMod = GetModuleHandle(NULL);
 
@@ -49,7 +50,6 @@ void Game::ChangeState(const GameState& state) {
 }
 
 void Game::Update(const float& dt) {
-	GetCursorPos(&MousePosition);
 	if (State == Game_Menu) {
 		games.menu->Update(dt);
 	}else if (State == Game_Init) {
@@ -85,8 +85,11 @@ void Game::Destroy(GameObject* Object) {
 		delete Object;
 }
 
-TextBox* Game::AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const float& spacing, const bool& AlignCenterHorizontaly) {
+TextBox* Game::AddText(const float& Left, const float Right, const float& Top, const float& Bottom,const std::string& BaseText, const float& spacing, const bool& AlignCenterHorizontaly, const vec& Color, const unsigned int& Boldicity) {
 	TextBox* Text = new TextBox(Left, Right, Top, Bottom, spacing, AlignCenterHorizontaly, Texts.size());
+	Text->Color = Color;
+	Text->Boldicity = Boldicity;
+	Text->ChangeText(BaseText);
 	Texts.push_back(Text);
 	return Text;
 }

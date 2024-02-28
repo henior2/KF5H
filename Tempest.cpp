@@ -2,6 +2,7 @@
 #include "The real engine/The Real Engine.h"
 
 void Tempest::Init() {
+	SetCursor(NULL);
 	debugCooldown = .1f;
 	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;

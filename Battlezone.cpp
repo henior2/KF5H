@@ -2,7 +2,7 @@
 #include "The real engine/The Real Engine.h"
 
 void Battlezone::Init() {
-
+	SetCursor(NULL);
 	thePointer = Game::Create(vec(0,3), vec(0,3), vec(.1,3), L"battlezonePointer");
 	thePointer->Stage[0].onTop = true;
 
@@ -33,15 +33,13 @@ void Battlezone::Init() {
 	waveFlag = false;
 	waveTime = 4.0f;
 	bulletsFired = 0;
-	TextBox* fala = Game::AddText(0.3f,0,0.3f,0,0.1f,true);
-	fala->Write("FALA 0");
+	TextBox* fala = Game::AddText(0.3f,0,0.3f,0, "FALA 0", 0.1f, true);
 	glitchEffectRefreshRate = .1f;
 
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
-	TextBox* display_hp = Game::AddText(0, .2, .2, .0, 0.1f, true);
-	display_hp->Write(std::to_string(hp));
+	TextBox* display_hp = Game::AddText(0, .2, .2, .0, std::to_string(hp),0.1f, true);
 	isDead = false;
 	endingScreen = false;
 
@@ -71,8 +69,7 @@ void Battlezone::Init() {
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
-	TextBox* tScore = Game::AddText(.6,.0,.2,.0,.1f,true);
-	tScore->Write(scoreStr);
+	TextBox* tScore = Game::AddText(.6,.0,.2,.0, scoreStr,.1f,true);
 
 	//nvm I think it's not here //bro's having a bipolar disorder 💀
 

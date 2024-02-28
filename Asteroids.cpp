@@ -2,6 +2,9 @@
 #include "The real engine/The Real Engine.h"
 
 void Asteroids::Init(bool again) {
+
+	SetCursor(NULL);
+
 	clickCooldown = .25f;
 	isEndScreenMusicPlaying = false;
 
@@ -37,8 +40,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, 0, -.8, -.9, .05, 0);
-		tutorialText->ChangeText("Press W to move");
+		tutorialText = Game::AddText(-.9, 0, -.8, -.9, "Press W to move", .05, 0);
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -116,11 +118,9 @@ void Asteroids::Init(bool again) {
 
 		Game::Sound(backgroundMusic[2], true);
 
-		tScore = Game::AddText(-.9, .9, .85, .8, .02, false);
-		tScore->ChangeText(scoreStr);
+		tScore = Game::AddText(-.9, .9, .85, .8, scoreStr, .02, false);
 
-		endingUsername = Game::AddText(-.125, .125, .7, .5, .1, true);
-		endingUsername->ChangeText(new_username);
+		endingUsername = Game::AddText(-.125, .125, .7, .5, new_username,.1, true);
 	}
 	endingUsername->ChangeText("");
 
@@ -160,7 +160,7 @@ void Asteroids::Init(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = Game::AddText(-.9, .9, .6, .5, .1, true);
+		usernameInfo = Game::AddText(-.9, .9, .6, .5, "", .1, true);
 	}
 	else {
 		Game::Sound(L"asteroidsStart", false);
@@ -345,8 +345,7 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, .1f, false);
-					scoreboard[i]->ChangeText(place + " " + nick + " " + score);
+					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + " " + nick + " " + score,.1f, false);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
