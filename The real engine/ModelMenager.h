@@ -134,8 +134,11 @@ public:
 	static void ReadMeshFile(std::wifstream file, std::wstring Name) {
 		std::pair<unsigned int*, int> Mesh = ReadUnsignedIntFile(std::move(file), Name);
 
-		ObjectsDatas[Name].Colision.Sides = Mesh.first;
-		ObjectsDatas[Name].Colision.edgeSidesNumber = Mesh.second;
+		ColisionMesh m;
+		m.Sides = Mesh.first;
+		m.edgeSidesNumber = Mesh.second;
+		m.farthestVertex = ObjectsDatas[Name].Colision.farthestVertex;
+		ObjectsDatas[Name].Colision = m;
 	}
 
 	static void LoadModels(std::wstring folder) {

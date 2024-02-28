@@ -10,15 +10,14 @@ void Renderer::DrawGame(std::vector<std::pair<Rendering, Transformations>>& Game
 			DrawObject(i.first.verticies, hdc, i.second, /*ProjectionMatrix, ViewMatrix*/ Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
 		}
 		else {
-			VertexData a(ModelMenager::ObjectsDatas[i.first.name]);
-			DrawObject(a, hdc, i.second, /*ProjectionMatrix, ViewMatrix*/Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
+			DrawObject(ModelMenager::ObjectsDatas[i.first.name], hdc, i.second, /*ProjectionMatrix, ViewMatrix*/Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
 		}
 	}
 	//SelectObject(hdc, hOldPen);
 	//DeleteObject(hPen);
 }
 
-void Renderer::DrawObject(VertexData Data, HDC& hdc, Transformations Model, /*const mat& ProjectionMatrix, const mat& ViewMatrix*/const mat& Pro, const float& width, const float& height, const vec& color, const int& LineWidth, const bool& UseVertexColor, const bool& onTop) {
+void Renderer::DrawObject(const VertexData& Data, HDC& hdc, Transformations Model, /*const mat& ProjectionMatrix, const mat& ViewMatrix*/const mat& Pro, const float& width, const float& height, const vec& color, const int& LineWidth, const bool& UseVertexColor, const bool& onTop) {
 
 	HPEN hPen = CreatePen(PS_SOLID, LineWidth, RGB(color.x * 255, color.y * 255, color.z * 255));
 	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);

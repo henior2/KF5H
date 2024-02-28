@@ -22,14 +22,27 @@ struct ColisionMesh {
 	unsigned int* Sides = nullptr;
 
 	~ColisionMesh() {
+		if(Sides != nullptr)
 			delete[] Sides;
 	}
 
-	ColisionMesh() {};
+	ColisionMesh() = default;
 
 	ColisionMesh(const ColisionMesh& sec)
 		:farthestVertex(sec.farthestVertex), edgeSidesNumber(sec.edgeSidesNumber)
 	{
+		Sides = new unsigned int[edgeSidesNumber * 2];
+
+		for (int i = 0; i < edgeSidesNumber * 2; i++) {
+			Sides[i] = sec.Sides[i];
+			Sides[i + 1] = sec.Sides[i + 1];
+		}
+	}
+
+	void operator=(const ColisionMesh& sec)
+	{
+		farthestVertex = sec.farthestVertex;
+		edgeSidesNumber = sec.edgeSidesNumber;
 		Sides = new unsigned int[edgeSidesNumber * 2];
 
 		for (int i = 0; i < edgeSidesNumber * 2; i++) {
@@ -73,7 +86,29 @@ struct VertexData {
 		for (int i = 0; i < iNum * 2; i++) {
 			indecies[i] = sec.indecies[i];
 		}
+
+		if(sec.Colision.edgeSidesNumber > 0)
+			Colision = sec.Colision;
 	};
+
+	void operator=(const VertexData& sec) {
+		if (sec.Colision.edgeSidesNumber > 0)
+			Colision = sec.Colision;
+
+		if (sec.vNum <= 0 && sec.iNum <= 0) {
+			return;
+		}
+		vertecies = new float[sec.vNum];
+		indecies = new unsigned int[sec.iNum * 2];
+		iNum = sec.iNum;
+		vNum = sec.vNum;
+		for (int i = 0; i < vNum; i++) {
+			vertecies[i] = sec.vertecies[i];
+		}
+		for (int i = 0; i < iNum * 2; i++) {
+			indecies[i] = sec.indecies[i];
+		}
+	}
 
 	void CreateCollision() {
 		for (int i = 0; i < vNum - 6; i += 6) {
@@ -104,8 +139,8 @@ struct Rendering
 	{
 		color = sec.color;
 		if (doVerex) {
-			VertexData n(sec.verticies);
-			verticies = n;
+			
+			verticies = VertexData(sec.verticies);
 		}
 	}
 };

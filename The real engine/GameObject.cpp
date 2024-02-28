@@ -163,7 +163,7 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 	NEW.doVerex = true;
 	NEW.verticies = d;
 
-	Stage.push_back(NEW);
+	Stage.push_back(Rendering(NEW));
 
 	return Stage.size() - 1;
 }

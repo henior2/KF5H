@@ -415,7 +415,6 @@ void Asteroids::Update(const float& dt) {
 			if (Game::collisionCircle(asteroid, current, vec(1, 1, 0)))
 			{
 				current->SetColor(vec(1, 0, 0));
-				asteroid->SetColor(vec(1 / asteroid->Object.verticies.Colision.farthestVertex, 0, 0));
 			}
 			if (Game::checkCollisions(asteroid, current, vec(1,1,0), true)) {
 				int type = asteroidSize[j];
