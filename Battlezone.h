@@ -159,7 +159,7 @@ private:
 
 	void makeHorizon();
 
-	const int totalObstacles = 100;
+	const int totalObstacles = 40;
 	const float maxObstacleHeight = 7.0f;
 	const float minObstacleHeight = 5.0f;
 
