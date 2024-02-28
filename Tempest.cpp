@@ -404,7 +404,7 @@ void Tempest::enemies_spawn(int type2) {
 	vec place;
 	vec scale((b - a).Length() / 1.5, 3);
 	if (type2 == 2) 
-		place = vec(a.x, a.y, a.z);
+		place = a;
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
 		scale.x /= 1.3;
@@ -504,21 +504,20 @@ void Tempest::fuseball(float dt) {
 
 		direction = rand() % 5 + 1; //do przodu, do ty³u, w prawo, w lewo
 		help = enemies[2][i]->Transform.position;
-		//if zeby nie wychodzi³o z tunelu
 
 		if (direction == 3 || direction == 4) {
 			pos = enemies_position[2][i];
 			vec b, a = move[pos];
 			
 			 if (direction == 3) {
-				if (pos == move.size() - 1)  pos = 0;
+				if (pos == move2.size() - 1)  pos = 0;
 				else pos++;
-				b = move[pos];
+				b = move2[pos];
 			}
 			else if (direction == 4){
-				if(position == 0) pos = move.size() - 1;
+				if(pos == 0) pos = move2.size() - 1;
 				else pos--;
-				b = move[pos];
+				b = move2[pos];
 			}
 			 enemies_position[2][i] = pos;
 
@@ -528,14 +527,30 @@ void Tempest::fuseball(float dt) {
 			
 		}	
 		else {
+
+			if(help.z < -7.5 && !enemies_bool[2][i]) {
+				speed = -1;
+			}
+			else if (help.z >= -7.5 && !enemies_bool[2][i]) {
+				enemies_bool[2][i] = true;
+				speed = 1;
+			}
+			else if (help.z > zhelp && enemies_bool[2][i]){
+				speed = 1;
+			}	
+			else if (help.z <= -7.5 && enemies_bool[2][i]) {
+				enemies_bool[2][i] = false;
+				speed = -1;
+			}
+
 			
 			if( direction == 1){
-				speed = rand() % 40 + 1;
-				enemies[2][i]->Move(vec(0, 0, -speed) * dt);
+				speed *= rand() % 40 + 1;
+				enemies[2][i]->Move(vec(0, 0, speed) * dt);
 
 			}
 			else if ( direction == 2) {
-				speed = rand() % 15 + 1;
+				speed *= rand() % 15 + 1;
 				enemies[2][i]->Move(vec(0, 0, speed) * dt);
 			}
 
