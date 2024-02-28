@@ -23,7 +23,7 @@ struct ColisionMesh {
 
 	~ColisionMesh() {
 		try {
-			delete[] Sides;
+//			delete[] Sides;
 		}
 		catch (...) {}
 	}
@@ -67,8 +67,8 @@ struct VertexData {
 	};
 
 	void CreateCollision() {
-		for (int i = 0; i < vNum - 6; i += 6) {
-			float length = sqrt(pow(vertecies[i], 2) + pow(vertecies[i + 1],2) + pow(vertecies[i + 2], 2));
+		for (int i = 0; i < vNum; i += 6) {
+			float length = sqrt(vertecies[i] + vertecies[i + 1] + vertecies[i + 2]);
 			if (Colision.farthestVertex < length) {
 				Colision.farthestVertex = length;
 			}
