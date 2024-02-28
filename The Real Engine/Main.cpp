@@ -250,6 +250,7 @@ void Drawing(HWND& hwnd, int width, int height) {
 			RECT rect;
 			GetClientRect(hwnd, &rect);
 			HBRUSH white = CreateSolidBrush(RGB(0, 0, 0));
+			HBRUSH hOldBrrush = (HBRUSH)SelectObject(hdc, white);
 			
 			FillRect(hdcBuffer, &rect, white);
 
@@ -282,7 +283,12 @@ void Drawing(HWND& hwnd, int width, int height) {
 			SetBkColor(hdcBuffer, RGB(255, 255, 0));
 
 			// Draw the text
-			std::wstring dtString = std::to_wstring(slep) + L", " + std::to_wstring(allDt) + L", " + std::to_wstring(eee - e) + L", " + std::to_wstring(ee - eee);
+			std::wstringstream s;
+			HANDLE hProcess = GetCurrentProcess();
+			s << GetGuiResources(hProcess, GR_GDIOBJECTS);
+			std::wstringstream ss;
+			ss << GetLastError();
+			std::wstring dtString = std::to_wstring(slep) + L", " + std::to_wstring(allDt) + L", " + std::to_wstring(eee - e) + L", " + std::to_wstring(ee - eee) + L", " + s.str() + L", " + ss.str();
 			TextOut(hdcBuffer, 10, 10, dtString.c_str()/*std::to_wstring(Objects.size()).c_str()*/, static_cast<int>(dtString.length()));
 
 			BitBlt(hdc, 0, 0, width, height, hdcBuffer, 0, 0, SRCCOPY);
@@ -291,6 +297,9 @@ void Drawing(HWND& hwnd, int width, int height) {
 				DWORD errorCode = GetLastError();
     				errorCode = errorCode;
 			}
+
+			SelectObject(hdc, hOldBrrush);
+			DeleteObject(white);
 			SelectObject(hdcBuffer, hOldFont);
 			DeleteObject(hFont);
 			SelectObject(hdcBuffer, hOldBitmap);//
