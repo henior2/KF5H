@@ -508,7 +508,7 @@ void Tempest::fuseball(float dt) {
 		direction = rand() % 5 + 1; //do przodu, do ty³u, w prawo, w lewo
 		help = enemies[2][i]->Transform.position;
 
-		if (direction == 3 || direction == 4) {
+t		if (direction == 3 || direction == 4) {
 			pos = enemies_position[2][i];
 			vec b, a = move[pos];
 			
@@ -524,17 +524,20 @@ void Tempest::fuseball(float dt) {
 			}
 			 enemies_position[2][i] = pos;
 
-			 vec delta_of_moving[7];
-			 delta_of_moving[0]=(vec(b.x,b.y, help.z));
-			 delta_of_moving[1]=(vec(b.x/4,b.y/4, help.z));
-			 delta_of_moving[2]=(vec(b.x/2,b.y/2, help.z));
-			 delta_of_moving[3]=(vec(b.x,b.y, help.z));
-			 delta_of_moving[4]=(vec(b.x,b.y, help.z));
-			 delta_of_moving[5]=(vec(b.x,b.y, help.z));
+			 std::vector <vec> delta_of_moving;
 
-			for (int i = 0; i < 7; i++) {
+			 for (int k = 1000; k > 1; k--) {
+				 delta_of_moving.push_back(vec(b.x / k, b.y / k, help.z));
+			 }
+			 delta_of_moving.push_back(vec(b.x, b.y, help.z));
 
-				}
+			 for (int k = 1000; k > 1; k--) {
+				 delta_of_moving.push_back(vec(b.x / k * (k-1), b.y /k * (k-1), help.z));
+			 }
+
+			for (int j = 0; j < delta_of_moving.size(); j++) {
+				enemies[2][i]->MoveTo(delta_of_moving[j]);
+			}
 			
 		}	
 		else {
