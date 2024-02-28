@@ -22,11 +22,15 @@ public:
 	unsigned int Index;
 	bool AlignH;
 	vec Color = vec(1, 3);
+	std::string Word;
 	TextBox(const float& Left, const float Right, const float& Top, const float& Bottom, const float& spacing, const bool& AlignCenterHorizontaly, const unsigned int& index);
 	~TextBox();
 
 	void Write(std::string Word);
-	void ChangeText(std::string Word);
+	void ChangeSize(const unsigned int& BoldicityChange, const float& sizeChange);
+	void ChangeText(std::string Word, const unsigned int& BoldicityChange = 0, const float& sizeChange = 0);
+
+	bool Hovered(const float& FreeSpace = 0) const;
 private:
 	std::map<char, std::wstring> models{
 		{'.', L"dot"},

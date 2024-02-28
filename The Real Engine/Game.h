@@ -44,6 +44,7 @@ public:
 	static GameState State;
 
 	static POINT MousePosition;
+	static POINT ScreenSize;
 
 	static void Update(const float& dt);
 
@@ -51,7 +52,7 @@ public:
 	static GameObject* Create(const vec& pos, const vec& rot, const vec& scale, const std::vector<float>& vertecies, const std::vector<unsigned int>& indecies);
 	static void Destroy(GameObject* Object);
 
-	static TextBox* AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const float& spacing = 0.1f, const bool& AlignCenterHorizontaly = false);
+	static TextBox* AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const std::string& BaseText, const float& spacing = 0.1f, const bool& AlignCenterHorizontaly = false, const vec& Color = vec(1, 1, 1), const unsigned int& Boldicity = 0.1f);
 	static void DestroyText(TextBox* Text);
 
 	static void Sound(const std::wstring& SoundFile, const bool& PlayInLoop = false);

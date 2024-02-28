@@ -17,6 +17,7 @@ TextBox::~TextBox() {
 }
 
 void TextBox::Write(std::string Word) {
+	this->Word += Word;
 	float left = Position.Left;
 	if (AlignH) {
 		left = (Position.Right + Position.Left) / 2.0f - (float(Word.length()) * ((Position.Top - Position.Bottom) + Spacing) / 2.0f - Spacing) / 2.0f;
@@ -34,7 +35,7 @@ void TextBox::Write(std::string Word) {
 			Model = wchar_t(std::toupper(i));
 		}
 
-		float posx = left + (Letters.size() * ((Position.Top - Position.Bottom) + Spacing)) / 2.0f + (Spaces * (Position.Top - Position.Bottom)) / 2.0f;
+		float posx = left + ((Letters.size() + Spaces) * ((Position.Top - Position.Bottom) + Spacing)) / 2.0f;
 		float posy = Position.Bottom;
 		vec pos = vec(posx, posy, 0);
 
@@ -47,12 +48,38 @@ void TextBox::Write(std::string Word) {
 		Letters.push_back(Letter);
 	}
 }
-void TextBox::ChangeText(std::string Word) {
+void TextBox::ChangeText(std::string Word, const unsigned int& BoldicityChange, const float& sizeChange) {
 	for (int i = 0; i < Letters.size(); i++) {
 		Game::Destroy(Letters[i]);
 	}
 	Letters.clear();
+	this->Word = "";
 	Spaces = 0;
 
-	Write(Word);
+	if(BoldicityChange != 0 && sizeChange != 0)
+		ChangeSize(BoldicityChange, sizeChange);
+	else
+		Write(Word);
+}
+
+void TextBox::ChangeSize(const unsigned int& BoldicityChange, const float& sizeChange) {
+	this->Boldicity += BoldicityChange;
+	this->Position.Bottom -= sizeChange / 2.0f;
+	this->Position.Top += sizeChange / 2.0f;
+
+	ChangeText(Word);
+}
+
+bool TextBox::Hovered(const float& FreeSpace) const {
+	float MouseX = float(Game::MousePosition.x) / float(Game::ScreenSize.x);
+	MouseX -= 0.5f;
+	MouseX *= 2.0f;
+
+	float MouseY = float(Game::MousePosition.y) / float(Game::ScreenSize.y);
+	MouseY -= 0.5f;
+	MouseY *= 2.0f;
+	MouseY = MouseY * -1.0f;
+
+	if (MouseY >= Position.Bottom - FreeSpace && MouseY <= Position.Top + FreeSpace && MouseX >= Position.Left - FreeSpace && MouseX <= Position.Right + FreeSpace) return true;
+	else return false;
 }
