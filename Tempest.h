@@ -47,6 +47,7 @@ private:
 	vec rotation;
 	int position;
 	float zhelp;
+	float zhelp2;
 
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2);
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1);

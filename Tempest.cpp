@@ -64,7 +64,9 @@ void Tempest::Update(const float& dt) {
 	if (!enemies[2].empty()) {
 		fuseball(dt);
 	}
-
+	if (!enemies[3].empty()) {
+		flipper(dt);
+	}
 	if (Game::KeysPresed['2'] && debugCooldown <= 0.0f) {
 		debugCooldown = 0.5f;
 		enemies_spawn(0);
@@ -152,15 +154,13 @@ void Tempest::shipspawn(int& position, int type) {
 	}
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, 0);
-	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
-	blaster->SetColor(vec(1, 1, 0));
+
+	if (type == 0) blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
+	else blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship2");
 	//+ .25 so that is't "on top" of the tunne
 	//2.25 so that is doesn't take up the whole space
 }
 void Tempest::shipmovement(bool right, int& position, int type) {
-	int segPos = tunnel.size() - 1 - position;
-
-	if (type == 0) tunnel[segPos]->SetColor(vec(0, 0, 1));
 
 	vec a, b;
 	if (right && position == move.size() - 1) {
@@ -182,7 +182,6 @@ void Tempest::shipmovement(bool right, int& position, int type) {
 		a = move[position]; b = move[position + 1];
 	}
 
-	segPos = tunnel.size() - 1 - position;
 
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 360.0f);
@@ -191,7 +190,6 @@ void Tempest::shipmovement(bool right, int& position, int type) {
 	blaster->ScaleTo(vec((b - a).Length() / 2.25, 3));
 	blaster->RotateTo(rotation);
 
-	if (type == 0) tunnel[segPos]->SetColor(vec(1, 1, 0));
 }
 void Tempest::shooting(vec gun_pos, vec rotation) {
 	bulletsofplayer.push_back(Game::Create(gun_pos, vec(rotation), vec(0.2, 3), L"bulletblaster"));
@@ -369,6 +367,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	points_move_list(move2, type, point2);
 	lastTSN = tunnelSidesNo;
 	zhelp = move2[0].z;
+	zhelp2 = move[0].z;
 		
 	if (type == 1) tunnel.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), v, id));
 	else {
@@ -493,7 +492,7 @@ void Tempest::tanker(float dt) {
 	vec help, xd;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
-		if (help.z < -7.5)
+		if (help.z < zhelp2)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
 		else {
 			xd = enemies[0][i]->Transform.position;
@@ -654,7 +653,14 @@ void Tempest::spiker(float dt) {
 }
 
 void Tempest::flipper(float dt) {
-	for (int i = 0; i < enemies[3].size(); i++) {
-
+		bool d;
+		for (int i = 0; i < enemies[3].size(); i++) {
+			vec help = enemies[3][i]->Transform.position;
+			if (help.z < zhelp2) {
+				enemies[3][i]->Move(vec(0, 0, -3) * dt); 
+			}
+			else {
+				d = rand() % 2 + 1;
+			}
+		}
 	}
-}
