@@ -37,10 +37,10 @@ private:
 	bool isDead;
 	bool hasLost;
 	bool endingScreen;
-	std::string new_username;
+	std::wstring new_username;
 	int bestScore;
 
-	std::vector<std::string> usernames;
+	std::vector<std::wstring> usernames;
 	std::vector<int> scores;
 
 	std::vector<GameObject*> debris;

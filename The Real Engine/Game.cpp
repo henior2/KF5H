@@ -93,7 +93,7 @@ void Game::Destroy(GameObject* Object) {
 		delete Object;
 }
 
-TextBox* Game::AddText(const float& Left, const float Right, const float& Top, const float& Bottom,const std::string& BaseText, const float& spacing, const bool& AlignCenterHorizontaly, const vec& Color, const unsigned int& Boldicity) {
+TextBox* Game::AddText(const float& Left, const float Right, const float& Top, const float& Bottom,const std::wstring& BaseText, const float& spacing, const bool& AlignCenterHorizontaly, const vec& Color, const unsigned int& Boldicity) {
 	TextBox* Text = new TextBox(Left, Right, Top, Bottom, spacing, AlignCenterHorizontaly, Texts.size());
 	Text->Color = Color;
 	Text->Boldicity = Boldicity;
@@ -231,8 +231,9 @@ bool Game::collisionSAT(const GameObject* obj1, const GameObject* obj2, const ve
 	FillMesh(mesh2, obj2, simplify);
 
 	float f2 = (obj2->Object.doVerex) ? obj2->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj2->Object.name].Colision.farthestVertex;
+
 	for (int i = 0; i < mesh1.size() / 2; i++) {
-		vec d = mesh1[i * 2] - mesh1[i * 2 + 1];
+		vec d = mesh1[i * 2 + 1] - mesh1[i * 2];
 		vec axis = CalculateAxis(d, collisionAxis);
 
 		if (!CheckOverlapAndProject(obj1->Transform.position, mesh1, obj2->Transform.position, mesh2, axis, simplify, f2 * obj2->Transform.scale.x)) {
@@ -275,9 +276,9 @@ bool Game::checkCollisions(const GameObject* obj1, const GameObject* obj2, const
 	return Game::collisionCircle(obj1, obj2, collisionAxis) && Game::collisionSAT(obj1, obj2, collisionAxis, simplify);
 }
 
-std::string Game::formatText(std::string text, bool type, int length) {
-	char f = ' ';
-	if (type) f = '0';
+std::wstring Game::formatText(std::wstring text, bool type, int length) {
+	wchar_t f = ' ';
+	if (type) f = L'0';
 	while (text.length() < length) {
 		text = f + text;
 	}

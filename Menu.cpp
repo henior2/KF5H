@@ -4,13 +4,13 @@
 
 void Menu::Init() {
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
-		Sign = Game::AddText(-1, 1, 0.9, 0.8, "Gry Wektorowe", 0.1f, true, vec(.5, .5, .5), 15);
-		PlayButton = Game::AddText(-0.4f, 0.4f, 0.15, 0.1, "Play", 0.1, true, vec(.5, 1, .5), 8);
-		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, "Exit", 0.1, true, vec(.5, 1, .5), 8);
-		AsteroidsButton = Game::AddText(-0.4f, 0.4f, 0.25, 0.20, "", 0.1, true, vec(.5, 1, .5), 8);
-		BattlezoneButton = Game::AddText(-0.4f, 0.4f, 0.025, -0.025, "", 0.1, true, vec(.5, 1, .5), 8);
-		TempestButton = Game::AddText(-0.4f, 0.4f, -0.20, -0.25, "", 0.1, true, vec(.5, 1, .5), 8);
-		BackButton = Game::AddText(-0.4f, 0.4f, -0.75, -0.80, "", 0.1, true, vec(1, .5, .5), 8);
+		Sign = Game::AddText(-1, 1, 0.9, 0.8, L"Gry Wektorowe", 0.1f, true, vec(.5, .5, .5), 15);
+		PlayButton = Game::AddText(-0.4f, 0.4f, 0.15, 0.1, L"Graj", 0.1, true, vec(.5, 1, .5), 8);
+		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, L"WyjdŸ", 0.1, true, vec(.5, 1, .5), 8);
+		AsteroidsButton = Game::AddText(-0.4f, 0.4f, 0.25, 0.20, L"", 0.1, true, vec(.5, 1, .5), 8);
+		BattlezoneButton = Game::AddText(-0.4f, 0.4f, 0.025, -0.025, L"", 0.1, true, vec(.5, 1, .5), 8);
+		TempestButton = Game::AddText(-0.4f, 0.4f, -0.20, -0.25, L"", 0.1, true, vec(.5, 1, .5), 8);
+		BackButton = Game::AddText(-0.4f, 0.4f, -0.75, -0.80, L"", 0.1, true, vec(1, .5, .5), 8);
 		Buttons = { PlayButton, ExitButton, AsteroidsButton, BattlezoneButton, TempestButton, BackButton };
 		//Pointer = Game::Create(vec3(-.325, -.05, 0), vec3(0, 0, -90), vec3(.1), "AsteroidsBullet");
 		//Pointer = Game::Create()
@@ -63,12 +63,12 @@ void Menu::Update(const float& dt) {
 			if (PlayButton->Hovered(0.025f) && Game::KeysPresed[VK_LBUTTON]) {
 					Play = true;
 					Wait = 1;
-					PlayButton->ChangeText("");
-					ExitButton->ChangeText("");
-					AsteroidsButton->ChangeText("Asteroids");
-					BattlezoneButton->ChangeText("Battlezone");
-					TempestButton->ChangeText("Tempest");
-					BackButton->ChangeText("Go Back");
+					PlayButton->ChangeText(L"");
+					ExitButton->ChangeText(L"");
+					AsteroidsButton->ChangeText(L"Asteroids");
+					BattlezoneButton->ChangeText(L"Battlezone");
+					TempestButton->ChangeText(L"Tempest");
+					BackButton->ChangeText(L"Wróæ");
 			}
 
 			if (ExitButton->Hovered(0.025f) && Game::KeysPresed[VK_LBUTTON])
@@ -84,12 +84,12 @@ void Menu::Update(const float& dt) {
 			else if (BackButton->Hovered(0.025f) && Game::KeysPresed[VK_LBUTTON]) {
 				Play = false;
 				Wait = 1;
-				PlayButton->ChangeText("Play");
-				ExitButton->ChangeText("Exit");
-				AsteroidsButton->ChangeText("");
-				BattlezoneButton->ChangeText("");
-				TempestButton->ChangeText("");
-				BackButton->ChangeText("");
+				PlayButton->ChangeText(L"Graj");
+				ExitButton->ChangeText(L"WyjdŸ");
+				AsteroidsButton->ChangeText(L"");
+				BattlezoneButton->ChangeText(L"");
+				TempestButton->ChangeText(L"");
+				BackButton->ChangeText(L"");
 			}
 		}
 		else {

@@ -33,13 +33,13 @@ void Battlezone::Init() {
 	waveFlag = false;
 	waveTime = 4.0f;
 	bulletsFired = 0;
-	TextBox* fala = Game::AddText(0.3f,0,0.3f,0, "FALA 0", 0.1f, true);
+	TextBox* fala = Game::AddText(-1.0f,0,1.0f,0.9f, L"FALA 0", 0.1f);
 	glitchEffectRefreshRate = .1f;
 
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
-	TextBox* display_hp = Game::AddText(0, .2, .2, .0, std::to_string(hp),0.1f, true);
+	TextBox* display_hp = Game::AddText(0.6f, 0, 1.0f, 0.9f, std::to_wstring(hp),0.1f);
 	isDead = false;
 	endingScreen = false;
 
@@ -65,11 +65,11 @@ void Battlezone::Init() {
 	std::vector<unsigned int> rInd;
 
 	//Score
-	std::string scoreStr = std::to_string(score);
+	std::wstring scoreStr = std::to_wstring(score);
 	while (scoreStr.length() < 3) {
-		scoreStr = "0" + scoreStr;
+		scoreStr = L"0" + scoreStr;
 	}
-	TextBox* tScore = Game::AddText(.6,.0,.2,.0, scoreStr,.1f,true);
+	TextBox* tScore = Game::AddText(-0.1f, 0, 1.0f, 0.9f, scoreStr,.1f);
 
 	//nvm I think it's not here //bro's having a bipolar disorder 💀
 
@@ -217,7 +217,7 @@ void Battlezone::Update(float dt) {
 
 	if (hp <= 0) {
 		
-		display_hp->ChangeText("You died");
+		display_hp->ChangeText(L"You died");
 		isDead = true;
 	}
 
@@ -262,36 +262,7 @@ void Battlezone::Update(float dt) {
 	vec pFront = vec(player->Front.x,player->Front.y,player->Front.z);
 
 	//moving the camera
-	if (debugCamera)
-	{
-		player->Stage[0].opacity = 1.0f;
-		if (Game::KeysPresed[VK_LEFT]) Game::camera->RotateCamera(rotationMultiplier * dt * camSpeed, 0);
-		if (Game::KeysPresed[VK_RIGHT]) Game::camera->RotateCamera(-rotationMultiplier * dt * camSpeed, 0);
-		if (Game::KeysPresed[VK_UP]) Game::camera->RotateCamera(0, -rotationMultiplier * dt * camSpeed);
-		if (Game::KeysPresed[VK_DOWN]) Game::camera->RotateCamera(0, rotationMultiplier * dt * camSpeed);
-
-
-		if (Game::KeysPresed['Q']) Game::camera->Position.y += 2 * camSpeed * dt;
-		if (Game::KeysPresed['Z']) Game::camera->Position.y -= 2 * camSpeed * dt;
-		if (Game::KeysPresed['0']) {
-			Game::camera->Position = vec(0.0f, 0.0f, 0.0f);
-			Game::camera->Yaw = -90.0f;
-			Game::camera->Pitch = 0.0f;
-			Game::camera->MoveCamera(FORWARD, 0.0f);
-			Game::camera->RotateCamera(0.0f, 0.0f);
-		}
-
-		if (Game::KeysPresed[VK_LSHIFT]) camSpeed = 2;
-		else camSpeed = 1;
-
-		//moving the player
-		if (Game::KeysPresed['W']) player->Move(vec(0, 0, -1) * dt * velocity);
-		if (Game::KeysPresed['S']) player->Move(vec(0, 0, 1) * dt * velocity);
-		if (Game::KeysPresed['A']) player->Rotate(vec(0, 1, 0) * dt * rotationMultiplier1);
-		if (Game::KeysPresed['D']) player->Rotate(vec(0, -1, 0) * dt * rotationMultiplier1);
-	}
-	else
-	{
+	
 		player->Stage[0].opacity = 0.0f;
 		//moving the player
 		if (Game::KeysPresed['W']) player->Move(vec(0, 0, -1) * dt * velocity);
@@ -304,14 +275,6 @@ void Battlezone::Update(float dt) {
 		Game::camera->Yaw = (pOri.y * -1) + 90.0f;
 		Game::camera->Pitch = 0.0f;
 		Game::camera->RotateCamera(0, 0);
-
-	}
-
-	if (Game::KeysPresed['R'] && keyCooldown <= 0)
-	{
-		keyCooldown = .25f;
-		debugCamera = !debugCamera;
-	}
 
 
 	//shooting funtion
@@ -342,7 +305,7 @@ void Battlezone::Update(float dt) {
 			//Player bullet collsion
 			if (Game::checkCollisions(player,current,vec(1,0,1))) {
 				hp -= 25;
-				display_hp->ChangeText(std::to_string(hp));
+				display_hp->ChangeText(std::to_wstring(hp));
 				Game::Destroy(current);
 				pociski.erase(pociski.begin() + i);
 				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
@@ -365,7 +328,7 @@ void Battlezone::Update(float dt) {
 	else waveTime -= dt;
 
 	if (waveFlag && przeciwnicy.empty() && rakiety.empty() && wavePoints == 0) {
-		fala->ChangeText("WAVE" + std::to_string(wavePoints));
+		fala->ChangeText(L"WAVE" + std::to_wstring(wavePoints));
 		wavePoints += 1; 
 		waveFlag = false;
 		wave(wavePoints, dt);
@@ -457,7 +420,7 @@ void Battlezone::Update(float dt) {
 				uiElements.erase(uiElements.begin() + i);
 
 				hp -= 50;
-				display_hp->ChangeText(std::to_string(hp));
+				display_hp->ChangeText(std::to_wstring(hp));
 			}
 		}
 	}
@@ -818,7 +781,7 @@ void Battlezone::push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
 
 
 TextBox* Battlezone::refreshText(TextBox* text, int score) {
-	text->ChangeText(std::to_string(score));
+	text->ChangeText(std::to_wstring(score));
 	return text;
 }
 

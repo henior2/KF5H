@@ -16,7 +16,7 @@ TextBox::~TextBox() {
 	}
 }
 
-void TextBox::Write(std::string Word) {
+void TextBox::Write(std::wstring Word) {
 	this->Word += Word;
 	float left = Position.Left;
 	if (AlignH) {
@@ -48,12 +48,12 @@ void TextBox::Write(std::string Word) {
 		Letters.push_back(Letter);
 	}
 }
-void TextBox::ChangeText(std::string Word, const unsigned int& BoldicityChange, const float& sizeChange) {
+void TextBox::ChangeText(std::wstring Word, const unsigned int& BoldicityChange, const float& sizeChange) {
 	for (int i = 0; i < Letters.size(); i++) {
 		Game::Destroy(Letters[i]);
 	}
 	Letters.clear();
-	this->Word = "";
+	this->Word = L"";
 	Spaces = 0;
 
 	if(BoldicityChange != 0 && sizeChange != 0)
