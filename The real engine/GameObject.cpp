@@ -157,11 +157,6 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 		d.Colision.edgeSidesNumber = mNum;
 		d.Colision.Sides = Mesh;
 		d.CreateCollision();
-
-		try {
-			delete[] Mesh;
-		}
-		catch (...) {}
 	}
 
 	Rendering NEW;
@@ -169,12 +164,6 @@ int GameObject::AddStage(std::vector<float>verticies, std::vector<unsigned int> 
 	NEW.verticies = d;
 
 	Stage.push_back(NEW);
-
-	try {
-		delete[] vertexy;
-		delete[] indexy;
-	}
-	catch (...) {}
 
 	return Stage.size() - 1;
 }

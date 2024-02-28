@@ -10,7 +10,7 @@ void Renderer::DrawGame(std::vector<std::pair<Rendering, Transformations>>& Game
 			DrawObject(i.first.verticies, hdc, i.second, /*ProjectionMatrix, ViewMatrix*/ Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
 		}
 		else {
-			VertexData a = ModelMenager::ObjectsDatas[i.first.name];
+			VertexData a(ModelMenager::ObjectsDatas[i.first.name]);
 			DrawObject(a, hdc, i.second, /*ProjectionMatrix, ViewMatrix*/Pro, width, height, i.first.color, i.first.lineWidth, !i.first.DifferentColor, i.first.onTop);
 		}
 	}

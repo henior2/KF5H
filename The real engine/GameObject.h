@@ -22,10 +22,20 @@ struct ColisionMesh {
 	unsigned int* Sides = nullptr;
 
 	~ColisionMesh() {
-		try {
 			delete[] Sides;
+	}
+
+	ColisionMesh() {};
+
+	ColisionMesh(const ColisionMesh& sec)
+		:farthestVertex(sec.farthestVertex), edgeSidesNumber(sec.edgeSidesNumber)
+	{
+		Sides = new unsigned int[edgeSidesNumber * 2];
+
+		for (int i = 0; i < edgeSidesNumber * 2; i++) {
+			Sides[i] = sec.Sides[i];
+			Sides[i + 1] = sec.Sides[i + 1];
 		}
-		catch (...) {}
 	}
 };
 
@@ -46,11 +56,10 @@ struct VertexData {
 	VertexData() {};
 
 	~VertexData() {
-		try {
-//			delete[] vertecies;
-//			delete[] indecies;
+		if (vertecies != nullptr) {
+			delete[] vertecies;
+			delete[] indecies;
 		}
-		catch (...) {}
 	}
 
 	VertexData(const VertexData& sec) {
