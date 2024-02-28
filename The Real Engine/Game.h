@@ -52,7 +52,7 @@ public:
 	static GameObject* Create(const vec& pos, const vec& rot, const vec& scale, const std::vector<float>& vertecies, const std::vector<unsigned int>& indecies);
 	static void Destroy(GameObject* Object);
 
-	static TextBox* AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const std::string& BaseText, const float& spacing = 0.1f, const bool& AlignCenterHorizontaly = false, const vec& Color = vec(1, 1, 1), const unsigned int& Boldicity = 0.1f);
+	static TextBox* AddText(const float& Left, const float Right, const float& Top, const float& Bottom, const std::wstring& BaseText, const float& spacing = 0.1f, const bool& AlignCenterHorizontaly = false, const vec& Color = vec(1, 1, 1), const unsigned int& Boldicity = 0.1f);
 	static void DestroyText(TextBox* Text);
 
 	static void Sound(const std::wstring& SoundFile, const bool& PlayInLoop = false);
@@ -78,7 +78,7 @@ public:
 	// if `simplify` is set to `true`, the second object will be treated as a circle with no details
 	static bool checkCollisions(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
-	static std::string formatText(std::string text, bool type, int length = 3);
+	static std::wstring formatText(std::wstring text, bool type, int length = 3);
 private:
 	static void DeleteGame();
 

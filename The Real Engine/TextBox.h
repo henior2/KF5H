@@ -26,9 +26,9 @@ public:
 	TextBox(const float& Left, const float Right, const float& Top, const float& Bottom, const float& spacing, const bool& AlignCenterHorizontaly, const unsigned int& index);
 	~TextBox();
 
-	void Write(std::string Word);
+	void Write(std::wstring Word);
 	void ChangeSize(const unsigned int& BoldicityChange, const float& sizeChange);
-	void ChangeText(std::string Word, const unsigned int& BoldicityChange = 0, const float& sizeChange = 0);
+	void ChangeText(std::wstring Word, const unsigned int& BoldicityChange = 0, const float& sizeChange = 0);
 
 	bool Hovered(const float& FreeSpace = 0) const;
 private:
