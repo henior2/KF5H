@@ -12,7 +12,7 @@ void Tempest::Init() {
 	enemies[2].clear();
 	enemies[3].clear();
 	position = 0;
-	superzapperActive = true;
+	superzapper_counting = -1;
 	tunelspawn(lastTSN, type);
 };
 void Tempest::Update(const float& dt) {
@@ -77,7 +77,7 @@ void Tempest::Update(const float& dt) {
 		debugCooldown = 0.5f;
 		enemies_spawn(3);
 	}
-	if (Game::KeysPresed['F'] && debugCooldown <= 0.0f) {
+	if (Game::KeysPresed['F']) {
 		superzapper();
 	}
 };
@@ -210,25 +210,18 @@ void Tempest::bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 
 }
 void Tempest::superzapper() {
-	if (superzapperActive) {
+	if (superzapper_counting < lvlDif) {
 		for (int i = 0; i < 4; i++) {
 			if (!enemies[i].empty()) {
 				for (int j = 0; j < enemies[i].size(); j++) {
 					Game::Destroy(enemies[i][j]);
-					if (i == 1) Game::Destroy(spike[j]);
 				}
 				enemies[i].clear();
 				enemies_position[i].clear();
-				enemies_bool[i].clear();
-				if (i == 1) {
-					spikers_max.clear();
-					spike.clear();
-					vx_spike.clear();
-				}
 			}
 			
 		}
-		superzapperActive = false;
+		superzapper_counting++;
 	}
 }
 
@@ -387,7 +380,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	}
 
 	shipspawn(position, type);
-	superzapperActive = true;
+	superzapper_counting++;
 }
 
 void Tempest::enemies_spawn(int type2) {
@@ -508,25 +501,26 @@ void Tempest::fuseball(float dt) {
 
 		if (direction == 3 || direction == 4) {
 			pos = enemies_position[2][i];
-			vec b, a = move[pos];
+			vec b, a = move2[pos];
 			
 			 if (direction == 3) {
-				if (pos == move.size() - 1)  pos = 0;
+				if (pos == move2.size() - 1)  pos = 0;
 				else pos++;
-				b = move[pos];
+				b = move2[pos];
 			}
 			else if (direction == 4){
-				if(position == 0) pos = move.size() - 1;
+				if(position == 0) pos = move2.size() - 1;
 				else pos--;
-				b = move[pos];
+				b = move2[pos];
 			}
 			 enemies_position[2][i] = pos;
 
 			vec delta_of_moving(vec(b.x,b.y, help.z));
 
+			for (int j = 1; j < 7; j++) {
 				enemies[2][i]->MoveTo(delta_of_moving);
-			
-		}	
+			}
+		}
 		else {
 			
 			if( direction == 1){
