@@ -34,7 +34,9 @@ vec::vec(const float& valueX, const float& valueY, const float& valueZ)
 }
 
 vec::~vec() {
-
+	try {
+		delete[size] this->array;
+	}catch(...){}
 }
 
 void vec::operator=(const vec& second) {

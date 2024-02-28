@@ -5,7 +5,7 @@ class vec
 public:
 	unsigned int size;
 
-	float* array;
+	float* array = nullptr;
 
 	float& x;
 	float& y;

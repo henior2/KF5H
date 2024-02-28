@@ -27,13 +27,13 @@ mat::mat(const unsigned int& Size)
 mat::~mat() {
 	for (int i = 0; i < size; i++) {
 		try {
-//			delete[] array[i];
+			delete[] array[i];
 		}
 		catch(...){
 		}
 	}
 	try {
-//		delete[] array;
+		delete[] array;
 	}
 	catch (...) {
 

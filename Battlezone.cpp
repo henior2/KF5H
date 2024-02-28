@@ -3,18 +3,20 @@
 
 void Battlezone::Init() {
 
-	thePointer = Game::Create(vec(0), vec(0), vec(.1), L"battlezonePointer");
+	thePointer = Game::Create(vec(0,3), vec(0,3), vec(.1,3), L"battlezonePointer");
 	thePointer->Stage[0].onTop = true;
 
 	keyCooldown = .25f;
 	money = 0;
 	
 
-	shopDisplaySquares[0] = Game::Create(vec(-shopXPos, shopYPos, 0), vec(0), vec(shopScale), L"MenuSquare");
-	shopDisplaySquares[1] = Game::Create(vec(-shopXPos, 0, 0), vec(0), vec(shopScale), L"MenuSquare");
-	shopDisplaySquares[2] = Game::Create(vec(-shopXPos, -shopYPos, 0), vec(0), vec(shopScale), L"MenuSquare");
+	shopDisplaySquares[0] = Game::Create(vec(-shopXPos, shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
+	shopDisplaySquares[1] = Game::Create(vec(-shopXPos, 0, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
+	shopDisplaySquares[2] = Game::Create(vec(-shopXPos, -shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 
-	shopDisplaySquares[0]->Stage[0].onTop = true; shopDisplaySquares[1]->Stage[0].onTop = true; shopDisplaySquares[2]->Stage[0].onTop = true;
+	shopDisplaySquares[0]->Stage[0].onTop = true; 
+	shopDisplaySquares[1]->Stage[0].onTop = true; 
+	shopDisplaySquares[2]->Stage[0].onTop = true;
 
 	insertItem(0, true); insertItem(1, true); insertItem(2, true);
 
@@ -25,27 +27,27 @@ void Battlezone::Init() {
 	isMissleSelfTargeting = false;
 	timeEffectLeft = 0;
 	score = 0;
-	bulletTimeRemain.clear();
-	pociski_gracza.clear();
+
 	scoreMultiplier = 1;
 	wavePoints = 1;
 	waveFlag = false;
 	waveTime = 4.0f;
 	bulletsFired = 0;
-	fala = Game::AddText(.2, .0, .2, .0,0.1f,true );
+	TextBox* fala = Game::AddText(0.3f,0,0.3f,0,0.1f,true);
 	fala->Write("FALA 0");
 	glitchEffectRefreshRate = .1f;
 
 	shot_cool = 2;
 	resp_cool = 2;
 	hp = 100;
-	display_hp = Game::AddText(0, .2, .2, .0, 0.1f, true);
+	TextBox* display_hp = Game::AddText(0, .2, .2, .0, 0.1f, true);
+	display_hp->Write(std::to_string(hp));
 	isDead = false;
 	endingScreen = false;
 
 	new_username = "";
 
-	__lines.clear();
+
 
 	isUfo = false;
 	ufoCooldown = 35.0f;
@@ -54,7 +56,7 @@ void Battlezone::Init() {
 
 	planeCooldown = 10.0f;
 	isPlane = false;
-	planeStartCoords = vec(-1000, 0, -1000);
+	planeStartCoords = vec(-1000, 1000, -1000);
 
 	player = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(1.0f,3), L"Tank");
 	ufo = Game::Create(vec(-1000.0f,3), vec(0.0f,3), vec(1.0f,3), L"Ufo");
@@ -69,7 +71,7 @@ void Battlezone::Init() {
 	while (scoreStr.length() < 3) {
 		scoreStr = "0" + scoreStr;
 	}
-	tScore = Game::AddText(.6,.0,.2,.0,.1f,true);
+	TextBox* tScore = Game::AddText(.6,.0,.2,.0,.1f,true);
 	tScore->Write(scoreStr);
 
 	//nvm I think it's not here //bro's having a bipolar disorder 💀
@@ -132,30 +134,23 @@ void Battlezone::Init() {
 		push_back2(rInd, radarPoints + 3 + i * 2, radarPoints + 4 + i * 2);
 	}
 
-	radar = Game::Create(vec(0.0f), vec(0.0f), vec(.25f), rVx, rInd);
+	radar = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(.25f,3), rVx, rInd);
 
-	obstacles.clear();
-
-	spinningLines.clear();
-
-	targetPos.clear();
-	targetOri.clear();
-
-	uiElements.clear();
+	
 
 	uiElements.push_back(radar);
-	targetPos.push_back(vec(0.0f));
-	targetOri.push_back(vec(0.0f));
+	targetPos.push_back(vec(0.0f,3));
+	targetOri.push_back(vec(0.0f,3));
 
 	for (int i = 0; i < trailLinesNo; i++) {
-		GameObject* obj = Game::Create(vec(0.0f), vec(0.0f, 0.0f, (90.0f + (float)(trailLinesNo)*linesSpace) - (float)(i)*linesSpace), vec(.25f), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+		GameObject* obj = Game::Create(vec(0.0f,3), vec(0.0f, 0.0f, (90.0f + (float)(trailLinesNo)*linesSpace) - (float)(i)*linesSpace), vec(.25f,3), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 		float modifier = 1.0f - (float)(i) / (float)(trailLinesNo);
 		obj->Stage[0].opacity = modifier;
 		obj->Stage[0].lineWidth = modifier;
 		spinningLines.push_back(obj);
 		uiElements.push_back(obj);
-		targetPos.push_back(vec(0.0f));
-		targetOri.push_back(vec(0.0f));
+		targetPos.push_back(vec(0.0f,3));
+		targetOri.push_back(vec(0.0f,3));
 	}
 	spinningLines[0]->Stage[0].opacity = 1.25f;
 	spinningLines[0]->Stage[0].lineWidth = 1.25f;
@@ -173,6 +168,24 @@ void Battlezone::Init() {
 	powerUpType.clear();
 	powerUpAnimation.clear();
 
+	obstacles.clear();
+
+	spinningLines.clear();
+
+	targetPos.clear();
+	targetOri.clear();
+
+	uiElements.clear();
+
+	__lines.clear();	
+	
+	bulletTimeRemain.clear();
+	pociski_gracza.clear();
+
+	randomActionTimeLimit.clear();
+	randomActionTimeCooldown.clear();
+	randomActionType.clear();
+
 	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
 	currentPUdYoTU = pUdYoTU;
 	pU2AnimationCooldown = 0.0f;
@@ -184,9 +197,7 @@ void Battlezone::Init() {
 		current->Rotate(vec(0, 180, 0));
 	}
 
-	randomActionTimeLimit.clear();
-	randomActionTimeCooldown.clear();
-	randomActionType.clear();
+
 	makeHorizon();
 
 	//creating obstacles
@@ -196,10 +207,17 @@ void Battlezone::Init() {
 		// z = [-125 ; 125]
 		// h = [  5  ;  7 ]
 	}
-};
+}
+
 void Battlezone::Update(float dt) {
 
+	dt *= timeMultiplier;
 	keyCooldown -= dt;
+	timeEffectLeft -= dt;
+	resp_cool -= dt;
+	shot_cool -= dt;
+	rtp += dt;
+	pU2AnimationCooldown += dt;
 
 	if (hp <= 0) {
 		
@@ -222,11 +240,7 @@ void Battlezone::Update(float dt) {
 
 	if (isDead) return; //this stops the game after death. anything above still will be executed
 
-	dt *= timeMultiplier;
-	timeEffectLeft -= dt;
-	resp_cool -= dt;
-	shot_cool -= dt;
-	rtp += dt;
+	
 
 	if (timeEffectLeft <= 0) {
 		timeEffectLeft = 0;
@@ -236,17 +250,20 @@ void Battlezone::Update(float dt) {
 
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
-			cooldown -= dt;
-			if (cooldown < 0) cooldown = 0;
+			if(cooldown>0)
+				cooldown -= dt;
+			else	
+				cooldown = 0;
 		}
 	}
 
-	if (rtp >= fullRotationTime) rtp = 0;
-	pU2AnimationCooldown += dt;
+	if (rtp >= fullRotationTime) 
+		rtp = 0;
+	
 
-	vec pPos = player->Transform.position;
-	vec pOri = player->Transform.orientation;
-	vec pFront = player->Front;
+	vec pPos = vec(player->Transform.position.x,0,player->Transform.position.z);
+	vec pOri = vec(0,player->Transform.orientation.y,0);
+	vec pFront = vec(player->Front.x,player->Front.y,player->Front.z);
 
 	//moving the camera
 	if (debugCamera)
@@ -273,6 +290,7 @@ void Battlezone::Update(float dt) {
 
 		//moving the player
 		if (Game::KeysPresed['W']) player->Move(vec(0, 0, -1) * dt * velocity);
+		if (Game::KeysPresed['S']) player->Move(vec(0, 0, 1) * dt * velocity);
 		if (Game::KeysPresed['A']) player->Rotate(vec(0, 1, 0) * dt * rotationMultiplier1);
 		if (Game::KeysPresed['D']) player->Rotate(vec(0, -1, 0) * dt * rotationMultiplier1);
 	}
@@ -305,9 +323,9 @@ void Battlezone::Update(float dt) {
 		shot_cool = 2;
 		bulletsFired += 1;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
-			shot(player->Transform.position + vec(0, 2.535, 0), player->Transform.orientation, true);
+			shot(player->Transform.position + vec(0, 2.535, 0), player->Transform.orientation.y, true);
 		else
-			shot(player->Transform.position + vec(0, 2.535, 1), player->Transform.orientation, true);
+			shot(player->Transform.position + vec(0, 2.535, 1), player->Transform.orientation.y, true);
 	}
 
 	//Moving the bullets
@@ -328,7 +346,6 @@ void Battlezone::Update(float dt) {
 			//Player bullet collsion
 			if (Game::checkCollisions(player,current,vec(1,0,1))) {
 				hp -= 25;
-				Game::DestroyText(display_hp);
 				display_hp->ChangeText(std::to_string(hp));
 				Game::Destroy(current);
 				pociski.erase(pociski.begin() + i);
@@ -343,15 +360,15 @@ void Battlezone::Update(float dt) {
 	horizon->MoveTo(pPos);
 
 	//spawning the enemies
-	float temp_x = (float)(rand() % 51 - 25);
-	float temp_z = (float)(rand() % 51 - 25);
+	float temp_x = (float)(rand() % 51);
+	float temp_z = (float)(rand() % 51);
 	float temp_y = (float)(rand() % 361);
 
 
 	if (waveTime <= 0) waveFlag = true;
 	else waveTime -= dt;
-	if (waveFlag && przeciwnicy.empty() && rakiety.empty()) {
-		Game::DestroyText(fala);
+
+	if (waveFlag && przeciwnicy.empty() && rakiety.empty() && wavePoints == 0) {
 		fala->ChangeText("WAVE" + std::to_string(wavePoints));
 		wavePoints += 1; 
 		waveFlag = false;
@@ -359,15 +376,13 @@ void Battlezone::Update(float dt) {
 		waveTime = 4.0f;
 	}
 
-
-
 	//Poruszanie i strzelanie przeciwników
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); i++) {
 			GameObject* current = przeciwnicy[i];
-			vec enemyPos = current->Transform.position;
-			vec direction = (pPos - enemyPos).Normalize();
-			vec distance = pPos - enemyPos;
+			vec enemyPos = vec(current->Transform.position.x,0,current->Transform.position.z);
+			vec direction = ((pPos - enemyPos).Normalize(),0,0);
+			vec distance = vec(pPos - enemyPos);
 
 			//random actions
 			randomActionTimeCooldown[i] -= dt;
@@ -396,6 +411,7 @@ void Battlezone::Update(float dt) {
 				break;
 			default:
 				_angle = 0; // for 3 and 4 - no rotation
+				break;
 			}
 
 			current->Rotate(vec(0, _angle, 0));
@@ -422,9 +438,9 @@ void Battlezone::Update(float dt) {
 	if (!rakiety.empty()) {
 		for (int i = 0; i < rakiety.size(); i++) {
 			GameObject* current = rakiety[i];
-			vec enemyPos = current->Transform.position;
-			vec direction = (pPos - enemyPos).Normalize();
-			vec distance = pPos - enemyPos;
+			vec enemyPos = vec(current->Transform.position.x,0,current->Transform.position.z);
+			vec direction = (vec(pPos - enemyPos).Normalize(),0,0);
+			vec distance = vec(pPos - enemyPos);
 
 			// calculating rotation angle 
 			current->RotateTo(vec(0.0f, atan2(direction.x, direction.z) * 180.0f / M_PI, 0.0f));
@@ -445,7 +461,6 @@ void Battlezone::Update(float dt) {
 				uiElements.erase(uiElements.begin() + i);
 
 				hp -= 50;
-				Game::DestroyText(display_hp);
 				display_hp->ChangeText(std::to_string(hp));
 			}
 		}
@@ -493,6 +508,7 @@ void Battlezone::Update(float dt) {
 							tScore = refreshText(tScore, score);
 							break;
 						default:
+							throw std::invalid_argument("There is no such a type of enemy!");
 							break;
 						}
 						//Usuwanie pocisku
@@ -502,7 +518,6 @@ void Battlezone::Update(float dt) {
 						//Usuwanie przeciwnika
 						Game::Destroy(przeciwnicy[j]);
 						przeciwnicy.clear();
-						waveFlag = true;
 					}
 				}
 			}
@@ -518,8 +533,7 @@ void Battlezone::Update(float dt) {
 						//Usuwanie rakiety
 						Game::Destroy(rakiety[j]);
 						Game::Destroy(radarElements[j]);
-						enemyType.erase(enemyType.begin() + j);
-						enemyShotCooldowns.erase(enemyShotCooldowns.begin() + j);
+						
 						rakiety.erase(rakiety.begin() + j);
 						radarElements.erase(radarElements.begin() + j);
 						radarElementsType.erase(radarElementsType.begin() + j);
@@ -581,7 +595,7 @@ void Battlezone::Update(float dt) {
 		isUfo = true;
 	}
 	if (isUfo) {
-		vec ufoPos = ufo->Transform.position;
+		vec ufoPos = vec(ufo->Transform.position.x,ufo->Transform.position.y,ufo->Transform.position.z);
 		if (ufoPos.y > 0.0f)
 			ufo->Transform.position.y -= ufoSpeed * dt;
 		else if (ufoPos.y < 0.0f)
@@ -590,7 +604,7 @@ void Battlezone::Update(float dt) {
 			if (ufoPos.x > ufoTargetPos.x - 5.0f && ufoPos.x < ufoTargetPos.x + 5.0f && ufoPos.z > ufoTargetPos.y - 5.0f && ufoPos.z < ufoTargetPos.y + 5.0f) {
 				if (ufoMovesLeft > 0) {
 					ufoMovesLeft -= 1;
-					ufoTargetPos = vec(rand() % 2 * mapSize - mapSize, rand() % 2 * mapSize - mapSize,0);
+					ufoTargetPos = vec(rand() % 2 * mapSize - mapSize,0, rand() % 2 * mapSize - mapSize);
 				}
 				else {
 					isUfo = false;
@@ -639,14 +653,14 @@ void Battlezone::Update(float dt) {
 	if (isPlane) {
 		plane->Move(plane->Front * dt * planeSpeedMultiplier);
 
-		vec planePos = vec(plane->Transform.position.x,0, plane->Transform.position.z);
+		vec planePos = vec(plane->Transform.position.x,planeHeight, plane->Transform.position.z);
 
 
 		if (abs(planePos.x) <= dropRadius || abs(planePos.y) <= dropRadius) {										// d = (a+b)/2 = 0/2 = 0
 			createPowerUp(planePos.x, planeHeight, planePos.y, rand() % (sizeof(pUModels) / sizeof(std::string)));	// y = b-d = b
 		}																											// |x-d|<=y => |x|<=b
 
-		if (abs(planePos.x) > planeBounds * 1.25 || abs(planePos.y) > planeBounds * 1.25) {
+		if (fabs(planePos.x) > planeBounds * 1.25 || abs(planePos.y) > planeBounds * 1.25) {
 			plane->MoveTo(vec(-1000, 1000, -1000));
 			isPlane = false;
 		}
@@ -737,7 +751,7 @@ void Battlezone::Update(float dt) {
 
 					glitchEffectRefreshRate = .1f;
 					for (int i = 0; i < (int)(dOutofbounds * maxGlitchLinesNumber); i++) {
-						GameObject* current = Game::Create(vec(0), vec(0), vec(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
+						GameObject* current = Game::Create(vec(0,3), vec(0,3), vec(1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - 1.0f)))), std::vector<float>{-5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0, -5 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (5 - -5))), 0, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 						current->Stage[0].onTop = true;
 						current->MoveTo(vec(-1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -1.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1.1f - -1.1f))), -.1));
 						__lines.push_back(current);
@@ -761,7 +775,7 @@ void Battlezone::Update(float dt) {
 		}
 	}
 	
-};
+}
 	
 
 float Battlezone::signed_angle_between_vectors(const vec& A, const vec& B, const vec& axis) {
@@ -807,11 +821,8 @@ void Battlezone::push_back2(std::vector<unsigned int>& vec, unsigned int a1) {
 }
 
 
-
-
 TextBox* Battlezone::refreshText(TextBox* text, int score) {
-	Game::DestroyText(text);
-	text->Write(std::to_string(score));
+	text->ChangeText(std::to_string(score));
 	return text;
 }
 
@@ -839,8 +850,8 @@ void Battlezone::shot(vec pos, vec rot, bool isPlayer) {
 	if (isPlayer)bulletTimeRemain.push_back(bulletMaxTime);
 	else fastBulletTimeRemain.push_back(bulletMaxTime);
 	GameObject* bullet = Game::Create(pos, rot, vec(1.0f, 3), L"TankBullet");
-	if (!isPlayer)pociski.push_back(bullet);
-	else pociski_gracza.push_back(bullet);
+	if (isPlayer)pociski_gracza.push_back(bullet);
+	else pociski.push_back(bullet);
 	//if (isPlayer && isMissleSelfTargeting) auto_bullet = bullet;
 	bullet->Move(vec(0, 0, -1));
 }
@@ -916,7 +927,7 @@ void Battlezone::spawn_enemy(vec pos, vec rot, int type) {
 		enemyType.push_back(type);
 		enemyShotCooldowns.push_back(enemyCooldown);
 
-		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"RadarX");
+		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault,3), L"RadarX");
 		radarElements.push_back(rPointer);
 		radarElementsType.push_back(0);
 		uiElements.push_back(rPointer);
@@ -930,7 +941,7 @@ void Battlezone::spawn_enemy(vec pos, vec rot, int type) {
 		enemyType.push_back(type);
 		enemyShotCooldowns.push_back(enemyCooldown);
 
-		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleBig), L"RadarX");
+		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleBig,3), L"RadarX");
 		radarElements.push_back(rPointer);
 		radarElementsType.push_back(0);
 		uiElements.push_back(rPointer);
@@ -944,7 +955,7 @@ void Battlezone::spawn_enemy(vec pos, vec rot, int type) {
 		enemyType.push_back(type);
 		enemyShotCooldowns.push_back(enemyCooldown);
 
-		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"AsteroidsStar");
+		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault,3), L"AsteroidsStar");
 		rPointer->SetColor(vec(0, 1, 0));
 		radarElements.push_back(rPointer);
 		radarElementsType.push_back(0);
@@ -956,10 +967,8 @@ void Battlezone::spawn_enemy(vec pos, vec rot, int type) {
 	else if (type == 4) {
 		GameObject* enemy = Game::Create(pos, rot, vec(1.0f, 3), L"Rocket");
 		rakiety.push_back(enemy);
-		enemyType.push_back(type);
-		enemyShotCooldowns.push_back(enemyCooldown);
 
-		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"AsteroidsShip");
+		GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault,3), L"AsteroidsShip");
 		rPointer->SetColor(vec(0, 1, 0));
 		radarElements.push_back(rPointer);
 		radarElementsType.push_back(3);
@@ -1062,45 +1071,45 @@ void Battlezone::makeHorizon() {
 
 
 void Battlezone::makeObstacles(float x, float z, float height) {
-	std::vector<float> vx;
-	std::vector<unsigned int> ind;
+	 std::vector<float> vx;
+	 std::vector<unsigned int> ind;
 
-	std::vector<vec> points;
+	 std::vector<vec> points;
 
-	int lv = rand() % (maxLevels - minLevels) + minLevels;
+	 int lv = rand() % (maxLevels - minLevels) + minLevels;
 
-	float lHeight = height / lv;
+	 float lHeight = height / lv;
 
-	int ver = rand() % (maxBaseVerticies - minBaseVerticies) + minBaseVerticies;
-	float radius = minRadius + (float)(rand()) / ((float)(RAND_MAX / (maxRadius - minRadius)));
+	 int ver = rand() % (maxBaseVerticies - minBaseVerticies) + minBaseVerticies;
+	 float radius = minRadius + (float)(rand()) / ((float)(RAND_MAX / (maxRadius - minRadius)));
 
-	for (int i = 0; i < lv - 1; i++) {
-		int noVxLvBw = i * ver;
+	 for (int i = 0; i < lv - 1; i++) {
+	 	int noVxLvBw = i * ver;
 
-		float yModifier = (float)(rand()) / (static_cast <float> (RAND_MAX / levelMaxYOffset));
-		if (rand() % 2) yModifier *= -1;
+	 	float yModifier = (float)(rand()) / (static_cast <float> (RAND_MAX / levelMaxYOffset));
+	 	if (rand() % 2) yModifier *= -1;
 
-		if (i != 0) radius -= (minLevelRadiusDecrease + (float)(rand()) / ((float)(RAND_MAX / (maxLevelRadiusDecrease - minLevelRadiusDecrease))));
-		if (radius < minRadius) radius = minRadius;
+	 	if (i != 0) radius -= (minLevelRadiusDecrease + (float)(rand()) / ((float)(RAND_MAX / (maxLevelRadiusDecrease - minLevelRadiusDecrease))));
+	 	if (radius < minRadius) radius = minRadius;
 
-		for (int j = 0; j < ver; j++) {
-			double angle = 2 * M_PI * j / ver;
+	 	for (int j = 0; j < ver; j++) {
+	 		double angle = 2 * M_PI * j / ver;
 
-			float mxvtr = maxVertexOffset * radius;
-			float radiusModifier = -mxvtr + (float)(rand()) / ((float)(RAND_MAX / (mxvtr + mxvtr))); //i must have been high when i wrote this lmao
+	 		float mxvtr = maxVertexOffset * radius;
+	 		float radiusModifier = -mxvtr + (float)(rand()) / ((float)(RAND_MAX / (mxvtr + mxvtr)));  //i must have been high when i wrote this lmao
 
-			float tempRadius = radius + radiusModifier;
+	 		float tempRadius = radius + radiusModifier;
 
-			vec point = vec(tempRadius * cos(angle), (i * lHeight) + yModifier, tempRadius * sin(angle));
-			points.push_back(point);
+	 		vec point = vec(tempRadius * cos(angle), (i * lHeight) + yModifier, tempRadius * sin(angle));
+	 		points.push_back(point);
 
-			//last layer => topmost vertex
-			if (i == lv - 2) {
-				ind.push_back(j + noVxLvBw);
-				ind.push_back((lv - 1) * ver);
-			}
+	 		 //last layer => topmost vertex
+	 		if (i == lv - 2) {
+	 			ind.push_back(j + noVxLvBw);
+	 			ind.push_back((lv - 1) * ver);
+	 		}
 
-			//every layer before => layer above
+	 		//every layer before => layer above
 			if (i < lv - 2) {
 				ind.push_back(j + noVxLvBw);
 
@@ -1138,7 +1147,7 @@ void Battlezone::makeObstacles(float x, float z, float height) {
 
 	obstacles.push_back(Game::Create(vec(x, 0.0f, z), vec(0.0f, rand() % 360, 0.0f), vec(minScale + (float)(rand()) / ((float)(RAND_MAX / (maxScale - minScale)))), vx, ind));
 
-	GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"RadarT");
+	GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault,3), L"RadarT");
 	radarElements.push_back(rPointer);
 	radarElementsType.push_back(1);
 	uiElements.push_back(rPointer);
@@ -1148,19 +1157,19 @@ void Battlezone::makeObstacles(float x, float z, float height) {
 
 
 void Battlezone::createPowerUp(float x, float y, float z, int type) {
-	powerUpInside.push_back(Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale), L"PowerUp" + pUModels[type]));
-	powerUpBox.push_back(Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale), L"PowerUpBox"));
+	powerUpInside.push_back(Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale,3), L"PowerUp" + pUModels[type]));
+	powerUpBox.push_back(Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale,3), L"PowerUpBox"));
 	powerUpType.push_back(type);
 
 	if (type == 2) {
-		GameObject* obj = Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale), L"Arrow0");
+		GameObject* obj = Game::Create(vec(x, y, z), vec(0.0f, 3), vec(pUScale,3), L"Arrow0");
 		obj->AddStage(L"Arrow1");
 		obj->AddStage(L"Arrow2");
 		obj->AddStage(L"Arrow3");
 		powerUpAnimation.push_back(obj);
 	}
 
-	GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault), L"MenuSquare");
+	GameObject* rPointer = Game::Create(vec(0.0f, 3), vec(0.0f, 3), vec(rPointerScaleDefault,3), L"MenuSquare");
 	radarElements.push_back(rPointer);
 	radarElementsType.push_back(2);
 	uiElements.push_back(rPointer);
@@ -1206,7 +1215,7 @@ void Battlezone::insertItem(int item, bool isTheFirstTime) {
 	itemsPrice[1] = 100;
 	itemsPrice[2] = 300;
 	if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
-	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale), shopModels[itemsType[item]]);
+	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale,3), shopModels[itemsType[item]]);
 	shopDisplayIcons[item]->Stage[0].onTop = true;
 }
 
@@ -1231,10 +1240,6 @@ void Battlezone::buyItem(int type, int cost, int item) {
 }
 
 void Battlezone::shopAction(int item, bool isForced) {
-	if (money >= itemsPrice[item] || isForced) buyItem(itemsType[item], itemsPrice[item], item);
-
-
+	if (money >= itemsPrice[item] || isForced) 
+		buyItem(itemsType[item], itemsPrice[item], item);
 }
-
-
-
