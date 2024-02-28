@@ -34,7 +34,7 @@ void Tempest::Update(const float& dt) {
 		debugCooldown = 0.3f;
 		Game::ChangeState(Game_Menu);
 	}
-		
+
 
 
 	if (Game::KeysPresed['A'] && debugCooldown <= 0.0f) {
@@ -132,7 +132,7 @@ void Tempest::points_move_list(std::vector<vec>& moving, int type, std::vector<v
 			moving.push_back(pointing[i]);
 		}
 	}
-	for (int i = point.size()-1; i > sid; i--) {
+	for (int i = point.size() - 1; i > sid; i--) {
 		if (!xd && pointing[i].x == 0) {
 			xd = true;
 		}
@@ -155,8 +155,7 @@ void Tempest::shipspawn(int& position, int type) {
 	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	else rotation = vec(0, 0, 0);
 
-	if (type == 0) blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
-	else blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship2");
+	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
 	//+ .25 so that is't "on top" of the tunne
 	//2.25 so that is doesn't take up the whole space
 }
@@ -202,7 +201,7 @@ void Tempest::bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 			bulletsofplayer[i]->Move(vec(0, 0, 15) * dt);
 			bulletsofplayer[i]->Rotate(vec(0, 0, 10));
 		}
-			
+
 		else {
 			Game::Destroy(bulletsofplayer[i]);
 			bulletsofplayer.erase(bulletsofplayer.begin() + i);
@@ -228,7 +227,7 @@ void Tempest::superzapper() {
 					vx_spike.clear();
 				}
 			}
-			
+
 		}
 		superzapperActive = false;
 	}
@@ -241,7 +240,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	std::vector<unsigned int> id;
 	std::vector<vec> points;
 
-	int tunnelSidesNo ;
+	int tunnelSidesNo;
 	do {
 		tunnelSidesNo = rand() % 5 + 5;
 	} while (tunnelSidesNo == lastTSN);
@@ -368,7 +367,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	lastTSN = tunnelSidesNo;
 	zhelp = move2[0].z;
 	zhelp2 = move[0].z;
-		
+
 	if (type == 1) tunnel.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), v, id));
 	else {
 		std::vector<float> vxVec;
@@ -408,11 +407,11 @@ void Tempest::enemies_spawn(int type2) {
 	if (type2 == 2) {
 		place = a;
 		fusbal_time.push_back(4.0f);
-		fmove.push_back(vec(0,3));
+		fmove.push_back(vec(0, 3));
 		fwhere.push_back(vec(0, 3));
 		cooldown.push_back(0);
 	}
-		
+
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
 		scale.x /= 1.3;
@@ -609,9 +608,9 @@ void Tempest::fuseball(float dt) {
 		}
 
 	}
-	
-	
-	
+
+
+
 }
 
 void Tempest::spiker(float dt) {
@@ -628,16 +627,16 @@ void Tempest::spiker(float dt) {
 			help = enemies[1][i]->Transform.position;
 			spike[i]->Object.verticies.vertecies[6] = help.x;
 			spike[i]->Object.verticies.vertecies[7] = help.y;
-			spike[i]->Object.verticies.vertecies[8] = help.z; 
+			spike[i]->Object.verticies.vertecies[8] = help.z;
 		}
 		else if (enemies_bool[1][i] == false) {
 			enemies_bool[1][i] = true;
 		}
 
-		else if (help.z > zhelp ) {
+		else if (help.z > zhelp) {
 			enemies[1][i]->Move(vec(0, 0, 3) * dt);
 			enemies[1][i]->Rotate(vec(0, 0, -2));
-		} 
+		}
 		else {
 			Game::Destroy(enemies[1][i]);
 			enemies_spawn(0, i, 1, help.z);
@@ -653,14 +652,14 @@ void Tempest::spiker(float dt) {
 }
 
 void Tempest::flipper(float dt) {
-		bool d;
-		for (int i = 0; i < enemies[3].size(); i++) {
-			vec help = enemies[3][i]->Transform.position;
-			if (help.z < zhelp2) {
-				enemies[3][i]->Move(vec(0, 0, -3) * dt); 
-			}
-			else {
-				d = rand() % 2 + 1;
-			}
+	bool d;
+	for (int i = 0; i < enemies[3].size(); i++) {
+		vec help = enemies[3][i]->Transform.position;
+		if (help.z < zhelp2) {
+			enemies[3][i]->Move(vec(0, 0, -3) * dt);
+		}
+		else {
+			d = rand() % 2 + 1;
 		}
 	}
+}
