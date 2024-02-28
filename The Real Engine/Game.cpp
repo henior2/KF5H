@@ -179,7 +179,7 @@ void Game::ProjectMesh(const vec& pos, const std::vector<vec>& mesh, const vec& 
 	min = INFINITE;
 	max = -min;
 	for (size_t i = 0; i < mesh.size(); i += 6) {
-		vec p = mesh[i];
+		vec p = mesh[i] + pos;
 		float product = vec::Dot(p, axis);
 		if (product < min) min = product;
 		if (product > max) max = product;
