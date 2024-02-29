@@ -175,6 +175,7 @@
     <Media Include="Sounds\Lobby-Time.wav" />
     <Media Include="Sounds\mus01.wav" />
     <Media Include="Sounds\tempestEnemyKill.wav" />
+    <Media Include="Sounds\tempestEnemyShoot.wav" />
     <Media Include="Sounds\tempestEnemySpawn.wav" />
     <Media Include="Sounds\tempestLevelComplete.wav" />
     <Media Include="Sounds\tempestLevelStart.wav" />

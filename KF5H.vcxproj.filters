@@ -515,6 +515,9 @@
     <Media Include="Sounds\tempestSuperzapperEmpty.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
+    <Media Include="Sounds\tempestEnemyShoot.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
