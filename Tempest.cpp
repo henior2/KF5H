@@ -104,6 +104,8 @@ void Tempest::mechanics(float dt) {
 		tunelspawn();
 		waveCool = 2.0f;
 		lvlDif += 1;
+		std::wstring diff = std::to_wstring(lvlDif);
+		dif->ChangeText(diff);
 	}
 }
 
@@ -589,7 +591,6 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 		else spawn1--;
 	}
 	
-
 	int spawn2;
 	vec a, b;
 
@@ -742,53 +743,89 @@ void Tempest::tanker(float dt) {
 }
 
 void Tempest::fuseball(float dt) {
-	vec help;
+	vec help,xd;
 	int direction, pos, speed;
-
+	bool he = true;
 	for (int i = 0; i < enemies[2].size(); i++) {
-		help = enemies[2][i]->Transform.position;
 
-
-		if (help.z < zhelp2 && !enemies_bool[2][i]) {
-			speed = -1;
+		for (int j = 0; j < bulletsofplayer.size(); j++) {
+			if (Game::collisionCircle(enemies[2][i], bulletsofplayer[j], vec(0, 1, 1))) {
+				he = false;
+				xd = enemies[2][i]->Transform.position;
+				Game::Destroy(enemies[2][i]);
+				Game::Destroy(bulletsofplayer[j]);
+				bulletsofplayer.erase(bulletsofplayer.begin() + j);
+				enemies[2].erase(enemies[2].begin() + i);
+				enemies_position[2].erase(enemies_position[2].begin() + i);
+				enemies_bool[2].erase(enemies_bool[2].begin() + i);
+				fmove.erase(fmove.begin() + i);
+				fwhere.erase(fwhere.begin() + i);
+				cooldown.erase(cooldown.begin() + i);
+				fusbal_time.erase(fusbal_time.begin() + i);
+				break;
+			}
 		}
-		else if (help.z >= zhelp2 && !enemies_bool[2][i]) {
-			enemies_bool[2][i] = true;
-			speed = 1;
-		}
-		else if (help.z > zhelp && enemies_bool[2][i]) {
-			speed = 1;
-		}
-		else if (help.z <= zhelp2 && enemies_bool[2][i]) {
-			enemies_bool[2][i] = false;
-			speed = -1;
-		}
+
+		if (he) {
+			help = enemies[2][i]->Transform.position;
 
 
-		if (fusbal_time[i] == 4.0f) {
-			direction = rand() % 41 + 1; //1 20 do przodu,  21 30 do ty³u, 31 35 w prawo, 36 40 w lewo 
-			if (cooldown[i] <= 0) {
-				if ((direction >= 31 && direction <= 35) || (direction >= 36 && direction <= 40)) {
-					pos = enemies_position[2][i];
-					vec b, a = move[pos];
+			if (help.z < zhelp2 && !enemies_bool[2][i]) {
+				speed = -1;
+			}
+			else if (help.z >= zhelp2 && !enemies_bool[2][i]) {
+				enemies_bool[2][i] = true;
+				speed = 1;
+			}
+			else if (help.z > zhelp && enemies_bool[2][i]) {
+				speed = 1;
+			}
+			else if (help.z <= zhelp2 && enemies_bool[2][i]) {
+				enemies_bool[2][i] = false;
+				speed = -1;
+			}
 
-					if (direction >= 31 && direction <= 35) {
-						if (pos == move2.size() - 1)  pos = 0;
-						else pos++;
-						b = move2[pos];
+
+			if (fusbal_time[i] == 4.0f) {
+				direction = rand() % 41 + 1; //1 20 do przodu,  21 30 do ty³u, 31 35 w prawo, 36 40 w lewo 
+				if (cooldown[i] <= 0) {
+					if ((direction >= 31 && direction <= 35) || (direction >= 36 && direction <= 40)) {
+						pos = enemies_position[2][i];
+						vec b, a = move[pos];
+
+						if (direction >= 31 && direction <= 35) {
+							if (pos == move2.size() - 1)  pos = 0;
+							else pos++;
+							b = move2[pos];
+						}
+						else if ((direction >= 36 && direction <= 40)) {
+							if (pos == 0) pos = move2.size() - 1;
+							else pos--;
+							b = move2[pos];
+						}
+						enemies_position[2][i] = pos;
+
+						fmove[i] = b - a;
+						fwhere[i] = b;
+						fusbal_time[i] -= dt;
+						cooldown[i] = 10.0f;
+
 					}
-					else if ((direction >= 36 && direction <= 40)) {
-						if (pos == 0) pos = move2.size() - 1;
-						else pos--;
-						b = move2[pos];
+					else {
+
+						if (direction >= 1 && direction <= 20) {
+							speed = speed * (rand() % 6 + 15);
+							enemies[2][i]->Move(vec(0, 0, speed) * dt);
+
+						}
+						else if (direction >= 21 && direction <= 30) {
+							speed = speed * (rand() % 20 + 35);
+							enemies[2][i]->Move(vec(0, 0, speed) * dt);
+
+						}
+						speed = rand() % 3 - 1;
+						enemies[2][i]->Rotate(vec(0, 0, speed));
 					}
-					enemies_position[2][i] = pos;
-
-					fmove[i] = b - a;
-					fwhere[i] = b;
-					fusbal_time[i] -= dt;
-					cooldown[i] = 10.0f;
-
 				}
 				else {
 
@@ -804,46 +841,32 @@ void Tempest::fuseball(float dt) {
 					}
 					speed = rand() % 3 - 1;
 					enemies[2][i]->Rotate(vec(0, 0, speed));
+					cooldown[i]--;
+
 				}
 			}
-			else {
-
-				if (direction >= 1 && direction <= 20) {
-					speed = speed * (rand() % 6 + 15);
+			else if (fusbal_time[i] > 0.0f) {
+				fusbal_time[i] -= dt;
+				direction = 4 / dt;
+				enemies[2][i]->MoveGlobal(vec(fmove[i].x / direction, fmove[i].y / direction, 0));
+				vec xd = fmove[i] & (fwhere[i] - enemies[2][i]->Transform.position);
+				if (xd.x <= 0 && xd.y <= 0 && xd.z <= 0) {
+					enemies[2][i]->MoveTo(fwhere[i]);
+					speed = speed * (rand() % 10 + 15);
 					enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
-				}
-				else if (direction >= 21 && direction <= 30) {
-					speed = speed * (rand() % 20 + 35);
-					enemies[2][i]->Move(vec(0, 0, speed) * dt);
-
 				}
 				speed = rand() % 3 - 1;
 				enemies[2][i]->Rotate(vec(0, 0, speed));
-				cooldown[i]--;
-
 			}
-		}
-		else if (fusbal_time[i] > 0.0f) {
-			fusbal_time[i] -= dt;
-			direction = 4 / dt;
-			enemies[2][i]->MoveGlobal(vec(fmove[i].x / direction, fmove[i].y / direction, 0));
-			vec xd = fmove[i] & (fwhere[i] - enemies[2][i]->Transform.position);
-			if (xd.x <= 0 && xd.y <= 0 && xd.z <= 0) {
-				enemies[2][i]->MoveTo(fwhere[i]);
+			else {
+				fusbal_time[i] = 4.0f;
 				speed = speed * (rand() % 10 + 15);
 				enemies[2][i]->Move(vec(0, 0, speed) * dt);
+				cooldown[i] = 5.0f;
 			}
-			speed = rand() % 3 - 1;
-			enemies[2][i]->Rotate(vec(0, 0, speed));
-		}
-		else {
-			fusbal_time[i] = 4.0f;
-			speed = speed * (rand() % 10 + 15);
-			enemies[2][i]->Move(vec(0, 0, speed) * dt);
-			cooldown[i] = 5;
-		}
 
+		}
+		
 	}
 
 
