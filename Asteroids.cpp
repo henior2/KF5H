@@ -41,7 +41,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, .9, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
+		tutorialText = Game::AddText(-.9, .9, -.8, -.9, L"Klikinj W, aby leciec", .05, 0);
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -214,7 +214,7 @@ void Asteroids::Update(const float& dt) {
 		isPaused = !isPaused;
 		clickCooldown = .25f;
 
-		if (isPaused) tutorialText->ChangeText(L"Kliknij P, aby wznowić");
+		if (isPaused) tutorialText->ChangeText(L"Kliknij P, aby wznowic");
 		else tutorialText->ChangeText(L"Poziom " + std::to_wstring(wave_num));
 	}
 
@@ -254,7 +254,7 @@ void Asteroids::Update(const float& dt) {
 				Game::StopSounds();
 				Game::Sound(backgroundMusic[0], true);
 
-				tutorialText->ChangeText(L"Wpisz swój nick");
+				tutorialText->ChangeText(L"Wpisz swoj nick");
 
 				std::wifstream file(L"_asteroidsscoredata.txt"); // reading the file
 
@@ -455,7 +455,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 0) {
 			tutorialStep++;
 
-			tutorialText->ChangeText(L"Użyj A i D, aby się obracać");
+			tutorialText->ChangeText(L"Uzyj A i D, aby sie obracac");
 		}
 
 		vec shipUp = ship->Up;
@@ -496,7 +496,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText->ChangeText(L"Kliknij SPACA, aby strzelać");
+			tutorialText->ChangeText(L"Kliknij SPACA, aby strzelac");
 		}
 
 		ship->Rotate(vec(0, 0, 1.0f) * rotationMultiplier * dt);
@@ -505,7 +505,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 1) {
 			tutorialStep++;
 
-			tutorialText->ChangeText(L"Kliknij SPACA, aby strzelać");
+			tutorialText->ChangeText(L"Kliknij SPACA, aby strzelac");
 		}
 
 		ship->Rotate(vec(0, 0, -1.0f) * rotationMultiplier * dt);
@@ -517,7 +517,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 3) {
 			tutorialStep++;
 
-			tutorialText->ChangeText(L"Uważaj! To może być niebezpieczne!");
+			tutorialText->ChangeText(L"Uwazaj! To moze byc niebezpieczne!");
 			forceTeleport = true;
 		}
 
@@ -549,7 +549,7 @@ void Asteroids::Update(const float& dt) {
 		if (tutorialStep == 2) {
 			tutorialStep++;
 
-			tutorialText->ChangeText(L"Kliknij E, żeby się teleportować");
+			tutorialText->ChangeText(L"Kliknij E, zeby sie teleportowaec");
 		}
 
 		Game::Sound("asteroidsPlayerShoot", false);

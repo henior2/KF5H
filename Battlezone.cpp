@@ -29,7 +29,7 @@ void Battlezone::Init() {
 	score = 0;
 
 	scoreMultiplier = 1;
-	wavePoints = 1;
+	wavePoints = 0;
 	waveFlag = false;
 	waveTime = 4.0f;
 	bulletsFired = 0;
@@ -153,35 +153,31 @@ void Battlezone::Init() {
 	spinningLines[0]->Stage[0].lineWidth = 1.25f;
 	rtp = 0; //was meant to be used for radar, will be used as a global timing unit (no use in radar, used for pu's however)
 
-	//przeciwnicy.clear();
-	//enemyShotCooldowns.clear();
-	//pociski.clear();
+	przeciwnicy.clear();
+	enemyShotCooldowns.clear();
+	pociski.clear();
 
-	//radarElements.clear();
-	//radarElementsType.clear();
+	powerUpInside.clear();
+	powerUpBox.clear();
+	powerUpType.clear();
+	powerUpAnimation.clear();
 
-	//powerUpInside.clear();
-	//powerUpBox.clear();
-	//powerUpType.clear();
-	//powerUpAnimation.clear();
+	obstacles.clear();
 
-	//obstacles.clear();
+	spinningLines.clear();
 
-	//spinningLines.clear();
+	targetPos.clear();
+	targetOri.clear();
 
-	//targetPos.clear();
-	//targetOri.clear();
+	__lines.clear();	
+	
+	bulletTimeRemain.clear();
+	fastBulletTimeRemain.clear();
+	pociski_gracza.clear();
 
-	//uiElements.clear();
-
-	//__lines.clear();	
-	//
-	//bulletTimeRemain.clear();
-	//pociski_gracza.clear();
-
-	//randomActionTimeLimit.clear();
-	//randomActionTimeCooldown.clear();
-	//randomActionType.clear();
+	randomActionTimeLimit.clear();
+	randomActionTimeCooldown.clear();
+	randomActionType.clear();
 
 	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
 	currentPUdYoTU = pUdYoTU;
@@ -215,6 +211,8 @@ void Battlezone::Update(float dt) {
 		current->Rotate(vec(0, 0, 0));
 		current->Transform.UseUniversalUnits = true;
 	}
+
+	
 
 	dt *= timeMultiplier;
 	keyCooldown -= dt;
@@ -304,6 +302,8 @@ void Battlezone::Update(float dt) {
 			shot(player->Transform.position + vec(0, 2.535, 1), player->Transform.orientation, true);
 	}
 
+		
+
 	//Moving the bullets
 		for (int i = 0; i < pociski.size(); i++) {
 
@@ -318,7 +318,7 @@ void Battlezone::Update(float dt) {
 			pociski[i]->Move(vec(0, 0, -1) * bulletSpeed * dt);
 
 			//Player bullet collsion
-			if (Game::checkCollisions(player,pociski[i], vec(1, 0, 1))) {
+			if (Game::collisionCircle(pociski[i],player,vec(1,0,1))) {
 				hp -= 25;
 				display_hp->ChangeText(std::to_wstring(hp));
 				Game::Destroy(pociski[i]);
@@ -327,29 +327,17 @@ void Battlezone::Update(float dt) {
 			}
 		}
 
-
-
-	//moving the forza horizon
-
-
 	//spawning the enemies
-	float temp_x = (float)(rand() % 51);
-	float temp_z = (float)(rand() % 51);
-	float temp_y = (float)(rand() % 361);
-
-
-	if (waveTime <= 0) waveFlag = true;
-	else waveTime -= dt;
-
-	if (waveFlag && przeciwnicy.empty() && rakiety.empty() && wavePoints == 0) {
-		fala->ChangeText(L"WAVE" + std::to_wstring(wavePoints));
-		wavePoints += 1; 
-		waveFlag = false;
-		wave(wavePoints, dt);
-		waveTime = 4.0f;
+	
+	if(przeciwnicy.empty() && rakiety.empty()){
+		int temp = rand() % 4+1;
+		float temp_x = (float)(rand() % 51);
+		float temp_z = (float)(rand() % 51);
+		float temp_y = (float)(rand() % 361);
+		spawn_enemy(vec(temp_x, 0, temp_z), vec(0, temp_y, 0), temp);
 	}
 
-	//Poruszanie i strzelanie przeciwników
+	//Poruszanie i strzelanie przeciwnikśw
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); i++) {
 			GameObject* current = przeciwnicy[i];
@@ -422,16 +410,14 @@ void Battlezone::Update(float dt) {
 			current->Move(vec(0, 0, -1) * rocket_speed * dt);
 
 			//Player rocket collision
-			if (Game::checkCollisions(current,player,vec(1,0,1))) {
+			if (Game::collisionCircle(current,player,vec(1,0,1))) {
 				Game::Destroy(current);
 				Game::Destroy(radarElements[i]);
 				rakiety.erase(rakiety.begin() + i);
 				enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
 				enemyType.erase(enemyType.begin() + i);
 
-				radarElements.erase(radarElements.begin() + i);
-				radarElementsType.erase(radarElementsType.begin() + i);
-				uiElements.erase(uiElements.begin() + i);
+				rakiety.clear();
 
 				hp -= 50;
 				display_hp->ChangeText(std::to_wstring(hp));
@@ -465,7 +451,7 @@ void Battlezone::Update(float dt) {
 			//Enemy bullet collision
 			if (!przeciwnicy.empty()) {
 				for (int j = 0; j < przeciwnicy.size(); j++) {
-					if (Game::checkCollisions(pociski_gracza[i],przeciwnicy[j],vec(1,0,1))) {
+					if (Game::collisionCircle(pociski_gracza[i],przeciwnicy[j],vec(1,0,1))) {
 						switch (enemyType[j]) {
 						case 1:
 							score += 100 * (int)scoreMultiplier;
@@ -496,7 +482,7 @@ void Battlezone::Update(float dt) {
 			//Rocket bullet collision
 			if (!rakiety.empty()) {
 				for (int j = 0; j < rakiety.size(); j++) {
-					if (Game::checkCollisions(pociski_gracza[i],rakiety[j],vec(1,0,1))) {
+					if (Game::collisionCircle(pociski_gracza[i],rakiety[j],vec(1,0,1))) {
 						score += 500 * (int)scoreMultiplier;
 						//Usuwanie pocisku
 						Game::Destroy(pociski_gracza[i]);
@@ -507,9 +493,8 @@ void Battlezone::Update(float dt) {
 						Game::Destroy(radarElements[j]);
 						
 						rakiety.erase(rakiety.begin() + j);
-						radarElements.erase(radarElements.begin() + j);
-						radarElementsType.erase(radarElementsType.begin() + j);
-						uiElements.erase(uiElements.begin() + j);
+						
+						rakiety.clear();
 					}
 				}
 			}
@@ -555,7 +540,7 @@ void Battlezone::Update(float dt) {
 		}
 
 		//collisions: player/power-up
-		if (Game::checkCollisions(player,inside,vec(1,0,1),true)) collectPowerUp(inside, box, powerUpType[i]); //someone optimize this please xD
+		if (Game::collisionCircle(player,inside,vec(1,0,1),true)) collectPowerUp(inside, box, powerUpType[i]); //someone optimize this please xD
 	}
 
 	//ufo
@@ -966,25 +951,6 @@ void Battlezone::spawn_enemy(vec pos, vec rot, int type) {
 	randomActionType.push_back(0);
 }
 
-void Battlezone::wave(int wavePoints, float dt) {
-	if (wavePoints > 0) {
-		float temp_x = (float)(rand() % 51 - 25);
-		float temp_z = (float)(rand() % 51 - 25);
-		float temp_y = (float)(rand() % 361);
-		if (przeciwnicy.empty() && rakiety.empty()) {
-			int enemy = rand() % 4 + 1;
-			if (wavePoints - enemy >= 0) {
-				spawn_enemy(vec(temp_x, 0, temp_z), vec(0, temp_y, 0), enemy);
-				wavePoints -= enemy;
-			}
-		}
-	}
-	else {
-		while (waveTime > 0) {
-			waveTime -= dt;
-		}
-	}
-}
 void Battlezone::makeHorizon() {
 	std::vector<float> vx;
 	std::vector<unsigned int> ind;

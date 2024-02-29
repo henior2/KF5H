@@ -14,13 +14,16 @@ public:
 private:
 	float debugCooldown = .1f;
 	float debugCooldown2 = .1f;
+	float debugCooldown3 = .1f;
 	int lastTSN = 0;
 	int lvlDif = 0;
 	int type;
 	int live;
+	int live2;
 	float waveCool;
 	TextBox* pointsy;
 	TextBox* dif;
+	TextBox* end;
 	bool superzapperActive = true;
 	bool waveFlag = true;
 	bool first = true;
@@ -56,11 +59,10 @@ private:
 	std::vector <vec> point;
 	int deadspikers =0;
 	std::vector <vec> point2;
-	vec blok = vec(0, 2);
-	int deltaofprize = 80;
+	int deltaofprize = 130;
 	int prize = 0;
 	int points_of_player = 0;
-	int prize2 = 30;
+	int prize2 = 200;
 	int how_much [4] {15,25,35,50};
 	vec rotation;
 	int position;
@@ -99,5 +101,7 @@ private:
 
 	void shooting2(vec gun_pos);
 	void bulletmove2(float dt);
+
+	void colbla();
 };
 
