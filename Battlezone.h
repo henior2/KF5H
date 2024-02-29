@@ -62,8 +62,8 @@ private:
 	float rtp;
 	float pU2AnimationCooldown;
 
-	const float uiYOffset = .75f;
-	const float uiScale = .0025f;
+	const float uiYOffset = .45f;
+	const float uiScale = .025f;
 
 	GameObject* player;
 	GameObject* model2;

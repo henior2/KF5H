@@ -18,6 +18,7 @@ private:
 	int lvlDif = 0;
 	int type;
 	int live;
+	float waveCool;
 	TextBox* pointsy;
 	bool superzapperActive = true;
 
@@ -32,6 +33,7 @@ private:
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
+	std::vector <GameObject*> bullets;
 	std::vector <GameObject*> enemies[4];
 	std::vector <int> enemies_position[4];
 	std::vector <bool> enemies_bool[4];
@@ -75,7 +77,7 @@ private:
 	void shipspawn(int& position, int type);
 	void shipmovement(bool right, int& position, int type);
 	void shooting(vec gun_pos, vec rotation);
-	void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt);
+	void bulletmove( float dt);
 	void superzapper();
 
 	void tunelspawn();
@@ -89,6 +91,9 @@ private:
 	void flipper(float dt);
 
 	void text1();
-	void mechanics();
+	void mechanics(float dt);
+
+	void shooting2(vec gun_pos);
+	void bulletmove2(float dt);
 };
 
