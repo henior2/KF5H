@@ -79,6 +79,8 @@ bool TextBox::Hovered(const float& FreeSpace) const {
 	MouseY -= 0.5f;
 	MouseY *= 2.0f;
 	MouseY = MouseY * -1.0f;
+	MouseY /= 1.6f;
+	MouseX /= 0.9f;
 
 	if (MouseY >= Position.Bottom - FreeSpace && MouseY <= Position.Top + FreeSpace && MouseX >= Position.Left - FreeSpace && MouseX <= Position.Right + FreeSpace) return true;
 	else return false;

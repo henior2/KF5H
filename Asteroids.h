@@ -96,6 +96,7 @@ private:
 
 	int _asteroidsNo;
 	int score;
+	int scoreToLife;
 	int lives;
 
 	int _return;
@@ -177,6 +178,8 @@ private:
 	void death(vec _pos, vec _rot, GameObject* obj, bool tp = false, bool isShip = true, float scale = 5, std::vector<vec> _vx = {}, std::vector<unsigned int> _ind = {});
 
 	void clearVec(std::vector<GameObject*>& vec);
+
+	void updateLives(int _lives);
 
 	float escSoundLen;
 	bool hasEscd;
