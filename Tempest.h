@@ -91,7 +91,7 @@ private:
 	void flipper(float dt);
 
 	void text1();
-	void mechanics();
+	void mechanics(float dt);
 
 	void shooting2(vec gun_pos);
 	void bulletmove2(float dt);
