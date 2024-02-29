@@ -320,15 +320,8 @@ void Battlezone::Update(float dt) {
 			}
 		}
 
-
-
-	//moving the forza horizon
-
-
 	//spawning the enemies
 	
-
-
 	if(przeciwnicy.empty() && rakiety.empty()){
 		int temp = rand() % 4+1;
 		float temp_x = (float)(rand() % 51);
@@ -417,9 +410,7 @@ void Battlezone::Update(float dt) {
 				enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
 				enemyType.erase(enemyType.begin() + i);
 
-				radarElements.erase(radarElements.begin() + i);
-				radarElementsType.erase(radarElementsType.begin() + i);
-				uiElements.erase(uiElements.begin() + i);
+				rakiety.clear();
 
 				hp -= 50;
 				display_hp->ChangeText(std::to_wstring(hp));
@@ -495,9 +486,8 @@ void Battlezone::Update(float dt) {
 						Game::Destroy(radarElements[j]);
 						
 						rakiety.erase(rakiety.begin() + j);
-						radarElements.erase(radarElements.begin() + j);
-						radarElementsType.erase(radarElementsType.begin() + j);
-						uiElements.erase(uiElements.begin() + j);
+						
+						rakiety.clear();
 					}
 				}
 			}
