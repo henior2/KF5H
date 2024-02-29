@@ -15,7 +15,7 @@ void Tempest::Init() {
 	position = 0;
 	superzapperActive = true;
 	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
-	TextBox* dif = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	TextBox* dif = Game::AddText(0.1f, 0.6f, 0.9, 0.8, L"000", 0.14, true, vec(0.25, 0.15, 0.6), 3);
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
@@ -89,6 +89,11 @@ void Tempest::text1() {
 	
 }
 
+void Tempest::text2() {
+	//std::wstring text = std::to_wstring(lvlDif);
+	//dif->ChangeText(Game::formatText(text, 1));
+
+}
 
 void Tempest::mechanics(float dt) {
 	if (waveFlag) {
@@ -105,6 +110,7 @@ void Tempest::mechanics(float dt) {
 			waveFlag = false;
 			lvlDif += 1;
 			tunelspawn();
+			text2();
 		}
 		
 	}
@@ -718,6 +724,8 @@ void Tempest::tanker(float dt) {
 				enemies[0].erase(enemies[0].begin() + i);
 				enemies_position[0].erase(enemies_position[0].begin() + i);
 				enemies_bool[0].erase(enemies_bool[0].begin() + i);
+				points_of_player += 8;
+				text1();
 				break;
 			}
 		}
@@ -765,6 +773,8 @@ void Tempest::fuseball(float dt) {
 				fwhere.erase(fwhere.begin() + i);
 				cooldown.erase(cooldown.begin() + i);
 				fusbal_time.erase(fusbal_time.begin() + i);
+				points_of_player += 15;
+				text1();
 				break;
 			}
 		}
@@ -896,6 +906,8 @@ void Tempest::spiker(float dt) {
 				spike.insert(spike.begin(), spike[i]);
 				spike.erase(spike.begin() + i);
 				deadspikers++;
+				points_of_player += 5;
+				text1();
 				break;
 			}
 		}
@@ -958,6 +970,8 @@ void Tempest::flipper(float dt) {
 				fpmove.erase(fpmove.begin() + i);
 				fpwhere.erase(fpwhere.begin() + i);
 				cooldown2.erase(cooldown2.begin() + i);
+				points_of_player += 3;
+				text1();
 				break;
 			}
 		}
