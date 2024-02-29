@@ -77,7 +77,7 @@ private:
 	void shipspawn(int& position, int type);
 	void shipmovement(bool right, int& position, int type);
 	void shooting(vec gun_pos, vec rotation);
-	void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt);
+	void bulletmove( float dt);
 	void superzapper();
 
 	void tunelspawn();
