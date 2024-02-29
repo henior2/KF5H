@@ -33,6 +33,7 @@ private:
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
+	std::vector <GameObject*> bullets;
 	std::vector <GameObject*> enemies[4];
 	std::vector <int> enemies_position[4];
 	std::vector <bool> enemies_bool[4];
@@ -50,10 +51,11 @@ private:
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
+	int deadspikers =0;
 	std::vector <vec> point2;
 	vec blok = vec(0, 2);
 	int deltaofprize = 80;
-	int prize = 15;
+	int prize = 0;
 	int points_of_player = 0;
 	int prize2 = 30;
 	int how_much [4] {15,25,35,50};
@@ -89,6 +91,9 @@ private:
 	void flipper(float dt);
 
 	void text1();
-	void mechanics(const float dt);
+	void mechanics();
+
+	void shooting2(vec gun_pos);
+	void bulletmove2(float dt);
 };
 

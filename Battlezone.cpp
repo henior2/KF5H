@@ -255,11 +255,6 @@ void Battlezone::Update(float dt) {
 
 	if (rtp >= fullRotationTime) 
 		rtp = 0;
-	
-
-	vec pPos = vec(player->Transform.position);
-	vec pOri = vec(player->Transform.orientation);
-	vec pFront = vec(player->Front);
 
 	//moving the camera
 	
@@ -270,9 +265,14 @@ void Battlezone::Update(float dt) {
 		if (Game::KeysPresed['A']) player->Rotate(vec(0, 1, 0) * dt * rotationMultiplier1);
 		if (Game::KeysPresed['D']) player->Rotate(vec(0, -1, 0) * dt * rotationMultiplier1);
 
-		Game::camera->Front = pFront;
-		Game::camera->Position = pPos + vec(0, camYOffset, 0);
-		Game::camera->Yaw = (pOri.y * -1) + 90.0f;
+		vec pPos = vec(player->Transform.position);
+		vec pOri = vec(player->Transform.orientation);
+		vec pFront = vec(player->Front);
+
+
+		//Game::camera->Front = pFront;
+		Game::camera->Position = pPos +vec(0, camYOffset, 0);
+		Game::camera->Yaw = (-1 * pOri.y) + 90.0f;
 		Game::camera->Pitch = 0.0f;
 		Game::camera->RotateCamera(0, 0);
 
