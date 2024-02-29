@@ -47,6 +47,7 @@ private:
 	std::vector <vec> move2;
 	std::vector <vec> point;
 	std::vector <vec> point2;
+	vec blok = vec(0, 2);
 	vec rotation;
 	int position;
 	float zhelp;
@@ -70,6 +71,7 @@ private:
 	void tunelspawn(int& lastTSN, int& type);
 
 	void enemies_spawn(int type2);
+	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z, bool where);
 	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z);
 	void tanker(float dt);
 	void fuseball(float dt);
