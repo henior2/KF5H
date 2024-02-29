@@ -142,7 +142,7 @@ void Battlezone::Init() {
 	for (int i = 0; i < trailLinesNo; i++) {
 		GameObject* obj = Game::Create(vec(0.0f,3), vec(0.0f, 0.0f, (90.0f + (float)(trailLinesNo)*linesSpace) - (float)(i)*linesSpace), vec(.25f,3), std::vector<float>{0, 0, 0, 0, 1, 0, 0, radarRadius, 0, 0, 1, 0}, std::vector<unsigned int>{0, 1});
 		float modifier = 1.0f - (float)(i) / (float)(trailLinesNo);
-		obj->Stage[0].opacity = modifier;
+		obj->SetColor(vec(0, 1, 0) * modifier);
 		obj->Stage[0].lineWidth = modifier;
 		spinningLines.push_back(obj);
 		uiElements.push_back(obj);
@@ -153,35 +153,35 @@ void Battlezone::Init() {
 	spinningLines[0]->Stage[0].lineWidth = 1.25f;
 	rtp = 0; //was meant to be used for radar, will be used as a global timing unit (no use in radar, used for pu's however)
 
-	przeciwnicy.clear();
-	enemyShotCooldowns.clear();
-	pociski.clear();
+	//przeciwnicy.clear();
+	//enemyShotCooldowns.clear();
+	//pociski.clear();
 
-	radarElements.clear();
-	radarElementsType.clear();
+	//radarElements.clear();
+	//radarElementsType.clear();
 
-	powerUpInside.clear();
-	powerUpBox.clear();
-	powerUpType.clear();
-	powerUpAnimation.clear();
+	//powerUpInside.clear();
+	//powerUpBox.clear();
+	//powerUpType.clear();
+	//powerUpAnimation.clear();
 
-	obstacles.clear();
+	//obstacles.clear();
 
-	spinningLines.clear();
+	//spinningLines.clear();
 
-	targetPos.clear();
-	targetOri.clear();
+	//targetPos.clear();
+	//targetOri.clear();
 
-	uiElements.clear();
+	//uiElements.clear();
 
-	__lines.clear();	
-	
-	bulletTimeRemain.clear();
-	pociski_gracza.clear();
+	//__lines.clear();	
+	//
+	//bulletTimeRemain.clear();
+	//pociski_gracza.clear();
 
-	randomActionTimeLimit.clear();
-	randomActionTimeCooldown.clear();
-	randomActionType.clear();
+	//randomActionTimeLimit.clear();
+	//randomActionTimeCooldown.clear();
+	//randomActionType.clear();
 
 	if (!pUSameDirectionRotation) pUBRotationSpeed *= -1;
 	currentPUdYoTU = pUdYoTU;
@@ -189,9 +189,9 @@ void Battlezone::Init() {
 
 	for (auto& current : uiElements) {
 		current->Stage[0].onTop = true;
-		current->ScaleTo(vec(uiScale * 9, uiScale * 16, 0));
+		current->ScaleTo(vec(uiScale, uiScale, 0));
 		current->MoveTo(vec(0, uiYOffset, 0));
-		current->Rotate(vec(0, 180, 0));
+		current->Rotate(vec(0, 0, 0));
 	}
 
 
@@ -255,11 +255,6 @@ void Battlezone::Update(float dt) {
 
 	if (rtp >= fullRotationTime) 
 		rtp = 0;
-	
-
-	vec pPos = vec(player->Transform.position);
-	vec pOri = vec(player->Transform.orientation);
-	vec pFront = vec(player->Front);
 
 	//moving the camera
 	
@@ -270,9 +265,15 @@ void Battlezone::Update(float dt) {
 		if (Game::KeysPresed['A']) player->Rotate(vec(0, 1, 0) * dt * rotationMultiplier1);
 		if (Game::KeysPresed['D']) player->Rotate(vec(0, -1, 0) * dt * rotationMultiplier1);
 
-		Game::camera->Front = pFront;
+		vec pPos = vec(player->Transform.position);
+		vec pOri = vec(player->Transform.orientation);
+		vec pFront = vec(player->Front);
+
+
+		//Game::camera->Front = pFront;
 		Game::camera->Position = pPos + vec(0, camYOffset, 0);
-		Game::camera->Yaw = (pOri.y * -1) + 90.0f;
+		Game::camera->MoveCamera(FORWARD, 0.05);
+		Game::camera->Yaw = (-1 * pOri.y) + 90.0f;
 		Game::camera->Pitch = 0.0f;
 		Game::camera->RotateCamera(0, 0);
 
@@ -659,20 +660,20 @@ void Battlezone::Update(float dt) {
 			dist = sqrt(dist) / radarRange;
 
 			if (dist >= 1) {
-				radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 0;
+				radarElements[iterator]->SetColor(vec(0, 0, 0));
 				iterator++;
 				continue;
 			}
 			else {
-				radarElements[iterator]->Stage[radarElements[iterator]->activeStage].opacity = 1;
+				radarElements[iterator]->SetColor(vec(0, 1, 0));
 			}
 
 			angle = angle*M_PI/180.0f;
 			dx = dist * sin(angle);
 			dz = -dist * cos(angle);
 
-			dx *= 0.2f;
-			dz *= 0.2f;
+			dx *= 0.11f;
+			dz *= 0.11f;
 
 			radarElements[iterator]->MoveTo(vec(radar->Transform.position.x + dx, radar->Transform.position.y + dz, 0));
 
@@ -1106,6 +1107,12 @@ void Battlezone::makeObstacles(float x, float z, float height) {
 	uiElements.push_back(rPointer);
 	targetPos.push_back(vec(0.0f, 3));
 	targetOri.push_back(vec(0.0f, 3));
+
+	for (auto current : uiElements) {
+		current->Stage[0].onTop = true;
+		current->ScaleTo(vec(uiScale, uiScale, 0));
+		//current->MoveTo(vec(0, uiYOffset, 0));
+	}
 }
 
 

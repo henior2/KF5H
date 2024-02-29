@@ -4,13 +4,13 @@
 
 void Menu::Init() {
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
-		Sign = Game::AddText(-1, 1, 0.9, 0.8, L"Gry Wektorowe", 0.1f, true, vec(.5, .5, .5), 15);
+		Sign = Game::AddText(-1, 1, 0.5, 0.4, L"Gry Wektorowe", 0.1f, true, vec(.5, .5, .5), 15);
 		PlayButton = Game::AddText(-0.4f, 0.4f, 0.15, 0.1, L"Graj", 0.1, true, vec(.5, 1, .5), 8);
 		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, L"Wyjdè", 0.1, true, vec(1, .5, .5), 8);
 		AsteroidsButton = Game::AddText(-0.4f, 0.4f, 0.25, 0.20, L"", 0.1, true, vec(.5, 1, .5), 8);
 		BattlezoneButton = Game::AddText(-0.6f, 0.6f, 0.025, -0.025, L"", 0.1, true, vec(.5, 1, .5), 8);
 		TempestButton = Game::AddText(-0.4f, 0.4f, -0.20, -0.25, L"", 0.1, true, vec(.5, 1, .5), 8);
-		BackButton = Game::AddText(-0.4f, 0.4f, -0.75, -0.80, L"", 0.1, true, vec(1, .5, .5), 8);
+		BackButton = Game::AddText(-0.4f, 0.4f, -0.45, -0.5, L"", 0.1, true, vec(1, .5, .5), 8);
 		Buttons = { PlayButton, ExitButton, AsteroidsButton, BattlezoneButton, TempestButton, BackButton };
 		//Pointer = Game::Create(vec3(-.325, -.05, 0), vec3(0, 0, -90), vec3(.1), "AsteroidsBullet");
 		//Pointer = Game::Create()

@@ -13,6 +13,8 @@ void Asteroids::Init(bool again) {
 	scoreStr = Game::formatText(scoreStr, 1);
 
 	if (!again) {
+		scoreToLife = 0;
+
 		std::vector<float> haloVx;
 		std::vector<unsigned int> haloInd;
 		for (int i = 0; i < haloVxs; i++) {
@@ -39,7 +41,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, 0, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
+		tutorialText = Game::AddText(-.9, .9, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -184,13 +186,7 @@ void Asteroids::Init(bool again) {
 
 	tScore->Color = vec(1, 1, 1);
 
-	for (int i = 0; i < lives; i++) {
-		const wchar_t* modelName = L"AsteroidsShip";
-		if (i == lives - 1) modelName = L"AsteroidsShipFire";
-		GameObject* current = Game::Create(vec(-.9 + .012 + .035 * i, .7, 0), vec(0, 3), vec(.04, 3), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
-		current->Stage[0].onTop = true;
-		tLives.push_back(current);
-	}
+	updateLives(lives);
 
 	halo->MoveTo(vec(-1000, -1000, -80));
 }
@@ -217,6 +213,9 @@ void Asteroids::Update(const float& dt) {
 
 		isPaused = !isPaused;
 		clickCooldown = .25f;
+
+		if (isPaused) tutorialText->ChangeText(L"Kliknij P, aby wznowić");
+		else tutorialText->ChangeText(L"Poziom " + std::to_wstring(wave_num));
 	}
 
 	if (isPaused) return;
@@ -255,7 +254,7 @@ void Asteroids::Update(const float& dt) {
 				Game::StopSounds();
 				Game::Sound(backgroundMusic[0], true);
 
-				tutorialText->ChangeText(L"");
+				tutorialText->ChangeText(L"Wpisz swój nick");
 
 				std::wifstream file(L"_asteroidsscoredata.txt"); // reading the file
 
@@ -317,6 +316,8 @@ void Asteroids::Update(const float& dt) {
 			}
 		}
 		if (endingScreen && hasLost) {
+			tutorialText->ChangeText(L"");
+
 			for (int i = 0; i < starsAmount; i++) {
 				GameObject* current = stars[i];
 				float angle = -M_PI / 2;
@@ -350,11 +351,12 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-.9f, -.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score,.1f, false);
+					scoreboard[i] = Game::AddText(-.9f, -1.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score, .1f, false);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
-				ship->MoveTo(vec(-animationPos.x * .6, (.35 - (.125 * n)) * camH, -80.0f));
+				ship->MoveTo(vec(.325f * camW, (.325 - (.13 * n)) * camH, -80.0f));
+				ship->SetColor(vec(1, 0, 0));
 			}
 		}
 
@@ -388,7 +390,7 @@ void Asteroids::Update(const float& dt) {
 		vec currentPos = current->Transform.position;
 
 		//collisions - player/bullets
-		if (!isBulletPlayers[i] && Game::collisionCircle(ship, current, vec(1,1,0))) {
+		if (!isBulletPlayers[i] && Game::collisionCircle(ship, current, vec(1,1,0), true)) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 
@@ -402,6 +404,7 @@ void Asteroids::Update(const float& dt) {
 				enemyShootCooldown.erase(enemyShootCooldown.begin() + j);
 
 				score += ufoXP[enemyType[j]];
+				scoreToLife += ufoXP[enemyType[j]];
 				enemyType.erase(enemyType.begin() + j);
 
 				std::wstring temp = Game::formatText(std::to_wstring(score), 1);
@@ -417,7 +420,7 @@ void Asteroids::Update(const float& dt) {
 		//collisions - asteroids/bullets
 		for (int j = asteroids.size() - 1; j >= 0; j--) {
 			GameObject* asteroid = asteroids[j];
-			if (Game::checkCollisions(asteroid, current, vec(1,1,0), true)) {
+			if (Game::collisionCircle(asteroid, current, vec(1,1,0))) {
 				int type = asteroidSize[j];
 				if (type < 2) {
 					float ori = asteroid->Transform.orientation.z;
@@ -437,6 +440,7 @@ void Asteroids::Update(const float& dt) {
 				asteroidRotationMultiplier.erase(asteroidRotationMultiplier.begin() + j);
 
 				score += asteroidsXP[type];
+				scoreToLife += asteroidsXP[type];
 
 				std::wstring temp = Game::formatText(std::to_wstring(score), 1);
 				tScore->ChangeText(temp);
@@ -617,7 +621,7 @@ void Asteroids::Update(const float& dt) {
 		}
 
 		//collisions - player/enemy
-		if (Game::checkCollisions(current,ship, vec(1, 1, 0), true)) {
+		if (Game::collisionCircle(current,ship, vec(1, 1, 0))) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 
@@ -662,7 +666,7 @@ void Asteroids::Update(const float& dt) {
 		checkBounds(current, false, vec(Game::camera->cameraWidth + bounds, Game::camera->cameraHeight + bounds, 0));
 
 		//collisions - player/asteroid
-		if (Game::checkCollisions(current,ship, vec(1, 1, 0),true)) {
+		if (Game::collisionCircle(current,ship, vec(1, 1, 0))) {
 			death(ship->Transform.position, ship->Transform.orientation, ship);
 		}
 	}
@@ -736,15 +740,22 @@ void Asteroids::Update(const float& dt) {
 				hasSpaceshipPlayedSound = true;
 				Game::Sound("asteroidsLoudWoosh", false);
 			}
-			if (Game::checkCollisions(spaceship, ship, vec(1, 1, 0), false)) death(ship->Transform.position, ship->Transform.orientation, ship);
+			if (Game::collisionCircle(spaceship, ship, vec(1, 1, 0), true)) death(ship->Transform.position, ship->Transform.orientation, ship);
 
 			if (checkBounds(spaceship, false, vec(camW + 2 * bounds, camH + 2 * bounds, 0))) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
 				isSpaceship = false;
 				score += 10;
+				scoreToLife += 10;
 				tScore->ChangeText(std::to_wstring(score));
 			}
 		}
+	}
+
+	if (scoreToLife >= 10000) {
+		scoreToLife -= 10000;
+		lives++;
+		updateLives(lives);
 	}
 
 	if (haloCoundtown <= 0 && haloCoundtown != 5.0f) { //so that it doesnt appear right on
@@ -989,5 +1000,16 @@ void Asteroids::death(vec _pos, vec _rot, GameObject* obj, bool tp, bool isShip,
 void Asteroids::clearVec(std::vector<GameObject*>& vec) {
 	for (auto& obj : vec) {
 		Game::Destroy(obj);
+	}
+}
+
+void Asteroids::updateLives(int _lives) {
+	tLives.clear();
+	for (int i = 0; i < _lives; i++) {
+		const wchar_t* modelName = L"AsteroidsShip";
+		if (i == lives - 1) modelName = L"AsteroidsShipFire";
+		GameObject* current = Game::Create(vec(-.9 + .012 + .035 * i, .7, 0), vec(0, 3), vec(.04, 3), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
+		current->Stage[0].onTop = true;
+		tLives.push_back(current);
 	}
 }
