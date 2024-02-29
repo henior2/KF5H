@@ -338,6 +338,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 		}
 		else {//with hole
 			help.x = rand() % points.size() * 2;
+			blok = help.x;
 
 			for (int j = 0; j < points.size() - 1; j++) {
 				if (j != help.x) {
