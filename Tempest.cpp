@@ -15,7 +15,7 @@ void Tempest::Init() {
 	position = 0;
 	superzapperActive = true;
 	mechanics();
-	TextBox* pointsy = Game::AddText(.05f, 1, 0.9, 0.8, 0, 0.14, false, vec(0.45, 0.35, 0.8), 4);
+	TextBox* pointsy = Game::AddText(.05f, 1, 0.9, 0.8, L"0", 0.14, false, vec(0.45, 0.35, 0.8), 4);
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
@@ -428,7 +428,6 @@ void Tempest::tunelspawn() {
 	prize2 = prize;
 
 	double x,y,s;
-	live = 6;
 	if(live == 1){
 		x = -0.5f;
 		y = -0.65f;
@@ -654,6 +653,7 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 void Tempest::tanker(float dt) {
 	vec help, xd;
 	int what;
+	bool he = true;
 
 	if (lvlDif < 15) what = 3;
 	else if (lvlDif < 31) what = 2;
@@ -662,14 +662,24 @@ void Tempest::tanker(float dt) {
 	for (int i = 0; i < enemies[0].size(); i++) {
 
 		for (int j = 0; j < bulletsofplayer.size(); j++) {
-			if(CollisionCircle(enemies[][i], bulletsofplayer[j], vec(0, 1, 1)))
+			if (Game::collisionCircle(enemies[0][i], bulletsofplayer[j], vec(0, 1, 1))) {
+				he = false;
+				xd = enemies[0][i]->Transform.position;
+				Game::Destroy(enemies[0][i]);
+				enemies_spawn(what, i, 0, xd.z, true);
+				enemies_spawn(what, i, 0, xd.z, false);
+				enemies[0].erase(enemies[0].begin() + i);
+				enemies_position[0].erase(enemies_position[0].begin() + i);
+				enemies_bool[0].erase(enemies_bool[0].begin() + i);
+				break;
+			}
 		}
 
 
 		help = enemies[0][i]->Transform.position;
-		if (help.z < zhelp2)
+		if (help.z < zhelp2 && he)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
-		else {
+		else if (he){
 			xd = enemies[0][i]->Transform.position;
 			Game::Destroy(enemies[0][i]);
 			enemies_spawn(what, i, 0, xd.z, true);
