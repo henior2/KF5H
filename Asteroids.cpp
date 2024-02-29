@@ -184,14 +184,6 @@ void Asteroids::Init(bool again) {
 
 	tScore->Color = vec(1, 1, 1);
 
-	for (int i = 0; i < lives; i++) {
-		const wchar_t* modelName = L"AsteroidsShip";
-		if (i == lives - 1) modelName = L"AsteroidsShipFire";
-		GameObject* current = Game::Create(vec(-1 + .006 + .023 * i, .5, 0), vec(0, 3), vec(.03, 3), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
-		current->Stage[0].onTop = true;
-		tLives.push_back(current);
-	}
-
 	halo->MoveTo(vec(-1000, -1000, -80));
 }
 
