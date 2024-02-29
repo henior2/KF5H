@@ -669,30 +669,35 @@ void Tempest::flipper(float dt) {
 			d = rand() % 2 + 1;
 			pos = enemies_position[3][i];
 			vec a, b;
-			if (d==1 && pos == move2.size() - 1) {
+
+			if (d == 1 && pos == move.size() - 1) {
 				position = 0;
-				a = move2[pos]; b = move2[pos + 1];
+				a = move[pos];
+				b = move[position];
 			}
-			else if (d==0 && pos == 0) {
+			else if (d == 0 && pos == 0) {
 				pos = move.size() - 1;
-				a = move2[pos]; b = move2[0];
+				a = move[pos];
+				b = move[0];
 			}
-			else if (d==1) {
+			else if (d == 1) {
 				pos++;
-				a = move2[pos];
+				a = move[pos];
 				if (pos == move.size() - 1) b = move[0];
-				else b = move2[pos + 1];
+				else b = move[pos + 1];
 			}
 			else {
 				pos--;
-				a = move2[pos]; b = move2[pos + 1];
+				a = move[pos];
+				b = move[pos + 1];
 			}
+
 			enemies_position[3][i] = pos;
 
 			rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
-			
 
-			enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, zhelp2));
+
+			enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2));
 			enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
 			enemies[3][i]->RotateTo(rotation);
 		}
