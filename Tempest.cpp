@@ -202,7 +202,7 @@ void Tempest::shipspawn(int& position, int type) {
 	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
 }
 void Tempest::shipmovement(bool right, int& position, int type) {
-
+	Game::Sound("tempestPlayerMove");
 	vec a, b;
 	if (right && position == move.size() - 1) {
 		position = 0;
@@ -233,6 +233,7 @@ void Tempest::shipmovement(bool right, int& position, int type) {
 
 }
 void Tempest::shooting(vec gun_pos, vec rotation) {
+	Game::Sound("tempestPlayerShoot");
 	bulletsofplayer.push_back(Game::Create(gun_pos, vec(rotation), vec(0.2, 3), L"bulletblaster"));
 
 }
@@ -255,6 +256,7 @@ void Tempest::bulletmove(float dt) {
 }
 void Tempest::superzapper() {
 	if (superzapperActive) {
+		Game::Sound("tempestSuperzapper");
 		for (int i = 0; i < 4; i++) {
 			if (!enemies[i].empty()) {
 				for (int j = 0; j < enemies[i].size(); j++) {
@@ -285,9 +287,13 @@ void Tempest::superzapper() {
 		}
 		superzapperActive = false;
 	}
+	else
+		Game::Sound("tempestSuperzapperEmpty");
 }
 
 void Tempest::tunelspawn() {
+
+	Game::Sound("tempestLevelStart");
 
 	if (!tunnel.empty()){
 		for (int i = 0; i < tunnel.size(); i++) {
@@ -520,6 +526,8 @@ void Tempest::tunelspawn() {
 }
 
 void Tempest::enemies_spawn(int type2) {
+	Game::Sound("tempestEnemySpawn");
+
 	std::wstring model = enemy_models[type2];
 
 	int spawn1 = rand() % move2.size();
@@ -1091,6 +1099,7 @@ void Tempest::flipper(float dt) {
 }
 
 void Tempest::shooting2(vec gun_pos) {
+	Game::Sound("tempestEnemyShoot");
 	bullets.push_back(Game::Create(gun_pos, vec(0,3), vec(0.7, 3), L"Fuseball"));
 	bullets[bullets.size() - 1]->SetColor(vec(1,0,1));
 }
@@ -1104,6 +1113,7 @@ void Tempest::bulletmove2(float dt) {
 			bullets[i]->Rotate(vec(0, 0, 10));
 		}
 		else {
+
 			Game::Destroy(bullets[i]);
 			bullets.erase(bullets.begin() + i);
 			i--;
