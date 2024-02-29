@@ -331,6 +331,7 @@ void Battlezone::Update(float dt) {
 	
 	if(przeciwnicy.empty() && rakiety.empty()){
 		int temp = rand() % 4+1;
+		if (temp == 3) temp = 1; //removed the leonardo
 		float temp_x = (float)(rand() % 51);
 		float temp_z = (float)(rand() % 51);
 		float temp_y = (float)(rand() % 361);
