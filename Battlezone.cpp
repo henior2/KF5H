@@ -257,9 +257,9 @@ void Battlezone::Update(float dt) {
 		rtp = 0;
 	
 
-	vec pPos = vec(player->Transform.position.x,0,player->Transform.position.z);
-	vec pOri = vec(0,player->Transform.orientation.y,0);
-	vec pFront = vec(player->Front.x,player->Front.y,player->Front.z);
+	vec pPos = vec(player->Transform.position);
+	vec pOri = vec(player->Transform.orientation);
+	vec pFront = vec(player->Front);
 
 	//moving the camera
 	
@@ -278,7 +278,7 @@ void Battlezone::Update(float dt) {
 
 
 	//shooting funtion
-	if (Game::KeysPresed[VK_SPACE] && shot_cool <= 0 && bulletsFired <= 4) {
+		if (Game::KeysPresed[VK_SPACE] && shot_cool <= 0 && bulletsFired <= 4) {
 		shot_cool = 2;
 		bulletsFired += 1;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
@@ -288,30 +288,27 @@ void Battlezone::Update(float dt) {
 	}
 
 	//Moving the bullets
-	if (!pociski.empty()) {
 		for (int i = 0; i < pociski.size(); i++) {
-			GameObject* current = pociski[i];
 
 			fastBulletTimeRemain[i] -= dt;
 			if (fastBulletTimeRemain[i] <= 0) {
-				Game::Destroy(current);
+				Game::Destroy(pociski[i]);
 				pociski.erase(pociski.begin() + i);
 				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
 				i--;
 				continue;
 			}
-			current->Move(vec(0, 0, -1) * bulletSpeed * dt);
+			pociski[i]->Move(vec(0, 0, -1) * bulletSpeed * dt);
 
 			//Player bullet collsion
-			if (Game::checkCollisions(player,current,vec(1,0,1))) {
+			if (Game::checkCollisions(player,pociski[i], vec(1, 0, 1))) {
 				hp -= 25;
 				display_hp->ChangeText(std::to_wstring(hp));
-				Game::Destroy(current);
+				Game::Destroy(pociski[i]);
 				pociski.erase(pociski.begin() + i);
 				fastBulletTimeRemain.erase(fastBulletTimeRemain.begin() + i);
 			}
 		}
-	}
 
 
 
@@ -435,24 +432,23 @@ void Battlezone::Update(float dt) {
 			bulletsFired = 0;
 	}
 
-	if (!pociski_gracza.empty()) {
 		for (int i = 0; i < pociski_gracza.size(); i++) {
-			GameObject* current = pociski_gracza[i];
+			
 
 			bulletTimeRemain[i] -= dt;
 			if (bulletTimeRemain[i] <= 0) {
-				Game::Destroy(current);
+				Game::Destroy(pociski_gracza[i]);
 				pociski_gracza.erase(pociski_gracza.begin() + i);
 				bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 				i--;
 				continue;
 			}
-			current->Move(vec(0, 0, -1) * bulletSpeed * dt);
+			pociski_gracza[i]->Move(vec(0, 0, -1) * bulletSpeed * dt);
 
 			//Enemy bullet collision
 			if (!przeciwnicy.empty()) {
 				for (int j = 0; j < przeciwnicy.size(); j++) {
-					if (Game::checkCollisions(current,przeciwnicy[j],vec(1,0,1))) {
+					if (Game::checkCollisions(pociski_gracza[i],przeciwnicy[j],vec(1,0,1))) {
 						switch (enemyType[j]) {
 						case 1:
 							score += 100 * (int)scoreMultiplier;
@@ -471,7 +467,7 @@ void Battlezone::Update(float dt) {
 							break;
 						}
 						//Usuwanie pocisku
-						Game::Destroy(current);
+						Game::Destroy(pociski_gracza[i]);
 						pociski_gracza.erase(pociski_gracza.begin() + i);
 						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 						//Usuwanie przeciwnika
@@ -483,10 +479,10 @@ void Battlezone::Update(float dt) {
 			//Rocket bullet collision
 			if (!rakiety.empty()) {
 				for (int j = 0; j < rakiety.size(); j++) {
-					if (Game::checkCollisions(current,rakiety[j],vec(1,0,1))) {
+					if (Game::checkCollisions(pociski_gracza[i],rakiety[j],vec(1,0,1))) {
 						score += 500 * (int)scoreMultiplier;
 						//Usuwanie pocisku
-						Game::Destroy(current);
+						Game::Destroy(pociski_gracza[i]);
 						pociski_gracza.erase(pociski_gracza.begin() + i);
 						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 						//Usuwanie rakiety
@@ -500,9 +496,7 @@ void Battlezone::Update(float dt) {
 					}
 				}
 			}
-
 		}
-	}
 
 	//power-ups' animations
 	bool isTimestamp = false;

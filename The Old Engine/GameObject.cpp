@@ -121,6 +121,8 @@ void GameObject::UpdateVectors() {
 	front.z = sin(glm::radians(this->Transform.orientation.y - 90.0f)) * cos(glm::radians(this->Transform.orientation.x));
 	Front = glm::normalize(front);
 
+	vec up(0 , 1, 0);
+
 	Right.x = cos(glm::radians(this->Transform.orientation.z));
 	Right.y = sin(glm::radians(this->Transform.orientation.z));
 	Right.z = 0.0f;
