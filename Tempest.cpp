@@ -14,8 +14,9 @@ void Tempest::Init() {
 	enemies[3].clear();
 	position = 0;
 	superzapperActive = true;
-	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
-	TextBox* dif = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	 pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	 dif = Game::AddText(0.5f, 0.9f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	tunelspawn();
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
@@ -89,6 +90,11 @@ void Tempest::text1() {
 	
 }
 
+void Tempest::text2() {
+	std::wstring text = std::to_wstring(lvlDif);
+	dif->ChangeText(Game::formatText(text, 1));
+
+}
 
 void Tempest::mechanics(float dt) {
 	if (waveFlag) {
@@ -97,14 +103,16 @@ void Tempest::mechanics(float dt) {
 			enemies_spawn(temp);
 			prize -= how_much[temp];
 		}
-		if (enemies->empty() && waveCool > 0) {
+		if (enemies[0].empty() && enemies[1].empty() && enemies[2].empty() && enemies[3].empty() && waveCool > 0) {
 			waveCool -= dt;
 		}
-		else if (waveCool <= 0 && enemies->empty()) {
-			waveCool = 2.0f;
+		else if (waveCool <= 0 && enemies[0].empty() && enemies[1].empty() && enemies[2].empty() && enemies[3].empty()) {
+			waveCool = 2.5f;
 			waveFlag = false;
 			lvlDif += 1;
+			Game::Destroy(blaster);
 			tunelspawn();
+			text2();
 		}
 		
 	}
@@ -281,10 +289,14 @@ void Tempest::superzapper() {
 
 void Tempest::tunelspawn() {
 
-	for (auto& t : tunnel)
-		Game::Destroy(t);
+	if (!tunnel.empty()){
+		for (int i = 0; i < tunnel.size(); i++) {
+			GameObject* t = tunnel[i];
+			Game::Destroy(t);
+		}
+	}
+	tunnel.clear();
 
-	waveCool = 2.0f;
 	point.clear();
 	point2.clear();
 	blok.x = -1;
@@ -718,6 +730,8 @@ void Tempest::tanker(float dt) {
 				enemies[0].erase(enemies[0].begin() + i);
 				enemies_position[0].erase(enemies_position[0].begin() + i);
 				enemies_bool[0].erase(enemies_bool[0].begin() + i);
+				points_of_player += 8;
+				text1();
 				break;
 			}
 		}
@@ -765,6 +779,8 @@ void Tempest::fuseball(float dt) {
 				fwhere.erase(fwhere.begin() + i);
 				cooldown.erase(cooldown.begin() + i);
 				fusbal_time.erase(fusbal_time.begin() + i);
+				points_of_player += 15;
+				text1();
 				break;
 			}
 		}
@@ -896,6 +912,8 @@ void Tempest::spiker(float dt) {
 				spike.insert(spike.begin(), spike[i]);
 				spike.erase(spike.begin() + i);
 				deadspikers++;
+				points_of_player += 5;
+				text1();
 				break;
 			}
 		}
@@ -958,6 +976,8 @@ void Tempest::flipper(float dt) {
 				fpmove.erase(fpmove.begin() + i);
 				fpwhere.erase(fpwhere.begin() + i);
 				cooldown2.erase(cooldown2.begin() + i);
+				points_of_player += 3;
+				text1();
 				break;
 			}
 		}
