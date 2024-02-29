@@ -37,7 +37,7 @@ void Asteroids::Init(bool again) {
 		ship = Game::Create(vec(0.0f, 0.0f, -99.0f), vec(0.0f, 3), vec(5.0f, 3), L"AsteroidsShip");
 		modelShipFire = ship->AddStage(L"AsteroidsShipFire");
 
-		wave_num = 10;
+		wave_num = 0;
 
 		tutorialText = Game::AddText(-.9, 0, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
 		tutorialStep = 0;
@@ -675,8 +675,8 @@ void Asteroids::Update(const float& dt) {
 			waveAsteroidsCooldown = 2.5f;
 			hasWaveFinished = false;
 			_return = wave(_asteroidsNo);
-			if (_asteroidsNo <= 42) _asteroidsNo += (rand() % 3) + 1;
-			else _asteroidsNo = 45;
+			if (_asteroidsNo <= 25) _asteroidsNo += (rand() % 4) + 2;
+			else _asteroidsNo = 30;
 
 			tutorialText->ChangeText(L"Poziom " + std::to_wstring(wave_num));
 		}
@@ -819,6 +819,10 @@ void Asteroids::spawnAsteroids(int asteroidsNum, unsigned int type, float _posX,
 			break;
 		}
 
+		if (asteroidsNum > 1) {
+			rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 360.0f));
+		}
+
 		asteroidRotation.push_back(rot * M_PI / 180.0f);
 
 		float rotM = -maxAsteroidRotationMultiplier + (float)(rand()) / ((float)(RAND_MAX / (maxAsteroidRotationMultiplier - (-maxAsteroidRotationMultiplier))));
@@ -891,15 +895,15 @@ int Asteroids::wave(int asteroidsNum) {
 
 	int asteroidsNumCopy = asteroidsNum;
 	wave_num++;
-	int Type3AsteroidsNum = (rand() % wave_num) % (asteroidsNumCopy / 3);
-	asteroidsNumCopy -= Type3AsteroidsNum * 3;
+	int Type3AsteroidsNum = (rand() % wave_num * 3) % ((asteroidsNumCopy / 3) + 1);
+	asteroidsNumCopy -= min(Type3AsteroidsNum * 6, asteroidsNumCopy);
 
-	int Type2AsteroidsNum = (rand() % wave_num * 4) % (asteroidsNumCopy / 2);
-	asteroidsNumCopy -= Type2AsteroidsNum * 2;
+	int Type2AsteroidsNum = (rand() % wave_num * 12) % ((asteroidsNumCopy / 2) + 1);
+	asteroidsNumCopy -= min(Type2AsteroidsNum * 4, asteroidsNumCopy);
 
-	spawnAsteroids(Type3AsteroidsNum, 0);
-	spawnAsteroids(Type2AsteroidsNum, 1);
-	spawnAsteroids(asteroidsNumCopy * wave_num, 2);
+	spawnAsteroids(Type3AsteroidsNum * sqrt(wave_num), 0);
+	spawnAsteroids(Type2AsteroidsNum * sqrt(wave_num), 1);
+	spawnAsteroids(asteroidsNumCopy * sqrt(wave_num), 2);
 	smallEnemyNoise *= (1 - smallEnemyNoiseDelta);
 
 	int temp = 0;

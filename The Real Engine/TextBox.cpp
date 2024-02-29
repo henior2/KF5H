@@ -22,7 +22,7 @@ void TextBox::Write(std::wstring Word) {
 	if (AlignH) {
 		left = (Position.Right + Position.Left) / 2.0f - (float(Word.length()) * ((Position.Top - Position.Bottom) + Spacing) / 2.0f - Spacing) / 2.0f;
 	}
-	for (char i : Word) {
+	for (wchar_t i : Word) {
 		std::wstring Model;
 		if (models.find(i) != models.end())
 			Model = models[i];
