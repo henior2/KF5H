@@ -206,18 +206,18 @@ private:
 	void collectPowerUp(GameObject* _inside, GameObject* _box, unsigned int _type);
 
 	int money;
-	const std::wstring shopModels[3] = { L"PowerUpHeart" };
+	/*const std::wstring shopModels[3] = { L"PowerUpHeart" };
 	int itemsPrice[3];
 	int itemsType[3];
 	GameObject* shopDisplayIcons[3];
 	GameObject* shopDisplaySquares[3];
 	const float shopXPos = .825f;
 	const float shopYPos = .2f;
-	const float shopScale = .15f;
+	const float shopScale = .15f;*/
 
-	void insertItem(int item, bool isTheFirstTime = false);
+	/*void insertItem(int item, bool isTheFirstTime = false);
 
 	void buyItem(int type, int cost, int item);
 
-	void shopAction(int item, bool isForced = false);	
+	void shopAction(int item, bool isForced = false);	*/
 };

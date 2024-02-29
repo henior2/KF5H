@@ -10,15 +10,15 @@ void Battlezone::Init() {
 	money = 0;
 	
 
-	shopDisplaySquares[0] = Game::Create(vec(-shopXPos, shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
+	/*shopDisplaySquares[0] = Game::Create(vec(-shopXPos, shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 	shopDisplaySquares[1] = Game::Create(vec(-shopXPos, 0, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 	shopDisplaySquares[2] = Game::Create(vec(-shopXPos, -shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 
 	shopDisplaySquares[0]->Stage[0].onTop = true; 
 	shopDisplaySquares[1]->Stage[0].onTop = true; 
-	shopDisplaySquares[2]->Stage[0].onTop = true;
+	shopDisplaySquares[2]->Stage[0].onTop = true;*/
 
-	insertItem(0, true); insertItem(1, true); insertItem(2, true);
+	/*insertItem(0, true); insertItem(1, true); insertItem(2, true);*/
 
 	flag = false;
 	velocity = 3.0f;
@@ -331,6 +331,7 @@ void Battlezone::Update(float dt) {
 	
 	if(przeciwnicy.empty() && rakiety.empty()){
 		int temp = rand() % 4+1;
+		if (temp == 3) temp = 1; //removed the leonardo
 		float temp_x = (float)(rand() % 51);
 		float temp_z = (float)(rand() % 51);
 		float temp_y = (float)(rand() % 361);
@@ -455,26 +456,25 @@ void Battlezone::Update(float dt) {
 						switch (enemyType[j]) {
 						case 1:
 							score += 100 * (int)scoreMultiplier;
-							tScore = refreshText(tScore, score);
 							break;
 						case 2:
 							score += 200 * (int)scoreMultiplier;
-							tScore = refreshText(tScore, score);
 							break;
 						case 3:
 							score += 300 * (int)scoreMultiplier;
-							tScore = refreshText(tScore, score);
 							break;
 						default:
 							throw std::invalid_argument("There is no such a type of enemy!");
 							break;
 						}
+
+ 						//tScore->ChangeText(std::to_wstring(score));
 						//Usuwanie pocisku
 						Game::Destroy(pociski_gracza[i]);
 						pociski_gracza.erase(pociski_gracza.begin() + i);
 						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 						//Usuwanie przeciwnika
-						Game::Destroy(przeciwnicy[j]);
+						Game::Destroy(przeciwnicy[0]);
 						przeciwnicy.clear();
 					}
 				}
@@ -716,7 +716,7 @@ void Battlezone::Update(float dt) {
 		}
 
 		//shop
-		if (Game::KeysPresed['1'] && keyCooldown <= 0.0f) {
+		/*if (Game::KeysPresed['1'] && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(0);
 		}
@@ -727,7 +727,7 @@ void Battlezone::Update(float dt) {
 		if (Game::KeysPresed['3'] && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(2);
-		}
+		}*/
 	}
 	
 }
@@ -1158,37 +1158,37 @@ void Battlezone::collectPowerUp(GameObject* _inside, GameObject* _box, unsigned 
 
 
 
-void Battlezone::insertItem(int item, bool isTheFirstTime) {
-	itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
-	itemsPrice[0] = 500;
-	itemsPrice[1] = 100;
-	itemsPrice[2] = 300;
-	if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
-	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale,3), shopModels[itemsType[item]]);
-	shopDisplayIcons[item]->Stage[0].onTop = true;
-}
+//void Battlezone::insertItem(int item, bool isTheFirstTime) {
+//	itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
+//	itemsPrice[0] = 500;
+//	itemsPrice[1] = 100;
+//	itemsPrice[2] = 300;
+//	if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
+//	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale,3), shopModels[itemsType[item]]);
+//	shopDisplayIcons[item]->Stage[0].onTop = true;
+//}
 
-void Battlezone::buyItem(int type, int cost, int item) {
-	money -= cost;
+//void Battlezone::buyItem(int type, int cost, int item) {
+//	money -= cost;
+//
+//	switch (type) {
+//	case 0:
+//		if (hp < 100) hp = 100;
+//		else hp += 25;
+//		break;
+//	case 1:
+//		bulletsFired = 0;
+//		break;
+//	case 2:
+//		velocity += 0.3f;
+//	default:
+//		throw std::invalid_argument("the shop is out of stock");
+//	}
+//
+//	insertItem(item);
+//}
 
-	switch (type) {
-	case 0:
-		if (hp < 100) hp = 100;
-		else hp += 25;
-		break;
-	case 1:
-		bulletsFired = 0;
-		break;
-	case 2:
-		velocity += 0.3f;
-	default:
-		throw std::invalid_argument("the shop is out of stock");
-	}
-
-	insertItem(item);
-}
-
-void Battlezone::shopAction(int item, bool isForced) {
-	if (money >= itemsPrice[item] || isForced) 
-		buyItem(itemsType[item], itemsPrice[item], item);
-}
+//void Battlezone::shopAction(int item, bool isForced) {
+//	if (money >= itemsPrice[item] || isForced) 
+//		buyItem(itemsType[item], itemsPrice[item], item);
+//}
