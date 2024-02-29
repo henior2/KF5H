@@ -191,6 +191,8 @@ void Asteroids::Init(bool again) {
 		current->Stage[0].onTop = true;
 		tLives.push_back(current);
 	}
+
+	halo->MoveTo(vec(-1000, -1000, -80));
 }
 
 void Asteroids::Update(const float& dt) { 
@@ -348,16 +350,17 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-animationPos.x * 1.5 / camW, -animationPos.x * 1.0f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score,.1f, false);
+					scoreboard[i] = Game::AddText(-.9f, -.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score,.1f, false);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
 				ship->MoveTo(vec(-animationPos.x * .6, (.35 - (.125 * n)) * camH, -80.0f));
 			}
 		}
-	}
 
-	if (isDead) return;
+		halo->MoveTo(vec(-1000, -1000, -80));
+		return;
+	}
 
 	pPos = ship->Transform.position;
 	pOri = ship->Transform.orientation;
@@ -729,11 +732,11 @@ void Asteroids::Update(const float& dt) {
 			spaceship->Move(vec(0, 1, 0) * spaceshipSpeed * dt);
 
 			//collisions - spaceship/player
-			if (!hasSpaceshipPlayedSound && Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) {
+			if (!hasSpaceshipPlayedSound && Game::collisionCircle(spaceship,ship, vec(1, 1, 0), 10.0f, 10.0f)) {
 				hasSpaceshipPlayedSound = true;
 				Game::Sound("asteroidsLoudWoosh", false);
 			}
-			if (Game::checkCollisions(spaceship,ship, vec(1, 1, 0),true)) death(ship->Transform.position, ship->Transform.orientation, ship);
+			if (Game::checkCollisions(spaceship, ship, vec(1, 1, 0), false)) death(ship->Transform.position, ship->Transform.orientation, ship);
 
 			if (checkBounds(spaceship, false, vec(camW + 2 * bounds, camH + 2 * bounds, 0))) {
 				spaceship->MoveTo(vec(-1000, -1000, -80));
