@@ -4,7 +4,7 @@
 void Tempest::Init() {
 	SetCursor(NULL);
 	debugCooldown = .1f;
-	lvlDif = 60; //uwa¿aæ na to w przysz³oœci, ma byc 0
+	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 	tunnel.clear();
 	bulletsofplayer.clear();
@@ -14,7 +14,8 @@ void Tempest::Init() {
 	enemies[3].clear();
 	position = 0;
 	superzapperActive = true;
-	tunelspawn();
+	mechanics();
+	TextBox* pointsy = Game::AddText(.05f, 1, 0.9, 0.8, 0, 0.14, false, vec(0.45, 0.35, 0.8), 4);
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
@@ -24,7 +25,7 @@ void Tempest::Update(const float& dt) {
 		debugCooldown = 0.3f;
 		Game::ChangeState(Game_Menu);
 	}
-
+	mechanics();
 	if (Game::KeysPresed['A'] && debugCooldown <= 0.0f) {
 		debugCooldown = 0.3f;
 		shipmovement(!(type > 0), position, type);
@@ -62,14 +63,19 @@ void Tempest::Update(const float& dt) {
 };
 
 
-void Tempest::textes() {
-
+void Tempest::text1() {
+	std::wstring text = std::to_wstring(points_of_player);
+	pointsy->ChangeText(text);
+	
 }
 
 void Tempest::mechanics() {
-	tunelspawn();
-	prize2 = prize;
-
+	if (prize >= 0.0f) {
+		
+	}
+	else {
+		tunelspawn();
+	}
 }
 
 void Tempest::push_back2(std::vector<unsigned int>& Vec, unsigned int a1, unsigned int a2) {
@@ -254,30 +260,35 @@ void Tempest::tunelspawn() {
 		tunnelSidesNo = rand() % 5 + 5;
 	} while (tunnelSidesNo == lastTSN);
 
-	int type2;
+	for (int i = 0; i < lives.size(); i++) {
+		Game::Destroy(lives[i]);
+		lives.clear();
+	}
+
+	int type2 = -1;
 	if (lvlDif < 21) {
 		type = 0;
-		live = 3;
+		live = 2;
 	}
 	else if (lvlDif < 51) {
 		type = 1;
 		type2 = 0;
-		live = 4;
+		live = 3;
 	}
 	else if (lvlDif < 90) {
 		type = 1;
 		type2 = 1;
-		live = 5;
+		live = 4;
 	}
 	else if (lvlDif < 100) {
 		type = 1;
 		type2 = rand() % 1;
-		live = 6;
+		live = 5;
 	}
 	else {
 		type = rand() % 1;
 		type2 = rand() % 1;
-		live = 7;
+		live = 6;
 	}
 
 	float maxOffset = .2f; //[%]
@@ -412,6 +423,46 @@ void Tempest::tunelspawn() {
 	shipspawn(position, type);
 	superzapperActive = true;
 	prize += deltaofprize;
+	prize2 = prize;
+
+	double x,y,s;
+	live = 6;
+	if(live == 1){
+		x = -0.5f;
+		y = -0.65f;
+		s = 0.76f;
+	}
+	else if (live == 2) {
+		x = -0.5f;
+		y = -0.77f;
+		s = 0.76f;
+	}
+	else if(live == 3) {
+		x = -0.5f;
+		y = -0.8f;
+		s = 0.76f;
+	}
+	else if(live == 4) {
+		x = -0.5f;
+		y = -0.86f;
+		s = 0.78f;
+	}
+	else if(live == 5) {
+		x = -0.5f;
+		y = -0.9f;
+		s = 0.8f;
+	}
+	else if(live == 6) {
+		x = 0.3f;
+		y = -01.f;
+		s = 0.83f;
+	}
+	
+
+	for (int i = 0; i < live; i++) {
+		lives.push_back(Game::Create(vec(y + (i+x) * 0.145f, s, 0.1f), vec(0, 3), vec(0.09, 3), L"Blaster"));
+		lives[i]->Stage[0].onTop = true;
+	}
 }
 
 void Tempest::enemies_spawn(int type2) {
@@ -598,8 +649,15 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 
 }
 
-void Tempest::tanker(float dt, int what) {
+void Tempest::tanker(float dt) {
 	vec help, xd;
+	int what;
+
+	if (lvlDif < 15) what = 3;
+	else if (lvlDif < 31) what = 2;
+	else what = rand() % 2 + 2;
+
+
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
 		if (help.z < zhelp2)
@@ -616,6 +674,7 @@ void Tempest::tanker(float dt, int what) {
 		}
 	}
 }
+
 void Tempest::fuseball(float dt) {
 	vec help;
 	int direction, pos, speed;
