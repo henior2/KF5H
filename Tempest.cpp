@@ -524,6 +524,8 @@ void Tempest::enemies_spawn(int type2) {
 		scale.x /= 1.3;
 		scale.y /= 1.3;
 		scale.z /= 1.3;
+		fpmove.push_back(vec(0, 3));
+		fpwhere.push_back(vec(0, 3));
 		cooldown2.push_back(1.5f);
 	}
 	else {
@@ -598,6 +600,9 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 		scale.y /= 1.3;
 		scale.z /= 1.3;
 		cooldown2.push_back(1.5f);
+		fpmove.push_back(vec(0, 3));
+		fpwhere.push_back(vec(0, 3));
+		cooldown2.push_back(1.5f);
 	}
 	else {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
@@ -652,6 +657,7 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 		scale.z /= 1.3;
 		cooldown2.push_back(1.5f);
 		fpwhere.push_back(vec(0, 3));
+		fpmove.push_back(vec(0, 3));
 	}
 	else {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
@@ -687,7 +693,7 @@ void Tempest::tanker(float dt) {
 				xd = enemies[0][i]->Transform.position;
 				Game::Destroy(enemies[0][i]);
 				Game::Destroy(bulletsofplayer[j]);
-				bulletsofplayer.erase(bulletsofplayer.begin() + i);
+				bulletsofplayer.erase(bulletsofplayer.begin() + j);
 				enemies_spawn(what, i, 0, xd.z, true);
 				enemies_spawn(what, i, 0, xd.z, false);
 				enemies[0].erase(enemies[0].begin() + i);
@@ -841,7 +847,7 @@ void Tempest::spiker(float dt) {
 				spikers_max.erase(spikers_max.begin() + i);
 				vx_spike.erase(vx_spike.begin() + i);
 				Game::Destroy(bulletsofplayer[j]);
-				bulletsofplayer.erase(bulletsofplayer.begin() + i);
+				bulletsofplayer.erase(bulletsofplayer.begin() + j);
 				spike.insert(spike.begin(), spike[i]);
 				spike.erase(spike.begin() + i);
 				deadspikers++;
@@ -887,67 +893,86 @@ void Tempest::spiker(float dt) {
 }
 
 void Tempest::flipper(float dt) {
-	bool d;
+	bool d,he =true;
 	int dd;
 	int pos;
-	vec rotation;
+	vec rotation,xd;
 	for (int i = 0; i < enemies[3].size(); i++) {
-		vec help = enemies[3][i]->Transform.position;
 
-		if (enemies_bool[3][i]) {
-			pos = enemies_position[3][i];
+		for (int j = 0; j < bulletsofplayer.size(); j++) {
 
-			d = rand() % 2;
-			pos = enemies_position[3][i];
-			vec a, b;
-
-			if (d == 1 && pos == move.size() - 1) {
-				pos = 0;
-				a = move[pos];
-				b = move[move.size() - 1];
+			if (Game::collisionCircle(enemies[3][i], bulletsofplayer[j], vec(0, 1, 1))) {
+				he = false;
+				xd = enemies[3][i]->Transform.position;
+				Game::Destroy(enemies[3][i]);
+				Game::Destroy(bulletsofplayer[j]);
+				bulletsofplayer.erase(bulletsofplayer.begin() + j);
+				enemies[3].erase(enemies[3].begin() + i);
+				enemies_position[3].erase(enemies_position[3].begin() + i);
+				enemies_bool[3].erase(enemies_bool[3].begin() + i);
+				fpmove.erase(fpmove.begin() + i);
+				fpwhere.erase(fpwhere.begin() + i);
+				cooldown2.erase(cooldown2.begin() + i);
+				break;
 			}
-			else if (d == 0 && pos == 0) {
-				pos = move.size() - 1;
-				a = move[pos];
-				b = move[0];
-			}
-			else if (d == 1) {
-				pos++;
-				a = move[pos];
-				if (pos == move.size() - 1) b = move[0];
-				else b = move[pos + 1];
-			}
-			else {
-				pos--;
-				if (pos < 0) pos = move.size() - 1;
-				a = move[pos];
-				b = move[(pos + 1) % move.size()];
-			}
-
-			enemies_position[3][i] = pos;
-
-			rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
-
-			enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, help.z));
-			enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
-			enemies[3][i]->RotateTo(rotation);
-			enemies_bool[3][i] = false;
-
 		}
 
-		else if (help.z < zhelp2) {
-			enemies[3][i]->Move(vec(0, 0, -3) * dt);
-			if (!enemies_bool[3][i]) {
-				dd = rand() % 500;
-				if (dd == 0) {
-					enemies_bool[3][i] = true;
+		if (he) {
+			vec help = enemies[3][i]->Transform.position;
+			if (enemies_bool[3][i]) {
+				pos = enemies_position[3][i];
+
+				d = rand() % 2;
+				pos = enemies_position[3][i];
+				vec a, b;
+
+				if (d == 1 && pos == move.size() - 1) {
+					pos = 0;
+					a = move[pos];
+					b = move[move.size() - 1];
+				}
+				else if (d == 0 && pos == 0) {
+					pos = move.size() - 1;
+					a = move[pos];
+					b = move[0];
+				}
+				else if (d == 1) {
+					pos++;
+					a = move[pos];
+					if (pos == move.size() - 1) b = move[0];
+					else b = move[pos + 1];
+				}
+				else {
+					pos--;
+					if (pos < 0) pos = move.size() - 1;
+					a = move[pos];
+					b = move[(pos + 1) % move.size()];
+				}
+
+				enemies_position[3][i] = pos;
+
+				rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+
+				enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, help.z));
+				enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
+				enemies[3][i]->RotateTo(rotation);
+				enemies_bool[3][i] = false;
+
+			}
+
+			else if (help.z < zhelp2) {
+				enemies[3][i]->Move(vec(0, 0, -3) * dt);
+				if (!enemies_bool[3][i]) {
+					dd = rand() % 500;
+					if (dd == 0) {
+						enemies_bool[3][i] = true;
+					}
 				}
 			}
-		}
-		else {
-			if (cooldown2[i] == 1.5f) {
-				pos = enemies_position[3][i];
-			
+			else {
+				if (cooldown2[i] == 1.5f) {
+					pos = enemies_position[3][i];
+
 					d = rand() % 2;
 					pos = enemies_position[3][i];
 					vec a, b;
@@ -983,18 +1008,41 @@ void Tempest::flipper(float dt) {
 					enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
 					enemies[3][i]->RotateTo(rotation);
 					cooldown2[i] -= dt;
-				
 
-			}
 
-			else if (cooldown2[i] < 1.5f) {
-				cooldown2[i] -= dt;
-			}
-			 if (cooldown2[i] <= 0.0f) {
-				cooldown2[i] = 1.5f;
-				
+				}
+
+				else if (cooldown2[i] < 1.5f) {
+					cooldown2[i] -= dt;
+				}
+				if (cooldown2[i] <= 0.0f) {
+					cooldown2[i] = 1.5f;
+
+				}
 			}
 		}
+		
 	}		
 }
 
+void Tempest::shooting2(vec gun_pos) {
+	bullets.push_back(Game::Create(gun_pos, vec(0,3), vec(0.1, 3), L"fusball"));
+	bullets[bullets.size() - 1]->SetColor(vec(1,0,1));
+}
+void Tempest::bulletmove2( float dt) {
+	vec help;
+	for (int i = 0; i < bullets.size(); i++) {
+		help = bullets[i]->Transform.position;
+		if (help.z > -31) {
+			bullets[i]->Move(vec(0, 0, -15) * dt);
+			bullets[i]->Rotate(vec(0, 0, 10));
+		}
+
+		else {
+			Game::Destroy(bullets[i]);
+			bullets.erase(bullets.begin() + i);
+			i--;
+		}
+	}
+
+}
