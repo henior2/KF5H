@@ -6,7 +6,7 @@ void Menu::Init() {
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
 		Sign = Game::AddText(-1, 1, 0.9, 0.8, L"Gry Wektorowe", 0.1f, true, vec(.5, .5, .5), 15);
 		PlayButton = Game::AddText(-0.4f, 0.4f, 0.15, 0.1, L"Graj", 0.1, true, vec(.5, 1, .5), 8);
-		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, L"Wyjd", 0.1, true, vec(1, .5, .5), 8);
+		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, L"Wyjdz", 0.1, true, vec(1, .5, .5), 8);
 		AsteroidsButton = Game::AddText(-0.4f, 0.4f, 0.25, 0.20, L"", 0.1, true, vec(.5, 1, .5), 8);
 		BattlezoneButton = Game::AddText(-0.6f, 0.6f, 0.025, -0.025, L"", 0.1, true, vec(.5, 1, .5), 8);
 		TempestButton = Game::AddText(-0.4f, 0.4f, -0.20, -0.25, L"", 0.1, true, vec(.5, 1, .5), 8);
@@ -22,7 +22,7 @@ void Menu::Init() {
 			obiekty.push_back(Game::Create(vec(x, y, z), 
 				vec(rand() % 360, rand() % 360, rand() % 360), 
 				vec(scale, 3), L"MenuCube"));
-			obiekty[i]->SetColor(vec(0, 1, 0));
+			obiekty[i]->SetColor(vec(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX)));
 		}
 		for (int i = 0; i < 5; i++) {
 			float x = 0;
@@ -42,7 +42,6 @@ void Menu::Update(const float& dt) {
 		for (int i = 0; i < obiekty.size(); i++) {
 			obiekty[i]->MoveGlobal(vec(0, 0, 3.0f * dt));
 			vec pos = obiekty[i]->Transform.position;
-			obiekty[i]->SetColor(vec(0, 1.0f + pos.z / 105.0f, 0));
 			obiekty[i]->Stage[obiekty[i]->activeStage].lineWidth = (1.0f + pos.z / 101.0f) * 5.0f;
 			if (pos.z > 1) {
 				float z = ((float)(rand() % 100) + 101.0f);
@@ -68,7 +67,7 @@ void Menu::Update(const float& dt) {
 					AsteroidsButton->ChangeText(L"Asteroids");
 					BattlezoneButton->ChangeText(L"Battlezone");
 					TempestButton->ChangeText(L"Tempest");
-					BackButton->ChangeText(L"WrÓÆ");
+					BackButton->ChangeText(L"Wroc");
 			}
 
 			if (ExitButton->Hovered(0.025f) && Game::KeysPresed[VK_LBUTTON])
@@ -85,7 +84,7 @@ void Menu::Update(const float& dt) {
 				Play = false;
 				Wait = 1;
 				PlayButton->ChangeText(L"Graj");
-				ExitButton->ChangeText(L"Wyjd");
+				ExitButton->ChangeText(L"Wyjdz");
 				AsteroidsButton->ChangeText(L"");
 				BattlezoneButton->ChangeText(L"");
 				TempestButton->ChangeText(L"");

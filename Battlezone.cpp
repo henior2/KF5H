@@ -337,7 +337,7 @@ void Battlezone::Update(float dt) {
 		spawn_enemy(vec(temp_x, 0, temp_z), vec(0, temp_y, 0), temp);
 	}
 
-	//Poruszanie i strzelanie przeciwników
+	//Poruszanie i strzelanie przeciwnikśw
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); i++) {
 			GameObject* current = przeciwnicy[i];
