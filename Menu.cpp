@@ -30,7 +30,7 @@ void Menu::Init() {
 			float z = ((float)(rand() % 150) - 100.0f);
 			float scale = (float)(rand() % 300) / 100.0f + 0.5f;
 			obiekty.push_back(Game::Create(vec(x, y, z), vec(rand() % 360, rand() % 360, rand() % 360), vec(scale, 3), L"MenuCube"));
-			obiekty[i + 150]->SetColor(vec(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX)));
+			obiekty[i + 150]->SetColor(vec(0, 1, 0));
 		}
 		Game::Sound("mus01", true);
 		Game::camera->perspective = true;
