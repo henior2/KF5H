@@ -59,10 +59,10 @@ private:
 	std::vector <vec> point;
 	int deadspikers =0;
 	std::vector <vec> point2;
-	int deltaofprize = 80;
+	int deltaofprize = 130;
 	int prize = 0;
 	int points_of_player = 0;
-	int prize2 = 30;
+	int prize2 = 200;
 	int how_much [4] {15,25,35,50};
 	vec rotation;
 	int position;
