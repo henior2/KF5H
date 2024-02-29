@@ -14,8 +14,7 @@ void Tempest::Init() {
 	enemies[3].clear();
 	position = 0;
 	superzapperActive = true;
-	mechanics();
-	TextBox* pointsy = Game::AddText(.05f, 1, 0.9, 0.8, L"0", 0.14, false, vec(0.45, 0.35, 0.8), 4);
+	TextBox* pointsy = Game::AddText(.05f, 1, 0.9, 0.8, 0, 0.14, false, vec(0.45, 0.35, 0.8), 4);
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
@@ -25,7 +24,6 @@ void Tempest::Update(const float& dt) {
 		debugCooldown = 0.3f;
 		Game::ChangeState(Game_Menu);
 	}
-	mechanics();
 	if (Game::KeysPresed['A'] && debugCooldown <= 0.0f) {
 		debugCooldown = 0.3f;
 		shipmovement(!(type > 0), position, type);
@@ -71,10 +69,11 @@ void Tempest::text1() {
 
 
 void Tempest::mechanics() {
-	if (prize >= 0.0f) {
-		
+	int temp = rand() % 4;
+	if (prize - how_much[temp]> 0) {
+		enemies_spawn(temp);
 	}
-	else {
+	else if(prize = 0){
 		tunelspawn();
 	}
 }
@@ -662,6 +661,7 @@ void Tempest::tanker(float dt) {
 	for (int i = 0; i < enemies[0].size(); i++) {
 
 		for (int j = 0; j < bulletsofplayer.size(); j++) {
+			if(Game::collisionCircle(enemies[][i], bulletsofplayer[j], vec(0, 1, 1)))
 			if (Game::collisionCircle(enemies[0][i], bulletsofplayer[j], vec(0, 1, 1))) {
 				he = false;
 				xd = enemies[0][i]->Transform.position;
@@ -674,7 +674,7 @@ void Tempest::tanker(float dt) {
 				break;
 			}
 		}
-
+		
 
 		help = enemies[0][i]->Transform.position;
 		if (help.z < zhelp2 && he)

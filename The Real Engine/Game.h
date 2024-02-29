@@ -71,7 +71,7 @@ public:
 	static void ProjectCircle(const vec& pos, float radius, const vec& axis, float& min, float& max);
 	static bool CheckOverlapAndProject(const vec& position1, const std::vector<vec>& mesh1, const vec& position2, const std::vector<vec>& mesh2, const vec& axis, bool simplify = false, float radius = 0.0f);
 
-	static bool collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis);
+	static bool collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, float r1 = -1.0f, float r2 = -1.0f );
 	static bool collisionSAT(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, const bool simplify = false);
 
 	static vec CalculateBetterVec(const vec& vec, const Transformations& trans);
