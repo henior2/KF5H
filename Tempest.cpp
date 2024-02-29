@@ -14,8 +14,8 @@ void Tempest::Init() {
 	enemies[3].clear();
 	position = 0;
 	superzapperActive = true;
-	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
-	TextBox* dif = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	 pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	 dif = Game::AddText(0.5f, 0.9f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
 	tunelspawn();
 };
 void Tempest::Update(const float& dt) {
@@ -91,8 +91,8 @@ void Tempest::text1() {
 }
 
 void Tempest::text2() {
-	//std::wstring text = std::to_wstring(lvlDif);
-	//dif->ChangeText(Game::formatText(text, 1));
+	std::wstring text = std::to_wstring(lvlDif);
+	dif->ChangeText(Game::formatText(text, 1));
 
 }
 
