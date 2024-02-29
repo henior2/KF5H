@@ -192,6 +192,7 @@ void Battlezone::Init() {
 		current->ScaleTo(vec(uiScale, uiScale, 0));
 		current->MoveTo(vec(0, uiYOffset, 0));
 		current->Rotate(vec(0, 0, 0));
+		current->Transform.UseUniversalUnits = true;
 	}
 
 
@@ -206,6 +207,14 @@ void Battlezone::Init() {
 }
 
 void Battlezone::Update(float dt) {
+
+	for (auto& current : uiElements) {
+		current->Stage[0].onTop = true;
+		current->ScaleTo(vec(uiScale, uiScale, 0));
+		current->MoveTo(vec(0, uiYOffset, 0));
+		current->Rotate(vec(0, 0, 0));
+		current->Transform.UseUniversalUnits = true;
+	}
 
 	dt *= timeMultiplier;
 	keyCooldown -= dt;

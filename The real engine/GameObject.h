@@ -14,6 +14,7 @@ struct Transformations {
 	vec position = vec(0, 3);
 	vec orientation = vec(0, 3);
 	vec scale = vec(1, 3);
+	bool UseUniversalUnits = false;
 };
 
 struct ColisionMesh {

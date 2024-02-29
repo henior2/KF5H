@@ -62,7 +62,7 @@ void Renderer::DrawObject(const VertexData& Data, HDC& hdc, Transformations Mode
 			posS2.array[j] /= posS2.array[3];
 		}
 
-		if (onTop) {
+		if (onTop && Model.UseUniversalUnits) {
 			posS1.x *= 0.9f;
 			posS1.y *= 1.6f;
 			posS2.y *= 1.6f;
