@@ -81,7 +81,7 @@ void Tempest::Update(const float& dt) {
 
 void Tempest::text1() {
 	std::wstring text = std::to_wstring(points_of_player);
-	pointsy->ChangeText(text);
+	pointsy->ChangeText(Game::formatText(text, 1));
 	
 }
 
@@ -91,7 +91,7 @@ void Tempest::mechanics() {
 	if (prize - how_much[temp]> 0) {
 		enemies_spawn(temp);
 	}
-	else if(prize = 0){
+	else if(prize == 0){
 		tunelspawn();
 	}
 }
