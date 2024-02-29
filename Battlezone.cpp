@@ -272,6 +272,13 @@ void Battlezone::Update(float dt) {
 		if (Game::KeysPresed['A']) player->Rotate(vec(0, 1, 0) * dt * rotationMultiplier1);
 		if (Game::KeysPresed['D']) player->Rotate(vec(0, -1, 0) * dt * rotationMultiplier1);
 
+		if ((Game::KeysPresed['W']) ||
+			(Game::KeysPresed['S']) ||
+			(Game::KeysPresed['A']) ||
+			(Game::KeysPresed['D'])) {
+			Game::Sound("battlezonePlayerMove");
+		}
+
 		vec pPos = vec(player->Transform.position);
 		vec pOri = vec(player->Transform.orientation);
 		vec pFront = vec(player->Front);
@@ -320,15 +327,8 @@ void Battlezone::Update(float dt) {
 			}
 		}
 
-
-
-	//moving the forza horizon
-
-
 	//spawning the enemies
 	
-
-
 	if(przeciwnicy.empty() && rakiety.empty()){
 		int temp = rand() % 4+1;
 		float temp_x = (float)(rand() % 51);
@@ -417,9 +417,7 @@ void Battlezone::Update(float dt) {
 				enemyShotCooldowns.erase(enemyShotCooldowns.begin() + i);
 				enemyType.erase(enemyType.begin() + i);
 
-				radarElements.erase(radarElements.begin() + i);
-				radarElementsType.erase(radarElementsType.begin() + i);
-				uiElements.erase(uiElements.begin() + i);
+				rakiety.clear();
 
 				hp -= 50;
 				display_hp->ChangeText(std::to_wstring(hp));
@@ -495,9 +493,8 @@ void Battlezone::Update(float dt) {
 						Game::Destroy(radarElements[j]);
 						
 						rakiety.erase(rakiety.begin() + j);
-						radarElements.erase(radarElements.begin() + j);
-						radarElementsType.erase(radarElementsType.begin() + j);
-						uiElements.erase(uiElements.begin() + j);
+						
+						rakiety.clear();
 					}
 				}
 			}
@@ -785,6 +782,8 @@ TextBox* Battlezone::refreshText(TextBox* text, int score) {
 }
 
 void Battlezone::destroy_enemy(int i) {
+	Game::Sound("battlezonePlayerBulletHit");
+	Game::Sound("battlezonePlayerScored");
 	Game::Destroy(przeciwnicy[i]);
 	Game::Destroy(radarElements[i]);
 	Game::Destroy(uiElements[i]);
@@ -797,6 +796,7 @@ void Battlezone::destroy_enemy(int i) {
 }
 
 void Battlezone::shot_fast(vec pos, vec rot) {
+	Game::Sound("battlezoneEnemyShoot");
 	fastBulletTimeRemain.push_back(bulletMaxTime);
 	GameObject* bullet = Game::Create(pos, rot, vec(1.0f, 3), L"FastBullet");
 	pociski.push_back(bullet);
@@ -805,6 +805,8 @@ void Battlezone::shot_fast(vec pos, vec rot) {
 
 
 void Battlezone::shot(vec pos, vec rot, bool isPlayer) {
+	if (isPlayer) Game::Sound("battlezonePlayerShoot");
+
 	if (isPlayer)bulletTimeRemain.push_back(bulletMaxTime);
 	else fastBulletTimeRemain.push_back(bulletMaxTime);
 	GameObject* bullet = Game::Create(pos, rot, vec(1.0f, 3), L"TankBullet");
@@ -852,6 +854,7 @@ void Battlezone::shot_leonardo(vec pos, vec rot) {
 }
 
 void Battlezone::enemyShoot(GameObject* enemy) {
+	Game::Sound("battlezoneEnemyShoot");
 	int enemyIndex = -1;
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); ++i) {
@@ -878,6 +881,7 @@ void Battlezone::enemyShoot(GameObject* enemy) {
 }
 
 void Battlezone::spawn_enemy(vec pos, vec rot, int type) {
+	Game::Sound("battlezoneRadar");
 	//Normal tank
 	if (type == 1) {
 		GameObject* enemy = Game::Create(pos, rot, vec(1.0f, 3), L"Tank");
