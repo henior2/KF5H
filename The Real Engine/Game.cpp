@@ -201,15 +201,14 @@ bool Game::CheckOverlapAndProject(const vec& position1, const std::vector<vec>& 
 	return !(min1 > max2 || min2 > max1);
 }
 
-bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis) {
+bool Game::collisionCircle(const GameObject* obj1, const GameObject* obj2, const vec& collisionAxis, float r1, float r2) {
 	vec pos1, pos2;
-	float r1, r2;
 
 	pos1 = obj1->Transform.position & collisionAxis;
 	pos2 = obj2->Transform.position & collisionAxis;
 
-	float f1 = (obj1->Object.doVerex) ? obj1->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj1->Object.name].Colision.farthestVertex;
-	float f2 = (obj2->Object.doVerex) ? obj2->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj2->Object.name].Colision.farthestVertex;
+	float f1 = r1 == -1.0f ? (obj1->Object.doVerex) ? obj1->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj1->Object.name].Colision.farthestVertex : r1;
+	float f2 = r2 == -1.0f ? (obj2->Object.doVerex) ? obj2->Object.verticies.Colision.farthestVertex : ModelMenager::ObjectsDatas[obj2->Object.name].Colision.farthestVertex : r2;
 
 	if (f1 == 0) {
 		obj1->Object.verticies.CreateCollision();

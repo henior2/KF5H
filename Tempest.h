@@ -17,7 +17,8 @@ private:
 	int lastTSN = 0;
 	int lvlDif = 0;
 	int type;
-	int live = 3;
+	int live;
+	TextBox* pointsy;
 	bool superzapperActive = true;
 
 	const std::vector<std::wstring> enemy_models = {
@@ -48,12 +49,14 @@ private:
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
+	int deadspikers =0;
 	std::vector <vec> point2;
 	vec blok = vec(0, 2);
-	double deltaofprize = 80;
-	double prize = 150;
-	double prize2 = 150;
-	double how_much [4] {5,100,200,30};
+	int deltaofprize = 80;
+	int prize = 0;
+	int points_of_player = 0;
+	int prize2 = 30;
+	int how_much [4] {15,25,35,50};
 	vec rotation;
 	int position;
 	float zhelp;
@@ -80,12 +83,12 @@ private:
 	void enemies_spawn(int type2);
 	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z, bool where);
 	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z);
-	void tanker(float dt, int what);
+	void tanker(float dt);
 	void fuseball(float dt);
 	void spiker(float dt);
 	void flipper(float dt);
 
-	void textes();
+	void text1();
 	void mechanics();
 };
 
