@@ -73,7 +73,7 @@ void Tempest::mechanics() {
 	if (prize - how_much[temp]> 0) {
 		enemies_spawn(temp);
 	}
-	else if(prize = 0){
+	else if(prize == 0){
 		tunelspawn();
 	}
 }
@@ -661,7 +661,6 @@ void Tempest::tanker(float dt) {
 	for (int i = 0; i < enemies[0].size(); i++) {
 
 		for (int j = 0; j < bulletsofplayer.size(); j++) {
-			if(Game::collisionCircle(enemies[][i], bulletsofplayer[j], vec(0, 1, 1)))
 			if (Game::collisionCircle(enemies[0][i], bulletsofplayer[j], vec(0, 1, 1))) {
 				he = false;
 				xd = enemies[0][i]->Transform.position;
