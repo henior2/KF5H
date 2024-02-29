@@ -456,26 +456,25 @@ void Battlezone::Update(float dt) {
 						switch (enemyType[j]) {
 						case 1:
 							score += 100 * (int)scoreMultiplier;
-							tScore = refreshText(tScore, score);
 							break;
 						case 2:
 							score += 200 * (int)scoreMultiplier;
-							tScore = refreshText(tScore, score);
 							break;
 						case 3:
 							score += 300 * (int)scoreMultiplier;
-							tScore = refreshText(tScore, score);
 							break;
 						default:
 							throw std::invalid_argument("There is no such a type of enemy!");
 							break;
 						}
+
+ 						//tScore->ChangeText(std::to_wstring(score));
 						//Usuwanie pocisku
 						Game::Destroy(pociski_gracza[i]);
 						pociski_gracza.erase(pociski_gracza.begin() + i);
 						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
 						//Usuwanie przeciwnika
-						Game::Destroy(przeciwnicy[j]);
+						Game::Destroy(przeciwnicy[0]);
 						przeciwnicy.clear();
 					}
 				}
