@@ -45,7 +45,7 @@ void Tempest::Update(const float& dt) {
 		bulletmove(bulletsofplayer, dt);
 	}
 	if (!enemies[0].empty()) {
-		tanker(dt,2);
+		tanker(dt);
 	}
 	if (!enemies[1].empty()) {
 		spiker(dt);
@@ -68,6 +68,7 @@ void Tempest::text1() {
 	pointsy->ChangeText(text);
 	
 }
+
 
 void Tempest::mechanics() {
 	if (prize >= 0.0f) {
@@ -194,6 +195,7 @@ void Tempest::shipmovement(bool right, int& position, int type) {
 }
 void Tempest::shooting(vec gun_pos, vec rotation) {
 	bulletsofplayer.push_back(Game::Create(gun_pos, vec(rotation), vec(0.2, 3), L"bulletblaster"));
+
 }
 void Tempest::bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
 	vec help;
@@ -657,8 +659,13 @@ void Tempest::tanker(float dt) {
 	else if (lvlDif < 31) what = 2;
 	else what = rand() % 2 + 2;
 
-
 	for (int i = 0; i < enemies[0].size(); i++) {
+
+		for (int j = 0; j < bulletsofplayer.size(); j++) {
+			if(CollisionCircle(enemies[][i], bulletsofplayer[j], vec(0, 1, 1)))
+		}
+
+
 		help = enemies[0][i]->Transform.position;
 		if (help.z < zhelp2)
 			enemies[0][i]->Move(vec(0, 0, -3) * dt);
