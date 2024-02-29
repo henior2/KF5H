@@ -644,9 +644,9 @@ void Tempest::enemies_spawn(int type2) {
 
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
-		scale.x /= 1.3;
-		scale.y /= 1.3;
-		scale.z /= 1.3;
+		scale.x /= 3;
+		scale.y /= 3;
+		scale.z /= 3;
 		fpmove.push_back(vec(0, 3));
 		fpwhere.push_back(vec(0, 3));
 		cooldown2.push_back(1.5f);
@@ -718,9 +718,9 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
-		scale.x /= 1.3;
-		scale.y /= 1.3;
-		scale.z /= 1.3;
+		scale.x /= 3;
+		scale.y /= 3;
+		scale.z /= 3;
 		cooldown2.push_back(1.5f);
 		fpmove.push_back(vec(0, 3));
 		fpwhere.push_back(vec(0, 3));
@@ -774,9 +774,9 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 		place = vec(a.x, a.y, z);
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
-		scale.x /= 1.3;
-		scale.y /= 1.3;
-		scale.z /= 1.3;
+		scale.x /= 3;
+		scale.y /= 3;
+		scale.z /= 3;
 		cooldown2.push_back(1.5f);
 		fpwhere.push_back(vec(0, 3));
 		fpmove.push_back(vec(0, 3));
