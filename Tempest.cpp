@@ -73,7 +73,7 @@ void Tempest::mechanics() {
 	if (prize - how_much[temp]> 0) {
 		enemies_spawn(temp);
 	}
-	else if(prize = 0){
+	else if(prize == 0){
 		tunelspawn();
 	}
 }
