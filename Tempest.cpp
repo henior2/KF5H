@@ -4,7 +4,7 @@
 void Tempest::Init() {
 	SetCursor(NULL);
 	debugCooldown = .1f;
-	lvlDif = 0; //uwa¿aæ na to w przysz³oœci, ma byc 0
+	lvlDif = 60; //uwa¿aæ na to w przysz³oœci, ma byc 0
 	lastTSN = 0;
 	tunnel.clear();
 	bulletsofplayer.clear();
@@ -14,28 +14,16 @@ void Tempest::Init() {
 	enemies[3].clear();
 	position = 0;
 	superzapperActive = true;
-	tunelspawn(lastTSN, type);
+	tunelspawn();
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
-
-	if (Game::KeysPresed['1'] && debugCooldown <= 0.0f) {
-		debugCooldown = 0.5f;
-		lvlDif++;
-		for (auto& c : tunnel) {
-			Game::Destroy(c);
-		}
-		tunnel.clear();
-		Game::Destroy(blaster);
-		tunelspawn(lastTSN, type);
-	}
+	debugCooldown2 -= dt;
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
 		debugCooldown = 0.3f;
 		Game::ChangeState(Game_Menu);
 	}
-
-
 
 	if (Game::KeysPresed['A'] && debugCooldown <= 0.0f) {
 		debugCooldown = 0.3f;
@@ -47,8 +35,8 @@ void Tempest::Update(const float& dt) {
 		shipmovement(type > 0, position, type);
 	}
 
-	if (Game::KeysPresed[' '] && debugCooldown <= 0.0f) {
-		debugCooldown = 0.3f;
+	if (Game::KeysPresed[' '] && debugCooldown2 <= 0.0f) {
+		debugCooldown2 = 0.3f;
 		shooting(blaster->Transform.position, rotation);
 	}
 
@@ -56,7 +44,7 @@ void Tempest::Update(const float& dt) {
 		bulletmove(bulletsofplayer, dt);
 	}
 	if (!enemies[0].empty()) {
-		tanker(dt);
+		tanker(dt,2);
 	}
 	if (!enemies[1].empty()) {
 		spiker(dt);
@@ -67,26 +55,22 @@ void Tempest::Update(const float& dt) {
 	if (!enemies[3].empty()) {
 		flipper(dt);
 	}
-	if (Game::KeysPresed['2'] && debugCooldown <= 0.0f) {
-		debugCooldown = 0.5f;
-		enemies_spawn(0);
-	}
-	if (Game::KeysPresed['3'] && debugCooldown <= 0.0f) {
-		debugCooldown = 0.5f;
-		enemies_spawn(1);
-	}
-	if (Game::KeysPresed['4'] && debugCooldown <= 0.0f) {
-		debugCooldown = 0.5f;
-		enemies_spawn(2);
-	}
-	if (Game::KeysPresed['5'] && debugCooldown <= 0.0f) {
-		debugCooldown = 0.5f;
-		enemies_spawn(3);
-	}
+
 	if (Game::KeysPresed['F'] && debugCooldown <= 0.0f) {
 		superzapper();
 	}
 };
+
+
+void Tempest::textes() {
+
+}
+
+void Tempest::mechanics() {
+	tunelspawn();
+	prize2 = prize;
+
+}
 
 void Tempest::push_back2(std::vector<unsigned int>& Vec, unsigned int a1, unsigned int a2) {
 	Vec.push_back(a1);
@@ -154,13 +138,20 @@ void Tempest::shipspawn(int& position, int type) {
 	if (type == 0) {
 		a = move[0], b = move[1];
 		position = 0;
+		rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
 	}
 	else {
-		a = move[move.size() - 1], b = move[0];
-		position = move.size() - 1;
+		if (blok.x != move.size()/2) {
+			a = move[move.size() - 1], b = move[0];
+			position = move.size() - 1;
+			rotation = vec(0, 0, 0);
+		}
+		else {
+			a = move[0], b = move[1];
+			position = 0;
+			rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI);
+		}
 	}
-	if (type == 0) rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
-	else rotation = vec(0, 0, 0);
 
 	blaster = Game::Create(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (-8 + .25)), rotation, vec((b - a).Length() / 2.25, 3), L"tempest_ship");
 }
@@ -231,6 +222,17 @@ void Tempest::superzapper() {
 					spike.clear();
 					vx_spike.clear();
 				}
+				else if (type == 2) {
+					fusbal_time.clear();
+					fmove.clear();
+					fwhere.clear();
+					cooldown.clear();
+				}
+				else if (type == 3) {
+					fpmove.clear();
+					fpwhere.clear();
+					cooldown2.clear();
+				}
 			}
 
 		}
@@ -238,9 +240,11 @@ void Tempest::superzapper() {
 	}
 }
 
-void Tempest::tunelspawn(int& lastTSN, int& type) {
+void Tempest::tunelspawn() {
 	point.clear();
 	point2.clear();
+	blok.x = -1;
+	blok.y = -1;
 	std::vector<float> v;
 	std::vector<unsigned int> id;
 	std::vector<vec> points;
@@ -251,22 +255,29 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	} while (tunnelSidesNo == lastTSN);
 
 	int type2;
-	if (lvlDif < 21) type = 0;
+	if (lvlDif < 21) {
+		type = 0;
+		live = 3;
+	}
 	else if (lvlDif < 51) {
 		type = 1;
 		type2 = 0;
+		live = 4;
 	}
 	else if (lvlDif < 90) {
 		type = 1;
 		type2 = 1;
+		live = 5;
 	}
 	else if (lvlDif < 100) {
 		type = 1;
 		type2 = rand() % 1;
+		live = 6;
 	}
 	else {
 		type = rand() % 1;
 		type2 = rand() % 1;
+		live = 7;
 	}
 
 	float maxOffset = .2f; //[%]
@@ -338,7 +349,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 		}
 		else {//with hole
 			help.x = rand() % points.size() * 2;
-			blok = help.x;
+			blok.x = help.x;
 
 			for (int j = 0; j < points.size() - 1; j++) {
 				if (j != help.x) {
@@ -374,6 +385,11 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 	zhelp = move2[0].z;
 	zhelp2 = move[0].z;
 
+	if (type2 == 1) {
+		if (help.x == move.size() - 1) help.y = 0;
+		else help.y = help.x + 1;
+	}
+
 	if (type == 1) tunnel.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), v, id));
 	else {
 		std::vector<float> vxVec;
@@ -395,6 +411,7 @@ void Tempest::tunelspawn(int& lastTSN, int& type) {
 
 	shipspawn(position, type);
 	superzapperActive = true;
+	prize += deltaofprize;
 }
 
 void Tempest::enemies_spawn(int type2) {
@@ -402,11 +419,22 @@ void Tempest::enemies_spawn(int type2) {
 
 	int spawn1 = rand() % move2.size();
 	int spawn2;
+	vec a, b;
 
-	vec a = move2[spawn1];
-	if (spawn1 == move2.size() - 1) spawn2 = 0;
-	else spawn2 = spawn1 + 1;
-	vec b = move2[spawn2];
+	if ( blok.x == spawn1) {
+		    if (spawn1 == move2.size() - 1) spawn1 = 0;
+			else spawn1++;
+			a = move2[spawn1];
+			if (spawn1 == move2.size() - 1) spawn2 = 0;
+			else spawn2 = spawn1 + 1;
+			b = move2[spawn2];
+	}
+	else {
+		 a = move2[spawn1];
+		if (spawn1 == move2.size() - 1) spawn2 = 0;
+		else spawn2 = spawn1 + 1;
+		 b = move2[spawn2];
+	}
 
 	vec place;
 	vec scale((b - a).Length() / 1.5, 3);
@@ -473,23 +501,30 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 	
 
 	int spawn2;
+	vec a, b;
 
-	vec a = move2[spawn1];
+	a = move2[spawn1];
 	if (spawn1 == move2.size() - 1) spawn2 = 0;
 	else spawn2 = spawn1 + 1;
-	vec b = move2[spawn2];
+	b = move2[spawn2];
 
 	vec place;
 	vec scale((b - a).Length() / 1.5, 3);
-	if (type2 == 2)
-		place = vec(a.x, a.y, z);
+	if (type2 == 2) {
+		place = a;
+		place.z = z;
+		fusbal_time.push_back(4.0f);
+		fmove.push_back(vec(0, 3));
+		fwhere.push_back(vec(0, 3));
+		cooldown.push_back(0);
+	}
+
 	else if (type2 == 3) {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
 		scale.x /= 1.3;
 		scale.y /= 1.3;
 		scale.z /= 1.3;
 		cooldown2.push_back(1.5f);
-		fpwhere.push_back(vec(0, 3));
 	}
 	else {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, z);
@@ -505,6 +540,20 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 	enemies[type2].push_back(Game::Create(place, rotation, scale, model));
 	enemies_position[type2].push_back(spawn1);
 	enemies_bool[type2].push_back(false);
+
+	if (type2 == 1) {
+		spikers_max.push_back(rand() % 5 - 14);
+
+		help.clear();
+		push_back3(help, place.x, place.y, place.z);
+		push_back3(help, 0, 1, 0);
+		push_back3(help, place.x, place.y, place.z);
+		push_back3(help, 1, 1, 1);
+		vx_spike.push_back(help);
+
+		spike.push_back(Game::Create(vec(0, 3), vec(0, 3), vec(1, 3), vx_spike[vx_spike.size() - 1], ind_spikes));
+		spike[spike.size() - 1]->SetColor(vec(0, 1, 0));
+	}
 
 }
 
@@ -549,7 +598,7 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 
 }
 
-void Tempest::tanker(float dt) {
+void Tempest::tanker(float dt, int what) {
 	vec help, xd;
 	for (int i = 0; i < enemies[0].size(); i++) {
 		help = enemies[0][i]->Transform.position;
@@ -558,8 +607,8 @@ void Tempest::tanker(float dt) {
 		else {
 			xd = enemies[0][i]->Transform.position;
 			Game::Destroy(enemies[0][i]);
-			enemies_spawn(3, i, 0, xd.z, true);
-			enemies_spawn(3, i, 0, xd.z, false);
+			enemies_spawn(what, i, 0, xd.z, true);
+			enemies_spawn(what, i, 0, xd.z, false);
 			enemies[0].erase(enemies[0].begin() + i);
 			enemies_position[0].erase(enemies_position[0].begin() + i);
 			enemies_bool[0].erase(enemies_bool[0].begin() + i);
@@ -575,17 +624,17 @@ void Tempest::fuseball(float dt) {
 		help = enemies[2][i]->Transform.position;
 
 
-		if (help.z < -7.5 && !enemies_bool[2][i]) {
+		if (help.z < zhelp2 && !enemies_bool[2][i]) {
 			speed = -1;
 		}
-		else if (help.z >= -7.5 && !enemies_bool[2][i]) {
+		else if (help.z >= zhelp2 && !enemies_bool[2][i]) {
 			enemies_bool[2][i] = true;
 			speed = 1;
 		}
 		else if (help.z > zhelp && enemies_bool[2][i]) {
 			speed = 1;
 		}
-		else if (help.z <= -7.5 && enemies_bool[2][i]) {
+		else if (help.z <= zhelp2 && enemies_bool[2][i]) {
 			enemies_bool[2][i] = false;
 			speed = -1;
 		}
@@ -732,7 +781,7 @@ void Tempest::flipper(float dt) {
 			if (d == 1 && pos == move.size() - 1) {
 				pos = 0;
 				a = move[pos];
-				b = move[position];
+				b = move[move.size() - 1];
 			}
 			else if (d == 0 && pos == 0) {
 				pos = move.size() - 1;
@@ -775,7 +824,6 @@ void Tempest::flipper(float dt) {
 		else {
 			if (cooldown2[i] == 1.5f) {
 				pos = enemies_position[3][i];
-				rotation = enemies[3][i]->Transform.orientation;
 			
 					d = rand() % 2;
 					pos = enemies_position[3][i];
@@ -784,7 +832,7 @@ void Tempest::flipper(float dt) {
 					if (d == 1 && pos == move.size() - 1) {
 						pos = 0;
 						a = move[pos];
-						b = move[position];
+						b = move[move.size() - 1];
 					}
 					else if (d == 0 && pos == 0) {
 						pos = move.size() - 1;
