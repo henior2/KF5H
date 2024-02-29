@@ -70,6 +70,7 @@ private:
 	void tunelspawn(int& lastTSN, int& type);
 
 	void enemies_spawn(int type2);
+	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z, bool where);
 	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z);
 	void tanker(float dt);
 	void fuseball(float dt);
