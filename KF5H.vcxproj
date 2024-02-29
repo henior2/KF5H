@@ -178,7 +178,7 @@
     <Media Include="Sounds\battlezonePlayerMove.wav" />
     <Media Include="Sounds\battlezonePlayerScored.wav" />
     <Media Include="Sounds\battlezonePlayerShoot.wav" />
-    <Media Include="Sounds\battlezonePowerUpwav.wav" />
+    <Media Include="Sounds\battlezonePowerUp.wav" />
     <Media Include="Sounds\battlezoneRadar.wav" />
     <Media Include="Sounds\Lobby-Time.wav" />
     <Media Include="Sounds\mus01.wav" />
