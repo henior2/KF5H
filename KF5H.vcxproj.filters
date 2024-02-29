@@ -491,6 +491,30 @@
     <Media Include="Sounds\mus01.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
+    <Media Include="Sounds\tempestEnemyKill.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestEnemySpawn.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestLevelComplete.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestLevelStart.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestPlayerMove.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestPlayerShoot.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestSuperzapper.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\tempestSuperzapperEmpty.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
