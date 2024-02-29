@@ -6,7 +6,7 @@ void Menu::Init() {
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
 		Sign = Game::AddText(-1, 1, 0.9, 0.8, L"Gry Wektorowe", 0.1f, true, vec(.5, .5, .5), 15);
 		PlayButton = Game::AddText(-0.4f, 0.4f, 0.15, 0.1, L"Graj", 0.1, true, vec(.5, 1, .5), 8);
-		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, L"WyjdŸ", 0.1, true, vec(1, .5, .5), 8);
+		ExitButton = Game::AddText(-0.4f, 0.4f, -0.1, -0.15, L"Wyjd", 0.1, true, vec(1, .5, .5), 8);
 		AsteroidsButton = Game::AddText(-0.4f, 0.4f, 0.25, 0.20, L"", 0.1, true, vec(.5, 1, .5), 8);
 		BattlezoneButton = Game::AddText(-0.6f, 0.6f, 0.025, -0.025, L"", 0.1, true, vec(.5, 1, .5), 8);
 		TempestButton = Game::AddText(-0.4f, 0.4f, -0.20, -0.25, L"", 0.1, true, vec(.5, 1, .5), 8);
@@ -68,7 +68,7 @@ void Menu::Update(const float& dt) {
 					AsteroidsButton->ChangeText(L"Asteroids");
 					BattlezoneButton->ChangeText(L"Battlezone");
 					TempestButton->ChangeText(L"Tempest");
-					BackButton->ChangeText(L"Wróæ");
+					BackButton->ChangeText(L"WrÓÆ");
 			}
 
 			if (ExitButton->Hovered(0.025f) && Game::KeysPresed[VK_LBUTTON])
@@ -85,7 +85,7 @@ void Menu::Update(const float& dt) {
 				Play = false;
 				Wait = 1;
 				PlayButton->ChangeText(L"Graj");
-				ExitButton->ChangeText(L"WyjdŸ");
+				ExitButton->ChangeText(L"Wyjd");
 				AsteroidsButton->ChangeText(L"");
 				BattlezoneButton->ChangeText(L"");
 				TempestButton->ChangeText(L"");
