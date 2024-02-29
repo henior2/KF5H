@@ -18,6 +18,7 @@ private:
 	int lvlDif = 0;
 	int type;
 	int live;
+	float waveCool;
 	TextBox* pointsy;
 	bool superzapperActive = true;
 
@@ -88,6 +89,6 @@ private:
 	void flipper(float dt);
 
 	void text1();
-	void mechanics();
+	void mechanics(const float dt);
 };
 

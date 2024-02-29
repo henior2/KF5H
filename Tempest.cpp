@@ -15,11 +15,13 @@ void Tempest::Init() {
 	position = 0;
 	superzapperActive = true;
 	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
-	tunelspawn();
+	mechanics(0.1f);
+	waveCool = 2.0f;
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
 	debugCooldown2 -= dt;
+	mechanics(dt);
 
 	if (Game::KeysPresed[VK_ESCAPE]) {
 		debugCooldown = 0.3f;
@@ -69,13 +71,19 @@ void Tempest::text1() {
 }
 
 
-void Tempest::mechanics() {
+void Tempest::mechanics(float dt) {
 	int temp = rand() % 4;
 	if (prize - how_much[temp]> 0) {
 		enemies_spawn(temp);
+		prize -= how_much[temp];
 	}
-	else if(prize == 0){
+	else if(prize<=0 && enemies->empty()){
+		waveCool -= dt;
+	}
+	if (waveCool == 0 && enemies->empty()) {
 		tunelspawn();
+		waveCool = 2.0f;
+		lvlDif += 1;
 	}
 }
 
@@ -249,6 +257,10 @@ void Tempest::superzapper() {
 }
 
 void Tempest::tunelspawn() {
+
+	for (auto& t : tunnel)
+		Game::Destroy(t);
+
 	point.clear();
 	point2.clear();
 	blok.x = -1;
