@@ -172,6 +172,14 @@
     <Media Include="Sounds\asteroidsPlayerTeleport.wav" />
     <Media Include="Sounds\asteroidsStart.wav" />
     <Media Include="Sounds\asteroidsWoosh.wav" />
+    <Media Include="Sounds\battlezoneEnemyShoot.wav" />
+    <Media Include="Sounds\battlezonePlayerBulletHit.wav" />
+    <Media Include="Sounds\battlezonePlayerHurt.wav" />
+    <Media Include="Sounds\battlezonePlayerMove.wav" />
+    <Media Include="Sounds\battlezonePlayerScored.wav" />
+    <Media Include="Sounds\battlezonePlayerShoot.wav" />
+    <Media Include="Sounds\battlezonePowerUpwav.wav" />
+    <Media Include="Sounds\battlezoneRadar.wav" />
     <Media Include="Sounds\Lobby-Time.wav" />
     <Media Include="Sounds\mus01.wav" />
     <Media Include="Sounds\tempestEnemyKill.wav" />
