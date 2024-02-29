@@ -49,10 +49,11 @@ private:
 	std::vector <vec> move;
 	std::vector <vec> move2;
 	std::vector <vec> point;
+	int deadspikers =0;
 	std::vector <vec> point2;
 	vec blok = vec(0, 2);
 	int deltaofprize = 80;
-	int prize = 15;
+	int prize = 0;
 	int points_of_player = 0;
 	int prize2 = 30;
 	int how_much [4] {15,25,35,50};
