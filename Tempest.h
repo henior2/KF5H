@@ -52,10 +52,10 @@ private:
 	std::vector <vec> point2;
 	vec blok = vec(0, 2);
 	int deltaofprize = 80;
-	int prize = -1;
+	int prize = 15;
 	int points_of_player = 0;
-	int prize2 = 150;
-	int how_much [4] {5,100,200,30};
+	int prize2 = 30;
+	int how_much [4] {15,25,35,50};
 	vec rotation;
 	int position;
 	float zhelp;
