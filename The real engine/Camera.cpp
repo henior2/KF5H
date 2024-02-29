@@ -12,7 +12,7 @@ mat Camera::GetViewMatrix() const {
 
 mat Camera::GetProjectionMatrix() const {
 	if (perspective)
-		return Kmath::Perspective(Kmath::Radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+		return Kmath::Perspective(Kmath::Radians(75.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 		//return Kmath::Perspective(1.0f, 100.0f, 1.6f, -1.6f, 0.9f, -0.9f);
 	else
 		return Kmath::Ortho(-cameraWidth, cameraWidth, -cameraHeight, cameraHeight, 0.1f, 100.0f);
