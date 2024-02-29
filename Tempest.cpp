@@ -422,7 +422,7 @@ void Tempest::enemies_spawn(int type2) {
 		scale.x /= 1.3;
 		scale.y /= 1.3;
 		scale.z /= 1.3;
-		cooldown2.push_back(2.0f);
+		cooldown2.push_back(1.5f);
 	}
 	else {
 		place = vec((b.x + a.x) / 2, (b.y + a.y) / 2, b.z);
@@ -487,7 +487,7 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 		scale.x /= 1.3;
 		scale.y /= 1.3;
 		scale.z /= 1.3;
-		cooldown2.push_back(2.0f);
+		cooldown2.push_back(1.5f);
 		fpwhere.push_back(vec(0, 3));
 	}
 	else {
@@ -528,7 +528,7 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 		scale.x /= 1.3;
 		scale.y /= 1.3;
 		scale.z /= 1.3;
-		cooldown2.push_back(2.0f);
+		cooldown2.push_back(1.5f);
 		fpwhere.push_back(vec(0, 3));
 	}
 	else {
@@ -715,19 +715,64 @@ void Tempest::spiker(float dt) {
 
 void Tempest::flipper(float dt) {
 	bool d;
+	int dd;
 	int pos;
 	vec rotation;
 	for (int i = 0; i < enemies[3].size(); i++) {
 		vec help = enemies[3][i]->Transform.position;
-		if (help.z < zhelp2) {
+
+		if (enemies_bool[3][i]) {
+			pos = enemies_position[3][i];
+
+			d = rand() % 2;
+			pos = enemies_position[3][i];
+			vec a, b;
+
+			if (d == 1 && pos == move.size() - 1) {
+				pos = 0;
+				a = move[pos];
+				b = move[position];
+			}
+			else if (d == 0 && pos == 0) {
+				pos = move.size() - 1;
+				a = move[pos];
+				b = move[0];
+			}
+			else if (d == 1) {
+				pos++;
+				a = move[pos];
+				if (pos == move.size() - 1) b = move[0];
+				else b = move[pos + 1];
+			}
+			else {
+				pos--;
+				if (pos < 0) pos = move.size() - 1;
+				a = move[pos];
+				b = move[(pos + 1) % move.size()];
+			}
+
+			enemies_position[3][i] = pos;
+
+			rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+
+			enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, help.z));
+			enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
+			enemies[3][i]->RotateTo(rotation);
+			enemies_bool[3][i] = false;
+
+		}
+
+		else if (help.z < zhelp2) {
 			enemies[3][i]->Move(vec(0, 0, -3) * dt);
 			if (!enemies_bool[3][i]) {
-
+				dd = rand() % 500;
+				if (dd == 0) {
+					enemies_bool[3][i] = true;
+				}
 			}
 		}
 		else {
-			if (cooldown2[i] == 2.0f) {
-				d = enemies_bool[3][i];
+			if (cooldown2[i] == 1.5f) {
 				pos = enemies_position[3][i];
 				rotation = enemies[3][i]->Transform.orientation;
 			
@@ -770,11 +815,12 @@ void Tempest::flipper(float dt) {
 
 			}
 
-			else if (cooldown2[i] < 2.0f) {
+			else if (cooldown2[i] < 1.5f) {
 				cooldown2[i] -= dt;
 			}
 			 if (cooldown2[i] <= 0.0f) {
-				cooldown2[i] = 2.0f;
+				cooldown2[i] = 1.5f;
+				
 			}
 		}
 	}		

@@ -47,6 +47,7 @@ private:
 	std::vector <vec> move2;
 	std::vector <vec> point;
 	std::vector <vec> point2;
+	vec blok = vec(0, 2);
 	vec rotation;
 	int position;
 	float zhelp;
