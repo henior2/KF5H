@@ -15,6 +15,7 @@ void Tempest::Init() {
 	position = 0;
 	superzapperActive = true;
 	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	tunelspawn();
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
