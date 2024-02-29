@@ -665,52 +665,63 @@ void Tempest::flipper(float dt) {
 	vec rotation;
 	for (int i = 0; i < enemies[3].size(); i++) {
 		vec help = enemies[3][i]->Transform.position;
-		int help2;
-		if (help.z < zhelp2 && !enemies_bool) {
+		if (help.z < zhelp2) {
 			enemies[3][i]->Move(vec(0, 0, -3) * dt);
-			help2 = rand() % 8;
-			if (help2 == 1) {
-				enemies_bool[3][i] = true;
-			}
 		}
-		else if (cooldown2[i] == 2.0f){
-			d = rand() % 2; 
+		else {
+			d = enemies_bool[3][i];
 			pos = enemies_position[3][i];
-			vec a, b;
-
-			if (d == 1 && pos == move.size() - 1) {
-				pos = 0; 
-				a = move[pos];
-				b = move[position];
-			}
-			else if (d == 0 && pos == 0) {
-				pos = move.size() - 1;
-				a = move[pos];
-				b = move[0];
-			}
-			else if (d == 1) {
-				pos++;
-				a = move[pos];
-				if (pos == move.size() - 1) b = move[0];
-				else b = move[pos + 1];
+			rotation = enemies[3][i]->Transform.orientation;
+			if (d == false) {
+				enemies[3][i]->Move(vec(0, 0, -3) * dt);
+				enemies[3][i]->Rotate(vec(0, 0, 2));
+				if (rotation.z > 90) {
+					enemies_bool[3][i] = true;
+				}
 			}
 			else {
-				pos--;
-				if (pos < 0) pos = move.size() - 1;
-				a = move[pos];
-				b = move[(pos + 1) % move.size()];
+				enemies[3][i]->Move(vec(0, 0, 3) * dt);
+				enemies[3][i]->Rotate(vec(0, 0, -2));
+				if (rotation.z < 0) {
+					enemies_bool[3][i] = false;
+				}
 			}
-
-			enemies_position[3][i] = pos;
-
-			rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
-
-			enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2));
-			enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
-			enemies[3][i]->RotateTo(rotation);
-			
-
-			enemies_bool[3][i] = false;
 		}
-	}
+	}		
 }
+/*
+d = rand() % 2;
+				pos = enemies_position[3][i];
+				vec a, b;
+
+				if (d == 1 && pos == move.size() - 1) {
+					pos = 0;
+					a = move[pos];
+					b = move[position];
+				}
+				else if (d == 0 && pos == 0) {
+					pos = move.size() - 1;
+					a = move[pos];
+					b = move[0];
+				}
+				else if (d == 1) {
+					pos++;
+					a = move[pos];
+					if (pos == move.size() - 1) b = move[0];
+					else b = move[pos + 1];
+				}
+				else {
+					pos--;
+					if (pos < 0) pos = move.size() - 1;
+					a = move[pos];
+					b = move[(pos + 1) % move.size()];
+				}
+
+				enemies_position[3][i] = pos;
+
+				rotation = vec(0, 0, atan2(b.y - a.y, b.x - a.x) * 180.0f / M_PI + 180.0f);
+
+				enemies[3][i]->MoveTo(vec((b.x + a.x) / 2, (b.y + a.y) / 2, (b.z + a.z) / 2));
+				enemies[3][i]->ScaleTo(vec((b - a).Length() / 2.25, 3));
+				enemies[3][i]->RotateTo(rotation);
+*/
