@@ -351,7 +351,7 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-.9f, -1.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score, .1f, false);
+					scoreboard[i] = Game::AddText(-.9f, -1.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score, .1f, false, i == n ? vec(1, 0, 0) : vec(1, 1, 1));
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
