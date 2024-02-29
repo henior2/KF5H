@@ -16,6 +16,7 @@ void Tempest::Init() {
 	superzapperActive = true;
 	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
 	TextBox* dif = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	tunelspawn();
 };
 void Tempest::Update(const float& dt) {
 	debugCooldown -= dt;
@@ -97,13 +98,14 @@ void Tempest::mechanics(float dt) {
 			enemies_spawn(temp);
 			prize -= how_much[temp];
 		}
-		if (enemies->empty() && waveCool > 0) {
+		if (enemies[0].empty() && enemies[1].empty() && enemies[2].empty() && enemies[3].empty() && waveCool > 0) {
 			waveCool -= dt;
 		}
-		else if (waveCool <= 0 && enemies->empty()) {
-			waveCool = 2.0f;
+		else if (waveCool <= 0 && enemies[0].empty() && enemies[1].empty() && enemies[2].empty() && enemies[3].empty()) {
+			waveCool = 2.5f;
 			waveFlag = false;
 			lvlDif += 1;
+			Game::Destroy(blaster);
 			tunelspawn();
 		}
 		
@@ -281,10 +283,14 @@ void Tempest::superzapper() {
 
 void Tempest::tunelspawn() {
 
-	for (auto& t : tunnel)
-		Game::Destroy(t);
+	if (!tunnel.empty()){
+		for (int i = 0; i < tunnel.size(); i++) {
+			GameObject* t = tunnel[i];
+			Game::Destroy(t);
+		}
+	}
+	tunnel.clear();
 
-	waveCool = 2.0f;
 	point.clear();
 	point2.clear();
 	blok.x = -1;
