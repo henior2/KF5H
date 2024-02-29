@@ -55,8 +55,7 @@ private:
 	const int camW = 160;
 	const int camH = 90;
 
-	const vec animationPos = vec(80, 0, 0);
-	//const vec scoreTablePos = vec(-80, 0);
+	const vec animationPos = vec(100, 0, 0);
 
 	int modelShipFire;
 

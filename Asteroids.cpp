@@ -39,7 +39,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, 0, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
+		tutorialText = Game::AddText(-.9, .9, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -217,6 +217,9 @@ void Asteroids::Update(const float& dt) {
 
 		isPaused = !isPaused;
 		clickCooldown = .25f;
+
+		if (isPaused) tutorialText->ChangeText(L"Kliknij P, aby wznowić");
+		else tutorialText->ChangeText(L"Poziom " + std::to_wstring(wave_num));
 	}
 
 	if (isPaused) return;
@@ -255,7 +258,7 @@ void Asteroids::Update(const float& dt) {
 				Game::StopSounds();
 				Game::Sound(backgroundMusic[0], true);
 
-				tutorialText->ChangeText(L"");
+				tutorialText->ChangeText(L"Wpisz swój nick");
 
 				std::wifstream file(L"_asteroidsscoredata.txt"); // reading the file
 
@@ -317,6 +320,8 @@ void Asteroids::Update(const float& dt) {
 			}
 		}
 		if (endingScreen && hasLost) {
+			tutorialText->ChangeText(L"");
+
 			for (int i = 0; i < starsAmount; i++) {
 				GameObject* current = stars[i];
 				float angle = -M_PI / 2;
@@ -350,11 +355,12 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-.9f, -.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score,.1f, false);
+					scoreboard[i] = Game::AddText(-.9f, -1.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score, .1f, false);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
-				ship->MoveTo(vec(-animationPos.x * .6, (.35 - (.125 * n)) * camH, -80.0f));
+				ship->MoveTo(vec(.325f * camW, (.325 - (.13 * n)) * camH, -80.0f));
+				ship->SetColor(vec(1, 0, 0));
 			}
 		}
 
