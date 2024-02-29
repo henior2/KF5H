@@ -43,7 +43,10 @@ void Tempest::Update(const float& dt) {
 	}
 
 	if (!bulletsofplayer.empty()) {
-		bulletmove(bulletsofplayer, dt);
+		bulletmove(dt);
+	}
+	if (!bullets.empty()) {
+		bulletmove2(dt);
 	}
 	if (!enemies[0].empty()) {
 		tanker(dt);
@@ -221,7 +224,7 @@ void Tempest::shooting(vec gun_pos, vec rotation) {
 	bulletsofplayer.push_back(Game::Create(gun_pos, vec(rotation), vec(0.2, 3), L"bulletblaster"));
 
 }
-void Tempest::bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt) {
+void Tempest::bulletmove(float dt) {
 	vec help;
 	for (int i = 0; i < bulletsofplayer.size(); i++) {
 		help = bulletsofplayer[i]->Transform.position;
@@ -689,7 +692,7 @@ void Tempest::enemies_spawn(int type2, int positionofshipinvec, int typeofspawne
 
 void Tempest::tanker(float dt) {
 	vec help, xd;
-	int what;
+	int what, shoot;
 	bool he = true;
 
 	if (lvlDif < 15) what = 3;
@@ -716,6 +719,7 @@ void Tempest::tanker(float dt) {
 		
 		if (he) {
 			help = enemies[0][i]->Transform.position;
+			shoot = rand() % 10;
 			if (help.z < zhelp2)
 				enemies[0][i]->Move(vec(0, 0, -3) * dt);
 			else {
@@ -728,7 +732,9 @@ void Tempest::tanker(float dt) {
 				enemies_bool[0].erase(enemies_bool[0].begin() + i);
 				i--;
 			}
-
+			if (shoot) {
+				shooting2(enemies[0][i]->Transform.position);
+			}
 
 		}
 		
@@ -1040,14 +1046,14 @@ void Tempest::flipper(float dt) {
 
 void Tempest::shooting2(vec gun_pos) {
 	bullets.push_back(Game::Create(gun_pos, vec(0,3), vec(0.1, 3), L"fusball"));
-	bullets[bullets.size() - 1]->SetColor(vec(1,0,1));
+	bullets[bullets.size() - 1]->SetColor(vec(1,0.01,1));
 }
 
 void Tempest::bulletmove2( float dt) {
 	vec help;
 	for (int i = 0; i < bullets.size(); i++) {
 		help = bullets[i]->Transform.position;
-		if (help.z > -31) {
+		if (help.z < zhelp2) {
 			bullets[i]->Move(vec(0, 0, -15) * dt);
 			bullets[i]->Rotate(vec(0, 0, 10));
 		}
