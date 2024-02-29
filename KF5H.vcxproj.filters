@@ -518,6 +518,30 @@
     <Media Include="Sounds\tempestEnemyShoot.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
+    <Media Include="Sounds\battlezonePlayerHurt.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezonePlayerMove.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezonePlayerScored.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezonePlayerShoot.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezonePowerUpwav.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezoneRadar.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezoneEnemyShoot.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Sounds\battlezonePlayerBulletHit.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
