@@ -10,15 +10,15 @@ void Battlezone::Init() {
 	money = 0;
 	
 
-	shopDisplaySquares[0] = Game::Create(vec(-shopXPos, shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
+	/*shopDisplaySquares[0] = Game::Create(vec(-shopXPos, shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 	shopDisplaySquares[1] = Game::Create(vec(-shopXPos, 0, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 	shopDisplaySquares[2] = Game::Create(vec(-shopXPos, -shopYPos, 0), vec(0,3), vec(shopScale,3), L"MenuSquare");
 
 	shopDisplaySquares[0]->Stage[0].onTop = true; 
 	shopDisplaySquares[1]->Stage[0].onTop = true; 
-	shopDisplaySquares[2]->Stage[0].onTop = true;
+	shopDisplaySquares[2]->Stage[0].onTop = true;*/
 
-	insertItem(0, true); insertItem(1, true); insertItem(2, true);
+	/*insertItem(0, true); insertItem(1, true); insertItem(2, true);*/
 
 	flag = false;
 	velocity = 3.0f;
@@ -709,7 +709,7 @@ void Battlezone::Update(float dt) {
 		}
 
 		//shop
-		if (Game::KeysPresed['1'] && keyCooldown <= 0.0f) {
+		/*if (Game::KeysPresed['1'] && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(0);
 		}
@@ -720,7 +720,7 @@ void Battlezone::Update(float dt) {
 		if (Game::KeysPresed['3'] && keyCooldown <= 0.0f) {
 			keyCooldown = .25f;
 			shopAction(2);
-		}
+		}*/
 	}
 	
 }
@@ -1144,15 +1144,15 @@ void Battlezone::collectPowerUp(GameObject* _inside, GameObject* _box, unsigned 
 
 
 
-void Battlezone::insertItem(int item, bool isTheFirstTime) {
-	itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
-	itemsPrice[0] = 500;
-	itemsPrice[1] = 100;
-	itemsPrice[2] = 300;
-	if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
-	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale,3), shopModels[itemsType[item]]);
-	shopDisplayIcons[item]->Stage[0].onTop = true;
-}
+//void Battlezone::insertItem(int item, bool isTheFirstTime) {
+//	itemsType[item] = rand() % (sizeof(shopModels) / sizeof(std::string));
+//	itemsPrice[0] = 500;
+//	itemsPrice[1] = 100;
+//	itemsPrice[2] = 300;
+//	if (!isTheFirstTime) Game::Destroy(shopDisplayIcons[item]);
+//	shopDisplayIcons[item] = Game::Create(vec(-shopXPos, shopYPos - item * shopYPos, 0), vec(0, 3), vec(shopScale,3), shopModels[itemsType[item]]);
+//	shopDisplayIcons[item]->Stage[0].onTop = true;
+//}
 
 void Battlezone::buyItem(int type, int cost, int item) {
 	money -= cost;
@@ -1174,7 +1174,7 @@ void Battlezone::buyItem(int type, int cost, int item) {
 	insertItem(item);
 }
 
-void Battlezone::shopAction(int item, bool isForced) {
-	if (money >= itemsPrice[item] || isForced) 
-		buyItem(itemsType[item], itemsPrice[item], item);
-}
+//void Battlezone::shopAction(int item, bool isForced) {
+//	if (money >= itemsPrice[item] || isForced) 
+//		buyItem(itemsType[item], itemsPrice[item], item);
+//}
