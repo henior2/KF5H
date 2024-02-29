@@ -717,6 +717,8 @@ void Tempest::tanker(float dt) {
 				enemies_bool[0].erase(enemies_bool[0].begin() + i);
 				i--;
 			}
+
+
 		}
 		
 	}
@@ -1029,6 +1031,7 @@ void Tempest::shooting2(vec gun_pos) {
 	bullets.push_back(Game::Create(gun_pos, vec(0,3), vec(0.1, 3), L"fusball"));
 	bullets[bullets.size() - 1]->SetColor(vec(1,0,1));
 }
+
 void Tempest::bulletmove2( float dt) {
 	vec help;
 	for (int i = 0; i < bullets.size(); i++) {
