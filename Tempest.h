@@ -13,9 +13,11 @@ public:
     void Update(const float& dt);
 private:
 	float debugCooldown = .1f;
+	float debugCooldown2 = .1f;
 	int lastTSN = 0;
 	int lvlDif = 0;
 	int type;
+	int live = 3;
 	bool superzapperActive = true;
 
 	const std::vector<std::wstring> enemy_models = {
@@ -48,10 +50,15 @@ private:
 	std::vector <vec> point;
 	std::vector <vec> point2;
 	vec blok = vec(0, 2);
+	double deltaofprize = 80;
+	double prize = 150;
+	double prize2 = 150;
+	double how_much [4] {5,100,200,30};
 	vec rotation;
 	int position;
 	float zhelp;
 	float zhelp2;
+	std::vector <GameObject*> lives;
 
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1, unsigned int a2);
 	void push_back2(std::vector<unsigned int>& vec, unsigned int a1);
@@ -68,14 +75,17 @@ private:
 	void bulletmove(std::vector <GameObject*>& bulletsofplayer, float dt);
 	void superzapper();
 
-	void tunelspawn(int& lastTSN, int& type);
+	void tunelspawn();
 
 	void enemies_spawn(int type2);
 	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z, bool where);
 	void enemies_spawn(int type2, int positionofshipinvec, int typeofspawner, float z);
-	void tanker(float dt);
+	void tanker(float dt, int what);
 	void fuseball(float dt);
 	void spiker(float dt);
 	void flipper(float dt);
+
+	void textes();
+	void mechanics();
 };
 
