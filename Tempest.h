@@ -20,6 +20,7 @@ private:
 	int live;
 	float waveCool;
 	TextBox* pointsy;
+	TextBox* dif;
 	bool superzapperActive = true;
 
 	const std::vector<std::wstring> enemy_models = {

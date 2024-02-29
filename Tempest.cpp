@@ -15,6 +15,7 @@ void Tempest::Init() {
 	position = 0;
 	superzapperActive = true;
 	TextBox* pointsy = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
+	TextBox* dif = Game::AddText(-0.05f, 0.05f, 0.9, 0.8, L"000", 0.14, true, vec(0.45, 0.35, 0.8), 4);
 	tunelspawn();
 };
 void Tempest::Update(const float& dt) {
@@ -718,8 +719,8 @@ void Tempest::tanker(float dt) {
 		}
 		
 		if (he) {
+			shoot = rand() % 120;
 			help = enemies[0][i]->Transform.position;
-			shoot = rand() % 10;
 			if (help.z < zhelp2)
 				enemies[0][i]->Move(vec(0, 0, -3) * dt);
 			else {
@@ -732,10 +733,9 @@ void Tempest::tanker(float dt) {
 				enemies_bool[0].erase(enemies_bool[0].begin() + i);
 				i--;
 			}
-			if (shoot) {
+			if (shoot==1) {
 				shooting2(enemies[0][i]->Transform.position);
 			}
-
 		}
 		
 	}
@@ -1045,11 +1045,11 @@ void Tempest::flipper(float dt) {
 }
 
 void Tempest::shooting2(vec gun_pos) {
-	bullets.push_back(Game::Create(gun_pos, vec(0,3), vec(0.1, 3), L"fusball"));
-	bullets[bullets.size() - 1]->SetColor(vec(1,0.01,1));
+	bullets.push_back(Game::Create(gun_pos, vec(0,3), vec(0.7, 3), L"Fuseball"));
+	bullets[bullets.size() - 1]->SetColor(vec(1,0,1));
 }
 
-void Tempest::bulletmove2( float dt) {
+void Tempest::bulletmove2(float dt) {
 	vec help;
 	for (int i = 0; i < bullets.size(); i++) {
 		help = bullets[i]->Transform.position;
@@ -1057,12 +1057,10 @@ void Tempest::bulletmove2( float dt) {
 			bullets[i]->Move(vec(0, 0, -15) * dt);
 			bullets[i]->Rotate(vec(0, 0, 10));
 		}
-
 		else {
 			Game::Destroy(bullets[i]);
 			bullets.erase(bullets.begin() + i);
 			i--;
 		}
 	}
-
 }
