@@ -31,7 +31,7 @@ void Asteroids::Init(bool again) {
 		hasEscd = false;
 		isPaused = false;
 
-		pauseIcone = Game::Create(vec(-10, 0, .1), vec(0, 3), vec(.1, .125, 1), L"pauseIcone");
+		pauseIcone = Game::Create(vec(-10, 0, .1), vec(0, 3), vec(.05, .075, 0.5), L"pauseIcone");
 		pauseIcone->Stage[0].onTop = true;
 
 		ship = Game::Create(vec(0.0f, 0.0f, -99.0f), vec(0.0f, 3), vec(5.0f, 3), L"AsteroidsShip");
@@ -39,7 +39,7 @@ void Asteroids::Init(bool again) {
 
 		wave_num = 0;
 
-		tutorialText = Game::AddText(-.9, .9, -.8, -.9, L"Klikinj W, aby lecieć", .05, 0);
+		tutorialText = Game::AddText(-1, 1, -.5, -.55, L"Klikinj W, aby lecieć", .05, 0);
 		tutorialStep = 0;
 
 		for (int i = 0; i < 10; i++) {
@@ -117,9 +117,9 @@ void Asteroids::Init(bool again) {
 
 		Game::Sound(backgroundMusic[2], true);
 
-		tScore = Game::AddText(-.9, .9, .85, .8, scoreStr, .02, false);
+		tScore = Game::AddText(-1, 1, .45, .425, scoreStr, .02, false);
 
-		endingUsername = Game::AddText(-.125, .125, .7, .5, new_username,.1, true);
+		endingUsername = Game::AddText(-.125, .125, .5, .4, new_username,.1, true);
 	}
 	endingUsername->ChangeText(L"");
 
@@ -159,7 +159,7 @@ void Asteroids::Init(bool again) {
 		isDead = true;
 		hasLost = true;
 
-		usernameInfo = Game::AddText(-.9, .9, .6, .5, L"", .1, true);
+		usernameInfo = Game::AddText(-1, 1, .4, .425, L"", .1, true);
 	}
 	else {
 		Game::Sound("asteroidsStart", false);
@@ -187,7 +187,7 @@ void Asteroids::Init(bool again) {
 	for (int i = 0; i < lives; i++) {
 		const wchar_t* modelName = L"AsteroidsShip";
 		if (i == lives - 1) modelName = L"AsteroidsShipFire";
-		GameObject* current = Game::Create(vec(-.9 + .012 + .035 * i, .7, 0), vec(0, 3), vec(.04, 3), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
+		GameObject* current = Game::Create(vec(-1 + .006 + .023 * i, .5, 0), vec(0, 3), vec(.03, 3), modelName); //.012 so that it's centered... .035 is spacing - feel free to change that anytime
 		current->Stage[0].onTop = true;
 		tLives.push_back(current);
 	}
@@ -210,7 +210,7 @@ void Asteroids::Update(const float& dt) {
 	}
 
 	if (!isDead && clickCooldown <= 0 && Game::KeysPresed['P']) {
-		pauseIcone->MoveTo(vec(-10 * (float)isPaused, 0, .1)); //what this essentially means is go to either (-10,-10) or (0,0)
+		pauseIcone->MoveTo(vec(-10 * (float)isPaused, 0, .05)); //what this essentially means is go to either (-10,-10) or (0,0)
 
 		Game::StopSounds();
 		Game::Sound(backgroundMusic[(int)isPaused + 1], true);
@@ -355,7 +355,7 @@ void Asteroids::Update(const float& dt) {
 
 					score = Game::formatText(Game::formatText(score, 1), 0, std::to_string(scores[0]).length()); //crazy operations lol
 
-					scoreboard[i] = Game::AddText(-.9f, -1.9f, .35f - (.125f * i), .35f - (.125f * (i + .5)) - .05f, place + L" " + nick + L" " + score, .1f, false);
+					scoreboard[i] = Game::AddText(-.9f, -1.9f, .20f - (.075f * i), .20f - (.075f * (i + .5)) - .025f, place + L" " + nick + L" " + score, .1f, false);
 				}
 
 				ship->RotateTo(vec(0, 0, 90.0f));
