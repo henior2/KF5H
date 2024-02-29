@@ -530,7 +530,7 @@
     <Media Include="Sounds\battlezonePlayerShoot.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
-    <Media Include="Sounds\battlezonePowerUpwav.wav">
+    <Media Include="Sounds\battlezonePowerUp.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
     <Media Include="Sounds\battlezoneRadar.wav">
