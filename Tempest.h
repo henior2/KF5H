@@ -35,8 +35,11 @@ private:
 	std::vector <int> spikers_max;
 	std::vector <float> fusbal_time;
 	std::vector <vec> fmove;
+	std::vector <vec> fpmove;
 	std::vector <vec> fwhere;
+	std::vector <vec> fpwhere;
 	std::vector <float> cooldown;
+	std::vector <float> cooldown2;
 	std::vector <std::vector<float>> vx_spike;
 	std::vector <GameObject*> spike;
 	std::vector <float> help;
