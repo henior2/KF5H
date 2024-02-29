@@ -206,7 +206,7 @@ float vec::Dot(const vec& A, const vec& B) {
 
 	float result;
 	result = A.x * B.x + A.y * B.y + A.z * B.z;
-	result *= L1 * L2;
+	//result *= L1 * L2;
 
 	return result;
 }
