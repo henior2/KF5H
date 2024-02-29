@@ -14,7 +14,7 @@ void Menu::Init() {
 		Buttons = { PlayButton, ExitButton, AsteroidsButton, BattlezoneButton, TempestButton, BackButton };
 		//Pointer = Game::Create(vec3(-.325, -.05, 0), vec3(0, 0, -90), vec3(.1), "AsteroidsBullet");
 		//Pointer = Game::Create()
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 150; i++) {
 			float x = ((float)(rand() % 100) - 50.0f);
 			float y = ((float)(rand() % 100) - 50.0f);
 			float z = ((float)(rand() % 150) - 100.0f);
@@ -30,7 +30,7 @@ void Menu::Init() {
 			float z = ((float)(rand() % 150) - 100.0f);
 			float scale = (float)(rand() % 300) / 100.0f + 0.5f;
 			obiekty.push_back(Game::Create(vec(x, y, z), vec(rand() % 360, rand() % 360, rand() % 360), vec(scale, 3), L"MenuCube"));
-			obiekty[i + 500]->SetColor(vec(0, 1, 0));
+			obiekty[i + 150]->SetColor(vec(0, 1, 0));
 		}
 		Game::Sound("mus01", true);
 		Game::camera->perspective = true;
