@@ -22,6 +22,8 @@ private:
 	TextBox* pointsy;
 	TextBox* dif;
 	bool superzapperActive = true;
+	bool waveFlag = true;
+	bool first = true;
 
 	const std::vector<std::wstring> enemy_models = {
 		L"Tanker",
