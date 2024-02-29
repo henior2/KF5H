@@ -277,19 +277,19 @@ void Drawing(HWND& hwnd, int width, int height) {
 			HFONT hOldFont = (HFONT)SelectObject(hdcBuffer, hFont);
 
 			// Set the text color
-			SetTextColor(hdcBuffer, RGB(255, 0, 0));
+			//SetTextColor(hdcBuffer, RGB(255, 0, 0));
 
 			// Set the background color
-			SetBkColor(hdcBuffer, RGB(255, 255, 0));
+			//SetBkColor(hdcBuffer, RGB(255, 255, 0));
 
 			// Draw the text
-			std::wstringstream s;
-			HANDLE hProcess = GetCurrentProcess();
-			s << GetGuiResources(hProcess, GR_GDIOBJECTS);
-			std::wstringstream ss;
-			ss << GetLastError();
-			std::wstring dtString = std::to_wstring(slep) + L", " + std::to_wstring(allDt) + L", " + std::to_wstring(eee - e) + L", " + std::to_wstring(ee - eee) + L", " + s.str() + L", " + ss.str();
-			TextOut(hdcBuffer, 10, 10, dtString.c_str()/*std::to_wstring(Objects.size()).c_str()*/, static_cast<int>(dtString.length()));
+			//std::wstringstream s;
+			//HANDLE hProcess = GetCurrentProcess();
+			//s << GetGuiResources(hProcess, GR_GDIOBJECTS);
+			//std::wstringstream ss;
+			//ss << GetLastError();
+			//std::wstring dtString = std::to_wstring(slep) + L", " + std::to_wstring(allDt) + L", " + std::to_wstring(eee - e) + L", " + std::to_wstring(ee - eee) + L", " + s.str() + L", " + ss.str();
+			//TextOut(hdcBuffer, 10, 10, dtString.c_str()/*std::to_wstring(Objects.size()).c_str()*/, static_cast<int>(dtString.length()));
 
 			BitBlt(hdc, 0, 0, width, height, hdcBuffer, 0, 0, SRCCOPY);
 			if (white == NULL) {
