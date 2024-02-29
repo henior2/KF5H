@@ -36,8 +36,8 @@ void Battlezone::Init() {
 	TextBox* fala = Game::AddText(-1.0f,0,1.0f,0.9f, L"FALA 0", 0.1f);
 	glitchEffectRefreshRate = .1f;
 
-	shot_cool = 2;
-	resp_cool = 2;
+	shot_cool = 2.0f;
+	resp_cool = 2.0f;
 	hp = 100;
 	TextBox* display_hp = Game::AddText(0.6f, 0, 1.0f, 0.9f, std::to_wstring(hp),0.1f);
 	isDead = false;
@@ -277,14 +277,14 @@ void Battlezone::Update(float dt) {
 		Game::camera->RotateCamera(0, 0);
 
 
-	//shooting funtion
+	//shoting funtion
 		if (Game::KeysPresed[VK_SPACE] && shot_cool <= 0 && bulletsFired <= 4) {
-		shot_cool = 2;
+		shot_cool = 2.0f;
 		bulletsFired += 1;
 		if (player->Transform.orientation.y != 0 && player->Transform.orientation.y != 180)
-			shot(player->Transform.position + vec(0, 2.535, 0), player->Transform.orientation.y, true);
+			shot(player->Transform.position + vec(0, 2.535, 0), player->Transform.orientation, true);
 		else
-			shot(player->Transform.position + vec(0, 2.535, 1), player->Transform.orientation.y, true);
+			shot(player->Transform.position + vec(0, 2.535, 1), player->Transform.orientation, true);
 	}
 
 	//Moving the bullets

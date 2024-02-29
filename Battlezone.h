@@ -35,7 +35,7 @@ private:
 	std::vector<GameObject*> pociski;
 	std::vector<GameObject*> przeciwnicy;
 	std::vector<GameObject*> rakiety;
-	float shot_cool = 3;
+	float shot_cool = 2.0f;
 	float resp_cool = 2;
 	const float fast_tank_speed = 3;
 	const float tank_speed = 2;
