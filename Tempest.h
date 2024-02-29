@@ -32,6 +32,7 @@ private:
 	std::vector <GameObject*> tunnel;
 	GameObject* blaster;
 	std::vector <GameObject*> bulletsofplayer;
+	std::vector <GameObject*> bullets;
 	std::vector <GameObject*> enemies[4];
 	std::vector <int> enemies_position[4];
 	std::vector <bool> enemies_bool[4];
@@ -90,5 +91,8 @@ private:
 
 	void text1();
 	void mechanics();
+
+	void shooting2(vec gun_pos);
+	void bulletmove2(float dt);
 };
 
