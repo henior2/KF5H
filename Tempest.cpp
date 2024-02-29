@@ -828,7 +828,7 @@ void Tempest::tanker(float dt) {
 		}
 		
 		if (he) {
-			shoot = rand() % 120;
+			shoot = rand() % 170;
 			help = enemies[0][i]->Transform.position;
 			if (help.z < zhelp2)
 				enemies[0][i]->Move(vec(0, 0, -3) * dt);
