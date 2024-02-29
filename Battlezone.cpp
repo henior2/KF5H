@@ -342,7 +342,7 @@ void Battlezone::Update(float dt) {
 		waveTime = 4.0f;
 	}
 
-	//Poruszanie i strzelanie przeciwników
+	//Poruszanie i strzelanie przeciwnikśw
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); i++) {
 			GameObject* current = przeciwnicy[i];
