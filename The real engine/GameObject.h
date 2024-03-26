@@ -15,6 +15,16 @@ struct Transformations {
 	vec orientation = vec(0, 3);
 	vec scale = vec(1, 3);
 	bool UseUniversalUnits = false;
+
+	Transformations() {};
+
+	Transformations(const Transformations& sec)
+		: UseUniversalUnits(sec.UseUniversalUnits)
+	{
+		position = sec.position;
+		orientation = sec.orientation;
+		scale = sec.scale;
+	}
 };
 
 struct ColisionMesh {
@@ -56,8 +66,8 @@ struct VertexData {
 	ColisionMesh Colision;
 	float* vertecies = nullptr;
 	unsigned int* indecies = nullptr;
-	int vNum;
-	int iNum;
+	int vNum = 0;
+	int iNum = 0;
 
 	VertexData(int vNum2, int iNum2) {
 		vertecies = new float[vNum2];

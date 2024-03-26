@@ -185,7 +185,7 @@ void CALLBACK TimerCallback(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
 				std::vector<std::pair<Rendering, Transformations>> ObjectsOnTop;
 				for (int i = 0; i < Game::Objects.size(); i++) {
 					Rendering now(Game::Objects[i]->Stage[Game::Objects[i]->activeStage]);
-					Transformations now2 = Game::Objects[i]->Transform;
+					Transformations now2(Game::Objects[i]->Transform);
 					if (Game::Objects[i]->Stage[Game::Objects[i]->activeStage].onTop)
 						ObjectsOnTop.push_back({ now, now2 });
 					else
@@ -234,7 +234,7 @@ void Drawing(HWND& hwnd, int width, int height) {
 				Objects.clear();
 				for (int i = 0; i < PaintObj.size(); i++) {
 					Rendering now(PaintObj[i].first);
-					Transformations now2 = PaintObj[i].second;
+					Transformations now2(PaintObj[i].second);
 					Objects.push_back({ now, now2 });
 				}
 

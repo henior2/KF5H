@@ -203,6 +203,7 @@ void Asteroids::Update(const float& dt) {
 	}
 	if (escSoundLen <= 0) {
 		Game::ChangeState(Game_Menu);
+		return;
 	}
 
 	if (!isDead && clickCooldown <= 0 && Game::KeysPresed['P']) {

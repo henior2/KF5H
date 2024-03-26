@@ -45,7 +45,6 @@ vec::~vec() {
 
 void vec::operator=(const vec& second) {
 	if (&second != this) {
-		// If sizes are different, adjust the size of the current object
 		if (second.size != this->size) {
 			try {
 				delete[] array;
