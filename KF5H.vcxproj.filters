@@ -548,4 +548,7 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="irrKlang.lib" />
+  </ItemGroup>
 </Project>
