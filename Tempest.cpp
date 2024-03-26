@@ -33,6 +33,7 @@ void Tempest::Update(const float& dt) {
 	if (Game::KeysPresed[VK_ESCAPE]) {
 		debugCooldown = 0.3f;
 		Game::ChangeState(Game_Menu);
+		return;
 	}
 	if (Game::KeysPresed['A'] && debugCooldown <= 0.0f) {
 		debugCooldown = 0.3f;
@@ -410,7 +411,7 @@ void Tempest::tunelspawn() {
 	int type2 = -1;
 	if (lvlDif < 2) {
 		type = 0;
-		live = 1;
+		live = 3;
 	}
 	else if (lvlDif < 21) {
 		type = 0;

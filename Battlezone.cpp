@@ -133,8 +133,6 @@ void Battlezone::Init() {
 
 	radar = Game::Create(vec(0.0f,3), vec(0.0f,3), vec(.25f,3), rVx, rInd);
 
-	
-
 	uiElements.push_back(radar);
 	targetPos.push_back(vec(0.0f,3));
 	targetOri.push_back(vec(0.0f,3));
@@ -191,8 +189,6 @@ void Battlezone::Init() {
 		current->Transform.UseUniversalUnits = true;
 	}
 
-
-
 	//creating obstacles
 	for (int i = 0; i < totalObstacles; i++) {
 		makeObstacles(-mapSize + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * mapSize))), -mapSize + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * mapSize))), minObstacleHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxObstacleHeight - minObstacleHeight))));
@@ -211,8 +207,6 @@ void Battlezone::Update(float dt) {
 		current->Rotate(vec(0, 0, 0));
 		current->Transform.UseUniversalUnits = true;
 	}
-
-	
 
 	dt *= timeMultiplier;
 	keyCooldown -= dt;
@@ -243,13 +237,10 @@ void Battlezone::Update(float dt) {
 
 	if (isDead) return; //this stops the game after death. anything above still will be executed
 
-	
-
 	if (timeEffectLeft <= 0) {
 		timeEffectLeft = 0;
 		timeMultiplier = 1.0f;
 	}
-
 
 	if (!enemyShotCooldowns.empty()) {
 		for (auto& cooldown : enemyShotCooldowns) {
