@@ -3,7 +3,7 @@
 class vec
 {
 public:
-	unsigned int size;
+	unsigned int size = 0;
 
 	float* array;
 

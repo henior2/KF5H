@@ -56,8 +56,8 @@ struct VertexData {
 	ColisionMesh Colision;
 	float* vertecies = nullptr;
 	unsigned int* indecies = nullptr;
-	int vNum;
-	int iNum;
+	int vNum = 0;
+	int iNum = 0;
 
 	VertexData(int vNum2, int iNum2) {
 		vertecies = new float[vNum2];
