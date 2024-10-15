@@ -329,7 +329,7 @@ void Battlezone::Update(float dt) {
 		spawn_enemy(vec(temp_x, 0, temp_z), vec(0, temp_y, 0), temp);
 	}
 
-	//Poruszanie i strzelanie przeciwnikśw
+	//moving and shoting for enemies
 	if (!przeciwnicy.empty()) {
 		for (int i = 0; i < przeciwnicy.size(); i++) {
 			GameObject* current = przeciwnicy[i];
@@ -460,11 +460,11 @@ void Battlezone::Update(float dt) {
 						}
 
  						//tScore->ChangeText(std::to_wstring(score));
-						//Usuwanie pocisku
+						//Delete bullet
 						Game::Destroy(pociski_gracza[i]);
 						pociski_gracza.erase(pociski_gracza.begin() + i);
 						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
-						//Usuwanie przeciwnika
+						//Delete enemy
 						Game::Destroy(przeciwnicy[0]);
 						przeciwnicy.clear();
 					}
@@ -475,11 +475,11 @@ void Battlezone::Update(float dt) {
 				for (int j = 0; j < rakiety.size(); j++) {
 					if (Game::collisionCircle(pociski_gracza[i],rakiety[j],vec(1,0,1))) {
 						score += 500 * (int)scoreMultiplier;
-						//Usuwanie pocisku
+						//Delete bullet
 						Game::Destroy(pociski_gracza[i]);
 						pociski_gracza.erase(pociski_gracza.begin() + i);
 						bulletTimeRemain.erase(bulletTimeRemain.begin() + i);
-						//Usuwanie rakiety
+						//Delete rocket
 						Game::Destroy(rakiety[j]);
 						Game::Destroy(radarElements[j]);
 						
